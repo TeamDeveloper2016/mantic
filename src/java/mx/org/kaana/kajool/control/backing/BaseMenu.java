@@ -18,6 +18,8 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.inventarios.comun.IBaseImportar;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.menu.DefaultMenuItem;
 import org.primefaces.model.menu.DefaultMenuModel;
@@ -34,6 +36,7 @@ import org.primefaces.model.menu.MenuModel;
 
 public abstract class BaseMenu extends IBaseImportar implements Serializable {
 
+  private static final Log LOG = LogFactory.getLog(BaseMenu.class);
   private static final long serialVersionUID = 7498799884513473226L;
 
   @Inject 
@@ -71,9 +74,9 @@ public abstract class BaseMenu extends IBaseImportar implements Serializable {
   @Override
   @PostConstruct
   protected void init() {
-		this.attrs.put("rfc", "ATT1811272YA");
-		this.attrs.put("folio", "2021040490");
-		this.attrs.put("seguridad", "443c2f2e2d2c291708"); // 12144402
+		this.attrs.put("rfc", ""); // ATT1811272YA
+		this.attrs.put("folio", ""); // 2021040490
+		this.attrs.put("seguridad", ""); // 443c2f2e2d2c291708 12144402
 		this.attrs.put("codigo", "");
 		this.attrs.put("pdfFile", null);
 		this.attrs.put("xmlFile", null);
@@ -96,7 +99,7 @@ public abstract class BaseMenu extends IBaseImportar implements Serializable {
       this.model = new DefaultMenuModel();
       DefaultMenuItem item = new DefaultMenuItem("Inicio");
       item.setIcon("fa fa-home");
-      item.setUrl("/Control/inicio.jsf".concat(Constantes.REDIRECIONAR));
+      item.setUrl("/indice.jsf".concat(Constantes.REDIRECIONAR));
       this.model.addElement(item);      
       DefaultSubMenu sub= new DefaultSubMenu("Categorías");
       sub.setIcon("fa fa-picture-o");
@@ -104,8 +107,8 @@ public abstract class BaseMenu extends IBaseImportar implements Serializable {
         for (Entity entity: menu) {
           item= new DefaultMenuItem(entity.toString("categoria"));
           item.setIcon("fa ".concat(entity.toString("icon")));
-          item.setCommand("#{kajoolAccesoIndice.doOpcion(0)}");
-          item.setOncomplete("showOpcion(0); categoria('".concat(entity.toString("nombre")).concat("');"));
+//          item.setCommand("#{kajoolAccesoIndice.doOpcion(0)}");
+//          item.setOncomplete("showOpcion(0); categoria('".concat(entity.toString("nombre")).concat("');"));
           sub.addElement(item);      
         } // for
       } // if  
@@ -116,8 +119,8 @@ public abstract class BaseMenu extends IBaseImportar implements Serializable {
         for (Entity entity: marcas) {
           item= new DefaultMenuItem(entity.toString("descripcion"));
           item.setIcon("fa fa-picture-o");
-          item.setCommand("#{kajoolAccesoIndice.doOpcion(1)}");
-          item.setOncomplete("showOpcion(1); procesar('".concat(entity.toString("descripcion")).concat("');"));
+//          item.setCommand("#{kajoolAccesoIndice.doOpcion(1)}");
+//          item.setOncomplete("showOpcion(1); procesar('".concat(entity.toString("descripcion")).concat("');"));
           sub.addElement(item);      
         } // for
       } // if  
@@ -177,7 +180,11 @@ public abstract class BaseMenu extends IBaseImportar implements Serializable {
 	}  
 
   public void doSearchItem() {
-    
+    LOG.info(this.attrs.get("codigo"));
   } 
+
+  public void doSearchMain(String codigo) {
+    LOG.info(codigo);
+  }
   
 }

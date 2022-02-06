@@ -103,7 +103,7 @@ div.ui-panelgrid-content {
   margin-top: -6px;
 }
 .janal-display-none {
-  display: none;
+  display: none !important;
 }
 .janal-border-none {
   border: none !important;

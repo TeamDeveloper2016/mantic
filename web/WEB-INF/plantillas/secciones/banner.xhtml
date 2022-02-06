@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">		
+  <h:outputScript library="janal" name="js/jquery.magnify.min-1.2.0.js"/>
+  <h:outputScript library="janal" name="core/jquery.janal.magnify-0.0.1.js"/>
+  <h:outputStylesheet library="janal" name="css/jquery.magnify.min.css" />
+  <h:outputStylesheet library="janal" name="css/jquery.magnify.min.css.map" />
+  <script type="text/javascript">
+    $(function() {
+      $('#banner').addClass('ui-panelgrid');
+      $('#banner').addClass('ui-widget');
+      $('#banner tr:eq(0)').addClass('ui-widget-content');
+    });
+    
+    function toSearchCodigo() {
+      if($('#janal-buscar-codigo').val().trim().length> 1) {
+        busquedaPrincipal($('#janal-buscar-codigo').val());
+      } //if
+    }
+  </script>
+	<style type="text/css">
+    .janal-auto-margin{margin: auto;}
+    .janal-codigo-buscar.ui-inputfield.ui-state-hover, .ui-inputfield.ui-state-focus{font-size: 17px; border:solid 1px blue; color:blue !important; border-right:solid 8px blue;}
+    .janal-codigo-buscar.ui-inputfield {font-size: 17px; border:solid 1px blue; color:blue !important; border-right:solid 8px blue;}
+  </style>  
+  <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+    <div class="ui-g ui-grid-row janal-grid-row #{util.isMobile? 'janal-display-none': ''}">
+      <div class="ui-g-12 janal-content-center janal-column-center">
+        <p:panelGrid columns="7" styleClass="janal-wid-100" columnClasses="janal-wid-15 janal-column-center, janal-wid-20 janal-column-left, janal-wid-10 janal-column-left, janal-wid-15 janal-column-center, janal-wid-10 janal-column-center, janal-wid-20 janal-column-right, janal-wid-10 janal-column-center">
+          <p:outputLabel value="&lt;i class='fa fa-phone janal-color-blue janal-font-bold'&gt;&lt;/i&gt;&lt;span class='janal-color-black'&gt;&nbsp;&nbsp;&nbsp;(449)9131028&lt;/span&gt;" escape="false"/>
+          <p:outputLabel value="&lt;i class='fa fa-envelope-o janal-color-blue janal-font-bold'&gt;&lt;/i&gt;&lt;span class='janal-color-black'&gt;&nbsp;&nbsp;&nbsp;ventas@ferreteriabonanza.com&lt;/span&gt;" escape="false"/>
+          <p:outputLabel value="&lt;i class='fa fa-whatsapp janal-color-green janal-font-bold'&gt;&lt;/i&gt;&lt;span class='janal-color-black'&gt;&nbsp;&nbsp;&nbsp;(449)5087505&lt;/span&gt;" escape="false"/>
+          <p:outputLabel value=""/>
+          <p:outputLabel value=""/>
+          <p:outputLabel value="&lt;i class='fa fa-map-marker janal-color-blue janal-font-bold'&gt;&lt;/i&gt;&lt;span class='janal-color-black'&gt;&nbsp;&nbsp;&nbsp;Ubicación tienda&lt;/span&gt;" escape="false"/>
+          <p:outputLabel value="&lt;i class='fa fa-user janal-color-blue janal-font-bold'&gt;&lt;/i&gt;&lt;span class='janal-color-black'&gt;&nbsp;&nbsp;&nbsp;Ingresar&lt;/span&gt;" escape="false"/>
+        </p:panelGrid>  
+      </div>  
+    </div>  
+    <div class="ui-g ui-grid-row janal-grid-row #{util.isMobile? '': 'janal-display-none'}">
+      <div class="ui-g-12 janal-content-center janal-column-center">
+        <p:panelGrid columns="3" styleClass="janal-wid-100" columnClasses="janal-fix-30 janal-column-left, janal-fix-40 janal-column-center, janal-fix-30 janal-column-right">
+          <p:outputLabel value="&lt;i class='fa fa-phone janal-color-blue janal-font-bold'&gt;&lt;/i&gt;&lt;span class='janal-color-black'&gt;&nbsp;&nbsp;&nbsp;(449)9131028&lt;/span&gt;" escape="false"/>
+          <p:outputLabel value="&lt;i class='fa fa-whatsapp janal-color-green janal-font-bold'&gt;&lt;/i&gt;&lt;span class='janal-color-black'&gt;&nbsp;&nbsp;&nbsp;(449)5087505&lt;/span&gt;" escape="false"/>
+          <p:outputLabel value="&lt;i class='fa fa-user janal-color-blue janal-font-bold'&gt;&lt;/i&gt;&lt;span class='janal-color-black'&gt;&nbsp;&nbsp;&nbsp;Ingresar&lt;/span&gt;" escape="false"/>
+        </p:panelGrid>  
+      </div>  
+    </div>  
+    <div class="ui-g ui-grid-row janal-grid-row">
+			<div class="ui-g-12 janal-content-center janal-column-center">
+        <p:panelGrid columns="3" styleClass="janal-wid-100" columnClasses="janal-fix-20 janal-column-left, janal-fix-60 janal-column-center janal-auto-margin, janal-fix-20 janal-column-center janal-auto-margin">
+          <p:graphicImage library="janal" name="img/sistema/logo-portal.png" width="147px" height="65px" styleClass="#{util.isMobile? 'janal-display-none': ''}"/>
+          <p:inputText id="janal-buscar-codigo" placeholder="Buscar articulo ..." styleClass="janal-codigo-buscar janal-wid-80 janal-column-left">
+            <i class='fa fa-search janal-font-bold janal-color-blue' style="position: relative; right: -80%; cursor: pointer;" onclick="toSearchCodigo();" title="Clic para buscar"></i>
+          </p:inputText>  
+          <p:panelGrid columns="1" styleClass="janal-wid-100">
+            <p:outputLabel styleClass="janal-etapa #{util.isMobile? 'janal-display-none': ''} lg-pantalla" value="#{kajoolUtilAplicacion.servidorEspecial}"/>
+            <p:outputLabel styleClass="janal-etapa #{util.isMobile? 'janal-display-none': ''} xs-pantalla Fs14" value="#{kajoolUtilAplicacion.servidorEspecial}"/>
+          </p:panelGrid>  
+        </p:panelGrid>  
+			</div>	
+		</div>	
+  </div>
+</html>

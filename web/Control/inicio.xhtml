@@ -34,13 +34,7 @@
     </style>
 	</ui:define>
 	<ui:define name="contenido">  	
-    <p:menubar model="#{kajoolControlInicio.model}" styleClass="janal-wid-100-txt">
-      <f:facet name="options">
-        <p:inputText id="buscar" value="#{kajoolControlInicio.attrs.codigo}" size="#{util.isMobile? 10: 25}" style="margin-right:10px" placeholder="Buscar"/>
-        <p:commandButton title="Buscar producto" actionListener="#{kajoolControlInicio.doSearchItem()}" process="@this buscar" icon="fa fa-search" onstart="showOpcion(3); return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-        <p:commandButton title="Ingresar" action="/acceso?faces-redirect=true" icon="fa fa-user"/>
-      </f:facet> 
-    </p:menubar>
+    <p:menubar model="#{kajoolControlInicio.model}" styleClass="janal-wid-100-txt"/>
     <p:poll listener="#{kajoolControlInicio.doLoadGallery}" update="galeria" interval="18000" autoStart="true" />
     <div id="janal-opcion-4" class="opciones">
       <center style="margin: 10px">

@@ -7,385 +7,44 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:p="http://primefaces.org/ui"
   xmlns:pe="http://primefaces.org/ui/extensions"
-	template="/WEB-INF/plantillas/ingreso.xhtml">
+	template="/WEB-INF/plantillas/portada.xhtml">
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.errors = 2;
 			Janal.Control.fields = {
-				rfcDescargar   : {validaciones: 'requerido|longitud({\"min\":10, \"max\":13})', mascara: 'libre', grupo: 'descargar'},
-				folioDescargar : {validaciones: 'requerido|longitud({\"min\":9, \"max\":10})', mascara: 'libre', grupo: 'descargar'},
-				codigoDescargar: {validaciones: 'requerido|longitud({\"min\":18, \"max\":22})', mascara: 'libre', grupo: 'descargar'},
-				rfcGenerar     : {validaciones: 'requerido|longitud({\"min\":10, \"max\":13})', mascara: 'libre', grupo: 'generar'},
-				folioGenerar   : {validaciones: 'requerido|longitud({\"min\":9, \"max\":10})', mascara: 'libre', grupo: 'generar'},
-				codigoGenerar  : {validaciones: 'requerido|longitud({\"min\":18, \"max\":22})', mascara: 'libre', grupo: 'generar'}
 			};
 			//<![CDATA[
-			function start() {
-        PF('statusDialog').show();
-      };
- 
-      function stop() {
-        PF('statusDialog').hide();
-      };
-			
+      function callWindowSize() {
+        var width = screen.width;
+        var height= screen.height- 200;
+        var porcentaje= Number.parseFloat(height* 100/ 1440).toFixed(2)- 5;
+        height= Number.parseInt(porcentaje* 1440/ 100);
+        width= Number.parseInt(porcentaje* 2560/ 100);
+        $('img.galeria').attr('width', width+ 'px').attr('height', height+ 'px');
+        //$('img.galeria').attr('height', height+ 'px');
+      }
+      
 			$(document).ready(function() {
-				
+        window.addEventListener('resize', callWindowSize);
+        callWindowSize();
 			});
-      
-      function showOpcion(opcion) {
-        $('div.opciones').hide();
-        $('#janal-opcion-'+ opcion).show();
-      }
-      
-      function recalcular() {
-        if($('div.janal-contenedor-icons').hasClass('janal-wid-80')) {
-          $('div.janal-contenedor-icons').removeClass('janal-wid-80');
-          $('div.janal-contenedor-icons').addClass('janal-wid-97');
-          $('div.janal-contenedor-menu').removeClass('janal-wid-20');
-          $('div.janal-contenedor-menu').addClass('janal-wid-3');
-        } // if
-        else {
-          $('div.janal-contenedor-icons').removeClass('janal-wid-97');
-          $('div.janal-contenedor-icons').addClass('janal-wid-80');
-          $('div.janal-contenedor-menu').removeClass('janal-wid-3');
-          $('div.janal-contenedor-menu').addClass('janal-wid-20');
-        } // else  
-      }
 			//]]>
 		</script> 
 		<style type="text/css">
-			input[type="text"], input[type="password"] { text-align: center !important; }
-      .p-p-1 {padding: 0.25rem !important;}
-      .p-p-2 {padding: 0.3rem !important;}
-      .container {width: 100%; display: flex; flex-direction: row; flex-wrap: wrap; justify-content: center; align-items: center;}
-      .galeria  {width: 570px; margin-right: 3%;}
-      .galeria .galeria-header {margin: 0 0 0.2rem 0; text-align: left;}
-      .galeria .galeria-list {border: 0px; padding-right: 0px;}
-      .galeria .galeria-description {margin: 0 0 0.1rem -1.2rem; font-size: 0.8rem; padding-left: 0px !important; font-weight: normal !important;}
-      .galeria .galeria-marca {font-size: 1.5rem; margin: 0 0 0.5rem 0; color: blue; font-weight: bold;}
-      .galeria .galeria-nombre {font-size: 1.2rem; margin: 0 0 0.5rem 0; color: black; font-weight: bold;}
-      .galeria .galeria-list-item .galeria-actions {font-size: 0.9rem; font-weight: 100; margin-bottom: 0.1rem; align-self: flex-end; text-align: right;}
-      .galeria .galeria-list-item .galeria-item-search {width: 320px; text-align: center;}
-      .galeria .galeria-list-item .galeria-item-search img {width: 300px; height:250px; margin-right: 2rem;}      
-      .galeria .galeria-list-item {display: -ms-flexbox;display: flex;-ms-flex-align: center;align-items: center;padding: 0.5rem; text-align: left;}
-      .galeria .galeria-list-item .galeria-list-detail {flex: 1 1 0;-ms-flex: 1 1 0;align-self: baseline;}  
-      
-      .ui-tree.ui-tree-horizontal .ui-treenode-connector-table {width: 2px !important;}
-      .ui-tree .ui-icon {position: absolute; top: 44px;}
-      .ui-treenode-content {position: relative; width: 90px !important; height: 90px !important;}
-      .janal-tree-content {width: 250px !important;height: 36px !important;color: white;text-align: center;padding-top: 10px;}
-      .janal-nodo-acciones {position: absolute; right: 0;}
-      .janal-nodo-descripcion {white-space: normal !important;position: absolute;top: 40%;left: 20px;}
-      .janal-nivel-nodo {font-size: smaller;font-weight: bold;position: absolute;top: 3px;right: 6px !important;}  
-      .janal-nodo-nivel {font-size: smaller;font-weight: bold;position: absolute;bottom: 0;right: 0;width: 100%;text-align: right;height: 15px;}
-      .janal-tree-content{width: 300px !important;}
-      .janal-nodo-title {font-size: smaller;position: absolute;top: 5px;left: 5px !important;border: 0px;} 
-      .janal-nivel-1 { background: #6f4CBA !important; color: white;}
-      .janal-nivel-2 { background: #35AC19 !important; color: white;}
-      .janal-nivel-3 { background: #CC0000 !important; color: white;}
-      .janal-nivel-4 { background: #00BFFF !important; color: white;}
-      .janal-nivel-5 { background: #2417B2 !important; color: white;}
-      .janal-nivel-6 { background: #1767B2 !important; color: white;}
-      .janal-nivel-7 { background: #17B279 !important; color: white;}
-      .janal-nivel-8 { background: #B28617 !important; color: white;}
-      .janal-nivel-9 { background: #B25517 !important; color: white;}
-      .janal-nivel-10 { background: #BA4C84 !important; color: white;}
-      .janal-nivel-11 { background: #AACC84 !important; color: white;}
-      .janal-nivel-12 { background: #CC4C08 !important; color: white;}
-      .janal-nivel-13 { background: #604B14 !important; color: white;}
-      .janal-nivel-14 { background: #00BB14 !important; color: white;}
-      .janal-nivel-15 { background: #FF01A4 !important; color: white;}
-
-      .jana-flex-container {display: flex; flex-direction: row; flex-wrap: nowrap; justify-content: normal; align-items: normal; align-content: normal; height:100vh;}
-      .jana-flex-items:nth-child(1) {display: block;  flex-grow: 0; flex-shrink: 1; flex-basis: auto; align-self: auto; order: 0;width: 20%;}
-      .jana-flex-items:nth-child(2) {display: block; flex-grow: 0; flex-shrink: 1; flex-basis: auto; align-self: auto; order: 0;width: 100%;}      
-      .menu-flex-container {display: flex; flex-direction: column; flex-wrap: nowrap; justify-content: normal; align-items: center; align-content: center; height: 100%;}
-      .menu-flex-items {display: block; flex-grow: 0; flex-shrink: 1; flex-basis: auto; align-self: auto; order: 0; width: 90%; text-align: center; box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px; margin-bottom: 15px; height: 50px; padding-top: 15px;}
     </style>
 	</ui:define>
 	<ui:define name="contenido">  	
-    <p:menubar model="#{kajoolAccesoIndice.model}" styleClass="janal-wid-100-txt">
-      <f:facet name="options">
-        <p:inputText id="buscar" value="#{kajoolAccesoIndice.attrs.codigo}" size="#{util.isMobile? 10: 25}" style="margin-right:10px" placeholder="Buscar"/>
-        <p:commandButton title="Buscar producto" actionListener="#{kajoolAccesoIndice.doSearchItem()}" process="@this buscar" update="tabla" icon="fa fa-search" onstart="showOpcion(3); return janal.bloquear();" oncomplete="janal.desbloquear(); limpiar('TODOS');"/>
-        <p:commandButton title="Ingresar" action="/acceso?faces-redirect=true" icon="fa fa-user"/>
-      </f:facet> 
-    </p:menubar>
-    <pe:remoteCommand name="limpiar" process="@this" actionListener="#{kajoolAccesoIndice.doCleanProductos}">  
-      <pe:methodSignature parameters="java.lang.String"/>  
-      <pe:methodParam name="descripcion"/>  
-    </pe:remoteCommand>
-    <div id="janal-opcion-0" class="opciones janal-display-none">
-      <pe:remoteCommand name="categoria" process="@this" actionListener="#{kajoolAccesoIndice.doUpdateCategorias}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); limpiar('TODOS');">  
-        <pe:methodSignature parameters="java.lang.String"/>  
-        <pe:methodParam name="descripcion"/>  
-      </pe:remoteCommand>
-      <center style="margin: 30px">
-        <pe:fluidGrid id="productos" value="#{kajoolAccesoIndice.productos}" var="row" fitWidth="true" hasImages="true" styleClass="janal-column-center janal-wid-100-txt">
-          <pe:fluidGridItem>
-            <div class="container">
-              <div class="galeria">
-                <div class="galeria-header p-p-2">
-                  <span class="galeria-marca">#{row.producto.marca}</span><br/>
-                  <span class="galeria-nombre">#{row.producto.nombre}</span>
-                  <div style="float: right; margin-top: -33px;">
-                    <p:graphicImage url="#{kajoolAccesoIndice.brand}#{row.producto.logo}" width="200px" height="60px"/>
-                  </div>  
-                </div>  
-                <div class="galeria-list-item p-p-1">
-                  <div class="galeria-item-search">
-                    <a id="view#{row.producto.idProducto}" data-magnify="gallery" href="#{kajoolAccesoIndice.path}#{row.producto.archivo}" data-caption="#{row.producto.nombre}" data-group="icon-image" class="icon">
-                      <p:graphicImage url="#{kajoolAccesoIndice.path}#{row.producto.archivo}" style="cursor:zoom-in;"/>
-                    </a>  
-                  </div> 
-                  <div class="galeria-list-detail">
-                    <span class="janal-color-orange" style="font-size: 0.9rem; font-weight: bold;">ESPECIFICACIONES:</span><br/>
-                    <p:dataList var="item" value="#{row.caracteristicas}" styleClass="galeria-list" itemStyleClass="galeria-description" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}">
-                      #{kajoolAccesoIndice.doLetraCapital(item)}
-                    </p:dataList>
-                  </div>  
-                </div>
-                <div class="galeria-actions">
-                  <p:dataTable var="row" value="#{row.articulos}" paginator="false" rowKey="#{row.idProductoDetalle}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="filas" rowIndexVar="index" rowStyleClass="#{kajoolAccesoIndice.toColorPartida(row)}">
-                    <p:column headerText="Código" styleClass="janal-wid-20">
-                      <p:outputLabel value="#{row.codigo}"/>
-                    </p:column>   
-                    <p:column headerText="Descripción" styleClass="janal-column-left" style="white-space: nowrap;">
-                      <p:outputLabel value="#{row.descripcion}"/>
-                    </p:column>   
-                    <p:column headerText="Medida" styleClass="janal-wid-12 janal-column-center">
-                      <p:outputLabel value="#{row.medida}"/>
-                    </p:column>   
-                    <p:column headerText="$ Precio" styleClass="janal-wid-12 janal-column-right">
-                      <h:outputText value="#{row.precio}"/>
-                    </p:column>   
-                    <p:column headerText="Cliente" styleClass="janal-wid-12 janal-column-right" rendered="#{kajoolAccesoIndice.attrs.particular}">
-                      <h:outputText value="#{row.cliente}"/>
-                    </p:column>
-                  </p:dataTable>	
-                  <br/>
-                </div>  
-              </div>  
-            </div>
-          </pe:fluidGridItem>  
-        </pe:fluidGrid>    
-      </center> 
-    </div>        
-    <div id="janal-opcion-1" class="opciones janal-display-none">
-      <pe:remoteCommand name="procesar" process="@this" actionListener="#{kajoolAccesoIndice.doUpdateMarcas}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); limpiar('TODOS');">  
-        <pe:methodSignature parameters="java.lang.String"/>  
-        <pe:methodParam name="descripcion"/>  
-      </pe:remoteCommand>  
-      <center style="margin: 30px">
-        <pe:fluidGrid id="tabla" value="#{kajoolAccesoIndice.productos}" var="row" fitWidth="true" hasImages="true">
-          <pe:fluidGridItem>
-            <div class="container">
-              <div class="galeria">
-                <div class="galeria-header p-p-2">
-                  <span class="galeria-marca">#{row.producto.marca}</span><br/>
-                  <span class="galeria-nombre">#{row.producto.nombre}</span>
-                  <div style="float: right; margin-top: -33px;">
-                    <p:graphicImage url="#{kajoolAccesoIndice.brand}#{row.producto.logo}" width="200px" height="60px"/>
-                  </div>  
-                </div>  
-                <div class="galeria-list-item p-p-1">
-                  <div class="galeria-item-search">
-                    <a id="view#{row.producto.idProducto}" data-magnify="gallery" href="#{kajoolAccesoIndice.path}#{row.producto.archivo}" data-caption="#{row.producto.nombre}" data-group="icon-image" class="icon">
-                      <p:graphicImage url="#{kajoolAccesoIndice.path}#{row.producto.archivo}" style="cursor:zoom-in;"/>
-                    </a>  
-                  </div> 
-                  <div class="galeria-list-detail">
-                    <span class="janal-color-orange" style="font-size: 0.9rem; font-weight: bold;">ESPECIFICACIONES:</span><br/>
-                    <p:dataList var="item" value="#{row.caracteristicas}" styleClass="galeria-list" itemStyleClass="galeria-description" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}">
-                      #{kajoolAccesoIndice.doLetraCapital(item)}
-                    </p:dataList>
-                  </div>  
-                </div>
-                <div class="galeria-actions">
-                  <p:dataTable var="row" value="#{row.articulos}" paginator="false" rowKey="#{row.idProductoDetalle}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="filas" rowIndexVar="index" rowStyleClass="#{kajoolAccesoIndice.toColorPartida(row)}">
-                    <p:column headerText="Código" styleClass="janal-wid-20">
-                      <p:outputLabel value="#{row.codigo}"/>
-                    </p:column>   
-                    <p:column headerText="Descripción" styleClass="janal-column-left" style="white-space: nowrap;">
-                      <p:outputLabel value="#{row.descripcion}"/>
-                    </p:column>   
-                    <p:column headerText="Medida" styleClass="janal-wid-12 janal-column-center">
-                      <p:outputLabel value="#{row.medida}"/>
-                    </p:column>   
-                    <p:column headerText="$ Precio" styleClass="janal-wid-12 janal-column-right">
-                      <h:outputText value="#{row.precio}"/>
-                    </p:column>   
-                    <p:column headerText="Cliente" styleClass="janal-wid-12 janal-column-right" rendered="#{kajoolAccesoIndice.attrs.particular}">
-                      <h:outputText value="#{row.cliente}"/>
-                    </p:column>
-                  </p:dataTable>	
-                  <br/>
-                </div>  
-              </div>  
-            </div>
-          </pe:fluidGridItem>  
-        </pe:fluidGrid>        
-      </center>
-    </div>
-    <div id="janal-opcion-2" class="opciones janal-display-none">
-      <center style="margin: 30px">
-        <p:spacer width="1"/>
-        <div id="login-box" class="janal-only-out-lines Container80 MaxWid500 Fnone MarAuto BordRad10">
-          <div class="Container100">
-            <div class="janal-content-center">
-              <div class="Container100 TexAlCenter Animated05 BoxSizeBorder TabBtn left TabBtnActiveLeft" role="1">
-                <div class="Container80 Fnone MarAuto"><i class="fa fa-cloud-download"></i>  Facturación</div>
-              </div>
-              <div class="Container50 TexAlCenter Animated05 BoxSizeBorder TabBtn right" role="2" style="display:none;">
-                <div id="downloadDescargar" class="Container80 Fnone MarAuto"><i class="fa fa-files-o"></i>  Descargar</div>
-              </div>
-              <div id="tab_1" class="Container90 Fnone MarAuto TexAlCenter TabContent">										
-                <p:panelGrid layout="grid" columns="1">
-                  <p:spacer height="1"/>
-                  <p:outputLabel for="rfcDescargar" value="RFC:" styleClass="Fs16"/>
-                  <p:inputText placeholder="ej. ADRC760130L95" id="rfcDescargar" tabindex="1" value="#{kajoolAccesoIndice.attrs.rfc}" styleClass="items Container80 Fnone MarAuto Fs18"/>
-                  <p:outputLabel for="folioDescargar" value="No. ticket:" styleClass="Fs16"/>
-                  <p:inputText placeholder="ej. 2019000123" id="folioDescargar" tabindex="2" value="#{kajoolAccesoIndice.attrs.folio}" styleClass="items Container80 Fnone MarAuto Fs18"/>
-                  <p:outputLabel for="codigoDescargar" value="Código seguridad:" styleClass="Fs16 janal-display-none"/>
-                  <p:inputText placeholder="Código seguridad:" id="codigoDescargar" tabindex="3" value="#{kajoolAccesoIndice.attrs.codigo}" styleClass="items Container80 Fnone MarAuto Fs18"/>
-                  <p:commandButton id="aceptarDescargar" tabindex="3" value="Recuperar" onstart="return janal.partial('descargar');" oncomplete="janal.desbloquear();" actionListener="#{kajoolAccesoIndice.doRecoverTicket}" process="@this @(.items)" update="@(.refresh)"/>
-                  <p:spacer height="1"/>
-                </p:panelGrid>
-              </div>
-              <div id="tab_2" class="Container90 Fnone MarAuto TexAlCenter TabContent DispNone">
-                <p:panelGrid layout="grid" columns="1" styleClass="refresh">
-                  <p:spacer width="10%"/>
-                  <p:commandLink title="Click para descargar el documento" rendered="#{kajoolAccesoIndice.existsPdf}" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" process="@this tab_2">
-                    <p:fileDownload value="#{kajoolAccesoIndice.pdfFileDownload}"/>
-                    <i class="fa fa-file-pdf-o Fs30 janal-color-orange"></i><br/>
-                    <p:outputLabel value="#{kajoolAccesoIndice.attrs.pdfFile.nombre}"/>
-                  </p:commandLink>
-                  <p:spacer width="5%"/>
-                  <p:commandLink title="Click para descargar el documento" rendered="#{kajoolAccesoIndice.existsXml}" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" process="@this tab_2">
-                    <p:fileDownload value="#{kajoolAccesoIndice.xmlFileDownload}"/>
-                    <i class="fa fa-file-code-o Fs30 janal-color-orange"></i><br/>
-                    <p:outputLabel value="#{kajoolAccesoIndice.attrs.xmlFile.nombre}"/>
-                  </p:commandLink>
-                </p:panelGrid>					
-              </div>	
-            </div>          
-          </div>
-        </div>
-      </center>        
-    </div>  
-    <div id="janal-opcion-3" class="opciones janal-display-none">
-      <center style="margin: 30px">
-        <pe:fluidGrid id="catalogo" value="#{kajoolAccesoIndice.productos}" var="row" fitWidth="true" hasImages="true">
-          <pe:fluidGridItem>
-            <div class="container">
-              <div class="galeria">
-                <div class="galeria-header p-p-2">
-                  <span class="galeria-marca">#{row.producto.marca}</span><br/>
-                  <span class="galeria-nombre">#{row.producto.nombre}</span>
-                  <div style="float: right; margin-top: -33px;">
-                    <p:graphicImage url="#{kajoolAccesoIndice.brand}#{row.producto.logo}" width="200px" height="60px"/>
-                  </div>  
-                </div>  
-                <div class="galeria-list-item p-p-1">
-                  <div class="galeria-item-search">
-                    <a id="view#{row.producto.idProducto}" data-magnify="gallery" href="#{kajoolAccesoIndice.path}#{row.producto.archivo}" data-caption="#{row.producto.nombre}" data-group="icon-image" class="icon">
-                      <p:graphicImage url="#{kajoolAccesoIndice.path}#{row.producto.archivo}" style="cursor:zoom-in;"/>
-                    </a>  
-                  </div> 
-                  <div class="galeria-list-detail">
-                    <span class="janal-color-orange" style="font-size: 0.9rem; font-weight: bold;">ESPECIFICACIONES:</span><br/>
-                    <p:dataList var="item" value="#{row.caracteristicas}" styleClass="galeria-list" itemStyleClass="galeria-description" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}">
-                      #{kajoolAccesoIndice.doLetraCapital(item)}
-                    </p:dataList>
-                  </div>  
-                </div>
-                <div class="galeria-actions">
-                  <p:dataTable var="row" value="#{row.articulos}" paginator="false" rowKey="#{row.idProductoDetalle}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="filas" rowIndexVar="index" rowStyleClass="#{kajoolAccesoIndice.toColorPartida(row)}">
-                    <p:column headerText="Código" styleClass="janal-wid-20">
-                      <p:outputLabel value="#{row.codigo}"/>
-                    </p:column>   
-                    <p:column headerText="Descripción" styleClass="janal-column-left" style="white-space: nowrap;">
-                      <p:outputLabel value="#{row.descripcion}"/>
-                    </p:column>   
-                    <p:column headerText="Medida" styleClass="janal-wid-12 janal-column-center">
-                      <p:outputLabel value="#{row.medida}"/>
-                    </p:column>   
-                    <p:column headerText="$ Precio" styleClass="janal-wid-12 janal-column-right">
-                      <h:outputText value="#{row.precio}"/>
-                    </p:column>   
-                    <p:column headerText="Cliente" styleClass="janal-wid-12 janal-column-right" rendered="#{kajoolAccesoIndice.attrs.particular}">
-                      <h:outputText value="#{row.cliente}"/>
-                    </p:column>
-                  </p:dataTable>	
-                  <br/>
-                </div>  
-              </div>  
-            </div>
-          </pe:fluidGridItem>  
-        </pe:fluidGrid>              
-      </center>
-    </div>  
+    <p:menubar model="#{kajoolAccesoIndice.model}" styleClass="janal-wid-100-txt"/>
+    <p:poll listener="#{kajoolAccesoIndice.doLoadGallery}" update="galeria" interval="18000" autoStart="true" />
     <div id="janal-opcion-4" class="opciones">
-      <center style="margin: 10px">
-        <p:graphicImage library="janal" name="img/sistema/banner.png" width="95%" height="250px;"/>
-        <p:panelGrid columns="2" layout="grid" columnClasses="janal-wid-50, janal-wid-50">
-          <p:imageSwitch effect="shuffle" slideshowAuto="true" rendered="false">
-            <ui:repeat value="#{kajoolAccesoIndice.images}" var="image">
-              <p:graphicImage url="#{kajoolAccesoIndice.path}1/#{image}" style="cursor:zoom-in;"/>
-            </ui:repeat>
-          </p:imageSwitch>          
-        </p:panelGrid>
+      <center style="margin: 2px">
+        <p:imageSwitch id="galeria" effect="shuffle" slideshowAuto="true">
+          <ui:repeat value="#{kajoolAccesoIndice.images}" var="image">
+            <p:graphicImage styleClass="galeria" url="#{kajoolAccesoIndice.path}#{image}" width="1022px" height="575px"/>
+          </ui:repeat>
+        </p:imageSwitch>          
       </center>  
     </div>  
-    <div id="janal-opcion-5" class="opciones janal-display-none">
-      <center style="margin: 30px">
-        <p:spacer width="1"/>
-        <div id="login-box" class="janal-only-out-lines Container80 MaxWid500 Fnone MarAuto BordRad10">
-          <div class="Container100">
-            <div class="janal-content-center">
-              <div class="Container100 TexAlCenter Animated05 BoxSizeBorder TabBtn left TabBtnActiveLeft" role="3">
-                <div class="Container80 Fnone MarAuto"><i class="fa fa-cloud-download"></i>  Facturación</div>
-              </div>
-              <div class="Container50 TexAlCenter Animated05 BoxSizeBorder TabBtn right" role="4" style="display:none;">
-                <div id="downloadGenerar" class="Container80 Fnone MarAuto"><i class="fa fa-files-o"></i>  Datos del ticket</div>
-              </div>
-              <div id="tab_3" class="Container90 Fnone MarAuto TexAlCenter TabContent">										
-                <p:panelGrid layout="grid" columns="1">
-                  <p:spacer height="1"/>
-                  <p:outputLabel for="rfcGenerar" value="RFC:" styleClass="Fs16"/>
-                  <p:inputText placeholder="ej. ADRC760130L95" id="rfcGenerar" tabindex="1" value="#{kajoolAccesoIndice.attrs.rfc}" styleClass="items Container80 Fnone MarAuto Fs18"/>
-                  <p:outputLabel for="folioGenerar" value="No. ticket:" styleClass="Fs16"/>
-                  <p:inputText placeholder="ej. 2019000123" id="folioGenerar" tabindex="2" value="#{kajoolAccesoIndice.attrs.folio}" styleClass="items Container80 Fnone MarAuto Fs18"/>
-                  <p:outputLabel for="codigoGenerar" value="Código seguridad:" styleClass="Fs16 janal-display-none"/>
-                  <p:inputText placeholder="Código seguridad" id="codigoGenerar" tabindex="3" value="#{kajoolAccesoIndice.attrs.codigo}" styleClass="items Container80 Fnone MarAuto Fs18"/>
-                  <p:commandButton id="aceptarGenerar" tabindex="3" value="Generar" onstart="return janal.partial('generar');" oncomplete="janal.desbloquear();" actionListener="#{kajoolAccesoIndice.doProcessTicket}" process="@this @(.items)" update="@(.refresh)"/>					
-                  <p:spacer height="1"/>
-                </p:panelGrid>
-              </div>
-              <div id="tab_4" class="Container90 Fnone MarAuto TexAlCenter TabContent DispNone">
-                <p:panelGrid layout="grid" columns="1" styleClass="refresh">
-                  <p:spacer width="10%"/>
-                  <p:commandLink title="Click para descargar el documento" rendered="#{kajoolAccesoIndice.existsPdf}" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" process="@this tab_4">
-                    <p:fileDownload value="#{kajoolAccesoIndice.pdfFileDownload}"/>
-                    <i class="fa fa-file-pdf-o Fs30 janal-color-orange"></i><br/>
-                    <p:outputLabel value="#{kajoolAccesoIndice.attrs.pdfFile.nombre}"/>
-                  </p:commandLink>
-                  <p:spacer width="5%"/>
-                  <p:commandLink title="Click para descargar el documento" rendered="#{kajoolAccesoIndice.existsXml}" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" process="@this tab_4">
-                    <p:fileDownload value="#{kajoolAccesoIndice.xmlFileDownload}"/>
-                    <i class="fa fa-file-code-o Fs30 janal-color-orange"></i><br/>
-                    <p:outputLabel value="#{kajoolAccesoIndice.attrs.xmlFile.nombre}"/>
-                  </p:commandLink>
-                </p:panelGrid>					
-              </div>	
-            </div>          
-          </div>
-        </div>
-      </center>        
-    </div>  
-		<p:dialog modal="true" widgetVar="statusDialog" header="Descargando documento ..." draggable="false" closable="false" resizable="false">
-			<p:graphicImage library="janal" name="/img/sistema/ajaxloadingbar.gif" />
-		</p:dialog>		
 	</ui:define>
-	<ui:param name="componenteBloqueo" value="aceptarDescargar aceptarGenerar"/>
+	<ui:param name="componenteBloqueo" value="galeria"/>
 </ui:composition>

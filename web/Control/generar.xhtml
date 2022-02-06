@@ -42,15 +42,9 @@
     </style>
 	</ui:define>
 	<ui:define name="contenido">  	
-    <p:menubar model="#{kajoolControlGenerar.model}" styleClass="janal-wid-100-txt">
-      <f:facet name="options">
-        <p:inputText id="buscar" value="#{kajoolControlGenerar.attrs.codigo}" size="#{util.isMobile? 10: 25}" style="margin-right:10px" placeholder="Buscar"/>
-        <p:commandButton title="Buscar producto" actionListener="#{kajoolControlGenerar.doSearchItem()}" process="@this buscar" icon="fa fa-search" onstart="showOpcion(3); return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-        <p:commandButton title="Ingresar" action="/acceso?faces-redirect=true" icon="fa fa-user"/>
-      </f:facet> 
-    </p:menubar>
+    <p:menubar model="#{kajoolControlGenerar.model}" styleClass="janal-wid-100-txt"/>
     <div id="janal-opcion-5" class="opciones">
-      <center style="margin: 30px">
+      <center style="margin: 2px">
         <p:spacer width="1"/>
         <div id="login-box" class="janal-only-out-lines Container80 MaxWid500 Fnone MarAuto BordRad10">
           <div class="Container100">
