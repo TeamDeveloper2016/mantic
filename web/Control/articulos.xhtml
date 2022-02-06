@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+  xmlns:pe="http://primefaces.org/ui/extensions"
+	template="/WEB-INF/plantillas/portada.xhtml">
+	<ui:define name="librerias">
+		<script type="text/javascript">
+			Janal.Control.errors = 2;
+			Janal.Control.fields = {
+			};
+			//<![CDATA[
+			$(document).ready(function() {
+        $('input.janal-codigo-buscar').val('#{kajoolControlArticulos.attrs.codigo}');
+			});
+			//]]>
+		</script> 
+		<style type="text/css">
+    </style>
+	</ui:define>
+	<ui:define name="contenido">  	
+    <p:spacer height="2px"/>
+    <pe:remoteCommand name="busquedaArticulos" process="@this" actionListener="#{kajoolControlArticulos.doLoadArticulos}" update="tabla">  
+      <pe:methodSignature parameters="java.lang.String"/>  
+      <pe:methodParam name="codigo"/>  
+    </pe:remoteCommand>
+    <div id="janal-opcion-4" class="opciones">
+      <center style="margin-left: 5%; margin-right: 5%;">
+        <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{kajoolControlArticulos.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{kajoolControlArticulos.lazyModel.rowCount gt kajoolControlArticulos.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" style="display: #{empty(kajoolControlArticulos.lazyModel)? 'none': ''}">
+          <p:column class="janal-column-left MarAuto Responsive janal-wid-3">
+            <f:facet name="header">
+              <h:outputText value="No"/>
+            </f:facet>
+            <h:outputText value="#{index+ 1}.-"/>
+          </p:column>														
+          <p:column class="janal-column-left MarAuto Responsive janal-wid-12" sortBy="#{row.propio}">
+            <f:facet name="header">
+              <h:outputText value="Código"/>
+            </f:facet>
+            <h:outputText value="#{row['propio']}"/>
+          </p:column>														
+          <p:column class="janal-column-left MarAuto Responsive janal-wid-30" sortBy="#{row.nombre}">
+            <f:facet name="header">
+              <h:outputText value="Nombre"/>
+            </f:facet>
+            <h:outputText value="#{row['nombre']}"/>
+          </p:column>														
+          <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.menudeo}">
+            <f:facet name="header">
+              <h:outputText value="Menudeo"/>
+            </f:facet>
+            <h:outputText value="#{row['menudeo']}"/>
+          </p:column>					
+          <p:column headerText="Imagen" styleClass="janal-column-center janal-wid-5">
+            <a id="tabla:#{index}:source-image" class="janal-control-imagen" data-magnify="gallery" data-caption="#{row['nombre']}" data-group="icon-image" href="#{kajoolControlArticulos.pathImage}#{row.archivo.toString}" title="Ver imagen" style="display: #{row.idImagen.toLong eq 0? 'none': ''}">
+              <p:graphicImage url="#{kajoolControlArticulos.pathImage}#{row.archivo.toString}" width="50" height="28" style="cursor:zoom-in;"/>
+            </a>	
+          </p:column>   
+          <p:column headerText="Destalle" styleClass="janal-column-center janal-wid-3">
+            <p:commandButton icon="fa fa-search" process="@this" action="#{kajoolControlArticulos.doLoadDetalle}" title="Consultar" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();">
+              <f:setPropertyActionListener value="#{row}" target="#{kajoolControlArticulos.attrs.seleccionado}" />
+            </p:commandButton>
+          </p:column>   
+          <f:facet name="footer">
+            Total [#{kajoolControlArticulos.lazyModel== null? 0: kajoolControlArticulos.lazyModel.rowCount}] registros
+          </f:facet>
+        </p:dataTable>        
+      </center>  
+    </div>  
+	</ui:define>
+	<ui:param name="componenteBloqueo" value="tabla"/>
+	<ui:param name="showSearchButton"  value="active"/>
+</ui:composition>

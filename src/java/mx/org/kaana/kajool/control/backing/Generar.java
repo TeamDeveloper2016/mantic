@@ -54,6 +54,10 @@ public class Generar extends BaseMenu implements Serializable {
     this.toLoadCfdis();
   }
   
+  @Override
+  public void doLoad() {
+  }
+  
   public void doProcessTicket() {
 		Map<String, Object> params= new HashMap<>();
     Encriptar encriptar       = new Encriptar();

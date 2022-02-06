@@ -31,6 +31,10 @@ public class Descargar extends BaseMenu implements Serializable {
   private static final Log LOG = LogFactory.getLog(Descargar.class);
   private static final long serialVersionUID = 5323749709626263802L;
   
+  @Override
+  public void doLoad() {
+  }
+  
   public void doRecoverTicket() {
 		Map<String, Object> params= new HashMap<>();
     Encriptar encriptar       = new Encriptar();

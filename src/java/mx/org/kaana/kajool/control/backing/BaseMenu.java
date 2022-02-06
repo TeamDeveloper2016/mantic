@@ -6,7 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
+import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
+import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -34,7 +36,9 @@ import org.primefaces.model.menu.MenuModel;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public abstract class BaseMenu extends IBaseImportar implements Serializable {
+@ViewScoped
+@Named(value = "kajoolControlBaseMenu")
+public class BaseMenu extends IBaseImportar implements Serializable {
 
   private static final Log LOG = LogFactory.getLog(BaseMenu.class);
   private static final long serialVersionUID = 7498799884513473226L;
@@ -179,12 +183,8 @@ public abstract class BaseMenu extends IBaseImportar implements Serializable {
 		this.toViewFile(((Entity)this.attrs.get("xmlFile")).toString("alias"));
 	}  
 
-  public void doSearchItem() {
-    LOG.info(this.attrs.get("codigo"));
-  } 
-
   public void doSearchMain(String codigo) {
-    LOG.info(codigo);
+    JsfBase.setFlashAttribute("codigo", codigo);
   }
   
 }

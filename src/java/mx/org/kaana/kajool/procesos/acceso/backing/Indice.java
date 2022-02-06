@@ -1,18 +1,13 @@
 package mx.org.kaana.kajool.procesos.acceso.backing;
 
-import java.io.File;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.control.backing.BaseMenu;
-import mx.org.kaana.kajool.control.backing.Inicio;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import mx.org.kaana.kajool.control.bean.Portal;
 import mx.org.kaana.libs.recurso.Configuracion;
-import mx.org.kaana.libs.reportes.FileSearch;
 
 /**
  * @company KAANA
@@ -25,11 +20,9 @@ import mx.org.kaana.libs.reportes.FileSearch;
 @Named(value = "kajoolAccesoIndice")
 public class Indice extends BaseMenu implements Serializable {
 
-  private static final Log LOG = LogFactory.getLog(Inicio.class);
   private static final long serialVersionUID = 5323749709626263801L;
   
   private String path;
-  private List<String> images;
 
 	public String getPath() {
     return path;
@@ -40,7 +33,7 @@ public class Indice extends BaseMenu implements Serializable {
   }
 
   public List<String> getImages() {
-    return images;
+    return Portal.getInstance().getImages();
   }
   
   @Override
@@ -49,23 +42,14 @@ public class Indice extends BaseMenu implements Serializable {
     super.init();
     String dns = Configuracion.getInstance().getPropiedadServidor("sistema.dns");
     this.path  = dns.substring(0, dns.lastIndexOf("/")+ 1).concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/portal/");      
-    this.doLoadGallery();
+  }
+  
+  @Override
+  public void doLoad() {
   }
   
   public void doLoadGallery() {
-    try {
-      this.images= new ArrayList<>();
-      String portal= Configuracion.getInstance().getPropiedadSistemaServidor("portal");
-      FileSearch fileSearch = new FileSearch();
-      fileSearch.searchDirectory(new File(portal), "*");
-      if(fileSearch.getResult().size()> 0)
-        for (String matched: fileSearch.getResult()) {
-          String name= matched.substring((matched.lastIndexOf("/")< 0? matched.lastIndexOf("\\"): matched.lastIndexOf("/"))+ 1);
-          this.images.add(name);
-        } // for 
-    } // try
-    catch (Exception e) {
-    } // catch	
+    Portal.getInstance().doLoad();
   }
  
 }

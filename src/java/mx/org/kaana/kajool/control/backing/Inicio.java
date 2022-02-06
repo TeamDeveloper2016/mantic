@@ -179,7 +179,6 @@ public class Inicio extends BaseMenu implements Serializable {
     } // finally   
   }
   
-  @Override
   public void doSearchItem() {
     this.doOpcion(3);
     Map<String, Object> params= new HashMap<>();

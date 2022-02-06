@@ -20,11 +20,17 @@
         busquedaPrincipal($('#janal-buscar-codigo').val());
       } //if
     }
+    
+    function toLookForCodigo() {
+      if($('#janal-buscar-codigo').val().trim().length> 1) {
+        busquedaArticulos($('#janal-buscar-codigo').val());
+      } //if
+    }
   </script>
 	<style type="text/css">
     .janal-auto-margin{margin: auto;}
-    .janal-codigo-buscar.ui-inputfield.ui-state-hover, .ui-inputfield.ui-state-focus{font-size: 17px; border:solid 1px blue; color:blue !important; border-right:solid 8px blue;}
-    .janal-codigo-buscar.ui-inputfield {font-size: 17px; border:solid 1px blue; color:blue !important; border-right:solid 8px blue;}
+    .janal-codigo-buscar.ui-inputfield.ui-state-hover, .ui-inputfield.ui-state-focus{font-size: 17px; border:solid 1px blue; border-bottom: solid 1px blue; color:blue !important;}
+    .janal-codigo-buscar.ui-inputfield {font-size: 17px; border:solid 1px blue; border-bottom:solid 1px blue; color:blue !important;}
   </style>  
   <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
     <div class="ui-g ui-grid-row janal-grid-row #{util.isMobile? 'janal-display-none': ''}">
@@ -53,9 +59,13 @@
 			<div class="ui-g-12 janal-content-center janal-column-center">
         <p:panelGrid columns="3" styleClass="janal-wid-100" columnClasses="janal-fix-20 janal-column-left, janal-fix-60 janal-column-center janal-auto-margin, janal-fix-20 janal-column-center janal-auto-margin">
           <p:graphicImage library="janal" name="img/sistema/logo-portal.png" width="147px" height="65px" styleClass="#{util.isMobile? 'janal-display-none': ''}"/>
-          <p:inputText id="janal-buscar-codigo" placeholder="Buscar articulo ..." styleClass="janal-codigo-buscar janal-wid-80 janal-column-left">
-            <i class='fa fa-search janal-font-bold janal-color-blue' style="position: relative; right: -80%; cursor: pointer;" onclick="toSearchCodigo();" title="Clic para buscar"></i>
-          </p:inputText>  
+          <p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-97, janal-wid-col-38 janal-column-center">
+            <p:inputText id="janal-buscar-codigo" placeholder="Nombre o código del articulo ..." styleClass="janal-codigo-buscar janal-wid-100-txt janal-column-left"/>
+            <p:panelGrid columns="1" styleClass="janal-wid-100">
+              <p:commandButton type="button" title="Buscar producto" onclick="toSearchCodigo();" icon="fa fa-search" styleClass="janal-codigo-global" style="margin-top: 5px;"/>
+              <p:commandButton type="button" title="Buscar producto" onclick="toLookForCodigo();" icon="fa fa-search" styleClass="janal-codigo-individual" style="margin-top: -4px;"/>
+            </p:panelGrid>  
+          </p:panelGrid>  
           <p:panelGrid columns="1" styleClass="janal-wid-100">
             <p:outputLabel styleClass="janal-etapa #{util.isMobile? 'janal-display-none': ''} lg-pantalla" value="#{kajoolUtilAplicacion.servidorEspecial}"/>
             <p:outputLabel styleClass="janal-etapa #{util.isMobile? 'janal-display-none': ''} xs-pantalla Fs14" value="#{kajoolUtilAplicacion.servidorEspecial}"/>
