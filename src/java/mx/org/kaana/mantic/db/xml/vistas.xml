@@ -1207,7 +1207,7 @@
 				  tr_mantic_cliente_tipo_contacto on tc_mantic_tipos_contactos.id_tipo_contacto= tr_mantic_cliente_tipo_contacto.id_tipo_contacto
 				where  
 				  tr_mantic_cliente_tipo_contacto.id_cliente= {idCliente}
-				  and tc_mantic_tipos_contactos.id_tipo_contacto= {idTipoContacto}	
+				  and tc_mantic_tipos_contactos.id_tipo_contacto in ({idTipoContacto})
 			</select>
 			<select id="contactop">
        select
@@ -3288,6 +3288,8 @@
 			</select>
 		</unit>
 		<unit id="VistaVentasDto">
+			<select id="generar">
+      </select>
 			<select id="pagosVenta">
 				select 					
 					tc_mantic_tipos_medios_pagos.id_tipo_medio_pago as id_key,

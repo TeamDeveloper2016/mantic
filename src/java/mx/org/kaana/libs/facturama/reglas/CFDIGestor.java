@@ -296,7 +296,7 @@ public class CFDIGestor implements Serializable {
 		return regresar;
 	} // toClienteFactura
 	
-	public List<ArticuloFactura> toDetalleCfdiFicticia(Session sesion) throws Exception{
+	public List<ArticuloFactura> toDetalleCfdiFicticia(Session sesion) throws Exception {
 		List<ArticuloFactura> regresar= null;
 		Map<String, Object>params     = null;
 		try {

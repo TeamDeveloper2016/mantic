@@ -39,6 +39,8 @@ public class Fecha {
   public static final int DIA_FECHA_HORA = 21;
   public static final int DIA_FECHA_HORA_CORTA = 22;
   public static final int FECHA_NOMBRE_MES_CORTO = 24;
+  public static final int CODIGO_SEGURIDAD = 25;
+  public static final int FECHA_NUMERO_MES = 26;
 
 	protected Fecha (){
 	}
@@ -180,6 +182,12 @@ public class Fecha {
             fecha.substring(0, 4)).concat(" ").concat(fecha.substring(8,10)).concat(":").concat(
             fecha.substring(10,12));
         break;
+      case CODIGO_SEGURIDAD: // ddhhmmss  03122633 202109121448580
+        fecha = fecha.substring(6, 8).concat(fecha.substring(8,10)).concat(fecha.substring(10,12)).concat(fecha.substring(12,14));
+        break;
+      case FECHA_NUMERO_MES: // MM  03
+        fecha = fecha.substring(4, 6);
+        break;
       } // switch
     }
     else
@@ -234,6 +242,10 @@ public class Fecha {
 
   public static String getHoyEstandar() {
     return formatear(FECHA_ESTANDAR);
+  } // getHoy
+
+  public static String getHoyMes() {
+    return formatear(FECHA_NUMERO_MES);
   } // getHoy
 
   public static String getHoyExtendido() {

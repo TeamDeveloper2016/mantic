@@ -12,6 +12,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import org.apache.commons.logging.Log;
@@ -20,11 +21,17 @@ import mx.org.kaana.kajool.procesos.mantenimiento.temas.backing.TemaActivo;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Encriptar;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.formato.Error;
+import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
+import mx.org.kaana.mantic.enums.EEstatusFicticias;
+import mx.org.kaana.mantic.facturas.beans.FacturaFicticia;
+import mx.org.kaana.mantic.facturas.reglas.Transaccion;
 import mx.org.kaana.mantic.inventarios.comun.IBaseImportar;
 import mx.org.kaana.mantic.productos.beans.Caracteristica;
 import mx.org.kaana.mantic.productos.beans.Partida;
@@ -171,11 +178,19 @@ public class Indice extends IBaseImportar implements Serializable {
         } // for
       } // if  
       this.model.addElement(sub);
-      item = new DefaultMenuItem("Facturación");
-      item.setIcon("fa fa-qrcode");
+      sub= new DefaultSubMenu("Facturación");
+      sub.setIcon("fa fa-qrcode");
+      item = new DefaultMenuItem("Desargar");
+      item.setIcon("fa fa-download");
       item.setCommand("#{kajoolAccesoIndice.doOpcion(2)}");
       item.setOncomplete("showOpcion(2);");
-      this.model.addElement(item);      
+      sub.addElement(item);      
+      item = new DefaultMenuItem("Generar");
+      item.setIcon("fa fa-print");
+      // item.setUrl("Control/generar.jsf".concat(Constantes.REDIRECIONAR));
+      item.setCommand("Control/generar".concat(Constantes.REDIRECIONAR));
+      sub.addElement(item);      
+      this.model.addElement(sub);      
       
       this.images = new ArrayList<>();
       this.images.add("IMG_20190723010006103_655.JPG");
@@ -195,24 +210,89 @@ public class Indice extends IBaseImportar implements Serializable {
     } // finally
 	}
   
+  public void doProcessTicket() {
+		Map<String, Object> params= new HashMap<>();
+    Encriptar encriptar  = new Encriptar();
+		try {
+      String codigo= encriptar.desencriptar((String)this.attrs.get("codigo"));
+      params.put("codigo", this.attrs.get("codigo"));
+      params.put("rfc", this.attrs.get("rfc"));
+      params.put("folio", this.attrs.get("folio"));
+      FacturaFicticia venta= (FacturaFicticia)DaoFactory.getInstance().toEntity(FacturaFicticia.class, "TcManticVentasDto", "codigo", params);
+      if(venta!= null) {
+        if(Objects.equals(venta.getIdFactura(), 2L) && this.toCheckDate(codigo)) {
+          TcManticClientesDto cliente= (TcManticClientesDto)DaoFactory.getInstance().toEntity(TcManticClientesDto.class, "TcManticClientesDto", "rfc", params);
+          if(cliente!= null && !Cadena.isVacio(cliente.getIdFacturama())) {
+            if(Objects.equals(venta.getIdFicticiaEstatus(), EEstatusFicticias.ABIERTA.getIdEstatusFicticia())) {
+              venta.setIdCliente(cliente.getIdCliente());
+              Transaccion transaccion = new Transaccion(venta, "ESTA FACTURA SE GENERO EN LINEA");
+              if(transaccion.ejecutar(EAccion.TRANSFORMACION))
+                this.toLoadDocumentos("Generar", "3", "4");
+              else
+                JsfBase.addAlert("Error", "Ocurrio un error al intentar facturar !", ETipoMensaje.ERROR);
+            } // if
+            else 
+             JsfBase.addAlert("Error", "Este ticket no puede ser facturado !", ETipoMensaje.ERROR);
+          } // if
+          else 
+            JsfBase.addAlert("Error", "Este cliente no puede facturar !", ETipoMensaje.ERROR);
+        } // if
+        else 
+          if(Objects.equals(venta.getIdFactura(), 1L)) {
+            JsfBase.addAlert("Error", "Este ticket ya fue facturado !", ETipoMensaje.ERROR);
+            this.toLoadDocumentos("Generar", "3", "4");
+          } // if
+          else
+            JsfBase.addAlert("Error", "Este ticket ya expiro !", ETipoMensaje.ERROR);
+      } // if
+      else 
+        JsfBase.addAlert("Error", "Los datos capturados son incorrectos !", ETipoMensaje.ERROR);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		this.attrs.put("codigoDescargar", "");
+  }
+  
+  private void toLoadDocumentos(String proceso, String ocultar, String mostrar) {
+		Map<String, Object> params= new HashMap<>();
+		try {
+      params.put("rfc", this.attrs.get("rfc"));
+      params.put("folio", this.attrs.get("folio"));
+      params.put("idTipoArchivo", "2");
+      this.attrs.put("pdfFile", DaoFactory.getInstance().toEntity("VistaFicticiasDto", "descargas", params)); 			
+      params.put("idTipoArchivo", "1");
+      this.attrs.put("xmlFile", DaoFactory.getInstance().toEntity("VistaFicticiasDto", "descargas", params)); 			
+      if(this.attrs.get("xmlFile")== null || this.attrs.get("pdfFile")== null) 
+        JsfBase.addAlert("Error", "La factura no existe con los datos propocionados !", ETipoMensaje.ERROR);
+      else 
+        UIBackingUtilities.execute("$(\"div[role='"+ ocultar+ "']\").removeClass('Container100');$(\"div[role]\").addClass('Container50');$(\"div[role='"+ mostrar+ "']\").show();$('#download"+ proceso+ "').click();");
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		this.attrs.put("codigo".concat(proceso), "");
+  }
+  
+  private Boolean toCheckDate(String codigo) {
+    return codigo!= null && codigo.length()> 2 && Objects.equals(codigo.substring(0, 2), Fecha.getHoyMes());
+  }
+  
   public void doRecoverTicket() {
 		Map<String, Object> params= new HashMap<>();
 		try {
 			String codigo= this.toDecodeHash((String)this.attrs.get("codigo"));
 			String encode= this.attrs.get("encode")== null? "": (String)this.attrs.get("encode");
-			if(encode.equals(codigo)) {
-				params.put("rfc", this.attrs.get("rfc"));
-				params.put("folio", this.attrs.get("folio"));
-				params.put("idTipoArchivo", "2");
-				this.attrs.put("pdfFile", DaoFactory.getInstance().toEntity("VistaFicticiasDto", "descargas", params)); 			
-				params.put("idTipoArchivo", "1");
-				this.attrs.put("xmlFile", DaoFactory.getInstance().toEntity("VistaFicticiasDto", "descargas", params)); 			
-				if(this.attrs.get("xmlFile")== null || this.attrs.get("pdfFile")== null) {
-					JsfBase.addAlert("Error", "La factura no existe con los datos propocionados !", ETipoMensaje.ERROR);
-				}	 // if
-				else 
-					UIBackingUtilities.execute("$(\"div[role='1']\").removeClass('Container100');$(\"div[role]\").addClass('Container50');$(\"div[role='2']\").show();$('#download').click();");
-			} // if
+			if(encode.equals(codigo)) 
+        this.toLoadDocumentos("Descargar", "1", "2");
 			else 
 				JsfBase.addAlert("Error", "El código de verificación, esta incorrecto !", ETipoMensaje.ERROR);
 		} // try
@@ -223,7 +303,7 @@ public class Indice extends IBaseImportar implements Serializable {
 		finally {
 			Methods.clean(params);
 		} // finally
-		this.attrs.put("codigo", "");
+		this.attrs.put("codigoDescargar", "");
   } 
 
 	

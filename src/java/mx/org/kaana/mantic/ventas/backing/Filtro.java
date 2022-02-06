@@ -21,6 +21,7 @@ import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Encriptar;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Periodo;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -45,6 +46,7 @@ import mx.org.kaana.mantic.db.dto.TcManticVentasDto;
 import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.facturas.beans.Correo;
+import mx.org.kaana.mantic.ventas.beans.TicketVenta;
 import mx.org.kaana.mantic.ventas.comun.IBaseTicket;
 import mx.org.kaana.mantic.ventas.reglas.MotorBusqueda;
 import org.apache.commons.logging.Log;
@@ -646,7 +648,10 @@ public class Filtro extends IBaseTicket implements Serializable {
 			parametros.put("REPORTE_EMPRESA", JsfBase.getAutentifica().getEmpresa().getNombreCorto());
 		  parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
 			parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
-			parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			
+			parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));		
+      Encriptar encriptado= new Encriptar();
+      String codigo= encriptado.encriptar(Fecha.formatear(Fecha.CODIGO_SEGURIDAD, ((Entity)this.attrs.get("seleccionado")).toTimestamp("registro")));
+			parametros.put("REPORTE_CODIGO_SEGURIDAD", codigo);			
 			if(email) { 
 				this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));		
         File file= new File(JsfBase.getRealPath(this.reporte.getNombre()));

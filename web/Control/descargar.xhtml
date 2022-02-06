@@ -1,0 +1,96 @@
+<?xml version='1.0' encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+  xmlns:pe="http://primefaces.org/ui/extensions"
+	template="/WEB-INF/plantillas/portada.xhtml">
+	<ui:define name="librerias">
+		<script type="text/javascript">
+			Janal.Control.errors = 2;
+			Janal.Control.fields = {
+				rfc      : {validaciones: 'requerido|longitud({\"min\":10, \"max\":13})', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'generar'},
+				folio    : {validaciones: 'requerido|igual-caracteres({\"cuantos\":10})|entero', mascara: 'libre', grupo: 'generar'},
+				seguridad: {validaciones: 'requerido|igual-caracteres({\"cuantos\":18})|alfanumerico', mascara: 'libre', grupo: 'generar'}
+			};
+			//<![CDATA[
+			function start() {
+        PF('statusDialog').show();
+      };
+ 
+      function stop() {
+        PF('statusDialog').hide();
+      };
+			
+			$(document).ready(function() {
+				
+			});
+			//]]>
+		</script> 
+		<style type="text/css">
+    </style>
+	</ui:define>
+	<ui:define name="contenido">  	
+    <p:menubar model="#{kajoolControlDescargar.model}" styleClass="janal-wid-100-txt">
+      <f:facet name="options">
+        <p:inputText id="buscar" value="#{kajoolControlDescargar.attrs.codigo}" size="#{util.isMobile? 10: 25}" style="margin-right:10px" placeholder="Buscar"/>
+        <p:commandButton title="Buscar producto" actionListener="#{kajoolControlDescargar.doSearchItem()}" process="@this buscar" icon="fa fa-search" onstart="showOpcion(3); return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+        <p:commandButton title="Ingresar" action="/acceso?faces-redirect=true" icon="fa fa-user"/>
+      </f:facet> 
+    </p:menubar>
+    <div id="janal-opcion-5" class="opciones">
+      <center style="margin: 30px">
+        <p:spacer width="1"/>
+        <div id="login-box" class="janal-only-out-lines Container80 MaxWid500 Fnone MarAuto BordRad10">
+          <div class="Container100">
+            <div class="janal-content-center">
+              <div class="Container100 TexAlCenter Animated05 BoxSizeBorder TabBtn left TabBtnActiveLeft" role="1">
+                <div class="Container80 Fnone MarAuto"><i class="fa fa-cloud-download"></i>  Facturación</div>
+              </div>
+              <div class="Container50 TexAlCenter Animated05 BoxSizeBorder TabBtn right" role="2" style="display:none;">
+                <div id="downloadGenerar" class="Container80 Fnone MarAuto"><i class="fa fa-files-o"></i>  Datos del ticket</div>
+              </div>
+              <div id="tab_3" class="Container90 Fnone MarAuto TexAlCenter TabContent">										
+                <p:panelGrid layout="grid" columns="1">
+                  <p:outputLabel for="rfc" value="RFC:" styleClass="Fs16"/>
+                  <p:inputText placeholder="ej. ADRC760130L95" id="rfc" maxlength="13" tabindex="1" value="#{kajoolControlDescargar.attrs.rfc}" styleClass="items Container80 Fnone MarAuto Fs18"/>
+                  <p:outputLabel for="folio" value="No. ticket:" styleClass="Fs16"/>
+                  <p:inputText placeholder="ej. 2019000123" id="folio" maxlength="10" tabindex="2" value="#{kajoolControlDescargar.attrs.folio}" styleClass="items Container80 Fnone MarAuto Fs18"/>
+                  <p:outputLabel for="seguridad" value="Código seguridad:" styleClass="Fs16 janal-display-none"/>
+                  <p:inputText placeholder="Código seguridad" id="seguridad" maxlength="18" tabindex="3" value="#{kajoolControlDescargar.attrs.seguridad}" styleClass="items Container80 Fnone MarAuto Fs18"/>
+                  <p:spacer height="1"/>
+                  <p:commandButton id="aceptar" tabindex="3" value="Descargar" onstart="return janal.partial('generar');" oncomplete="janal.desbloquear();" actionListener="#{kajoolControlDescargar.doRecoverTicket}" process="@this @(.items)" update="@(.refresh)"/>					
+                  <p:spacer height="1"/>
+                  <p:outputLabel value="Si el ticket &lt;span class='janal-color-black janal-font-bold'&gt;NO tiene&lt;/span&gt; código de seguridad, digite 000000000000000000" escape="false"/>
+                </p:panelGrid>
+              </div>
+              <div id="tab_4" class="Container90 Fnone MarAuto TexAlCenter TabContent DispNone">
+                <p:panelGrid layout="grid" columns="1" styleClass="refresh">
+                  <p:spacer width="10%"/>
+                  <p:commandLink title="Click para descargar el documento" rendered="#{kajoolControlDescargar.existsPdf}" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" process="@this tab_4">
+                    <p:fileDownload value="#{kajoolControlDescargar.pdfFileDownload}"/>
+                    <i class="fa fa-file-pdf-o Fs30 janal-color-orange"></i><br/>
+                    <p:outputLabel value="#{kajoolControlDescargar.attrs.pdfFile.nombre}"/>
+                  </p:commandLink>
+                  <p:spacer width="5%"/>
+                  <p:commandLink title="Click para descargar el documento" rendered="#{kajoolControlDescargar.existsXml}" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" process="@this tab_4">
+                    <p:fileDownload value="#{kajoolControlDescargar.xmlFileDownload}"/>
+                    <i class="fa fa-file-code-o Fs30 janal-color-orange"></i><br/>
+                    <p:outputLabel value="#{kajoolControlDescargar.attrs.xmlFile.nombre}"/>
+                  </p:commandLink>
+                </p:panelGrid>					
+              </div>	
+            </div>          
+          </div>
+        </div>
+      </center>        
+    </div>  
+		<p:dialog modal="true" widgetVar="statusDialog" header="Descargando documento ..." draggable="false" closable="false" resizable="false">
+			<p:graphicImage library="janal" name="/img/sistema/ajaxloadingbar.gif" />
+		</p:dialog>		
+	</ui:define>
+	<ui:param name="componenteBloqueo" value="aceptar"/>
+</ui:composition>

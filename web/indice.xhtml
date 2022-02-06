@@ -9,15 +9,15 @@
   xmlns:pe="http://primefaces.org/ui/extensions"
 	template="/WEB-INF/plantillas/ingreso.xhtml">
 	<ui:define name="librerias">
-		<h:outputStylesheet library="janal" name="css/jquery.realperson.css"/>
-		<h:outputScript library="janal" name="js/jquery.plugin.min.js"/>
-		<h:outputScript library="janal" name="js/jquery.realperson.min.js"/>
 		<script type="text/javascript">
 			Janal.Control.errors = 2;
 			Janal.Control.fields = {
-				rfc: {validaciones: 'requerido', mascara: 'libre'},
-				folio: {validaciones: 'requerido', mascara: 'libre'},
-				codigo: {validaciones: 'requerido', mascara: 'libre'}
+				rfcDescargar   : {validaciones: 'requerido|longitud({\"min\":10, \"max\":13})', mascara: 'libre', grupo: 'descargar'},
+				folioDescargar : {validaciones: 'requerido|longitud({\"min\":9, \"max\":10})', mascara: 'libre', grupo: 'descargar'},
+				codigoDescargar: {validaciones: 'requerido|longitud({\"min\":18, \"max\":22})', mascara: 'libre', grupo: 'descargar'},
+				rfcGenerar     : {validaciones: 'requerido|longitud({\"min\":10, \"max\":13})', mascara: 'libre', grupo: 'generar'},
+				folioGenerar   : {validaciones: 'requerido|longitud({\"min\":9, \"max\":10})', mascara: 'libre', grupo: 'generar'},
+				codigoGenerar  : {validaciones: 'requerido|longitud({\"min\":18, \"max\":22})', mascara: 'libre', grupo: 'generar'}
 			};
 			//<![CDATA[
 			function start() {
@@ -29,7 +29,7 @@
       };
 			
 			$(document).ready(function() {
-				$('#codigo').realperson({length: 5, regenerate: 'Clic para cambiar', includeNumbers: true, chars: $.realperson.alphanumeric});
+				
 			});
       
       function showOpcion(opcion) {
@@ -229,7 +229,7 @@
     </div>
     <div id="janal-opcion-2" class="opciones janal-display-none">
       <center style="margin: 30px">
-        <p:spacer id="temporal" width="1"/>
+        <p:spacer width="1"/>
         <div id="login-box" class="janal-only-out-lines Container80 MaxWid500 Fnone MarAuto BordRad10">
           <div class="Container100">
             <div class="janal-content-center">
@@ -237,21 +237,20 @@
                 <div class="Container80 Fnone MarAuto"><i class="fa fa-cloud-download"></i>  Facturación</div>
               </div>
               <div class="Container50 TexAlCenter Animated05 BoxSizeBorder TabBtn right" role="2" style="display:none;">
-                <div id="download" class="Container80 Fnone MarAuto"><i class="fa fa-files-o"></i>  Descargar</div>
+                <div id="downloadDescargar" class="Container80 Fnone MarAuto"><i class="fa fa-files-o"></i>  Descargar</div>
               </div>
               <div id="tab_1" class="Container90 Fnone MarAuto TexAlCenter TabContent">										
-                <p:panelGrid layout="grid" columns="1" id="gridCuenta">
+                <p:panelGrid layout="grid" columns="1">
                   <p:spacer height="1"/>
-                  <p:outputLabel for="rfc" value="RFC:" styleClass="Fs16"/>
-                  <p:inputText placeholder="ej. ADRC760130L95" id="rfc" tabindex="1" value="#{kajoolAccesoIndice.attrs.rfc}" styleClass="items Container80 Fnone MarAuto Fs18"/>
-                  <p:outputLabel for="folio" value="No. ticket:" styleClass="Fs16"/>
-                  <p:inputText placeholder="ej. 2019000123" id="folio" tabindex="2" value="#{kajoolAccesoIndice.attrs.folio}" styleClass="items Container80 Fnone MarAuto Fs18"/>
-                  <p:outputLabel for="codigo" value="Código:" styleClass="Fs16" style="display: none;"/>
-                  <p:inputText placeholder="Dijite código" id="codigo" tabindex="3" value="#{kajoolAccesoIndice.attrs.codigo}" styleClass="items Container80 Fnone MarAuto Fs18"/>
-                  <p:commandButton id="aceptar" tabindex="3" value="Recuperar" onstart="$('#encode').val($('#codigo').realperson('getHash')); return janal.execute();" oncomplete="$('#codigo').realperson({length: 5, regenerate: 'Clic para cambiar', includeNumbers: true, chars: $.realperson.alphanumeric});" actionListener="#{kajoolAccesoIndice.doRecoverTicket}" process="@this @(.items)" update="codigo @(.refresh)"/>					
+                  <p:outputLabel for="rfcDescargar" value="RFC:" styleClass="Fs16"/>
+                  <p:inputText placeholder="ej. ADRC760130L95" id="rfcDescargar" tabindex="1" value="#{kajoolAccesoIndice.attrs.rfc}" styleClass="items Container80 Fnone MarAuto Fs18"/>
+                  <p:outputLabel for="folioDescargar" value="No. ticket:" styleClass="Fs16"/>
+                  <p:inputText placeholder="ej. 2019000123" id="folioDescargar" tabindex="2" value="#{kajoolAccesoIndice.attrs.folio}" styleClass="items Container80 Fnone MarAuto Fs18"/>
+                  <p:outputLabel for="codigoDescargar" value="Código seguridad:" styleClass="Fs16 janal-display-none"/>
+                  <p:inputText placeholder="Código seguridad:" id="codigoDescargar" tabindex="3" value="#{kajoolAccesoIndice.attrs.codigo}" styleClass="items Container80 Fnone MarAuto Fs18"/>
+                  <p:commandButton id="aceptarDescargar" tabindex="3" value="Recuperar" onstart="return janal.partial('descargar');" oncomplete="janal.desbloquear();" actionListener="#{kajoolAccesoIndice.doRecoverTicket}" process="@this @(.items)" update="@(.refresh)"/>
                   <p:spacer height="1"/>
                 </p:panelGrid>
-                <p:inputText id="encode" value="#{kajoolAccesoIndice.attrs.encode}" styleClass="items" style="display: none;"/>
               </div>
               <div id="tab_2" class="Container90 Fnone MarAuto TexAlCenter TabContent DispNone">
                 <p:panelGrid layout="grid" columns="1" styleClass="refresh">
@@ -328,9 +327,9 @@
     </div>  
     <div id="janal-opcion-4" class="opciones">
       <center style="margin: 10px">
-        <p:graphicImage library="janal" name="img/sistema/banner.png" width="95%" height="300px;"/>
+        <p:graphicImage library="janal" name="img/sistema/banner.png" width="95%" height="250px;"/>
         <p:panelGrid columns="2" layout="grid" columnClasses="janal-wid-50, janal-wid-50">
-          <p:imageSwitch effect="shuffle" slideshowAuto="true">
+          <p:imageSwitch effect="shuffle" slideshowAuto="true" rendered="false">
             <ui:repeat value="#{kajoolAccesoIndice.images}" var="image">
               <p:graphicImage url="#{kajoolAccesoIndice.path}1/#{image}" style="cursor:zoom-in;"/>
             </ui:repeat>
@@ -338,9 +337,55 @@
         </p:panelGrid>
       </center>  
     </div>  
+    <div id="janal-opcion-5" class="opciones janal-display-none">
+      <center style="margin: 30px">
+        <p:spacer width="1"/>
+        <div id="login-box" class="janal-only-out-lines Container80 MaxWid500 Fnone MarAuto BordRad10">
+          <div class="Container100">
+            <div class="janal-content-center">
+              <div class="Container100 TexAlCenter Animated05 BoxSizeBorder TabBtn left TabBtnActiveLeft" role="3">
+                <div class="Container80 Fnone MarAuto"><i class="fa fa-cloud-download"></i>  Facturación</div>
+              </div>
+              <div class="Container50 TexAlCenter Animated05 BoxSizeBorder TabBtn right" role="4" style="display:none;">
+                <div id="downloadGenerar" class="Container80 Fnone MarAuto"><i class="fa fa-files-o"></i>  Datos del ticket</div>
+              </div>
+              <div id="tab_3" class="Container90 Fnone MarAuto TexAlCenter TabContent">										
+                <p:panelGrid layout="grid" columns="1">
+                  <p:spacer height="1"/>
+                  <p:outputLabel for="rfcGenerar" value="RFC:" styleClass="Fs16"/>
+                  <p:inputText placeholder="ej. ADRC760130L95" id="rfcGenerar" tabindex="1" value="#{kajoolAccesoIndice.attrs.rfc}" styleClass="items Container80 Fnone MarAuto Fs18"/>
+                  <p:outputLabel for="folioGenerar" value="No. ticket:" styleClass="Fs16"/>
+                  <p:inputText placeholder="ej. 2019000123" id="folioGenerar" tabindex="2" value="#{kajoolAccesoIndice.attrs.folio}" styleClass="items Container80 Fnone MarAuto Fs18"/>
+                  <p:outputLabel for="codigoGenerar" value="Código seguridad:" styleClass="Fs16 janal-display-none"/>
+                  <p:inputText placeholder="Código seguridad" id="codigoGenerar" tabindex="3" value="#{kajoolAccesoIndice.attrs.codigo}" styleClass="items Container80 Fnone MarAuto Fs18"/>
+                  <p:commandButton id="aceptarGenerar" tabindex="3" value="Generar" onstart="return janal.partial('generar');" oncomplete="janal.desbloquear();" actionListener="#{kajoolAccesoIndice.doProcessTicket}" process="@this @(.items)" update="@(.refresh)"/>					
+                  <p:spacer height="1"/>
+                </p:panelGrid>
+              </div>
+              <div id="tab_4" class="Container90 Fnone MarAuto TexAlCenter TabContent DispNone">
+                <p:panelGrid layout="grid" columns="1" styleClass="refresh">
+                  <p:spacer width="10%"/>
+                  <p:commandLink title="Click para descargar el documento" rendered="#{kajoolAccesoIndice.existsPdf}" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" process="@this tab_4">
+                    <p:fileDownload value="#{kajoolAccesoIndice.pdfFileDownload}"/>
+                    <i class="fa fa-file-pdf-o Fs30 janal-color-orange"></i><br/>
+                    <p:outputLabel value="#{kajoolAccesoIndice.attrs.pdfFile.nombre}"/>
+                  </p:commandLink>
+                  <p:spacer width="5%"/>
+                  <p:commandLink title="Click para descargar el documento" rendered="#{kajoolAccesoIndice.existsXml}" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" process="@this tab_4">
+                    <p:fileDownload value="#{kajoolAccesoIndice.xmlFileDownload}"/>
+                    <i class="fa fa-file-code-o Fs30 janal-color-orange"></i><br/>
+                    <p:outputLabel value="#{kajoolAccesoIndice.attrs.xmlFile.nombre}"/>
+                  </p:commandLink>
+                </p:panelGrid>					
+              </div>	
+            </div>          
+          </div>
+        </div>
+      </center>        
+    </div>  
 		<p:dialog modal="true" widgetVar="statusDialog" header="Descargando documento ..." draggable="false" closable="false" resizable="false">
 			<p:graphicImage library="janal" name="/img/sistema/ajaxloadingbar.gif" />
 		</p:dialog>		
 	</ui:define>
-	<ui:param name="componenteBloqueo" value="aceptar"/>
+	<ui:param name="componenteBloqueo" value="aceptarDescargar aceptarGenerar"/>
 </ui:composition>

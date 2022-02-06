@@ -8,6 +8,7 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.procesos.acceso.beans.Sucursal;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Encriptar;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -405,10 +406,13 @@ public class CreateTicket implements Serializable {
 		regresar.append("PARA CUALQUIER ACLARACION, MANTENER SU TICKET");
 		regresar.append("</p>");
 		if(!this.tipo.equals("COTIZACIÓN") && !this.tipo.equals("APARTADO")) {			
+      Encriptar encriptado= new Encriptar();
+      String codigo= encriptado.encriptar(Fecha.formatear(Fecha.CODIGO_SEGURIDAD, ((TicketVenta)this.ticket.getOrden()).getRegistro()));
 			regresar.append("<p style=\"width: 290px;text-align: center;align-content: center;font-family: sans-serif;font-size: 10px;\">");
-			regresar.append("PARA LA DESCARGA DE TUS ARCHIVOS FISCALES INGRESAR A LA SIGUIENTE PAGINA");
+			regresar.append("PARA LA GENERACIÓN Y/O DESCARGA DE TUS ARCHIVOS FISCALES INGRESAR A LA SIGUIENTE PAGINA");
 			regresar.append("<br/><br/>");
-			regresar.append("https://ferreteriabonanza.com");
+			regresar.append("https://www.ferreteriabonanza.com");
+			regresar.append("<br/><br/>Código de seguridad: <span style=\"font-size: 12px;font-weight:bold;\">").append(codigo).append("</span>");
 			regresar.append("</p>");
 		} // if
 		//regresar.append("<svg id=\"barcode\"></svg>");

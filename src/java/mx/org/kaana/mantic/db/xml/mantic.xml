@@ -4298,7 +4298,7 @@
       </select>
 			<select id="rfc">
         select      
-          id_cliente
+          tc_mantic_clientes.*
         from      
           tc_mantic_clientes
         where 
@@ -5526,6 +5526,18 @@
           tc_mantic_ventas
         where 
           id_venta = {idVenta} 
+      </select>
+      <select id="codigo">
+				select      
+					tc_mantic_ventas.id_venta as id_key,
+					tc_mantic_ventas.id_venta as id_ficticia,
+          tc_mantic_ventas.id_venta_estatus as id_ficticia_estatus,
+					tc_mantic_ventas.*
+        from      
+          tc_mantic_ventas
+        where 
+          ticket = '{folio}'
+          and date_format(registro, '%d%H%i%S')= '{codigo}'
       </select>
       <select id="siguiente">
         select

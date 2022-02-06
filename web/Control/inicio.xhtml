@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+  xmlns:pe="http://primefaces.org/ui/extensions"
+	template="/WEB-INF/plantillas/portada.xhtml">
+	<ui:define name="librerias">
+		<script type="text/javascript">
+			Janal.Control.errors = 2;
+			Janal.Control.fields = {
+			};
+			//<![CDATA[
+      function callWindowSize() {
+        var width = screen.width;
+        var height= screen.height- 200;
+        var porcentaje= Number.parseFloat(height* 100/ 1440).toFixed(2)- 5;
+        height= Number.parseInt(porcentaje* 1440/ 100);
+        width= Number.parseInt(porcentaje* 2560/ 100);
+        $('img.galeria').attr('width', width+ 'px').attr('height', height+ 'px');
+        //$('img.galeria').attr('height', height+ 'px');
+      }
+      
+			$(document).ready(function() {
+        window.addEventListener('resize', callWindowSize);
+        callWindowSize();
+			});
+			//]]>
+		</script> 
+		<style type="text/css">
+    </style>
+	</ui:define>
+	<ui:define name="contenido">  	
+    <p:menubar model="#{kajoolControlInicio.model}" styleClass="janal-wid-100-txt">
+      <f:facet name="options">
+        <p:inputText id="buscar" value="#{kajoolControlInicio.attrs.codigo}" size="#{util.isMobile? 10: 25}" style="margin-right:10px" placeholder="Buscar"/>
+        <p:commandButton title="Buscar producto" actionListener="#{kajoolControlInicio.doSearchItem()}" process="@this buscar" icon="fa fa-search" onstart="showOpcion(3); return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+        <p:commandButton title="Ingresar" action="/acceso?faces-redirect=true" icon="fa fa-user"/>
+      </f:facet> 
+    </p:menubar>
+    <p:poll listener="#{kajoolControlInicio.doLoadGallery}" update="galeria" interval="18000" autoStart="true" />
+    <div id="janal-opcion-4" class="opciones">
+      <center style="margin: 10px">
+        <p:imageSwitch id="galeria" effect="shuffle" slideshowAuto="true">
+          <ui:repeat value="#{kajoolControlInicio.images}" var="image">
+            <p:graphicImage styleClass="galeria" url="#{kajoolControlInicio.path}#{image}" width="1022px" height="575px"/>
+          </ui:repeat>
+        </p:imageSwitch>          
+      </center>  
+    </div>  
+	</ui:define>
+	<ui:param name="componenteBloqueo" value="galeria"/>
+</ui:composition>

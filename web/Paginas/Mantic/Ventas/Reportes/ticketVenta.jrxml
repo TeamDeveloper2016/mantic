@@ -47,6 +47,7 @@
 	<parameter name="REPORTE_EMPRESA_MUNICIPIO" class="java.lang.String"/>
 	<parameter name="REPORTE_EMPRESA_RFC" class="java.lang.String"/>
 	<parameter name="REPORTE_EMPRESA_CLAVE" class="java.lang.String"/>
+	<parameter name="REPORTE_CODIGO_SEGURIDAD" class="java.lang.String"/>
 	<queryString language="SQL">
 		<![CDATA[$P!{REPORTE_SQL}]]>
 	</queryString>
@@ -292,7 +293,7 @@
 		</band>
 	</lastPageFooter>
 	<summary>
-		<band height="137">
+		<band height="150">
 			<line>
 				<reportElement x="3" y="1" width="609" height="1" uuid="fa927a50-7d5a-4dac-8d3d-b46e26ea0e81"/>
 			</line>
@@ -383,7 +384,7 @@
 				<text><![CDATA[https://www.ferreteriabonanza.com/ ]]></text>
 			</staticText>
 			<line>
-				<reportElement x="1" y="134" width="609" height="1" uuid="cf39ee02-6582-492d-a3ed-e8fe78f8aac8"/>
+				<reportElement x="1" y="148" width="609" height="1" uuid="cf39ee02-6582-492d-a3ed-e8fe78f8aac8"/>
 			</line>
 			<staticText>
 				<reportElement x="1" y="112" width="609" height="8" uuid="7e620c70-c03b-46a5-aad9-c0a08efbfc7e"/>
@@ -394,7 +395,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="6" isBold="false" isItalic="false"/>
 				</textElement>
-				<text><![CDATA[PARA CUALQUIER ACLARACIÓN MANTENER SU TICKET, PARA LA DESCARGA DE TUS ARCHIVOS FISCALES INGRESAR A LA SIGUIENTE PAGINA]]></text>
+				<text><![CDATA[PARA CUALQUIER ACLARACIÓN MANTENER SU TICKET, PARA LA GENERACION Y/O DESCARGA DE TUS ARCHIVOS FISCALES INGRESAR A LA SIGUIENTE PAGINA]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="421" y="69" width="106" height="15" uuid="5974fa32-3834-4462-924e-283610ef93fb"/>
@@ -427,6 +428,24 @@
 					<font fontName="Arial" size="9" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{MEDIO_PAGO}+ ":"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="1" y="134" width="250" height="13" uuid="33634900-a6fb-415e-a67e-5632fe340b7d"/>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial" size="6" isBold="false" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[CÓDIGO DE SEGURIDAD:]]></text>
+			</staticText>
+			<textField pattern="">
+				<reportElement x="251" y="133" width="359" height="15" uuid="9ed90c2d-3436-4cfd-9ea3-4ded1b7a453b"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true" isItalic="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{REPORTE_CODIGO_SEGURIDAD}]]></textFieldExpression>
 			</textField>
 		</band>
 	</summary>
