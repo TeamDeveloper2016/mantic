@@ -66,7 +66,8 @@ public class Articulos extends BaseMenu implements Serializable {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("menudeo", EFormatoDinamicos.MONEDA_CON_DECIMALES));
 			codigo= !Cadena.isVacio(codigo)? codigo.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim(): "";
-  		params.put("codigo", codigo);			
+  		params.put("codigo", codigo);		
+      params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
       params.put("sortOrder", "order by tc_mantic_articulos.nombre, tc_mantic_articulos.actualizado");
       if(!Cadena.isVacio(codigo))
         this.lazyModel= new FormatCustomLazy("VistaOrdenesComprasDto", "porAmbos", params, columns);
