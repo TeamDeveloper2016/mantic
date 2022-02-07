@@ -31,6 +31,7 @@ public final class Producto implements Serializable {
   private List<Caracteristica> caracteristicas;
   private UISelectEntity ikEmpresa;
   private UISelectEntity ikMarca;
+  private UISelectEntity ikCategoria;
   
   public Producto() throws Exception {
     this(-1L);
@@ -76,6 +77,14 @@ public final class Producto implements Serializable {
       this.producto.setIdProductoMarca(ikMarca.getKey());
   }
 
+  public UISelectEntity getIkCategoria() {
+    return ikCategoria;
+  }
+
+  public void setIkCategoria(UISelectEntity ikCategoria) {
+    this.ikCategoria = ikCategoria;
+  }
+  
   private void init(Long idProducto, String cliente) throws Exception {
     Map<String, Object> params = null;
     try {      

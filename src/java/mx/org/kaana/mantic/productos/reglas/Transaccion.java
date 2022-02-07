@@ -92,15 +92,17 @@ public class Transaccion extends IBaseTnx {
 	}	// ejecutar
 	
   private Boolean toAgregarProducto(Session sesion) throws Exception {
-    Boolean regresar = Boolean.FALSE;
+    Boolean regresar          = Boolean.FALSE;
 		Map<String, Object> params= new HashMap<>();
 		try {
 			params.put("categoria", this.producto.getProducto().getCategoria());
       this.producto.getProducto().setIdUsuario(JsfBase.getIdUsuario());
-      this.producto.getProducto().setIdProductoCategoria(DaoFactory.getInstance().toField("TcManticProductosCategoriasDto", "identico", params, "idKey").toLong());
+      Value value= DaoFactory.getInstance().toField("TcManticProductosCategoriasDto", "identico", params, "idKey");
+      this.producto.getProducto().setIdProductoCategoria(value!= null && value.getData()!= null? value.toLong(): -1L);
       Siguiente sigue= this.toSiguiente(sesion);
       this.producto.getProducto().setOrden(sigue.getOrden());
       regresar= DaoFactory.getInstance().insert(sesion, this.producto.getProducto())> 0L;
+      LOG.error("SE INSERTO EL PRODUCTO "+ params);
       if(regresar) {
         this.toArticulos(sesion);
         this.toCaracteristicas(sesion);
@@ -117,11 +119,14 @@ public class Transaccion extends IBaseTnx {
   }
   
   private Boolean toModificarProducto(Session sesion) throws Exception {
-    Boolean regresar = Boolean.FALSE;
+    Boolean regresar          = Boolean.FALSE;
 		Map<String, Object> params= new HashMap<>();
 		try {
 			params.put("categoria", this.producto.getProducto().getCategoria());
-      Long idProductoCategoria= DaoFactory.getInstance().toField("TcManticProductosCategoriasDto", "identico", params, "idKey").toLong();
+      Long idProductoCategoria= -1L;
+      Value value= DaoFactory.getInstance().toField("TcManticProductosCategoriasDto", "identico", params, "idKey");
+      if(value!= null && value.getData()!= null)
+        idProductoCategoria= value.toLong();
       if(!Objects.equals(this.producto.getProducto().getIdProductoCategoria(), idProductoCategoria)) {
         // RENUMERAR LOS HIJOS DEL LA CATEGORIA Y CALCULAR EL MAXIMO DE LA NUEVA CATEGORIA
         params.put("idProductoCategoria", this.producto.getProducto().getIdProductoCategoria());

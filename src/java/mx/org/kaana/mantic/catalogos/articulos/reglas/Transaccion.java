@@ -118,19 +118,19 @@ public class Transaccion extends TransaccionFactura {
 	} // ejecutar
 	
 	private boolean asignarImagen(Session sesion) throws Exception {
-		boolean regresar             = false;
-		TcManticImagenesDto image    = null;
-		TcManticArticulosDto articulo= null;
-		int count                    = 0;
-		Long idImage                 = -1L;
+		boolean regresar         = false;
+		TcManticImagenesDto image= null;
+		TcManticArticulosDto item= null;
+		int count                = 0;
+		Long idImage             = -1L;
 		try {
 			image  = this.loadImageImportado(this.seleccionados[0].toLong("idArticulo"));
 			idImage= DaoFactory.getInstance().insert(sesion, image);
 			if(idImage >= 1L) {
 				for(Entity seleccionado: this.seleccionados) {
-					articulo= (TcManticArticulosDto) DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, seleccionado.toLong("idArticulo"));
-					articulo.setIdImagen(idImage);
-					DaoFactory.getInstance().update(sesion, articulo);
+					item= (TcManticArticulosDto) DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, seleccionado.toLong("idArticulo"));
+					item.setIdImagen(idImage);
+					DaoFactory.getInstance().update(sesion, item);
 					count++;
 				} // for
 				regresar= count== this.seleccionados.length;
@@ -743,8 +743,12 @@ public class Transaccion extends TransaccionFactura {
             break;
           case DELETE:
             DaoFactory.getInstance().delete(sesion, item);
+            if(Objects.equals(item.getIdImagen(), this.articulo.getArticulo().getIdImagen())) 
+              this.articulo.getArticulo().setIdImagen(null);
             if(this.deleteImagen(sesion, item.getIdImagen())) {
-              DaoFactory.getInstance().delete(sesion, new TcManticImagenesDto(item.getIdImagen()));
+              DaoFactory.getInstance().update(sesion, this.articulo.getArticulo());
+              sesion.flush();
+              DaoFactory.getInstance().delete(sesion, TcManticImagenesDto.class, item.getIdImagen());
               File file= new File(item.getOriginal());
               if(file.exists())
                 file.delete();

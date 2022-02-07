@@ -112,9 +112,8 @@ public class Accion extends IBaseAttribute implements Serializable {
         regresar = "filtro".concat(Constantes.REDIRECIONAR);
         JsfBase.addMessage("Se registro el articulo de forma correcta.", ETipoMensaje.INFORMACION);
       } // if
-      else {
+      else 
         JsfBase.addMessage("Ocurrió un error al registrar el articulo", ETipoMensaje.ERROR);      
-      } // else  
     } // try
     catch (Exception e) {
       Error.mensaje(e);

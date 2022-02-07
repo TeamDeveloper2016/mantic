@@ -19,6 +19,7 @@ import mx.org.kaana.mantic.catalogos.articulos.beans.Imagen;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosImagenesDto;
 import mx.org.kaana.mantic.db.dto.TcManticImagenesDto;
+import mx.org.kaana.mantic.db.dto.TcManticProductosDto;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
@@ -142,9 +143,13 @@ public final class Replicar extends IBaseTnx implements Serializable {
       sesion.flush();
 			params= new HashMap<>();
       for (Imagen item: this.delete) {
-        if(this.deleteImagen(sesion, item.getIdProducto(), item.getArticulos(), item.getIdImage()))  {
+        if(this.deleteImagen(sesion, item.getIdProducto(), item.getArticulos(), item.getIdImage())) {
+          TcManticProductosDto producto= (TcManticProductosDto)DaoFactory.getInstance().findById(sesion, TcManticProductosDto.class, item.getIdProducto());
+          producto.setIdImagen(null);
+          DaoFactory.getInstance().update(sesion, producto);
+          sesion.flush();
           params.put("idImagen", item.getIdImage()); 
-          DaoFactory.getInstance().delete(sesion, new TcManticImagenesDto(item.getIdImage()));
+          DaoFactory.getInstance().delete(sesion, TcManticImagenesDto.class, item.getIdImage());
           File file= new File(item.getOriginal());
           if(file.exists())
             file.delete();
