@@ -60,7 +60,7 @@
               <p:graphicImage url="#{kajoolControlArticulos.pathImage}#{row.archivo.toString}" width="50" height="28" style="cursor:zoom-in;"/>
             </a>	
           </p:column>   
-          <p:column headerText="Destalle" styleClass="janal-column-center janal-wid-3 janal-display-none">
+          <p:column headerText="Detalle" styleClass="janal-column-center janal-wid-3" rendered="false">
             <p:commandButton icon="fa fa-search" process="@this" action="#{kajoolControlArticulos.doLoadDetalle}" title="Consultar" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();">
               <f:setPropertyActionListener value="#{row}" target="#{kajoolControlArticulos.attrs.seleccionado}" />
             </p:commandButton>

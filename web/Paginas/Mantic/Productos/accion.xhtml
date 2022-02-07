@@ -13,7 +13,7 @@
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
 				'contenedorGrupos\\:idEmpresa'    : {validaciones: 'requerido|libre', mascara: 'libre'},
-				'contenedorGrupos\\:categoria'    : {validaciones: 'requerido|marca', mascara: 'marca', formatos: 'cambiar-mayusculas'},
+				'contenedorGrupos\\:idCategoria'  : {validaciones: 'requerido', mascara: 'libre'},
 				'contenedorGrupos\\:karca'        : {validaciones: 'marca', mascara: 'marca', formatos: 'cambiar-mayusculas'},
 				'contenedorGrupos\\:idMarca'      : {validaciones: 'requerido', mascara: 'libre'},
 				'contenedorGrupos\\:nombre'       : {validaciones: 'requerido|libre', mascara: 'producto', formatos: 'cambiar-mayusculas'},
@@ -134,10 +134,13 @@
                     <h:outputText value="#{item.nombre}"/>
                   </p:column>   
                 </p:selectOneMenu>
-                <p:outputLabel for="categoria" value="Categoria(s): [ #{manticProductosAccion.producto.producto.categoria} ]" styleClass="categoria"/>
-                <p:selectOneMenu id="categorias" value="#{manticProductosAccion.producto.producto.categoria}" var="item" styleClass="janal-wid-100-txt categoria" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <p:outputLabel for="idCategoria" value="Categoria(s):"/>
+                <p:selectOneMenu id="idCategoria" value="#{manticProductosAccion.producto.ikCategoria}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt categoria" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                   <p:ajax event="change" process="@this" update="@(.categoria)"/>
-                  <f:selectItems value="#{manticProductosAccion.attrs.categorias}"/>
+                  <f:selectItems value="#{manticProductosAccion.attrs.categorias}" var="element" itemValue="#{element}" itemLabel="#{element.categoria}"/>
+                  <p:column headerText="Nombre">
+                    <h:outputText value="#{item.categoria}"/>
+                  </p:column>   
                 </p:selectOneMenu>
                 <p:inputText id="categoria" value="#{manticProductosAccion.producto.producto.categoria}" styleClass="janal-wid-100-txt categoria" style="display: none"/> 
                 <p:outputLabel for="idMarca" value="Marca(s):"/>

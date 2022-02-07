@@ -26,7 +26,6 @@ import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
-import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.recurso.Configuracion;
@@ -160,8 +159,18 @@ public class Accion extends Contenedor implements Serializable {
           else
             this.producto.setIkEmpresa(sucursales.get(0));
         } // if  
-      List<UISelectItem> categorias= (List<UISelectItem>)UISelect.free("TcManticProductosCategoriasDto", "categorias", params, "categoria", Constantes.SEPARADOR, EFormatoDinamicos.MAYUSCULAS, "categoria");
+      List<UISelectEntity> categorias= (List<UISelectEntity>)UIEntity.build("TcManticProductosCategoriasDto", "categorias", params, "categoria");
       this.attrs.put("categorias", categorias);			
+      if(categorias!= null && !categorias.isEmpty())
+        if(Objects.equals((EAccion)this.attrs.get("accion"), EAccion.AGREGAR))
+          this.producto.setIkCategoria(categorias.get(0));
+        else {
+          int index= categorias.indexOf(new UISelectEntity(this.producto.getProducto().getIdProductoCategoria()));
+          if(index>= 0)
+            this.producto.setIkCategoria(categorias.get(index));
+          else
+            this.producto.setIkCategoria(categorias.get(0));
+        } // if  
       List<UISelectEntity> marcas= UIEntity.build("TcManticProductosMarcasDto", "todos", params, "nombre");
       if(marcas!= null && !marcas.isEmpty())
         if(Objects.equals((EAccion)this.attrs.get("accion"), EAccion.AGREGAR))
@@ -439,6 +448,7 @@ public class Accion extends Contenedor implements Serializable {
   public void doGaleria() {
     UISelectEntity data= (UISelectEntity)((TreeNode)this.attrs.get("data")).getData();
     this.producto.getProducto().setCategoria(data.toString("padre").concat(data.toString("nombre")));
+    this.producto.setIkCategoria(new UISelectEntity(data.toLong("idProductoCategoria")));
   }  
  
 	public void onTabChange(TabChangeEvent event) {

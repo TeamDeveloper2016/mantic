@@ -95,14 +95,10 @@ public class Transaccion extends IBaseTnx {
     Boolean regresar          = Boolean.FALSE;
 		Map<String, Object> params= new HashMap<>();
 		try {
-			params.put("categoria", this.producto.getProducto().getCategoria());
       this.producto.getProducto().setIdUsuario(JsfBase.getIdUsuario());
-      Value value= DaoFactory.getInstance().toField("TcManticProductosCategoriasDto", "identico", params, "idKey");
-      this.producto.getProducto().setIdProductoCategoria(value!= null && value.getData()!= null? value.toLong(): -1L);
       Siguiente sigue= this.toSiguiente(sesion);
       this.producto.getProducto().setOrden(sigue.getOrden());
       regresar= DaoFactory.getInstance().insert(sesion, this.producto.getProducto())> 0L;
-      LOG.error("SE INSERTO EL PRODUCTO "+ params);
       if(regresar) {
         this.toArticulos(sesion);
         this.toCaracteristicas(sesion);
@@ -122,12 +118,7 @@ public class Transaccion extends IBaseTnx {
     Boolean regresar          = Boolean.FALSE;
 		Map<String, Object> params= new HashMap<>();
 		try {
-			params.put("categoria", this.producto.getProducto().getCategoria());
-      Long idProductoCategoria= -1L;
-      Value value= DaoFactory.getInstance().toField("TcManticProductosCategoriasDto", "identico", params, "idKey");
-      if(value!= null && value.getData()!= null)
-        idProductoCategoria= value.toLong();
-      if(!Objects.equals(this.producto.getProducto().getIdProductoCategoria(), idProductoCategoria)) {
+      if(!Objects.equals(this.producto.getProducto().getIdProductoCategoria(), this.producto.getIkProductoCategoria())) {
         // RENUMERAR LOS HIJOS DEL LA CATEGORIA Y CALCULAR EL MAXIMO DE LA NUEVA CATEGORIA
         params.put("idProductoCategoria", this.producto.getProducto().getIdProductoCategoria());
         List<TcManticProductosDto> items= (List<TcManticProductosDto>)DaoFactory.getInstance().toEntitySet(sesion, TcManticProductosDto.class, "TcManticProductosDto", "hijos", params);
@@ -138,7 +129,6 @@ public class Transaccion extends IBaseTnx {
             DaoFactory.getInstance().update(sesion, item);
           } // if  
         } // for
-        this.producto.getProducto().setIdProductoCategoria(idProductoCategoria);
         Siguiente sigue= this.toSiguiente(sesion);
         this.producto.getProducto().setOrden(sigue.getOrden());
       } // if

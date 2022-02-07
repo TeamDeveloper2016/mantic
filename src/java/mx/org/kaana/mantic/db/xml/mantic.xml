@@ -124,6 +124,7 @@
       <select id="categorias">
         select      
           tc_mantic_productos_categorias.id_producto_categoria as id_key,
+          tc_mantic_productos_categorias.*,
           concat(padre, nombre) as categoria
         from      
           tc_mantic_productos_categorias

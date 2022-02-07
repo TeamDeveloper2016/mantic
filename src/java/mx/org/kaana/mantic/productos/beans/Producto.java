@@ -32,6 +32,7 @@ public final class Producto implements Serializable {
   private UISelectEntity ikEmpresa;
   private UISelectEntity ikMarca;
   private UISelectEntity ikCategoria;
+  private Long ikProductoCategoria;
   
   public Producto() throws Exception {
     this(-1L);
@@ -83,6 +84,12 @@ public final class Producto implements Serializable {
 
   public void setIkCategoria(UISelectEntity ikCategoria) {
     this.ikCategoria = ikCategoria;
+    if(ikCategoria!= null)
+      this.producto.setIdProductoCategoria(ikCategoria.getKey());
+  }
+
+  public Long getIkProductoCategoria() {
+    return ikProductoCategoria;
   }
   
   private void init(Long idProducto, String cliente) throws Exception {
@@ -95,6 +102,8 @@ public final class Producto implements Serializable {
         this.producto.setIdImagen(-1L);
         this.setIkEmpresa(new UISelectEntity(-1L));
         this.setIkMarca(new UISelectEntity(2L));
+        this.setIkCategoria(new UISelectEntity(1L));
+        this.ikProductoCategoria= -1L;
       } // if
       else {
         this.producto = (General)DaoFactory.getInstance().toEntity(General.class, "VistaProductosDto", "producto", params);
@@ -116,6 +125,8 @@ public final class Producto implements Serializable {
           } // for
         this.setIkEmpresa(new UISelectEntity(this.producto.getIdEmpresa()));
         this.setIkMarca(new UISelectEntity(this.producto.getIdProductoMarca()));
+        this.setIkCategoria(new UISelectEntity(this.producto.getIdProductoCategoria()));
+        this.ikProductoCategoria= this.producto.getIdProductoCategoria();
       } // else
       if(this.articulos== null)
         this.articulos= new ArrayList<>();
