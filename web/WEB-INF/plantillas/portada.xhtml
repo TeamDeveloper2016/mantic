@@ -27,7 +27,16 @@
             $('button.janal-codigo-global').hide();
           else  
             $('button.janal-codigo-individual').hide();
-				});
+          $(document).on('keydown', 'input.janal-codigo-buscar', function(e) {
+            var key= e.keyCode? e.keyCode: e.which;
+            janal.console('portada.keydown: '+ key);
+            switch(key) {
+              case 13:
+                $("#{empty showSearchButton? 'button.janal-codigo-global': 'button.janal-codigo-individual'}").click();
+                break;
+            } // switch
+          });    
+  		  });
   			//]]>
 			</script>	
 			<title>#{kajoolUtilAplicacion.tituloSistema}</title>

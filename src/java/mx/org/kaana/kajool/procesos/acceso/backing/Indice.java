@@ -28,10 +28,6 @@ public class Indice extends BaseMenu implements Serializable {
     return path;
   }
   
-	public String getBrand() {
-    return path.concat("1/marcas/");
-  }
-
   public List<String> getImages() {
     return Portal.getInstance().getImages();
   }
@@ -49,7 +45,7 @@ public class Indice extends BaseMenu implements Serializable {
   }
   
   public void doLoadGallery() {
-    Portal.getInstance().doLoad();
+    
   }
  
 }

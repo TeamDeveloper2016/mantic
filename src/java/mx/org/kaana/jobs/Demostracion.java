@@ -13,7 +13,6 @@ import mx.org.kaana.jobs.comun.IBaseJob;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.beans.DetalleConfiguracion;
 import mx.org.kaana.kajool.beans.TareaServidor;
-import mx.org.kaana.kajool.seguridad.quartz.Especial;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.quartz.JobExecutionContext;

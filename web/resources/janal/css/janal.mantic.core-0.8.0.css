@@ -404,8 +404,8 @@ div.ui-panelgrid-content {
 .titulo-proyecto{display:block}
 .titulo-siglas{display:none !important;}
 .margin-fecha {padding-left: 28px;}
-.xs-pantalla{display:none;}
-.lg-pantalla{display:contents;}
+.xs-pantalla{display:none !important;}
+.lg-pantalla{display:contents !important;}
 .fecha {
    font-size: 14px;
    font-weight: 100 !important;
@@ -449,8 +449,8 @@ div.ui-panelgrid-content {
   }
   .janal-logo-mini {width: 30px;}
   .janal-grid-row {}
-  .xs-pantalla{display:block;}
-  .lg-pantalla{display: none;}
+  .xs-pantalla{display:block !important;}
+  .lg-pantalla{display: none !important;}
   .titulo-proyecto{margin-bottom: 0px; margin-top: 0px; display:none !important;}
   .titulo-siglas{margin-bottom: 0px; margin-top: 0px; display:block !important;}
   .margin-fecha {padding-left: 0px;}
@@ -507,8 +507,8 @@ div.ui-panelgrid-content {
     margin: -10px;
   }
   .janal-grid-row {}
-  .xs-pantalla{display:block;}
-  .lg-pantalla{display: none;}
+  .xs-pantalla{display:block !important;}
+  .lg-pantalla{display: none !important;}
   .janal-header-acronym {font-size: 24px;letter-spacing:.3em}
   .margin-fecha {padding-left: 0px;}
   .margin-desarrollo {margin-top: 0px !important;}

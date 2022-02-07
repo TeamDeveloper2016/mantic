@@ -6695,8 +6695,7 @@
 				left join
 				  tc_mantic_imagenes on tc_mantic_articulos.id_imagen= tc_mantic_imagenes.id_imagen
 				where 
-					tc_mantic_empresas.id_empresa in (1,2)
-				  and tc_mantic_articulos.id_articulo_tipo= 1
+				  tc_mantic_articulos.id_articulo_tipo= 1
 				  and tc_mantic_articulos.id_vigente= 1
 				  and ((upper(tc_mantic_articulos_codigos.codigo) like '%{codigo}%') or (upper(tc_mantic_articulos_codigos.nombre) like '%{codigo}%'))
 				order by 
