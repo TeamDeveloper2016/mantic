@@ -174,7 +174,9 @@ div.ui-panelgrid-content {
 .janal-wid-10 {width: 10% !important;}
 .janal-fix-10 {width: 10% !important;}
 .janal-wid-12 {width: 12% !important;}
+.janal-fix-12 {width: 12% !important;}
 .janal-wid-13 {width: 13% !important;}
+.janal-fix-13 {width: 13% !important;}
 .janal-wid-15 {width: 15% !important;}
 .janal-wid-17 {width: 17% !important;}
 .janal-wid-18 {width: 18% !important;}
@@ -507,6 +509,8 @@ div.ui-panelgrid-content {
     margin: -10px;
   }
   .janal-grid-row {}
+  .producto .container {width: 100% !important;}
+  .producto .item-image img {width: 435px !important; height: 250px !important;}
   .xs-pantalla{display:block !important;}
   .lg-pantalla{display: none !important;}
   .janal-header-acronym {font-size: 24px;letter-spacing:.3em}

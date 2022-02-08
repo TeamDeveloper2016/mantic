@@ -23,8 +23,8 @@
       .p-p-2 {padding: 0.3rem !important;}
       .producto {width: 100%; display: flex; flex-direction: row; -webkit-flex-direction: row; -ms-flex-direction: row; flex-wrap: wrap; justify-content: center; align-items: center;}
       .producto .item-image {margin: 0 0 0.2rem 0; text-align: left;}
-      .producto .item-image img {width: 600px; height: 450px;}      
-      .producto .container {width: 50%; display: flex; flex-direction: row; flex-wrap: wrap; justify-content: center; align-items: center;}
+      .producto .item-image img {width: 600px; height: 450px; margin-right: 3px;}      
+      .producto .container {width: 50%; display: flex; flex-direction: row; flex-wrap: wrap; justify-content: center; align-items: center; margin-left: 15px;}
       .producto .galeria  {width: 770px; margin-right: 3%;}
       .producto .galeria .galeria-header {margin: 0 0 0.2rem 0; text-align: left;}
       .producto .galeria .galeria-list {border: 0px; padding-right: 0px;}
@@ -41,7 +41,7 @@
 	<ui:define name="contenido">  	
     <p:spacer height="2px"/>
     <div id="janal-opcion-4" class="opciones">
-      <center style="margin-left: 15%; margin-right: 15%;">
+      <center style="margin-left: 3%; margin-right: 3%;">
         <div class="producto">
           <div class="item-image">
             <a id="view#{kajoolControlIndividual.producto.producto.idProducto}" data-magnify="gallery" href="#{kajoolControlIndividual.pathImage}#{kajoolControlIndividual.producto.producto.archivo}" data-caption="#{kajoolControlIndividual.producto.producto.nombre}" data-group="icon-image" class="icon">
@@ -67,19 +67,19 @@
               </div>
               <div class="galeria-actions">
                 <p:dataTable id="tabla" var="row" value="#{kajoolControlIndividual.producto.articulos}" paginator="false" rowKey="#{kajoolControlIndividual.producto.idProductoDetalle}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="filas" rowIndexVar="index" rowStyleClass="#{kajoolControlIndividual.toColorPartida(row)}">
-                  <p:column headerText="Código" styleClass="janal-wid-20">
+                  <p:column headerText="Código" styleClass="janal-fix-20">
                     <p:outputLabel value="#{row.codigo}"/>
                   </p:column>   
                   <p:column headerText="Descripción" styleClass="janal-column-left" style="white-space: nowrap;">
                     <p:outputLabel value="#{row.descripcion}"/>
                   </p:column>   
-                  <p:column headerText="Medida" styleClass="janal-wid-12 janal-column-center">
+                  <p:column headerText="Medida" styleClass="janal-fix-12">
                     <p:outputLabel value="#{row.medida}"/>
                   </p:column>   
-                  <p:column headerText="$ Precio" styleClass="janal-wid-12 janal-column-right">
+                  <p:column headerText="$ Precio" styleClass="janal-fix-12 janal-column-right">
                     <h:outputText value="#{row.precio}"/>
                   </p:column>   
-                  <p:column headerText="Cliente" styleClass="janal-wid-12 janal-column-right" rendered="#{kajoolControlIndividual.attrs.particular}">
+                  <p:column headerText="Cliente" styleClass="janal-fix-12 janal-column-right" rendered="#{kajoolControlIndividual.attrs.particular}">
                     <h:outputText value="#{row.cliente}"/>
                   </p:column>
                 </p:dataTable>	
