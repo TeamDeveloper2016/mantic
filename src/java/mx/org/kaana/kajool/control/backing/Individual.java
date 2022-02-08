@@ -47,8 +47,8 @@ public class Individual extends BaseMenu implements Serializable {
   @PostConstruct
   protected void init() {
     super.init();
-    // this.attrs.put("idProducto", 21L);
     this.attrs.put("idProducto", JsfBase.getFlashAttribute("idProducto"));
+    this.attrs.put("idProducto", 21L);
     this.attrs.put("codigo", JsfBase.getFlashAttribute("codigo")== null? "": JsfBase.getFlashAttribute("codigo"));
     String dns= Configuracion.getInstance().getPropiedadServidor("sistema.dns");
     this.pathImage= dns.substring(0, dns.lastIndexOf("/")+ 1).concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/galeria/");

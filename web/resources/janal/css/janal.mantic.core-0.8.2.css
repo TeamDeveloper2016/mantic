@@ -511,6 +511,8 @@ div.ui-panelgrid-content {
   .janal-grid-row {}
   .producto .container {width: 100% !important;}
   .producto .item-image img {width: 435px !important; height: 250px !important;}
+  .producto .galeria .galeria-nombre {font-size: 1.0rem !important;}
+  .producto .galeria .galeria-marca {font-size: 1.2rem !important;}
   .xs-pantalla{display:block !important;}
   .lg-pantalla{display: none !important;}
   .janal-header-acronym {font-size: 24px;letter-spacing:.3em}
