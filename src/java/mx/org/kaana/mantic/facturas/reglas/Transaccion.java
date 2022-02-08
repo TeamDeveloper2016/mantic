@@ -215,7 +215,7 @@ public class Transaccion extends TransaccionFactura {
 							factura= this.registrarFactura(sesion);
 							ficticia.setIdFactura(factura.getIdFactura());
 							if(DaoFactory.getInstance().update(sesion, ficticia)> 0){
-								TcManticFicticiasBitacoraDto bitFicticia= new TcManticFicticiasBitacoraDto(ficticia.getTicket(), "Se cambio la cotización especial para timbrarse", EEstatusFicticias.ABIERTA.getIdEstatusFicticia(), JsfBase.getIdUsuario(), this.idFicticia, -1L, ficticia.getTotal());
+								TcManticFicticiasBitacoraDto bitFicticia= new TcManticFicticiasBitacoraDto(ficticia.getTicket(), "Se cambio la cotización especial para timbrarse", EEstatusFicticias.ABIERTA.getIdEstatusFicticia(), JsfBase.getIdUsuario(), factura.getIdFactura(), -1L, ficticia.getTotal());
 								regresar= DaoFactory.getInstance().insert(sesion, bitFicticia)>= 1L;
 							} // if
 						} // if
@@ -272,7 +272,6 @@ public class Transaccion extends TransaccionFactura {
 		boolean regresar         = false;
 		Siguiente consecutivo    = null;
 		Siguiente cuenta         = null;
-		Long idFactura           = -1L;
 		Map<String, Object>params= null;
 		try {									
 			TcManticFacturasDto factura= this.registrarFactura(sesion);										
@@ -285,12 +284,12 @@ public class Transaccion extends TransaccionFactura {
 				this.orden.setOrden(cuenta.getOrden());
 				this.orden.setIdFicticiaEstatus(idEstatusFicticia);
 				this.orden.setEjercicio(new Long(Fecha.getAnioActual()));						
-				this.orden.setIdFactura(idFactura);
+				this.orden.setIdFactura(factura.getIdFactura());
 				if(DaoFactory.getInstance().insert(sesion, this.orden)>= 1L) {
 					params= new HashMap<>();
 					// Este campo ya no se va a utilizar porque toda va a caer en venta, las facturas ficticias tienden a desaparecer
 					params.put("idVenta", this.orden.getIdVenta());
-					if(DaoFactory.getInstance().update(sesion, TcManticFacturasDto.class, idFactura, params)>= 1L){					
+					if(DaoFactory.getInstance().update(sesion, TcManticFacturasDto.class, factura.getIdFactura(), params)>= 1L){					
 						regresar= registraBitacora(sesion, this.orden.getIdFicticia(), idEstatusFicticia, "");
 						this.toFillArticulos(sesion);
 						this.validarCabecera(sesion);

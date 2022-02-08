@@ -1,0 +1,95 @@
+<?xml version='1.0' encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+  xmlns:pe="http://primefaces.org/ui/extensions"
+	template="/WEB-INF/plantillas/portada.xhtml">
+	<ui:define name="librerias">
+		<script type="text/javascript">
+			Janal.Control.errors = 2;
+			Janal.Control.fields = {
+			};
+			//<![CDATA[
+			$(document).ready(function() {
+			});
+			//]]>
+		</script> 
+		<style type="text/css">
+      .p-p-1 {padding: 0.25rem !important;}
+      .p-p-2 {padding: 0.3rem !important;}
+      .producto {width: 100%; display: flex; flex-direction: row; -webkit-flex-direction: row; -ms-flex-direction: row; flex-wrap: wrap; justify-content: center; align-items: center;}
+      .producto .item-image {margin: 0 0 0.2rem 0; text-align: left;}
+      .producto .item-image img {width: 600px; height: 450px;}      
+      .producto .container {width: 50%; display: flex; flex-direction: row; flex-wrap: wrap; justify-content: center; align-items: center;}
+      .producto .galeria  {width: 770px; margin-right: 3%;}
+      .producto .galeria .galeria-header {margin: 0 0 0.2rem 0; text-align: left;}
+      .producto .galeria .galeria-list {border: 0px; padding-right: 0px;}
+      .producto .galeria .galeria-description {margin: 0 0 0.1rem -1.2rem; font-size: 0.8rem; padding-left: 0px !important; font-weight: normal !important;}
+      .producto .galeria .galeria-marca {font-size: 1.5rem; margin: 0 0 0.5rem 0; color: blue; font-weight: bold;}
+      .producto .galeria .galeria-nombre {font-size: 1.2rem; margin: 0 0 0.5rem 0; color: black; font-weight: bold;}
+      .producto .galeria .galeria-list-item .galeria-actions {font-size: 0.9rem; font-weight: 100; margin-bottom: 0.1rem; align-self: flex-end; text-align: right;}
+      .producto .galeria .galeria-list-item .galeria-item-search {width: 520px; text-align: center;}
+      .producto .galeria .galeria-list-item .galeria-item-search img {width: 500px; height:250px; margin-right: 2rem;}      
+      .producto .galeria .galeria-list-item {display: -ms-flexbox; display: flex; -ms-flex-align: center; align-items: center; padding: 0.5rem; text-align: left;}
+      .producto .galeria .galeria-list-item .galeria-list-detail {flex: 1 1 0;-ms-flex: 1 1 0;align-self: baseline; height: 200px;}  
+    </style>
+	</ui:define>
+	<ui:define name="contenido">  	
+    <p:spacer height="2px"/>
+    <div id="janal-opcion-4" class="opciones">
+      <center style="margin-left: 15%; margin-right: 15%;">
+        <div class="producto">
+          <div class="item-image">
+            <a id="view#{kajoolControlIndividual.producto.producto.idProducto}" data-magnify="gallery" href="#{kajoolControlIndividual.pathImage}#{kajoolControlIndividual.producto.producto.archivo}" data-caption="#{kajoolControlIndividual.producto.producto.nombre}" data-group="icon-image" class="icon">
+              <p:graphicImage url="#{kajoolControlIndividual.pathImage}#{kajoolControlIndividual.producto.producto.archivo}" style="cursor:zoom-in;"/>
+            </a>  
+          </div>  
+          <div class="container">
+            <div class="galeria">
+              <div class="galeria-header p-p-2">
+                <span class="galeria-marca">#{kajoolControlIndividual.producto.producto.marca}</span><br/>
+                <span class="galeria-nombre">#{kajoolControlIndividual.producto.producto.nombre}</span>
+                <div style="float: right; margin-top: -33px;">
+                  <p:graphicImage url="#{kajoolControlIndividual.brand}#{kajoolControlIndividual.producto.producto.logo}" width="200px" height="60px"/>
+                </div>  
+              </div>  
+              <div class="galeria-list-item p-p-1">
+                <div class="galeria-list-detail">
+                  <span class="janal-color-orange" style="font-size: 0.9rem; font-weight: bold;">ESPECIFICACIONES:</span><br/>
+                  <p:dataList var="item" value="#{kajoolControlIndividual.producto.caracteristicas}" styleClass="galeria-list" itemStyleClass="galeria-description" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}">
+                    #{kajoolControlIndividual.doLetraCapital(item)}
+                  </p:dataList>
+                </div>  
+              </div>
+              <div class="galeria-actions">
+                <p:dataTable id="tabla" var="row" value="#{kajoolControlIndividual.producto.articulos}" paginator="false" rowKey="#{kajoolControlIndividual.producto.idProductoDetalle}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="filas" rowIndexVar="index" rowStyleClass="#{kajoolControlIndividual.toColorPartida(row)}">
+                  <p:column headerText="Código" styleClass="janal-wid-20">
+                    <p:outputLabel value="#{row.codigo}"/>
+                  </p:column>   
+                  <p:column headerText="Descripción" styleClass="janal-column-left" style="white-space: nowrap;">
+                    <p:outputLabel value="#{row.descripcion}"/>
+                  </p:column>   
+                  <p:column headerText="Medida" styleClass="janal-wid-12 janal-column-center">
+                    <p:outputLabel value="#{row.medida}"/>
+                  </p:column>   
+                  <p:column headerText="$ Precio" styleClass="janal-wid-12 janal-column-right">
+                    <h:outputText value="#{row.precio}"/>
+                  </p:column>   
+                  <p:column headerText="Cliente" styleClass="janal-wid-12 janal-column-right" rendered="#{kajoolControlIndividual.attrs.particular}">
+                    <h:outputText value="#{row.cliente}"/>
+                  </p:column>
+                </p:dataTable>	
+                <br/>
+              </div>  
+            </div>  
+          </div>  
+        </div>
+      </center>  
+    </div>  
+	</ui:define>
+	<ui:param name="componenteBloqueo" value="tabla"/>
+</ui:composition>
