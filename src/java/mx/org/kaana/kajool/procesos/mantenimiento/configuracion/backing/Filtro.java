@@ -8,9 +8,9 @@ package mx.org.kaana.kajool.procesos.mantenimiento.configuracion.backing;
  *@author One Developer 2016 <one.developer@kaana.org.mx>
  */
 import java.io.Serializable;
-import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.inject.Named;
+import mx.org.kaana.kajool.control.bean.Portal;
 import mx.org.kaana.kajool.procesos.mantenimiento.contadores.reglas.Ayudas;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
@@ -38,6 +38,7 @@ public class Filtro extends IBaseAttribute implements Serializable {
       this.attrs.put("msg", false);
       this.attrs.put("hlp", false);
       this.attrs.put("bd", false);
+      this.attrs.put("img", false);
     } // try
     catch(Exception e) {
 			JsfBase.addMessageError(e);
@@ -78,6 +79,13 @@ public class Filtro extends IBaseAttribute implements Serializable {
     JsfBase.addMessage("Se recargaron de la base de datos la tabla de configuracion");
     LOG.info("Se recargaron de la base de datos la tabla de configuracion");
     this.attrs.put("bd", false);
+  }
+  
+  public void doReloadIMG() {
+    Portal.getInstance().reload();
+    JsfBase.addMessage("Se recargaron las imagenes del portal");
+    LOG.info("Se recargaron las imagenes del portal");
+    this.attrs.put("img", false);
   }
   
 }

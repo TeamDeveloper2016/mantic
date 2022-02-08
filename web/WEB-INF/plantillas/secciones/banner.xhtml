@@ -57,7 +57,7 @@
     </div>  
     <div class="ui-g ui-grid-row janal-grid-row">
 			<div class="ui-g-12 janal-content-center janal-column-center">
-        <p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-fix-20 janal-column-left, janal-fix-80 janal-column-center janal-auto-margin">
+        <p:panelGrid columns="3" styleClass="janal-wid-100" columnClasses="janal-fix-20 janal-column-left, janal-fix-60 janal-column-center janal-auto-margin, janal-fix-20 janal-column-center janal-auto-margin">
           <p:graphicImage library="janal" name="img/sistema/logo-portal.png" width="147px" height="65px" styleClass="#{util.isMobile? 'janal-display-none': ''}"/>
           <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
             <p:inputText id="janal-buscar-codigo" placeholder="Nombre o código del articulo ..." styleClass="janal-codigo-buscar janal-wid-100-txt janal-column-left" style="margin-top: 17px;"/>
@@ -65,6 +65,10 @@
               <p:commandButton type="button" title="Buscar producto" onclick="toSearchCodigo();" icon="fa fa-search" styleClass="janal-codigo-global  janal-icons-message" style="margin-top: -40px;"/>
               <p:commandButton type="button" title="Buscar producto" onclick="toLookForCodigo();" icon="fa fa-search" styleClass="janal-codigo-individual  janal-icons-message" style="margin-top: -44px;"/>
             </p:panelGrid>  
+          </p:panelGrid>  
+          <p:panelGrid columns="1" styleClass="janal-wid-100">
+            <p:outputLabel styleClass="janal-etapa #{util.isMobile? 'janal-display-none': ''} lg-pantalla" value="#{kajoolUtilAplicacion.servidorEspecial}"/>
+            <p:outputLabel styleClass="janal-etapa #{util.isMobile? 'janal-display-none': ''} xs-pantalla Fs14" value="#{kajoolUtilAplicacion.servidorEspecial}"/>
           </p:panelGrid>  
         </p:panelGrid>  
 			</div>	

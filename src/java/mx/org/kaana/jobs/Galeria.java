@@ -27,7 +27,7 @@ public class Galeria extends IBaseJob {
 		try {
 			LOG.error("Cargando galería de las imagenes del portal");
 			if(Configuracion.getInstance().isEtapaProduccion() || Configuracion.getInstance().isEtapaCapacitacion()) 
-        Portal.getInstance().doLoad();
+        Portal.getInstance().reload();
 	  } // try
 		catch (Exception e) {
 			Error.mensaje(e);

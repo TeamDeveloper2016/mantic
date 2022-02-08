@@ -31,7 +31,7 @@ public class Portal implements Serializable {
   }
 
   private Portal() {
-    this.doLoad();
+    this.reload();
   }
 
   public static Portal getInstance() {
@@ -47,7 +47,7 @@ public class Portal implements Serializable {
     return Collections.unmodifiableList(this.images);
   }
   
-  public void doLoad() {
+  public void reload() {
     try {
       this.images= new ArrayList<>();
       String portal= Configuracion.getInstance().getPropiedadSistemaServidor("portal");
