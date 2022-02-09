@@ -74,7 +74,8 @@
                     </p:column>   										
                   </p:selectOneMenu>		
                   <p:commandButton id="aceptar" tabindex="3" value="Generar" onstart="return janal.partial('generar');" oncomplete="janal.desbloquear();" actionListener="#{kajoolControlGenerar.doProcessTicket}" process="@this @(.items)" update="@(.refresh)" disabled="true"/>
-                  <p:spacer height="1"/>
+                  <p:spacer height="1px"/>
+                  <p:outputLabel value="El ticket tiene que ser &lt;span class='janal-color-black janal-font-bold'&gt;mayor o igual a $50.0 MX&lt;/span&gt; para poder generar la factura" escape="false"/>
                 </p:panelGrid>
               </div>
               <div id="tab_4" class="Container90 Fnone MarAuto TexAlCenter TabContent DispNone">

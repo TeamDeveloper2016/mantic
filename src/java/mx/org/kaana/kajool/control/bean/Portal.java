@@ -7,6 +7,8 @@ import java.util.List;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.reportes.FileSearch;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.mozilla.javascript.edu.emory.mathcs.backport.java.util.Collections;
 
 /**
@@ -19,6 +21,7 @@ import org.mozilla.javascript.edu.emory.mathcs.backport.java.util.Collections;
 
 public class Portal implements Serializable {
 
+  private static final Log LOG = LogFactory.getLog(Portal.class);
   private static final long serialVersionUID = 6003054262706290104L;
 
   private static Portal instance;
@@ -58,6 +61,7 @@ public class Portal implements Serializable {
           String name= matched.substring((matched.lastIndexOf("/")< 0? matched.lastIndexOf("\\"): matched.lastIndexOf("/"))+ 1);
           this.images.add(name);
         } // for 
+      LOG.error("Imagenes del portal: "+ this.images);
     } // try
     catch (Exception e) {
       Error.mensaje(e);

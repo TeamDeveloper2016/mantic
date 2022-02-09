@@ -48,6 +48,8 @@ public class TcManticProductosCategoriasDto implements IBaseDto, Serializable {
   private Long nivel;
   @Column (name="orden")
   private Long orden;
+  @Column (name="id_producto_categoria_archivo")
+  private Long idProductoCategoriaArchivo;
   @Column (name="registro")
   private Timestamp registro;
 
@@ -56,11 +58,11 @@ public class TcManticProductosCategoriasDto implements IBaseDto, Serializable {
   }
 
   public TcManticProductosCategoriasDto(Long key) {
-    this(null, null, null, null, new Long(-1L), null, null, null, 1L);
+    this(null, null, null, null, new Long(-1L), null, null, null, 1L, null);
     setKey(key);
   }
 
-  public TcManticProductosCategoriasDto(String padre, Long ultimo, Long idActivo, Long idUsuario, Long idProductoCategoria, Long porcentaje, String nombre, Long nivel, Long orden) {
+  public TcManticProductosCategoriasDto(String padre, Long ultimo, Long idActivo, Long idUsuario, Long idProductoCategoria, Long porcentaje, String nombre, Long nivel, Long orden, Long idProductoCategoriaArchivo) {
     setPadre(padre);
     setUltimo(ultimo);
     setIdActivo(idActivo);
@@ -70,6 +72,7 @@ public class TcManticProductosCategoriasDto implements IBaseDto, Serializable {
     setNombre(nombre);
     setNivel(nivel);
     setOrden(orden);
+    setIdProductoCategoriaArchivo(idProductoCategoriaArchivo);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
 	
@@ -145,6 +148,14 @@ public class TcManticProductosCategoriasDto implements IBaseDto, Serializable {
     this.orden = orden;
   }
 
+  public Long getIdProductoCategoriaArchivo() {
+    return idProductoCategoriaArchivo;
+  }
+
+  public void setIdProductoCategoriaArchivo(Long idProductoCategoriaArchivo) {
+    this.idProductoCategoriaArchivo = idProductoCategoriaArchivo;
+  }
+
   public void setRegistro(Timestamp registro) {
     this.registro = registro;
   }
@@ -186,6 +197,8 @@ public class TcManticProductosCategoriasDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getOrden());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdProductoCategoriaArchivo());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
   	return regresar.toString();
@@ -203,6 +216,7 @@ public class TcManticProductosCategoriasDto implements IBaseDto, Serializable {
 		regresar.put("nombre", getNombre());
 		regresar.put("nivel", getNivel());
 		regresar.put("orden", getOrden());
+		regresar.put("idProductoCategoriaArchivo", getIdProductoCategoriaArchivo());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
@@ -210,7 +224,7 @@ public class TcManticProductosCategoriasDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-      getPadre(), getUltimo(), getIdActivo(), getIdUsuario(), getIdProductoCategoria(), getPorcentaje(), getNombre(), getNivel(), getOrden(), getRegistro()
+      getPadre(), getUltimo(), getIdActivo(), getIdUsuario(), getIdProductoCategoria(), getPorcentaje(), getNombre(), getNivel(), getOrden(), getIdProductoCategoriaArchivo(), getRegistro()
     };
     return regresar;
   }

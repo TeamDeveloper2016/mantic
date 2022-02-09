@@ -56,7 +56,7 @@
                   <p:inputText placeholder="Código seguridad" id="seguridad" maxlength="18" tabindex="3" value="#{kajoolControlDescargar.attrs.seguridad}" styleClass="items Container80 Fnone MarAuto Fs18"/>
                   <p:spacer height="1"/>
                   <p:commandButton id="aceptar" tabindex="3" value="Descargar" onstart="return janal.partial('generar');" oncomplete="janal.desbloquear();" actionListener="#{kajoolControlDescargar.doRecoverTicket}" process="@this @(.items)" update="@(.refresh)"/>					
-                  <p:spacer height="1"/>
+                  <p:spacer height="1px"/>
                   <p:outputLabel value="Si el ticket &lt;span class='janal-color-black janal-font-bold'&gt;NO tiene&lt;/span&gt; código de seguridad, digite 000000000000000000" escape="false"/>
                 </p:panelGrid>
               </div>

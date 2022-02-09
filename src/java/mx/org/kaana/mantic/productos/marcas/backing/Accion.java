@@ -113,10 +113,10 @@ public class Accion extends IBaseAttribute implements Serializable {
 			if (transaccion.ejecutar(eaccion)) {
         JsfBase.setFlashAttribute("idProductoMarca", this.marca.getIdProductoMarca());
 				regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
-				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" el registro de la marca de forma correcta."), ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR)? "agregó" : "modificó").concat(" el registro de la marca de forma correcta."), ETipoMensaje.INFORMACION);
 			} // if
 			else 
-				JsfBase.addMessage("Ocurrió un error al registrar el IVA.", ETipoMensaje.ERROR);      			
+				JsfBase.addMessage("Ocurrió un error al registrar la marca", ETipoMensaje.ERROR);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -152,7 +152,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
-			JsfBase.addMessage("Importar archivo", "El archivo no pudo ser importado.", ETipoMensaje.ERROR);
+			JsfBase.addMessage("Importar archivo", "El archivo no pudo ser importado", ETipoMensaje.ERROR);
 		} // catch
 	} // doFileUpload
  

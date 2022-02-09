@@ -2,6 +2,7 @@ package mx.org.kaana.mantic.productos.beans;
 
 import java.io.Serializable;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 import mx.org.kaana.mantic.db.dto.TcManticProductosCategoriasDto;
 
 /**
@@ -16,11 +17,20 @@ public class Categoria extends TcManticProductosCategoriasDto implements Seriali
 
   private static final long serialVersionUID = 7661687020981200497L;
   
+  private Importado importado;
   private Long idPadre;
   private String texto;
   private Long valor;
   private String separador;
 
+  public Importado getImportado() {
+    return importado;
+  }
+
+  public void setImportado(Importado importado) {
+    this.importado = importado;
+  }
+  
   public String getSeparador() {
     return separador;
   }
@@ -33,12 +43,12 @@ public class Categoria extends TcManticProductosCategoriasDto implements Seriali
     super(-1L);
   }
 
-  public Categoria(String padre, Long ultimo, Long idActivo, Long idUsuario, Long idProductoCategoria, Long porcentaje, String nombre, Long nivel, Long orden) {
-    this(padre, ultimo, idActivo, idUsuario, idProductoCategoria, porcentaje, nombre, nivel, orden, -1L, Constantes.SEPARADOR);
+  public Categoria(String padre, Long ultimo, Long idActivo, Long idUsuario, Long idProductoCategoria, Long porcentaje, String nombre, Long nivel, Long orden, Long idProductoCategoriaArchivo) {
+    this(padre, ultimo, idActivo, idUsuario, idProductoCategoria, porcentaje, nombre, nivel, orden, -1L, Constantes.SEPARADOR, idProductoCategoriaArchivo);
   }
 
-  public Categoria(String padre, Long ultimo, Long idActivo, Long idUsuario, Long idProductoCategoria, Long porcentaje, String nombre, Long nivel, Long orden, Long idPadre, String separador) {
-    super(padre, ultimo, idActivo, idUsuario, idProductoCategoria, porcentaje, nombre, nivel, orden);
+  public Categoria(String padre, Long ultimo, Long idActivo, Long idUsuario, Long idProductoCategoria, Long porcentaje, String nombre, Long nivel, Long orden, Long idPadre, String separador, Long idProductoCategoriaArchivo) {
+    super(padre, ultimo, idActivo, idUsuario, idProductoCategoria, porcentaje, nombre, nivel, orden, idProductoCategoriaArchivo);
     this.idPadre= idPadre;
     this.separador= separador;
     this.texto= nombre;
@@ -87,7 +97,8 @@ public class Categoria extends TcManticProductosCategoriasDto implements Seriali
       this.getNivel(), // Long nivel, 
       this.getOrden(), // Long orden
       this.getIdPadre(),  // Long idPadre
-      this.getSeparador() // String separador
+      this.getSeparador(), // String separador
+      this.getIdProductoCategoriaArchivo()
     );
   }
 }

@@ -1,5 +1,6 @@
 package mx.org.kaana.mantic.productos.categorias.backing;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,26 +12,35 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
+import mx.org.kaana.mantic.db.dto.TcManticArchivosDto;
 import mx.org.kaana.mantic.productos.backing.Contenedor;
 import mx.org.kaana.mantic.productos.categorias.reglas.Transaccion;
 import mx.org.kaana.mantic.productos.beans.Categoria;
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.TreeNode;
 
 @Named(value = "manticProductosCategoriasFiltro")
 @ViewScoped
 public class Filtro extends Contenedor implements Serializable {
 
-  private static final long serialVersionUID = 8793667741599428369L;
+  private static final long serialVersionUID= 8793667741599428369L;
+	private static final String BYTES         = " Bytes";	
+	private static final String K_BYTES       = " Kb";	
 
   private Categoria categoria;
   private EAccion accion;
+  private String path;
 
   public Categoria getCategoria() {
     return categoria;
@@ -52,6 +62,10 @@ public class Filtro extends Contenedor implements Serializable {
     return this.accion.getName();
   }
   
+	public String getPath() {
+    return path;
+  }
+  
   @PostConstruct
   @Override
   protected void init() {
@@ -59,6 +73,8 @@ public class Filtro extends Contenedor implements Serializable {
       this.attrs.put("idActivo", -1L);
       this.doLoad("", 1L, null);
       this.accion= EAccion.AGREGAR;
+      String dns= Configuracion.getInstance().getPropiedadServidor("sistema.dns");
+      this.path = dns.substring(0, dns.lastIndexOf("/")+ 1).concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/galeria/").concat(String.valueOf(JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende())).concat("/categorias/");      
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -78,7 +94,8 @@ public class Filtro extends Contenedor implements Serializable {
       father.toLong("nivel")+ 1L, // Long nivel, 
       1L, // Long orden
       father.toLong("idProductoCategoria"),  // Long idPadre
-      Constantes.SEPARADOR      
+      Constantes.SEPARADOR,
+      null      
     );
   }
   
@@ -88,6 +105,12 @@ public class Filtro extends Contenedor implements Serializable {
       params = new HashMap<>();      
       params.put("idProductoCategoria", father.toLong("idProductoCategoria"));      
       this.categoria= (Categoria)DaoFactory.getInstance().toEntity(Categoria.class, "TcManticProductosCategoriasDto", "existe", params);
+      if(this.categoria.getIdProductoCategoriaArchivo()!= null) {
+        params.put("idProductoCategoriaArchivo", this.categoria.getIdProductoCategoriaArchivo());
+        this.categoria.setImportado((Importado)DaoFactory.getInstance().toEntity(Importado.class, "TcManticProductosCategoriasArchivosDto", "igual", params));
+      } // if
+      else
+        this.categoria.setImportado(new Importado());
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -210,5 +233,44 @@ public class Filtro extends Contenedor implements Serializable {
 		} // catch
 		return "/Paginas/Mantic/Productos/accion".concat(Constantes.REDIRECIONAR);
   } // doProductos
+ 
+	public void doFileUpload(FileUploadEvent event) {
+		String root    = null;  
+		String nameFile= Archivo.toFormatNameFile(event.getFile().getFileName().toUpperCase());
+    File result    = null;		
+		Long fileSize  = 0L;
+		File filePath  = null;
+		try {
+			root= Configuracion.getInstance().getPropiedadSistemaServidor("path.image").concat(String.valueOf(JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende())).concat("/categorias/");
+			result  = new File(root.concat(nameFile));		
+			filePath= new File(root);
+			if (!filePath.exists())
+				filePath.mkdirs();
+			if (result.exists())
+				result.delete();			      
+			Archivo.toWriteFile(result, event.getFile().getInputstream());
+			fileSize= event.getFile().getSize();
+			this.categoria.setImportado(new Importado(nameFile, event.getFile().getContentType(), EFormatos.JPG, event.getFile().getSize(), fileSize.equals(0L)? fileSize: fileSize/1024, event.getFile().equals(0L)? BYTES: K_BYTES, root, root.concat(nameFile), event.getFile().getFileName().toUpperCase()));      
+      //**
+			this.toSaveFileRecord(event.getFile().getFileName().toUpperCase(), this.categoria.getImportado().getRuta(), this.categoria.getImportado().getRuta().concat(this.categoria.getImportado().getName()), this.categoria.getImportado().getName());
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessage("Importar archivo", "El archivo no pudo ser importado", ETipoMensaje.ERROR);
+		} // catch
+	} // doFileUpload
+  
+  private void toSaveFileRecord(String archivo, String ruta, String alias, String nombre) throws Exception {
+		TcManticArchivosDto registro= new TcManticArchivosDto(
+			archivo, // String archivo, 
+			2L, // Long idEliminado, 
+			ruta, // String ruta, 
+			JsfBase.getIdUsuario(), // Long idUsuario, 
+			alias, // String alias, 
+			-1L, // Long idArchivo, 
+			nombre // String nombre
+		);
+		DaoFactory.getInstance().insert(registro);
+	}
   
 }

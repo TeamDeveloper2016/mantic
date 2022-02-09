@@ -30,7 +30,7 @@
 								<p:inputText id="nombre" styleClass="janal-wid-100-txt" value="#{manticProductosMarcasAccion.marca.nombre}"/>                    
 								<p:outputLabel for="descripcion" value="Descripción:"/>
 								<p:inputText id="descripcion" styleClass="janal-wid-100-txt" value="#{manticProductosMarcasAccion.marca.descripcion}"/>                    
-								<p:outputLabel value="Seleccione la imagen a ser importada:"/>
+								<p:outputLabel value="Seleccione la imagen:"/>
                 <p:fileUpload update="@(.detalle)" fileUploadListener="#{manticProductosMarcasAccion.doFileUpload}" uploadLabel="Importar" cancelLabel="Cancelar" label="Seleccionar" mode="advanced" dragDropSupport="true" allowTypes="/(\.|\/)(jpe?g|png)$/" sizeLimit="5242880" invalidSizeMessage="El tamaño maximo permitido es de 5 Megabytes !" invalidFileMessage="Solo se permiten importar archivos con extensión .PNG y .JPG !" auto="true"/>																
               </p:panelGrid>
               <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100 detalle" columnClasses="janal-column-center janal-wid-100-txt">								
