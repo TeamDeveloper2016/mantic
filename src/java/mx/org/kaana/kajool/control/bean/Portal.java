@@ -59,7 +59,8 @@ public class Portal implements Serializable {
       if(fileSearch.getResult().size()> 0)
         for (String matched: fileSearch.getResult()) {
           String name= matched.substring((matched.lastIndexOf("/")< 0? matched.lastIndexOf("\\"): matched.lastIndexOf("/"))+ 1);
-          this.images.add(name);
+          if(!name.endsWith("ftpquota"))
+            this.images.add(name);
         } // for 
       LOG.error("Imagenes del portal: "+ this.images);
     } // try

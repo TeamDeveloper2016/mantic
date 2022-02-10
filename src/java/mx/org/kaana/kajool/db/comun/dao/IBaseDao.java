@@ -171,7 +171,7 @@ public abstract class IBaseDao<T extends IBaseDto> {
     try {
       if (Dml.getInstance().exists(dto.toHbmClass().getSimpleName(), Constantes.DML_IDENTICO)) {
         if (findIdentically(session, dto.toHbmClass(), dto.toMap()) != null) {
-          throw new DaoInsertIdenticallyException();
+          throw new DaoInsertIdenticallyException(dto.toHbmClass());
         }
       }
       recordKey = (Long) session.save(dto.toHbmClass().getName(), dto);

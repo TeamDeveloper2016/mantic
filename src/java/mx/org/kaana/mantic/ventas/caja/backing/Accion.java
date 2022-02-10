@@ -1899,7 +1899,6 @@ public class Accion extends IBaseVenta implements Serializable {
 		UISelectEntity ticketAbierto= null;
     Transaccion transaccion     = null;
     String regresar             = null;
-		boolean confirmacion        = false;
     try {				
 			ticketAbierto= (UISelectEntity) this.attrs.get("ticketAbierto");			
 			if(ticketAbierto== null && !this.getAdminOrden().getArticulos().isEmpty() && (this.getAdminOrden().getArticulos().size() > 1 || (this.getAdminOrden().getArticulos().size()== 1 && (this.getAdminOrden().getArticulos().get(0).getIdArticulo()!= null && !this.getAdminOrden().getArticulos().get(0).getIdArticulo().equals(-1L)))) && this.getAdminOrden().getTotales().getImporte()> 0D) {
@@ -1917,9 +1916,8 @@ public class Accion extends IBaseVenta implements Serializable {
 			ticketVenta.setUtilidad(this.getAdminOrden().getTotales().getUtilidad());
       boolean imprimir= Objects.equals(ticketVenta.getIdVentaEstatus(), EEstatusVentas.ELABORADA.getIdEstatusVenta());
       transaccion = new Transaccion(ticketVenta, this.getAdminOrden().getArticulos());
-			confirmacion= transaccion.ejecutar(EAccion.MOVIMIENTOS);				
-			if(!confirmacion)
-				JsfBase.addMessage("Ocurrió un error al generar la cotización.", ETipoMensaje.ERROR);			  
+			if(!transaccion.ejecutar(EAccion.MOVIMIENTOS))
+				JsfBase.addMessage("Ocurrió un error al generar la cotización", ETipoMensaje.ERROR);			  
       else
         if(imprimir) {
 				  ((TicketVenta)(((AdminTickets)getAdminOrden()).getOrden())).setCotizacion(transaccion.getCotizacion());

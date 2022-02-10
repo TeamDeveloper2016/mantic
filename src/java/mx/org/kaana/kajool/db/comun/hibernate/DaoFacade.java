@@ -213,7 +213,7 @@ public class DaoFacade<P extends IBaseDto> extends IBaseDao {
     try {
       if (Dml.getInstance().exists(dto.toHbmClass().getSimpleName(), Constantes.DML_IDENTICO)) {
         if (findIdentically(session, dto.toHbmClass(), dto.toMap()) != null) {
-          throw new DaoInsertIdenticallyException();
+          throw new DaoInsertIdenticallyException(dto.toHbmClass());
         }
       }
       regresar = super.insert(session, dto);
@@ -240,7 +240,7 @@ public class DaoFacade<P extends IBaseDto> extends IBaseDao {
     Long regresar = -1L;
     try {
       if (findIdentically(idFuenteDatos, dto.toHbmClass(), dto.toMap()) != null) {
-        throw new DaoInsertIdenticallyException();
+        throw new DaoInsertIdenticallyException(dto.toHbmClass());
       } // if
       regresar = super.insert(idFuenteDatos, dto);
     } // try

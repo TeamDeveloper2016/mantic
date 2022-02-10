@@ -232,7 +232,7 @@ public class Transaccion extends TransaccionFactura {
 					break;
 				case MOVIMIENTOS:
 					idEstatusVenta= EEstatusVentas.ABIERTA.getIdEstatusVenta();
-					regresar= this.orden.getIdVenta()!= null && !this.orden.getIdVenta().equals(-1L) ? this.actualizarVenta(sesion, idEstatusVenta): registrarVenta(sesion, idEstatusVenta);					
+					regresar= this.orden.getIdVenta()!= null && !this.orden.getIdVenta().equals(-1L) ? this.actualizarVenta(sesion, idEstatusVenta): this.registrarVenta(sesion, idEstatusVenta);					
 					break;
 				case LISTAR:
 					//Procesar servicio de taller
@@ -276,11 +276,15 @@ public class Transaccion extends TransaccionFactura {
 		this.orden.setOrden(consecutivo.getOrden());
 		this.orden.setIdVentaEstatus(idEstatusVenta);
 		this.orden.setEjercicio(new Long(Fecha.getAnioActual()));
+    
 		if(this.orden.getIdCliente()< 0)
 			this.orden.setIdCliente(this.toClienteDefault(sesion));
-		regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
+    if(this.orden.isValid())
+		  regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
+    else
+		  regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
 		if(regresar)
-		  regresar= registraBitacora(sesion, this.orden.getIdVenta(), idEstatusVenta, "");
+		  regresar= this.registraBitacora(sesion, this.orden.getIdVenta(), idEstatusVenta, "");
 		this.toFillArticulos(sesion);				
 		return regresar;
 	} // registrarVenta
@@ -307,11 +311,11 @@ public class Transaccion extends TransaccionFactura {
 			if(this.orden.getIdBanco()!= null && this.orden.getIdBanco()<= -1L)
 				this.orden.setIdBanco(null);
 			regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
-			if(registraBitacora(sesion, this.orden.getIdVenta(), idEstatusVenta, "")) {
+			if(this.registraBitacora(sesion, this.orden.getIdVenta(), idEstatusVenta, "")) {
 				params= new HashMap<>();
 				params.put("idVenta", this.orden.getIdVenta());
 				regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticVentasDetallesDto.class, params)>= 1;
-				toFillArticulos(sesion);
+				this.toFillArticulos(sesion);
 			} // if
 		} // try		
 		finally{
@@ -736,4 +740,25 @@ public class Transaccion extends TransaccionFactura {
 		regresar= new Date(calendar.getTimeInMillis());		
 		return regresar;
 	} // toLimiteCredito
+  
+	protected Siguiente toSiguienteTicket(Session sesion) throws Exception {
+		Siguiente regresar        = null;
+		Map<String, Object> params= null;
+		try {
+			params=new HashMap<>();
+			params.put("ejercicio", this.getCurrentYear());
+			params.put("idEmpresa", getOrden().getIdEmpresa());
+			params.put("operador", this.getCurrentSign());
+			Value next= DaoFactory.getInstance().toField(sesion, "TcManticVentasDto", "siguienteTicket", params, "siguiente");
+			if(next!= null && next.getData()!= null)
+				regresar= new Siguiente(next.toLong());
+			else
+				regresar= new Siguiente(Configuracion.getInstance().isEtapaDesarrollo()? 900001L: 1L);
+		} // try		
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toSiguienteTicket
+  
 } 
