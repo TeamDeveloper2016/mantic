@@ -233,6 +233,7 @@ public class Transaccion extends TransaccionFactura {
 				case MOVIMIENTOS:
 					idEstatusVenta= EEstatusVentas.ABIERTA.getIdEstatusVenta();
 					regresar= this.orden.getIdVenta()!= null && !this.orden.getIdVenta().equals(-1L) ? this.actualizarVenta(sesion, idEstatusVenta): this.registrarVenta(sesion, idEstatusVenta);					
+          sesion.flush();
 					break;
 				case LISTAR:
 					//Procesar servicio de taller
@@ -265,27 +266,32 @@ public class Transaccion extends TransaccionFactura {
 	private boolean registrarVentaCotizacion(Session sesion, Long idEstatusVenta, boolean cotizacion) throws Exception {
 		boolean regresar     = false;
 		Siguiente consecutivo= null;
-		Siguiente siguiente  = null;		
-		if(cotizacion) {
-			siguiente= this.toSiguienteCotizacion(sesion);
-			this.orden.setCcotizacion(siguiente.getOrden());
-			this.orden.setCotizacion(siguiente.getConsecutivo());
-		} // if
-		consecutivo= this.toSiguiente(sesion);			
-		this.orden.setConsecutivo(consecutivo.getOrden());			
-		this.orden.setOrden(consecutivo.getOrden());
-		this.orden.setIdVentaEstatus(idEstatusVenta);
-		this.orden.setEjercicio(new Long(Fecha.getAnioActual()));
-    
-		if(this.orden.getIdCliente()< 0)
-			this.orden.setIdCliente(this.toClienteDefault(sesion));
-    if(this.orden.isValid())
-		  regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
-    else
-		  regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
-		if(regresar)
-		  regresar= this.registraBitacora(sesion, this.orden.getIdVenta(), idEstatusVenta, "");
-		this.toFillArticulos(sesion);				
+		Siguiente siguiente  = null;
+    try {
+      if(cotizacion) {
+        siguiente= this.toSiguienteCotizacion(sesion);
+        this.orden.setCcotizacion(siguiente.getOrden());
+        this.orden.setCotizacion(siguiente.getConsecutivo());
+      } // if
+      consecutivo= this.toSiguienteVenta(sesion);			
+      this.orden.setConsecutivo(consecutivo.getOrden());			
+      this.orden.setOrden(consecutivo.getOrden());
+      this.orden.setIdVentaEstatus(idEstatusVenta);
+      this.orden.setEjercicio(new Long(Fecha.getAnioActual()));
+
+      if(this.orden.getIdCliente()< 0)
+        this.orden.setIdCliente(this.toClienteDefault(sesion));
+      if(this.orden.isValid())
+        regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
+      else
+        regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
+      if(regresar)
+        regresar= this.registraBitacora(sesion, this.orden.getIdVenta(), idEstatusVenta, "");
+      this.toFillArticulos(sesion);				
+    } // try
+    catch(Exception e) {
+      throw e;
+    } // catch
 		return regresar;
 	} // registrarVenta
 	
@@ -298,7 +304,7 @@ public class Transaccion extends TransaccionFactura {
       String venta= Fecha.formatear(Fecha.FECHA_ESTANDAR, this.orden.getRegistro());
       // SI ES UNA COTIZACIÓN ENTONCES ACTUALIZAR LA FECHA Y EL NUMERO DE CUENTA DEL DÍA 
       if(Objects.equals(this.orden.getIdVentaEstatus(), EEstatusVentas.COTIZACION.getIdEstatusVenta()) && !Objects.equals(hoy, venta)) {
-        consecutivo= this.toSiguiente(sesion);			
+        consecutivo= this.toSiguienteVenta(sesion);			
         this.orden.setConsecutivo(consecutivo.getOrden());			
         this.orden.setOrden(consecutivo.getOrden());
         this.orden.setDia(new Date(Calendar.getInstance().getTimeInMillis()));
@@ -352,7 +358,7 @@ public class Transaccion extends TransaccionFactura {
 		} // for
 	} // toFillArticulos
 	
-	protected Siguiente toSiguiente(Session sesion) throws Exception {
+	protected Siguiente toSiguienteVenta(Session sesion) throws Exception {
 		Siguiente regresar        = null;
 		Map<String, Object> params= null;
 		try {

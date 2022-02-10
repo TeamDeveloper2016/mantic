@@ -723,7 +723,6 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		} // for
 	} // toFillArticulos
 	
-  @Override
 	protected Siguiente toSiguiente(Session sesion) throws Exception {
 		Siguiente regresar        = null;
 		Map<String, Object> params= null;
@@ -1456,7 +1455,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		try {									
       params = new HashMap<>();      
       TcManticVentasDto venta= (TcManticVentasDto)DaoFactory.getInstance().findById(sesion, TcManticVentasDto.class, this.idVenta);
-      cuenta= super.toSiguiente(sesion);			
+      cuenta= super.toSiguienteVenta(sesion);			
       this.getOrden().setConsecutivo(cuenta.getOrden());			
       this.getOrden().setOrden(cuenta.getOrden());
       this.getOrden().setIdUsuario(JsfBase.getIdUsuario());
