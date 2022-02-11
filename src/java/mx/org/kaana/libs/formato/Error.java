@@ -54,8 +54,8 @@ public final class Error {
   }
 
   public static void mensaje(Throwable exception, String propio)  {
+    exception.printStackTrace();
     if (Configuracion.getInstance().getPropiedad("sistema.log.error.".concat(Configuracion.getInstance().getPropiedad("sistema.servidor"))).equals("si")) {
-      exception.printStackTrace();
       StackTraceElement[] stackTraceElements= exception.getStackTrace();
       Object[] valores= new Object[] {stackTraceElements[0].getClassName(), stackTraceElements[0].getMethodName(), propio};
       LOG.error(MessageFormat.format(getMensaje(), valores));

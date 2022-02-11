@@ -6677,6 +6677,42 @@
 			</select>			
 		</unit>
 		<unit id="VistaOrdenesComprasDto">
+			<select id="galeria">
+				select 
+					tc_mantic_articulos_codigos.id_articulo_codigo as id_key,
+				  tc_mantic_articulos.id_articulo,
+				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio,
+				  tc_mantic_articulos.nombre,
+          ifnull(tc_mantic_imagenes.id_imagen, -1) as id_imagen,
+				  concat(tc_mantic_articulos.id_empresa, '/', ifnull(tc_mantic_imagenes.archivo, 'sin-foto.png')) as archivo,
+				  max(ifnull(tc_mantic_productos_detalles.id_producto, 0)) as id_producto,
+				  concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre) as categoria,
+				  tc_mantic_productos_marcas.nombre as marca
+				from 
+					tc_mantic_articulos
+				inner join
+					tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo= tc_mantic_articulos_codigos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1
+				inner join 
+					tc_mantic_empresas on tc_mantic_articulos.id_empresa = tc_mantic_empresas.id_empresa								
+				left join
+				  tc_mantic_imagenes on tc_mantic_articulos.id_imagen= tc_mantic_imagenes.id_imagen
+				left join
+				  tc_mantic_productos_detalles on tc_mantic_articulos.id_articulo= tc_mantic_productos_detalles.id_articulo
+				left join
+				  tc_mantic_productos on tc_mantic_productos.id_producto= tc_mantic_productos_detalles.id_producto
+				left join
+				  tc_mantic_productos_categorias on tc_mantic_productos.id_producto_categoria= tc_mantic_productos_categorias.id_producto_categoria
+				left join
+ 				  tc_mantic_productos_marcas on tc_mantic_productos.id_producto_marca= tc_mantic_productos_marcas.id_producto_marca
+				where 
+				  tc_mantic_articulos.id_articulo_tipo= 1
+				  and tc_mantic_articulos.id_vigente= 1
+				  and (concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre) regexp '.*{codigo}.*' or tc_mantic_productos_marcas.nombre regexp '.*{codigo}.*')
+				group by
+				  tc_mantic_articulos.id_articulo  
+				order by 
+				  tc_mantic_articulos.nombre
+      </select>  
 			<select id="porAmbos">
 				select 
 				  tc_mantic_articulos_codigos.id_articulo_codigo as id_key,

@@ -9,6 +9,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import mx.org.kaana.kajool.control.enums.EBusqueda;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -111,8 +112,7 @@ public class BaseMenu extends IBaseImportar implements Serializable {
         for (Entity entity: menu) {
           item= new DefaultMenuItem(entity.toString("categoria"));
           item.setIcon("fa ".concat(entity.toString("icon")));
-//          item.setCommand("#{kajoolAccesoIndice.doOpcion(0)}");
-//          item.setOncomplete("showOpcion(0); categoria('".concat(entity.toString("nombre")).concat("');"));
+          item.setOncomplete("galeriaPrincipal('".concat(entity.toString("nombre")).concat("', 'CATEGORIA');"));
           sub.addElement(item);      
         } // for
       } // if  
@@ -123,8 +123,7 @@ public class BaseMenu extends IBaseImportar implements Serializable {
         for (Entity entity: marcas) {
           item= new DefaultMenuItem(entity.toString("descripcion"));
           item.setIcon("fa fa-picture-o");
-//          item.setCommand("#{kajoolAccesoIndice.doOpcion(1)}");
-//          item.setOncomplete("showOpcion(1); procesar('".concat(entity.toString("descripcion")).concat("');"));
+          item.setOncomplete("galeriaPrincipal('".concat(entity.toString("descripcion")).concat("', 'MARCA');"));
           sub.addElement(item);      
         } // for
       } // if  
@@ -185,6 +184,11 @@ public class BaseMenu extends IBaseImportar implements Serializable {
 
   public void doSearchMain(String codigo) {
     JsfBase.setFlashAttribute("codigo", codigo);
+  }
+
+  public void doSearchOther(String codigo, String busqueda) {
+    JsfBase.setFlashAttribute("codigo", codigo);
+    JsfBase.setFlashAttribute("busqueda", EBusqueda.valueOf(busqueda));
   }
   
 }

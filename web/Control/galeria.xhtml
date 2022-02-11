@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+  xmlns:pe="http://primefaces.org/ui/extensions"
+	template="/WEB-INF/plantillas/portada.xhtml">
+	<ui:define name="librerias">
+		<script type="text/javascript">
+			Janal.Control.errors = 2;
+			Janal.Control.fields = {
+			};
+			//<![CDATA[
+			$(document).ready(function() {
+        $('input.janal-codigo-buscar').val('#{kajoolControlGaleria.attrs.codigo}');
+			});
+			//]]>
+		</script> 
+		<style type="text/css">
+    </style>
+	</ui:define>
+	<ui:define name="contenido">  	
+    <p:spacer height="2px"/>
+    <pe:remoteCommand name="busquedaArticulos" process="@this" actionListener="#{kajoolControlGaleria.doLoadArticulos}" update="tabla">  
+      <pe:methodSignature parameters="java.lang.String"/>  
+      <pe:methodParam name="codigo"/>  
+    </pe:remoteCommand>
+    <div id="janal-opcion-4" class="opciones">
+      <center style="margin-left: 5%; margin-right: 5%;">
+        <p:dataGrid lazy="true" id="tabla" var="row" value="#{kajoolControlGaleria.lazyModel}" columns="4" layout="grid" rows="12" paginator="#{kajoolControlGaleria.lazyModel.rowCount gt kajoolControlGaleria.lazyModel.pageSize}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="6,12,16" paginatorPosition="bottom" rowIndexVar="index" style="display: #{empty(kajoolControlGaleria.lazyModel)? 'none': ''}">
+          <p:panel header="#{row['propio']}" styleClass="janal-column-center">
+            <p:panelGrid columns="1" styleClass="janal-column-center">
+              <h:outputText value="#{row['marca']}" styleClass="janal-color-black janal-font-bold" style="float: left;"/>
+              <a id="tabla:#{index}:source-image" class="janal-control-imagen" data-magnify="gallery" data-caption="#{row['nombre']}" data-group="icon-image" href="#{kajoolControlGaleria.pathImage}#{row.archivo.toString}" title="Ver imagen" style="display: #{row.idImagen.toLong eq 0? 'none': ''}">
+                <p:graphicImage url="#{kajoolControlGaleria.pathImage}#{row.archivo.toString}" width="220" height="250" style="cursor:zoom-in;"/>
+              </a>	
+              <h:outputText value="#{row['nombre']}"/>
+              <p:commandLink process="@this" action="#{kajoolControlGaleria.doLoadDetalle}" value="[ VER MAS ]" title="Ver detalle" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" rendered="#{row.idProducto.toLong gt 0}">
+                <f:setPropertyActionListener value="#{row}" target="#{kajoolControlGaleria.attrs.seleccionado}" />
+              </p:commandLink>
+            </p:panelGrid>          
+          </p:panel>  
+          <f:facet name="footer">
+            Total [#{kajoolControlGaleria.lazyModel== null? 0: kajoolControlGaleria.lazyModel.rowCount}] registros
+          </f:facet>
+        </p:dataGrid>        
+      </center>  
+    </div>  
+	</ui:define>
+	<ui:param name="componenteBloqueo" value="tabla"/>
+	<ui:param name="showSearchButton"  value="active"/>
+</ui:composition>
