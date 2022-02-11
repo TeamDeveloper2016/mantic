@@ -48,13 +48,13 @@
         <div id="login-box" class="janal-only-out-lines Container80 MaxWid500 Fnone MarAuto BordRad10">
           <div class="Container100">
             <div class="janal-content-center">
-              <div class="Container100 TexAlCenter Animated05 BoxSizeBorder TabBtn left TabBtnActiveLeft" role="1">
+              <div class="Container100 TexAlCenter Animated05 BoxSizeBorder TabBtn left TabBtnActiveLeft" panel="1">
                 <div class="Container80 Fnone MarAuto"><i class="fa fa-cloud-download"></i>  Facturación</div>
               </div>
-              <div class="Container50 TexAlCenter Animated05 BoxSizeBorder TabBtn right" role="2" style="display:none;">
+              <div class="Container50 TexAlCenter Animated05 BoxSizeBorder TabBtn right" panel="2" style="display:none;">
                 <div id="downloadGenerar" class="Container80 Fnone MarAuto"><i class="fa fa-files-o"></i>  Datos del ticket</div>
               </div>
-              <div id="tab_3" class="Container90 Fnone MarAuto TexAlCenter TabContent">										
+              <div id="tab_1" class="Container90 Fnone MarAuto TexAlCenter TabContent">										
                 <p:panelGrid layout="grid" columns="1">
                   <p:outputLabel for="rfc" value="RFC:" styleClass="Fs16"/>
                   <p:inputText placeholder="ej. ADRC760130L95" id="rfc" maxlength="13" tabindex="1" value="#{kajoolControlGenerar.attrs.rfc}" styleClass="items Container80 Fnone MarAuto Fs18"/>
@@ -78,7 +78,7 @@
                   <p:outputLabel value="El ticket tiene que ser &lt;span class='janal-color-black janal-font-bold'&gt;mayor o igual a $50.0 MX&lt;/span&gt; para poder generar la factura" escape="false"/>
                 </p:panelGrid>
               </div>
-              <div id="tab_4" class="Container90 Fnone MarAuto TexAlCenter TabContent DispNone">
+              <div id="tab_2" class="Container90 Fnone MarAuto TexAlCenter TabContent DispNone">
                 <p:panelGrid layout="grid" columns="1" styleClass="refresh">
                   <p:spacer width="10%"/>
                   <p:commandLink title="Click para descargar el documento" rendered="#{kajoolControlGenerar.existsPdf}" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" process="@this tab_4">

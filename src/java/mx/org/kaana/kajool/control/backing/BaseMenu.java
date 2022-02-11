@@ -163,7 +163,7 @@ public class BaseMenu extends IBaseImportar implements Serializable {
       if(this.attrs.get("xmlFile")== null || this.attrs.get("pdfFile")== null) 
         JsfBase.addAlert("Error", "La factura no existe con los datos propocionados !", ETipoMensaje.ERROR);
       else 
-        UIBackingUtilities.execute("$(\"div[role='1']\").removeClass('Container100');$(\"div[role]\").addClass('Container50');$(\"div[role='2']\").show();$('#download').click();");
+        UIBackingUtilities.execute("$(\"div[panel='1']\").removeClass('Container100');$(\"div[panel]\").addClass('Container50');$(\"div[panel='2']\").show();$('#download').click();");
 		} // try
 		catch (Exception e) {
 			mx.org.kaana.libs.formato.Error.mensaje(e);

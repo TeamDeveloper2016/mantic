@@ -16,7 +16,7 @@
 			<link rel="shortcut icon" type="image/ico" href="#{kajoolUtilAplicacion.defaultResourceImg}/sistema/favicon.ico.jsf?ln=janal"/>
 			<h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryJs}"/>
 			<h:outputText escape="false" value="#{kajoolUtilAplicacion.defaultScripts}"/>
-			<h:outputScript library="sentinel" name="js/jquery.sentinel.login-1.0.0.js"/>
+			<h:outputScript library="sentinel" name="js/jquery.sentinel.login-1.0.1.js"/>
 			<h:outputScript library="janal" name="js/jquery.janal.capcha-1.0.0.js"/>
 			<h:outputText escape="false" value="#{kajoolUtilAplicacion.defaultCss}"/>
 			<ui:insert name="librerias"/>
@@ -46,9 +46,9 @@
 				<p:layoutUnit position="north" style="border:0; width:100%;" >
 					<ui:include src="/WEB-INF/plantillas/secciones/banner.xhtml"/>
 				</p:layoutUnit>
-				<p:layoutUnit id="principal" position="center" size="100%" style="border:0;width:100%" gutter="0" styleClass="sticky-wrapper">
+				<p:layoutUnit id="principal" position="center" size="100%" style="border:0; width:100%" gutter="0" styleClass="sticky-wrapper">
 					<h:form id="datos" prependId="false">
-						<p:growl for="growl-key" globalOnly="true" autoUpdate="true" id="mensaje" showSummary="false" showDetail="true" sticky="true"  widgetVar="mensajes"  escape="false" life="3000"/>
+						<p:growl for="growl-key" globalOnly="true" autoUpdate="true" id="mensaje" showSummary="false" showDetail="true" sticky="true" widgetVar="mensajes"  escape="false" life="3000"/>
             <pe:remoteCommand name="busquedaPrincipal" process="@this" action="/Control/articulos.jsf?faces-redirect=true" actionListener="#{kajoolControlBaseMenu.doSearchMain}">  
               <pe:methodSignature parameters="java.lang.String"/>  
               <pe:methodParam name="codigo"/>  
@@ -63,7 +63,7 @@
 								</f:facet>
 							</p:ajaxStatus>
 						</div>
-            <p:menubar model="#{kajoolControlBaseMenu.model}" styleClass="janal-wid-100-txt"/>
+            <p:menubar widgetVar="janal-menu-portal" model="#{kajoolControlBaseMenu.model}" styleClass="janal-wid-100-txt"/>
   					<ui:insert name="contenido"/>
             <p:blockUI block="principal" widgetVar="bloqueo" trigger="#{componenteBloqueo}">
               <i class="fa fa-spinner fa-spin fa-2x"></i>

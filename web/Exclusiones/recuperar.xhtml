@@ -22,10 +22,10 @@
     </script>
   </ui:define>
   <ui:define name="contenido">  		
-    <div class="Container100 TexAlCenter Animated05 BoxSizeBorder TabBtn left TabBtnActiveLeft" role="1">
+    <div class="Container100 TexAlCenter Animated05 BoxSizeBorder TabBtn left TabBtnActiveLeft" panel="1">
 			Recuperar contraseña
 		</div>
-		<div class="Container100 Fnone MarAuto TexAlCenter TabContent"  id="tab_1">										
+		<div id="tab_1" class="Container100 Fnone MarAuto TexAlCenter TabContent">
 			<p:panelGrid layout="grid" columns="1">
 				<p:spacer width="3%"/>
 				<p:inputText id="cuentaRecuperar" value="#{kajoolRecuperar.cliente.cuenta}" placeholder="Cuenta" tabindex="1" styleClass="Container80 Fnone MarAuto Fs18"/>
