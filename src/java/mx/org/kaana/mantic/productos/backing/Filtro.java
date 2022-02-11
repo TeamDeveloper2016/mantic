@@ -84,7 +84,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		if(!Cadena.isVacio(this.attrs.get("categoria")))
   		sb.append("(concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre) like '%").append(this.attrs.get("categoria")).append("%') and ");
 		if(!Cadena.isVacio(this.attrs.get("marca")))
-  		sb.append("(tc_mantic_productos.marca like '%").append(this.attrs.get("marca")).append("%') and ");
+  		sb.append("(tc_mantic_productos_marcas.nombre like '%").append(this.attrs.get("marca")).append("%') and ");
 		if(!Cadena.isVacio(this.attrs.get("nombre")))
   		sb.append("(tc_mantic_productos.nombre like '%").append(this.attrs.get("nombre")).append("%') and ");
 		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))

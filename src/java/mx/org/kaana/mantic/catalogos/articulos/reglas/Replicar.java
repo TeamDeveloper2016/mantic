@@ -145,9 +145,11 @@ public final class Replicar extends IBaseTnx implements Serializable {
       for (Imagen item: this.delete) {
         if(this.deleteImagen(sesion, item.getIdProducto(), item.getArticulos(), item.getIdImage())) {
           TcManticProductosDto producto= (TcManticProductosDto)DaoFactory.getInstance().findById(sesion, TcManticProductosDto.class, item.getIdProducto());
-          producto.setIdImagen(null);
-          DaoFactory.getInstance().update(sesion, producto);
-          sesion.flush();
+          if(Objects.equals(producto.getIdImagen(), item.getIdImage())) {
+            producto.setIdImagen(null);
+            DaoFactory.getInstance().update(sesion, producto);
+            sesion.flush();
+          } // if  
           params.put("idImagen", item.getIdImage()); 
           DaoFactory.getInstance().delete(sesion, TcManticImagenesDto.class, item.getIdImage());
           File file= new File(item.getOriginal());

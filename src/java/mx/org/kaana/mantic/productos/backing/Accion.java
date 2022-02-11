@@ -471,9 +471,9 @@ public class Accion extends Contenedor implements Serializable {
 			root= Configuracion.getInstance().getPropiedadSistemaServidor("path.image").concat(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString()).concat("/");
 			result  = new File(root.concat(nameFile));		
 			filePath= new File(root);
-			if (!filePath.exists())
+			if(!filePath.exists())
 				filePath.mkdirs();
-			if (result.exists())
+			if(result.exists())
 				result.delete();			      
 			Archivo.toWriteFile(result, event.getFile().getInputstream());
 			fileSize= event.getFile().getSize();
@@ -502,14 +502,12 @@ public class Accion extends Contenedor implements Serializable {
 	}
  
   private void toAsignImage() {
-    Map<String, Object> params= null;
+    Map<String, Object> params= new HashMap<>();
     try {
-      params = new HashMap<>();      
       if(Objects.equals(this.producto.getProducto().getIdImagen(), -1L))
         this.imagen= null;
       else 
         if(this.imagen== null || (this.imagen.getImportado()!= null && !Objects.equals(this.producto.getProducto().getIdImagen(), this.imagen.getImportado().getId()))) {
-          params= new HashMap<>();      
           params.put("idImagen", this.producto.getProducto().getIdImagen());
           this.imagen= new ArticuloImagen((Importado)DaoFactory.getInstance().toEntity(Importado.class, "TcManticImagenesDto", "igual", params));
           if(this.imagen!= null && this.imagen.getImportado()!= null) {
