@@ -118,6 +118,8 @@ public class Transaccion extends IBaseTnx {
     Boolean regresar          = Boolean.FALSE;
 		Map<String, Object> params= new HashMap<>();
 		try {
+      LOG.error("Producto: "+ this.producto);
+      LOG.error("Individual: "+ this.producto.getProducto());
       if(!Objects.equals(this.producto.getProducto().getIdProductoCategoria(), this.producto.getIkProductoCategoria())) {
         // RENUMERAR LOS HIJOS DEL LA CATEGORIA Y CALCULAR EL MAXIMO DE LA NUEVA CATEGORIA
         params.put("idProductoCategoria", this.producto.getProducto().getIdProductoCategoria());
@@ -137,6 +139,7 @@ public class Transaccion extends IBaseTnx {
         this.toArticulos(sesion);
         this.toCaracteristicas(sesion);
         this.checkImage(sesion);
+        LOG.error("checkImage");
       } // if  
     } // try
     catch (Exception e) {
@@ -315,17 +318,19 @@ public class Transaccion extends IBaseTnx {
  
   public Boolean checkImage(Session sesion) throws Exception {
     Boolean regresar= Boolean.FALSE;
+    Long idArticulo = -1L;
     try {
       StringBuilder sb= new StringBuilder();
+      LOG.error("Imagen: "+ this.imagen);
       if(this.imagen!=null && this.producto.getArticulos()!= null && !this.producto.getArticulos().isEmpty()) {
-        Long idArticulo= -1L;
         for (Partida item: this.producto.getArticulos()) {
           if(!Objects.equals(item.getAction(), ESql.DELETE))
             idArticulo= item.getIdArticulo();
           sb.append(item.getIdArticulo()).append(", ");
         } // for  
         sb.delete(sb.length()- 2, sb.length());
-        if(!Objects.equals(idArticulo, -1L)) {
+        if(!Objects.equals(idArticulo, -1L) && this.imagen.getImportado()!= null) {
+          LOG.error("Importado: "+ this.imagen.getImportado());
           if(this.imagen.getImportado().getId()< 0) {
             String name= this.imagen.getImportado().getName();
             String file= Archivo.toFormatNameFile(idArticulo.toString().concat(".").concat(name.substring(name.lastIndexOf(".")+ 1, name.length())), "IMG");

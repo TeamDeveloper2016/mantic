@@ -55,9 +55,10 @@ public final class Error {
 
   public static void mensaje(Throwable exception, String propio)  {
     if (Configuracion.getInstance().getPropiedad("sistema.log.error.".concat(Configuracion.getInstance().getPropiedad("sistema.servidor"))).equals("si")) {
-      // StackTraceElement[] stackTraceElements= exception.getStackTrace();
-      // Object[] valores= new Object[] {stackTraceElements[0].getClassName(), stackTraceElements[0].getMethodName(), propio};
-      // LOG.error(MessageFormat.format(getMensaje(), valores));
+      exception.printStackTrace();
+      StackTraceElement[] stackTraceElements= exception.getStackTrace();
+      Object[] valores= new Object[] {stackTraceElements[0].getClassName(), stackTraceElements[0].getMethodName(), propio};
+      LOG.error(MessageFormat.format(getMensaje(), valores));
       LOG.error(exception);
       StringBuilder message= new StringBuilder();
       StackTraceElement[] stackTrace = exception.getStackTrace();
@@ -68,7 +69,6 @@ public final class Error {
       } // if
       LOG.error(message.length()> 0? message.substring(0, message.length()- 2): message.toString());
       LOG.error("->->->->->->->->->->->->->->->->->->->->->->->->->->->->");
-      //exception.printStackTrace();
     } // if
   }
 

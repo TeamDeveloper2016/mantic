@@ -316,6 +316,11 @@ public final class Producto implements Serializable {
   }
 
   @Override
+  public String toString() {
+    return "Producto{" + "producto=" + producto + ", articulos=" + articulos + ", caracteristicas=" + caracteristicas + ", ikEmpresa=" + ikEmpresa + ", ikMarca=" + ikMarca + ", ikCategoria=" + ikCategoria + ", ikProductoCategoria=" + ikProductoCategoria + '}';
+  }
+
+  @Override
   protected void finalize() throws Throwable {
     super.finalize(); 
     Methods.clean(this.articulos);

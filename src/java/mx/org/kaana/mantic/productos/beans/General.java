@@ -61,6 +61,11 @@ public class General extends TcManticProductosDto implements Serializable {
   public void setLogo(String logo) {
     this.logo = logo;
   }
+
+  @Override
+  public String toString() {
+    return "General{" + "categoria=" + categoria + ", marca=" + marca + ", archivo=" + archivo + ", logo=" + logo + super.toString()+ '}';
+  }
   
   @Override
   public Class toHbmClass() {
