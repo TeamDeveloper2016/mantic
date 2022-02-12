@@ -43,7 +43,7 @@
         </p:selectBooleanCheckbox>  
         <p:outputLabel for="img" value="Imagenes del portal: "/>
         <p:selectBooleanCheckbox id="img" value="#{kajoolMantenimientoConfiguracionFiltro.attrs.img}">
-          <p:ajax listener="#{kajoolMantenimientoConfiguracionFiltro.doReloadIMG}" onstart="return $('#bd_input').is(':checked');" update="img" process="@this" />
+          <p:ajax listener="#{kajoolMantenimientoConfiguracionFiltro.doReloadIMG}" onstart="return $('#img_input').is(':checked');" update="img" process="@this" />
         </p:selectBooleanCheckbox>  
       </p:panelGrid>
     </p:fieldset>  

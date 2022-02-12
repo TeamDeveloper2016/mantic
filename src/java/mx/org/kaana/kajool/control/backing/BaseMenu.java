@@ -1,22 +1,18 @@
 package mx.org.kaana.kajool.control.backing;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import mx.org.kaana.kajool.control.bean.Portal;
 import mx.org.kaana.kajool.control.enums.EBusqueda;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
-import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.procesos.mantenimiento.temas.backing.TemaActivo;
-import mx.org.kaana.kajool.reglas.comun.Columna;
-import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.reflection.Methods;
@@ -24,9 +20,6 @@ import mx.org.kaana.mantic.inventarios.comun.IBaseImportar;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.primefaces.model.StreamedContent;
-import org.primefaces.model.menu.DefaultMenuItem;
-import org.primefaces.model.menu.DefaultMenuModel;
-import org.primefaces.model.menu.DefaultSubMenu;
 import org.primefaces.model.menu.MenuModel;
 
 /**
@@ -46,7 +39,6 @@ public class BaseMenu extends IBaseImportar implements Serializable {
 
   @Inject 
   private TemaActivo temaActivo;
-  private MenuModel model;
 
   public TemaActivo getTemaActivo() {
     return temaActivo;
@@ -73,7 +65,7 @@ public class BaseMenu extends IBaseImportar implements Serializable {
 	}
 
   public MenuModel getModel() {
-    return model;
+    return Portal.getInstance().getMenu();
   }
   
   @Override
@@ -90,64 +82,6 @@ public class BaseMenu extends IBaseImportar implements Serializable {
   
   @Override
 	public void doLoad() {
-    List<Columna> columns     = null;    
-    Map<String, Object> params= null;
-    try {      
-      params = new HashMap<>();      
-      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);      
-      params.put("sortOrder", "order by tc_mantic_productos_marcas.nombre");
-      columns = new ArrayList<>();
-      columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
-      List<Entity> marcas= (List<Entity>)DaoFactory.getInstance().toEntitySet("TcManticProductosMarcasDto", "lazy", params);
-      List<Entity> menu  = (List<Entity>)DaoFactory.getInstance().toEntitySet("TcManticProductosCategoriasDto", "menu", params);
-      // MENU DINAMICO
-      this.model = new DefaultMenuModel();
-      DefaultMenuItem item = new DefaultMenuItem("Inicio");
-      item.setIcon("fa fa-home");
-      item.setUrl("/indice.jsf".concat(Constantes.REDIRECIONAR));
-      this.model.addElement(item);      
-      DefaultSubMenu sub= new DefaultSubMenu("Categorías");
-      sub.setIcon("fa fa-picture-o");
-      if(menu!= null && !menu.isEmpty()) {
-        for (Entity entity: menu) {
-          item= new DefaultMenuItem(entity.toString("categoria"));
-          item.setIcon("fa ".concat(entity.toString("icon")));
-          item.setOncomplete("galeriaPrincipal('".concat(entity.toString("nombre")).concat("', 'CATEGORIA');"));
-          sub.addElement(item);      
-        } // for
-      } // if  
-      this.model.addElement(sub);
-      sub= new DefaultSubMenu("Marcas");
-      sub.setIcon("fa fa-dashcube");
-      if(marcas!= null && !marcas.isEmpty()) {
-        for (Entity entity: marcas) {
-          item= new DefaultMenuItem(entity.toString("descripcion"));
-          item.setIcon("fa fa-picture-o");
-          item.setOncomplete("galeriaPrincipal('".concat(entity.toString("descripcion")).concat("', 'MARCA');"));
-          sub.addElement(item);      
-        } // for
-      } // if  
-      this.model.addElement(sub);
-      sub= new DefaultSubMenu("Facturación");
-      sub.setIcon("fa fa-qrcode");
-      item = new DefaultMenuItem("Desargar");
-      item.setIcon("fa fa-download");
-      item.setUrl("/Control/descargar.jsf".concat(Constantes.REDIRECIONAR));
-      sub.addElement(item);      
-      item = new DefaultMenuItem("Generar");
-      item.setIcon("fa fa-print");
-      item.setUrl("/Control/generar.jsf".concat(Constantes.REDIRECIONAR));
-      sub.addElement(item);      
-      this.model.addElement(sub);      
-    } // try
-    catch (Exception e) {
-      mx.org.kaana.libs.formato.Error.mensaje(e);
-      JsfBase.addMessageError(e);      
-    } // catch	
-    finally {
-      Methods.clean(params);
-      Methods.clean(columns);
-    } // finally
 	}  
 
   protected void toLoadDocumentos() {

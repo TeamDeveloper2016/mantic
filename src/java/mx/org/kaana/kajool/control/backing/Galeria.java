@@ -5,10 +5,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import jdk.nashorn.internal.runtime.regexp.joni.ast.ConsAltNode;
 import mx.org.kaana.kajool.control.enums.EBusqueda;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
@@ -17,7 +20,6 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.JsfBase;
-import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import org.apache.commons.logging.Log;
@@ -70,11 +72,22 @@ public class Galeria extends BaseMenu implements Serializable {
 			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-			codigo= !Cadena.isVacio(codigo)? codigo.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim(): "";
-  		params.put("codigo", codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*.*"));		
+  		params.put("codigo", codigo.toUpperCase().trim());		
       params.put("sortOrder", "order by tc_mantic_articulos.nombre, tc_mantic_articulos.actualizado");
-      if(!Cadena.isVacio(codigo))
+      if(!Cadena.isVacio(codigo)) {
         this.lazyModel= new FormatCustomLazy("VistaOrdenesComprasDto", "galeria", params, columns);
+        if(Objects.equals(EBusqueda.CATEGORIA, this.busqueda)) 
+          this.attrs.put("links", this.toProcessLinks(this.codigo));
+        else {
+          Entity entity = (Entity)DaoFactory.getInstance().toEntity("VistaOrdenesComprasDto", "galeria", params);
+          if(entity!= null && !entity.isEmpty())
+            this.attrs.put("links", this.toProcessLinks(entity.toString("categoria")));
+          else
+            this.attrs.put("links", null);
+        } // else
+      } // if  
+      else
+        this.attrs.put("links", null);
 		} // try
 	  catch (Exception e) {
       Error.mensaje(e);
@@ -86,12 +99,36 @@ public class Galeria extends BaseMenu implements Serializable {
     } // finally    
   }
   
+  public void doLoadCategoria(String codigo) {
+    this.busqueda= EBusqueda.CATEGORIA;
+    this.codigo  = codigo;
+    this.doLoadArticulos(codigo);
+  }
+  
   public String doLoadDetalle() {
     Entity row= (Entity)this.attrs.get("seleccionado");
     JsfBase.setFlashAttribute("idProducto", row.toLong("idProducto"));
     JsfBase.setFlashAttribute("codigo", this.codigo);
     JsfBase.setFlashAttribute("busqueda", this.busqueda);
     return "/Control/individual.jsf".concat(Constantes.REDIRECIONAR);
+  }
+  
+  private String toProcessLinks(String categoria) {
+    StringBuilder regresar= new StringBuilder();
+    StringBuilder link    = new StringBuilder();
+    String[] items= categoria.split("[|]");
+    for (String item: items) {
+      if(!Cadena.isVacio(item)) {
+        link.append(item);
+        regresar.append("<span class=\"ui-panel-title Fs16\"><a onclick=\"busquedaCategoria('").append(link.toString()).
+                append("');\" class=\"janal-move-element\" style=\"color: black; cursor:pointer;\">").
+                append(Cadena.letraCapital(item)).append("</a></span>").append("<span class=\"ui-panel-title janal-color-blue Fs18\">   »   </span>");
+        link.append(Constantes.SEPARADOR);
+      } // if  
+    } // for
+    if(regresar.length()> 0)
+      regresar.delete(regresar.length()- 66, regresar.length());
+    return regresar.toString();
   }
   
 }
