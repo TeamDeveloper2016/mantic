@@ -28,47 +28,54 @@
       <pe:methodSignature parameters="java.lang.String"/>  
       <pe:methodParam name="codigo"/>  
     </pe:remoteCommand>
-    <div id="janal-opcion-4" class="opciones">
-      <center style="margin-left: 5%; margin-right: 5%;">
-        <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{kajoolControlArticulos.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{kajoolControlArticulos.lazyModel.rowCount gt kajoolControlArticulos.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" style="display: #{empty(kajoolControlArticulos.lazyModel)? 'none': ''}">
-          <p:column class="janal-column-left MarAuto Responsive janal-wid-3">
-            <f:facet name="header">
-              <h:outputText value="No"/>
-            </f:facet>
-            <h:outputText value="#{index+ 1}.-"/>
-          </p:column>														
-          <p:column class="janal-column-left MarAuto Responsive janal-wid-12" sortBy="#{row.propio}">
-            <f:facet name="header">
-              <h:outputText value="Código"/>
-            </f:facet>
-            <h:outputText value="#{row['propio']}"/>
-          </p:column>														
-          <p:column class="janal-column-left MarAuto Responsive janal-wid-30" sortBy="#{row.nombre}">
-            <f:facet name="header">
-              <h:outputText value="Nombre"/>
-            </f:facet>
-            <h:outputText value="#{row['nombre']}"/>
-          </p:column>														
-          <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.menudeo}">
-            <f:facet name="header">
-              <h:outputText value="Menudeo"/>
-            </f:facet>
-            <h:outputText value="#{row['menudeo']}"/>
-          </p:column>					
-          <p:column headerText="Imagen" styleClass="janal-column-center janal-wid-5">
-            <a id="tabla:#{index}:source-image" class="janal-control-imagen" data-magnify="gallery" data-caption="#{row['nombre']}" data-group="icon-image" href="#{kajoolControlArticulos.pathImage}#{row.archivo.toString}" title="Ver imagen" style="display: #{row.idImagen.toLong eq 0? 'none': ''}">
-              <p:graphicImage url="#{kajoolControlArticulos.pathImage}#{row.archivo.toString}" width="50" height="28" style="cursor:zoom-in;"/>
-            </a>	
-          </p:column>   
-          <p:column headerText="Detalle" styleClass="janal-column-center janal-wid-3">
-            <p:commandButton icon="fa fa-search" process="@this" action="#{kajoolControlArticulos.doLoadDetalle}" title="Consultar" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" rendered="#{row.idProducto.toLong gt 0}">
-              <f:setPropertyActionListener value="#{row}" target="#{kajoolControlArticulos.attrs.seleccionado}" />
-            </p:commandButton>
-          </p:column>   
-          <f:facet name="footer">
-            Total [#{kajoolControlArticulos.lazyModel== null? 0: kajoolControlArticulos.lazyModel.rowCount}] registros
-          </f:facet>
-        </p:dataTable>        
+    <div id="janal-opcion-1" class="opciones">
+      <center style="margin-left: 1%; margin-right: 1%;">
+        <div class="distribucion">
+          <div class="categoria lg-pantalla">
+            <p:menu model="#{kajoolControlBaseMenu.menuCategorias}"/>          
+          </div>
+          <div class="galeria">
+            <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{kajoolControlArticulos.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{kajoolControlArticulos.lazyModel.rowCount gt kajoolControlArticulos.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" style="display: #{empty(kajoolControlArticulos.lazyModel)? 'none': ''}">
+              <p:column class="janal-column-left MarAuto Responsive janal-wid-3">
+                <f:facet name="header">
+                  <h:outputText value="No"/>
+                </f:facet>
+                <h:outputText value="#{index+ 1}.-"/>
+              </p:column>														
+              <p:column class="janal-column-left MarAuto Responsive janal-wid-12" sortBy="#{row.propio}">
+                <f:facet name="header">
+                  <h:outputText value="Código"/>
+                </f:facet>
+                <h:outputText value="#{row['propio']}"/>
+              </p:column>														
+              <p:column class="janal-column-left MarAuto Responsive janal-wid-30" sortBy="#{row.nombre}">
+                <f:facet name="header">
+                  <h:outputText value="Nombre"/>
+                </f:facet>
+                <h:outputText value="#{row['nombre']}"/>
+              </p:column>														
+              <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.menudeo}">
+                <f:facet name="header">
+                  <h:outputText value="Menudeo"/>
+                </f:facet>
+                <h:outputText value="#{row['menudeo']}"/>
+              </p:column>					
+              <p:column headerText="Imagen" styleClass="janal-column-center janal-wid-5">
+                <a id="tabla:#{index}:source-image" class="janal-control-imagen" data-magnify="gallery" data-caption="#{row['nombre']}" data-group="icon-image" href="#{kajoolControlArticulos.pathImage}#{row.archivo.toString}" title="Ver imagen" style="display: #{row.idImagen.toLong eq 0? 'none': ''}">
+                  <p:graphicImage url="#{kajoolControlArticulos.pathImage}#{row.archivo.toString}" width="50" height="28" style="cursor:zoom-in;"/>
+                </a>	
+              </p:column>   
+              <p:column headerText="Detalle" styleClass="janal-column-center janal-wid-3">
+                <p:commandButton icon="fa fa-search" process="@this" action="#{kajoolControlArticulos.doLoadDetalle}" title="Consultar" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" rendered="#{row.idProducto.toLong gt 0}">
+                  <f:setPropertyActionListener value="#{row}" target="#{kajoolControlArticulos.attrs.seleccionado}" />
+                </p:commandButton>
+              </p:column>   
+              <f:facet name="footer">
+                Total [#{kajoolControlArticulos.lazyModel== null? 0: kajoolControlArticulos.lazyModel.rowCount}] registros
+              </f:facet>
+            </p:dataTable>        
+          </div>
+        </div>  
       </center>  
     </div>  
 	</ui:define>

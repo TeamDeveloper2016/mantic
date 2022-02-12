@@ -42,6 +42,7 @@ public final class Portal implements Serializable {
   private static Object mutex;
 
   private MenuModel menu;
+  private MenuModel categorias;
   private List<String> images;
 
   static {
@@ -67,6 +68,10 @@ public final class Portal implements Serializable {
   
   public MenuModel getMenu() {
     return menu;
+  }
+
+  public MenuModel getCategorias() {
+    return categorias;
   }
   
   public void reload() {
@@ -110,6 +115,8 @@ public final class Portal implements Serializable {
       sub.setIcon("fa fa-language");
       this.toLoadCategorias(sub, "null", 2);
       this.menu.addElement(sub);
+      this.categorias= new DefaultMenuModel();
+      this.categorias.addElement(sub);
       sub= new DefaultSubMenu("Marcas");
       sub.setIcon("fa fa-picture-o");
       if(marcas!= null && !marcas.isEmpty()) {

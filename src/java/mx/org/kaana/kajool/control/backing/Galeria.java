@@ -121,7 +121,7 @@ public class Galeria extends BaseMenu implements Serializable {
       if(!Cadena.isVacio(item)) {
         link.append(item);
         regresar.append("<span class=\"ui-panel-title Fs16\"><a onclick=\"busquedaCategoria('").append(link.toString()).
-                append("');\" class=\"janal-move-element\" style=\"color: black; cursor:pointer;\">").
+                append("');\" class=\"janal-move-element janal-font-bold\" style=\"color: black; cursor:pointer;\">").
                 append(Cadena.letraCapital(item)).append("</a></span>").append("<span class=\"ui-panel-title janal-color-blue Fs18\">   »   </span>");
         link.append(Constantes.SEPARADOR);
       } // if  

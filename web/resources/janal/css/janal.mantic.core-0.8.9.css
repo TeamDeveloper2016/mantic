@@ -18,7 +18,7 @@
  padding: 5px !important;
 }
 .ui-menu {
-  width: 16.5em;
+  width: 21em;
 }
 .ui-button .ui-button-icon-left, 
 .ui-button .ui-button-text {
@@ -427,10 +427,14 @@ div.ui-panelgrid-content {
   text-align: center;  
 }
 .janal-logo-mini {width: 35px;}
+.distribucion {width: 100%; display: flex; flex-direction: row; -webkit-flex-direction: row; -ms-flex-direction: row; flex-wrap: wrap; justify-content: center;}
+.distribucion .categoria {margin: 0 0 0 0; text-align: left;}    
+.distribucion .galeria  {margin-right: 1%; text-align: center; width: 74%;}
 /*==== Media queries =====*/
 /* Smartphones (portrait) ----------- */
 @media  (max-width : 480px) {
-	.janal-column-icon {
+  .distribucion .galeria {width: 100%;}
+  .janal-column-icon {
     text-align: left;
     width: 100%;
   }
@@ -451,6 +455,8 @@ div.ui-panelgrid-content {
   }
   .janal-logo-mini {width: 30px;}
   .janal-grid-row {}
+  .producto .galeria .galeria-nombre {font-size: 0.8rem !important;}
+  .producto .galeria .galeria-marca {font-size: 1.0rem !important;}
   .xs-pantalla{display:block !important;}
   .lg-pantalla{display: none !important;}
   .titulo-proyecto{margin-bottom: 0px; margin-top: 0px; display:none !important;}
@@ -485,6 +491,7 @@ div.ui-panelgrid-content {
 }
 /* long-Smartphones (portrait) ----------- */
 @media  (min-width : 481px) and (max-width : 767px) {
+  .distribucion .galeria {width: 100%;}
 	.janal-column-icon {
     text-align: left;
     width: 100%;
@@ -511,8 +518,8 @@ div.ui-panelgrid-content {
   .janal-grid-row {}
   .producto .container {width: 100% !important;}
   .producto .item-image img {width: 435px !important; height: 250px !important;}
-  .producto .galeria .galeria-nombre {font-size: 1.0rem !important;}
-  .producto .galeria .galeria-marca {font-size: 1.2rem !important;}
+  .producto .galeria .galeria-nombre {font-size: 0.8rem !important;}
+  .producto .galeria .galeria-marca {font-size: 1.0rem !important;}
   .xs-pantalla{display:block !important;}
   .lg-pantalla{display: none !important;}
   .janal-header-acronym {font-size: 24px;letter-spacing:.3em}
@@ -544,13 +551,16 @@ div.ui-panelgrid-content {
   .janal-wid-col-38 {width: 85px !important;}
  .janal-top-menus {top: 87px;}
 }
-
 /* tablets (portrait) ----------- */
-@media   (min-width : 768px) and (max-width : 1024px) {
+@media   (min-width : 768px) and (max-width : 1400px) {
    .janal-header-sedesol {
      background-repeat: no-repeat;
      background-size: 80%
    }
+}
+/* monitor extendido (portrait) ----------- */
+@media   (min-width : 1401x) and (max-width : 3000px) {
+  .distribucion .galeria {width: 86%;}
 }
 .janal-mapa {
   height: 50vh;
@@ -615,6 +625,5 @@ strong { font-weight: bolder; }
 .janal-tr-diferencias {	background-color: #ABEBC6 !important; }
 .janal-tr-nuevo { background-color: #FDF5E6 !important; }
 .janal-tr-error { background-color: #FF7F50 !important; }
-
 
 

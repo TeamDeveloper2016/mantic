@@ -64,8 +64,12 @@ public class BaseMenu extends IBaseImportar implements Serializable {
 		return this.toXmlFileDownload((Entity)this.attrs.get("xmlFile")); 
 	}
 
-  public MenuModel getModel() {
+  public MenuModel getMenuGeneral() {
     return Portal.getInstance().getMenu();
+  }
+  
+  public MenuModel getMenuCategorias() {
+    return Portal.getInstance().getCategorias();
   }
   
   @Override
