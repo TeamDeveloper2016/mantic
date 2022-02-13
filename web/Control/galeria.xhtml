@@ -20,6 +20,7 @@
 		</script> 
 		<style type="text/css">
       .ui-datagrid, .ui-datagrid:hover, .ui-datagrid:focus {border: solid 0px #C0C5C7;}  
+      .ui-commandlink {color: #27AAE1 !important; margin-right: 5px; font-weight: bold; text-decoration: none;}
     </style>
 	</ui:define>
 	<ui:define name="contenido">  	
@@ -46,7 +47,7 @@
                 <p:panelGrid columns="1" styleClass="janal-column-center">
                   <h:outputText value="#{row['marca']}" styleClass="janal-color-blue janal-font-bold" style="float: left;"/>
                   <a id="tabla:#{index}:source-image" class="janal-control-imagen" data-magnify="gallery" data-caption="#{row['nombre']}" data-group="icon-image" href="#{kajoolControlGaleria.pathImage}#{row.archivo.toString}" title="Ver imagen" style="display: #{row.idImagen.toLong eq 0? 'none': ''}">
-                    <p:graphicImage url="#{kajoolControlGaleria.pathImage}#{row.archivo.toString}" width="200" height="230"/>
+                    <p:graphicImage url="#{kajoolControlGaleria.pathImage}#{row.archivo.toString}" width="200" height="230" style="cursor:zoom-in;"/>
                   </a>	
                   <h:outputText value="#{row['nombre']}"/>
                   <p:commandLink process="@this" action="#{kajoolControlGaleria.doLoadDetalle}" value="[ VER MAS ]" title="Ver detalle" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" rendered="#{row.idProducto.toLong gt 0}">
