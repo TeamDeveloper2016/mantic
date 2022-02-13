@@ -185,6 +185,21 @@
         order by
           concat(padre, nombre)
       </select>      
+      <select id="ultimo">
+        select      
+          tc_mantic_productos_categorias.id_producto_categoria as id_key,
+          concat(padre, nombre) as nombre,
+          nombre as categoria,
+          ifnull(icon, 'fa-language') as icon
+        from      
+          tc_mantic_productos_categorias
+        where
+          ultimo= 1
+        group by
+          concat(padre, nombre)
+        order by
+          concat(padre, nombre)
+      </select>      
       <select id="existe">
         select      
          tc_mantic_productos_categorias.id_producto_categoria as id_key,

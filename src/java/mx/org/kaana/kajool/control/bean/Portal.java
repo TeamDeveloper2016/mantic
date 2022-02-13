@@ -88,6 +88,7 @@ public final class Portal implements Serializable {
         } // for 
       LOG.error("Imagenes del portal: "+ this.images);
       this.toLoadMenu();
+      this.toLoadMenuContext();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -115,8 +116,6 @@ public final class Portal implements Serializable {
       sub.setIcon("fa fa-language");
       this.toLoadCategorias(sub, "null", 2);
       this.menu.addElement(sub);
-      this.categorias= new DefaultMenuModel();
-      this.categorias.addElement(sub);
       sub= new DefaultSubMenu("Marcas");
       sub.setIcon("fa fa-picture-o");
       if(marcas!= null && !marcas.isEmpty()) {
@@ -152,16 +151,16 @@ public final class Portal implements Serializable {
 	}  
   
   private void toLoadCategorias(DefaultSubMenu root, String padre, Integer nivel) {
-    List<Entity> categorias   = null;
+    List<Entity> items        = null;
     Map<String, Object> params= null;
     try {      
       params = new HashMap<>();      
       params.put("nivel", nivel);      
       params.put("nombre", padre);      
       params.put("sortOrder", "order by tc_mantic_productos_marcas.nombre");
-      categorias= (List<Entity>)DaoFactory.getInstance().toEntitySet("TcManticProductosCategoriasDto", "menu", params);
-      if(categorias!= null && !categorias.isEmpty())
-        for (Entity categoria: categorias) {
+      items= (List<Entity>)DaoFactory.getInstance().toEntitySet("TcManticProductosCategoriasDto", "menu", params);
+      if(items!= null && !items.isEmpty())
+        for (Entity categoria: items) {
           String nombre= Cadena.letraCapital(categoria.toString("categoria"));
           if(Objects.equals(categoria.toLong("ultimo"), 1L)) {
             DefaultMenuItem item= new DefaultMenuItem(nombre);
@@ -182,7 +181,35 @@ public final class Portal implements Serializable {
     } // catch	
     finally {
       Methods.clean(params);
-      Methods.clean(categorias);
+      Methods.clean(items);
     } // finally
   }
+  
+  private void toLoadMenuContext() {
+    List<Entity> items= null;
+    DefaultSubMenu sub= null; 
+    try {      
+      sub= new DefaultSubMenu("Categorías");
+      sub.setIcon("fa fa-language");
+      this.categorias= new DefaultMenuModel();
+      items = (List<Entity>)DaoFactory.getInstance().toEntitySet("TcManticProductosCategoriasDto", "ultimo", java.util.Collections.EMPTY_MAP, Constantes.SQL_TODOS_REGISTROS);
+      if(items!= null && !items.isEmpty()) {
+        for (Entity categoria: items) {
+          String nombre= Cadena.letraCapital(categoria.toString("categoria"));
+          DefaultMenuItem item= new DefaultMenuItem(nombre);
+          item.setIcon("fa ".concat(categoria.toString("icon")));
+          item.setOncomplete("galeriaPrincipal('".concat(categoria.toString("nombre")).concat("', 'CATEGORIA');"));
+          sub.addElement(item);      
+        } // for
+      } // if
+      this.categorias.addElement(sub);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+    } // catch	
+    finally {
+      Methods.clean(items);
+    } // finally
+  }
+  
 }
