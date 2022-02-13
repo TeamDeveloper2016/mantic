@@ -14,6 +14,7 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.procesos.mantenimiento.temas.backing.TemaActivo;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.inventarios.comun.IBaseImportar;
@@ -39,7 +40,7 @@ public class BaseMenu extends IBaseImportar implements Serializable {
 
   @Inject 
   private TemaActivo temaActivo;
-
+  
   public TemaActivo getTemaActivo() {
     return temaActivo;
   }
@@ -103,7 +104,7 @@ public class BaseMenu extends IBaseImportar implements Serializable {
         UIBackingUtilities.execute("$(\"div[panel='1']\").removeClass('Container100');$(\"div[panel]\").addClass('Container50');$(\"div[panel='2']\").show();$('#download').click();");
 		} // try
 		catch (Exception e) {
-			mx.org.kaana.libs.formato.Error.mensaje(e);
+			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch
 		finally {
@@ -128,5 +129,5 @@ public class BaseMenu extends IBaseImportar implements Serializable {
     JsfBase.setFlashAttribute("codigo", codigo);
     JsfBase.setFlashAttribute("busqueda", EBusqueda.valueOf(busqueda));
   }
-  
+
 }

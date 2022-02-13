@@ -620,8 +620,8 @@ public class Transaccion extends IBaseTnx {
 									if(articulo!= null) {
 										//articulo.setIdCategoria(null);
 										//articulo.setIdImagen(null);
-										articulo.setDescripcion(articulo.getNombre());
 										articulo.setNombre(nombre);
+										articulo.setDescripcion(nombre);
 										articulo.setPrecio(costo);
 										articulo.setMenudeo(Numero.toAjustarDecimales(menudeo, articulo.getIdRedondear().equals(1L)));
 										articulo.setMedioMayoreo(Numero.toAjustarDecimales(medio, articulo.getIdRedondear().equals(1L)));
@@ -689,8 +689,8 @@ public class Transaccion extends IBaseTnx {
 										if(identico== null)
 											DaoFactory.getInstance().insert(sesion, articulo);
 										else {
-                      identico.setDescripcion(identico.getNombre());
                       identico.setNombre(nombre);
+                      identico.setDescripcion(nombre);
 											identico.setMinimo(minimo== 0D? 10D: minimo);
 											identico.setMaximo(maximo== 0D? 20D: maximo);
 											identico.setLimiteMedioMayoreo(lmenudeo== 0D? 20D: lmenudeo);

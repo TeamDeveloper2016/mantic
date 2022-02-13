@@ -9,7 +9,6 @@ import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
-import jdk.nashorn.internal.runtime.regexp.joni.ast.ConsAltNode;
 import mx.org.kaana.kajool.control.enums.EBusqueda;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
@@ -24,6 +23,11 @@ import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.primefaces.model.menu.DefaultMenuColumn;
+import org.primefaces.model.menu.DefaultMenuItem;
+import org.primefaces.model.menu.DefaultMenuModel;
+import org.primefaces.model.menu.DefaultSubMenu;
+import org.primefaces.model.menu.MenuModel;
 
 /**
  * @company KAANA
@@ -38,7 +42,9 @@ public class Galeria extends BaseMenu implements Serializable {
 
   private static final Log LOG = LogFactory.getLog(Galeria.class);
   private static final long serialVersionUID = 5323749709626263802L;
-  
+
+  private MenuModel megaCategorias;
+
   private String codigo;
   private EBusqueda busqueda;
   private String pathImage;
@@ -46,6 +52,10 @@ public class Galeria extends BaseMenu implements Serializable {
 	public String getPathImage() {
 		return pathImage;
 	}
+  
+  public MenuModel getMegaCategorias() {
+    return this.megaCategorias;
+  }
   
   @Override
   @PostConstruct
@@ -59,6 +69,7 @@ public class Galeria extends BaseMenu implements Serializable {
     this.pathImage= dns.substring(0, dns.lastIndexOf("/")+ 1).concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/galeria/");
     if(!Cadena.isVacio(this.codigo))
       this.doLoadArticulos(this.codigo);
+    // this.toLoadMegaCategorias();
   }
 
   @Override
@@ -130,5 +141,144 @@ public class Galeria extends BaseMenu implements Serializable {
       regresar.delete(regresar.length()- 66, regresar.length());
     return regresar.toString();
   }
+ 
   
+  private void toLoadMegaCategorias() {
+    List<Entity> categorias   = null;
+    DefaultSubMenu categoria  = null;
+    Map<String, Object> params= new HashMap<>();
+    try {      
+      params.put("nivel", 2);      
+      params.put("nombre", "null");      
+      // MENU DINAMICO
+      this.megaCategorias     = new DefaultMenuModel();
+      categorias= (List<Entity>)DaoFactory.getInstance().toEntitySet("TcManticProductosCategoriasDto", "menu", params);
+      if(categorias!= null && !categorias.isEmpty())
+        for (Entity item: categorias) {
+          String nombre= Cadena.letraCapital(item.toString("categoria"));
+          categoria    = new DefaultSubMenu(nombre);
+          categoria.setIcon("fa ".concat(item.toString("icon")));
+          categoria.addElement(this.toLoadMarcas(item));
+          categoria.addElement(this.toLoadDivisiones(item));
+          // contenido.addElement(this.toLoadImagen(item));
+          this.megaCategorias.addElement(categoria);
+        } // for
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+    } // catch	
+    finally {
+      Methods.clean(params);
+      Methods.clean(categorias);
+    } // finally    
+  } 
+  
+  public DefaultMenuColumn toLoadMarcas(Entity categoria) {
+    DefaultMenuColumn regresar= new DefaultMenuColumn();
+    List<Entity> marcas       = null;
+    Map<String, Object> params= null;
+    try {      
+      params= new HashMap<>();      
+      params.put("nivel", 2);      
+      params.put("nombre", "null");      
+      //params.put("categoria", categoria.toString("categoria"));      
+      marcas= (List<Entity>)DaoFactory.getInstance().toEntitySet("TcManticProductosCategoriasDto", "menu", params);
+      DefaultSubMenu subMenu= new DefaultSubMenu("MARCA");
+      subMenu.setIcon("fa fa-language");
+      if(marcas!= null && !marcas.isEmpty()) {
+        int count= 0;
+        for (Entity item: marcas) {      
+          DefaultMenuItem marca= new DefaultMenuItem(item.toString("categoria"));
+          marca.setIcon("fa fa-picture-o");
+          marca.setOncomplete("galeriaPrincipal('".concat(item.toString("categoria")).concat("', 'MARCA');"));
+          subMenu.addElement(marca);
+          if(count++> 9)
+            break;
+        } // for
+        DefaultMenuItem marca= new DefaultMenuItem("[ VER MAS ]");
+        marca.setIcon("fa fa-picture-o");
+        marca.setOncomplete("marcasPrincipal('VER_MAS', 'MARCA');");
+        subMenu.addElement(marca);
+      } // if
+      regresar.addElement(subMenu);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+      Methods.clean(marcas);
+    } // finally
+    return regresar;
+  }
+  
+  public DefaultMenuColumn toLoadDivisiones(Entity categoria) {
+    DefaultMenuColumn regresar= new DefaultMenuColumn();
+    List<Entity> divisiones   = null;
+    Map<String, Object> params= null;
+    try {      
+      params= new HashMap<>();      
+      params.put("nivel", 2);      
+      params.put("nombre", "null");      
+      // params.put("categoria", categoria.toString("categoria"));      
+      divisiones= (List<Entity>)DaoFactory.getInstance().toEntitySet("TcManticProductosCategoriasDto", "menu", params);
+      DefaultSubMenu subMenu= new DefaultSubMenu("DIVISION");
+      subMenu.setIcon("fa fa-language");
+      if(divisiones!= null && !divisiones.isEmpty()) {
+        int count= 0;
+        for (Entity item: divisiones) {      
+          DefaultMenuItem division= new DefaultMenuItem(item.toString("categoria"));
+          division.setIcon("fa fa-picture-o");
+          division.setOncomplete("galeriaPrincipal('".concat(item.toString("categoria")).concat("', 'CATEGORIA');"));
+          subMenu.addElement(division);
+          if(count++> 9)
+            break;
+        } // for
+        DefaultMenuItem division= new DefaultMenuItem("[ VER MAS ]");
+        division.setIcon("fa fa-picture-o");
+        division.setOncomplete("divisionesPrincipal('VER_MAS', 'CATEGORIA');");
+        subMenu.addElement(division);
+      } // if  
+      regresar.addElement(subMenu);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+      Methods.clean(divisiones);
+    } // finally
+    return regresar;
+  }
+  
+  public DefaultMenuColumn toLoadImagen(Entity categoria) {
+    DefaultMenuColumn regresar= new DefaultMenuColumn();
+    Entity imagen             = null;
+    Map<String, Object> params= null;
+    try {      
+      params= new HashMap<>();      
+      params.put("categoria", categoria.toString("categoria"));      
+      imagen= (Entity)DaoFactory.getInstance().toEntity("", "", params);
+      DefaultSubMenu subMenu= new DefaultSubMenu("CATEGORIA");
+      subMenu.setIcon("fa fa-language");
+      regresar.addElement(subMenu);
+      if(imagen!= null && !imagen.isEmpty()) {
+        DefaultMenuItem image= new DefaultMenuItem("AQUI VA LA IMAGEN");
+        image.setIcon("fa fa-picture-o");
+        subMenu.addElement(image);
+      } // if
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+      Methods.clean(imagen);
+    } // finally
+    return regresar;
+  }
+    
 }

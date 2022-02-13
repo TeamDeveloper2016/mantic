@@ -97,14 +97,11 @@ public final class Portal implements Serializable {
   
 	private void toLoadMenu() {
     List<Entity> marcas       = null;
-    List<Columna> columns     = null;    
     Map<String, Object> params= null;
     try {      
       params = new HashMap<>();      
       params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);      
       params.put("sortOrder", "order by tc_mantic_productos_marcas.nombre");
-      columns= new ArrayList<>();
-      columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
       marcas = (List<Entity>)DaoFactory.getInstance().toEntitySet("TcManticProductosMarcasDto", "lazy", params);
       // MENU DINAMICO
       this.menu = new DefaultMenuModel();
@@ -145,7 +142,6 @@ public final class Portal implements Serializable {
     } // catch	
     finally {
       Methods.clean(params);
-      Methods.clean(columns);
       Methods.clean(marcas);
     } // finally
 	}  
