@@ -21,7 +21,7 @@
 		<style type="text/css">
       .ui-datagrid, .ui-datagrid:hover, .ui-datagrid:focus {border: solid 0px #C0C5C7;}  
       .ui-commandlink {color: #27AAE1 !important; margin-right: 5px; font-weight: bold; text-decoration: none;}
-      .ui-menu.ui-megamenu .ui-menu-child .ui-menu-list {width: 16.5em;}
+      .ui-menu.ui-megamenu .ui-menu-child .ui-menu-list {width: 23em;}
     </style>
 	</ui:define>
 	<ui:define name="contenido">  	
@@ -34,13 +34,14 @@
       <pe:methodParam name="codigo"/>  
     </pe:remoteCommand>
     <div id="janal-opcion-1" class="opciones">
-      <center style="margin-left: 1%; margin-right: 1%;">
+      <center style="margin-left: 0%; margin-right: 0%;">
         <div>
           <p:outputLabel id="categorias" value="#{kajoolControlGaleria.attrs.links}" escape="false" style="display: #{empty kajoolControlGaleria.attrs.links? 'none': ''}"/>
         </div>
         <div class="distribucion">
           <div class="categoria lg-pantalla">
-            <p:menu model="#{kajoolControlBaseMenu.menuCategorias}"/>          
+            <p:menu model="#{kajoolControlBaseMenu.menuCategorias}" rendered="false" style="margin-top: 25px;"/>
+            <p:megaMenu model="#{kajoolControlGaleria.megaCategorias}" orientation="vertical" style="margin-top: 25px;"/>
           </div>  
           <div class="galeria">
             <p:dataGrid lazy="true" id="tabla" var="row" value="#{kajoolControlGaleria.lazyModel}" columns="4" layout="grid" rows="12" paginator="#{kajoolControlGaleria.lazyModel.rowCount gt kajoolControlGaleria.lazyModel.pageSize}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="6,12,16" paginatorPosition="bottom" rowIndexVar="index" style="display: #{empty(kajoolControlGaleria.lazyModel)? 'none': ''}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}">

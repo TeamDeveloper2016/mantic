@@ -5,6 +5,26 @@
 <process>
 	<dml> 
 		<unit id="VistaProductosDto">
+      <select id="categorias">
+        select      
+          tc_mantic_productos_categorias.id_producto_categoria as id_key,
+          tc_mantic_productos_categorias.nombre as categoria,
+          concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre) as nombre,
+          ifnull(tc_mantic_productos_categorias.icon, 'fa-language') as icon,
+          tc_mantic_productos_categorias.ultimo,
+          ifnull(tc_mantic_productos_categorias_archivos.nombre, '') as imagen
+        from      
+          tc_mantic_productos_categorias
+        left join
+          tc_mantic_productos_categorias_archivos on tc_mantic_productos_categorias.id_producto_categoria_archivo= tc_mantic_productos_categorias_archivos.id_producto_categoria_archivo
+        where
+          tc_mantic_productos_categorias.nivel= {nivel}
+          and (tc_mantic_productos_categorias.padre like '{padre}%' or '{padre}'= 'null')
+        group by
+          concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre)
+        order by
+          concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre)
+      </select>  
       <select id="producto">
         select      
           tc_mantic_productos.*,
@@ -223,6 +243,41 @@
           tc_mantic_productos_marcas.nombre,
           tc_mantic_productos.nombre
         {sortOrder}           
+      </select>
+      <select id="marcas">
+        select 
+          tc_mantic_productos.id_producto_marca as id_key,
+          tc_mantic_productos_marcas.nombre as marca,
+          count(*) as total
+        from
+          tc_mantic_productos
+				inner join 
+          tc_mantic_productos_categorias on tc_mantic_productos.id_producto_categoria= tc_mantic_productos_categorias.id_producto_categoria
+				inner join 
+					tc_mantic_productos_marcas on tc_mantic_productos.id_producto_marca= tc_mantic_productos_marcas.id_producto_marca
+        where
+          tc_mantic_productos.id_activo= 1
+          and concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre) like '{categoria}%'
+        group by
+          tc_mantic_productos_marcas.nombre    
+        order by
+          count(*) desc
+      </select>
+      <select id="divisiones">
+        select
+          tc_mantic_productos_categorias.id_producto_categoria as id_key,
+          tc_mantic_productos_categorias.nivel,
+          tc_mantic_productos_categorias.nombre as categoria,
+          (select count(*) as total from tc_mantic_productos inner join tc_mantic_productos_categorias as tt_mantic_productos_categorias on tt_mantic_productos_categorias.id_producto_categoria= tc_mantic_productos.id_producto_categoria where tc_mantic_productos.id_activo= 1 and tt_mantic_productos_categorias.padre like concat('{categoria}', tc_mantic_productos_categorias.nombre, '%') limit 0, 1) as total
+        from
+          tc_mantic_productos_categorias
+        where
+          tc_mantic_productos_categorias.nivel= 3
+          and tc_mantic_productos_categorias.padre like '{categoria}%'
+        group by
+          tc_mantic_productos_categorias.nombre
+        order by 
+          total desc        
       </select>
 			<select id="codigo">
         select 
