@@ -224,7 +224,7 @@ public class Galeria extends BaseMenu implements Serializable {
         for (Entity item: divisiones) {      
           DefaultMenuItem division= new DefaultMenuItem(item.toString("categoria"));
           division.setIcon("fa fa-picture-o");
-          division.setOncomplete("galeriaPrincipal('".concat(item.toString("categoria")).concat("', 'CATEGORIA');"));
+          division.setOncomplete("galeriaPrincipal('".concat(item.toString("nombre")).concat("', 'CATEGORIA');"));
           subMenu.addElement(division);
           if(count++> 9)
             break;
