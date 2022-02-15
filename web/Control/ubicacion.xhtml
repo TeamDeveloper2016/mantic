@@ -20,15 +20,17 @@
         //var porcentaje= Number.parseFloat(height* 100/ 1440).toFixed(2)- 5;
         //height= Number.parseInt(porcentaje* 1440/ 100);
         //width= Number.parseInt(porcentaje* 2560/ 100);
-        $('div.mapa').attr('style', 'width: 100%; height: '+ height+ 'px;');
+        $('div.mapa').attr('style', 'width: '+ (view? '50': '100')+ '%; height: '+ height+ 'px;');
+        $('div.view').attr('style', 'width: 50%; height: '+ height+ 'px;');
       }
       
       // 
       var locations = [
-        ['<span class=\"janal-font-bold\">Ferretería Bonanza (Pilar Blanco)</span><br\><br\>Telefono:(449)913-10-28<br\>Whatsapp:(449)508-75-05<br/><br/>Canario 8602, Pilar Blanco, C.P. 20289<br/>Aguascalientes, Ags.', 21.8474228, -102.3016351, 1],
-        ['<span class=\"janal-font-bold\">Ferretería Bonanza (Jesús María)</span><br\><br\>Telefono:(449)146-06-45<br\>Whatsapp:(449)508-75-05<br/><br/>C. Hidalgo 112, Zona Centro, C.P. 20900<br/>Jesús María, Ags.', 21.960255, -102.3457957, 2]
+        ['<span class=\"janal-font-bold\">Ferretería Bonanza (Pilar Blanco)</span><br\><br\>Telefono:(449)913-10-28<br\>Whatsapp:(449)508-75-05<br/><br/>Canario 8602, Pilar Blanco, C.P. 20289<br/>Aguascalientes, Ags.', 21.8472519, -102.2994786, 1],
+        ['<span class=\"janal-font-bold\">Ferretería Bonanza (Jesús María)</span><br\><br\>Telefono:(449)146-06-45<br\>Whatsapp:(449)508-75-05<br/><br/>C. Hidalgo 112, Zona Centro, C.P. 20900<br/>Jesús María, Ags.', 21.960195, -102.3437393, 2]
       ];
     
+      const view= false;
 			$(document).ready(function() {
         window.addEventListener('resize', callWindowSize);
         
@@ -44,6 +46,17 @@
             position: new google.maps.LatLng(locations[i][1], locations[i][2]),
             map: map
           });
+          google.maps.event.addListener(marker, 'click', (function(marker, i) {
+            return function() { 
+              const panorama= new google.maps.StreetViewPanorama(
+                document.getElementById("view"), {
+                  position: { lat: locations[i][1], lng: locations[i][2]},
+                  pov: {heading: 34, pitch: 10}
+                });              
+              map.setStreetView(panorama);
+              view= true;
+            }
+          })(marker, i));
           google.maps.event.addListener(marker, 'mouseover', (function(marker, i) {
             return function() { infowindow.setContent(locations[i][0]); infowindow.open(map, marker); }
           })(marker, i));
@@ -53,13 +66,17 @@
       //]]>
 		</script> 
 		<style type="text/css">
+      #mapa, #view {float: left; height: 100%; width: 100%;}
     </style>
 	</ui:define>
 	<ui:define name="contenido">  	
     <div id="janal-opcion-1" class="opciones">
       <center style="margin-left: 1%; margin-right: 1%; margin-top: 1%;">
         <p:outputLabel id="tabla" styleClass="janal-display-none"/>
-        <div id="google" class="mapa" style="width: 100%; height: 400px;"></div>
+        <div style="display:flex;">
+           <div id="google" class="mapa"></div>
+           <div id="view" class="view"></div>
+        </div>
       </center>  
     </div>  
 	</ui:define>
