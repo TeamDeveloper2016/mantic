@@ -15,11 +15,13 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.formato.Error;
+import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.libs.reportes.FileSearch;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mozilla.javascript.edu.emory.mathcs.backport.java.util.Collections;
+import org.primefaces.model.menu.DefaultMenuColumn;
 import org.primefaces.model.menu.DefaultMenuItem;
 import org.primefaces.model.menu.DefaultMenuModel;
 import org.primefaces.model.menu.DefaultSubMenu;
@@ -41,15 +43,19 @@ public final class Portal implements Serializable {
   private static Portal instance;
   private static Object mutex;
 
+  private MenuModel megaCategorias;
   private MenuModel menu;
   private MenuModel categorias;
   private List<String> images;
+  private String pathImage;
 
   static {
     mutex = new Object();
   }
 
   private Portal() {
+    String dns= Configuracion.getInstance().getPropiedadServidor("sistema.dns");
+    this.pathImage= dns.substring(0, dns.lastIndexOf("/")+ 1).concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/galeria/");
     this.reload();
   }
 
@@ -74,6 +80,10 @@ public final class Portal implements Serializable {
     return categorias;
   }
   
+  public MenuModel getMegaCategorias() {
+    return this.megaCategorias;
+  }
+  
   public void reload() {
     try {
       this.images= new ArrayList<>();
@@ -89,6 +99,7 @@ public final class Portal implements Serializable {
       LOG.error("Imagenes del portal: "+ this.images);
       this.toLoadMenu();
       this.toLoadMenuContext();
+      this.toLoadMegaCategorias();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -206,6 +217,132 @@ public final class Portal implements Serializable {
     finally {
       Methods.clean(items);
     } // finally
+  }
+
+  private void toLoadMegaCategorias() {
+    List<Entity> clasificacion= null;
+    DefaultSubMenu categoria  = null;
+    Map<String, Object> params= new HashMap<>();
+    try {      
+      params.put("nivel", 2);      
+      params.put("nombre", "null");      
+      // MENU DINAMICO
+      this.megaCategorias= new DefaultMenuModel();
+      clasificacion= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaProductosDto", "categorias", params);
+      if(clasificacion!= null && !clasificacion.isEmpty())
+        for (Entity item: clasificacion) {
+          String nombre= Cadena.letraCapital(item.toString("categoria"));
+          categoria    = new DefaultSubMenu(nombre);
+          categoria.setIcon("fa ".concat(item.toString("icon")));
+          categoria.addElement(this.toLoadMarcas(item));
+          categoria.addElement(this.toLoadDivisiones(item));
+          categoria.addElement(this.toLoadImagen(item));
+          this.megaCategorias.addElement(categoria);
+        } // for
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+    } // catch	
+    finally {
+      Methods.clean(params);
+      Methods.clean(clasificacion);
+    } // finally    
+  } 
+  
+  public DefaultMenuColumn toLoadMarcas(Entity categoria) {
+    DefaultMenuColumn regresar= new DefaultMenuColumn();
+    List<Entity> marcas       = null;
+    Map<String, Object> params= null;
+    try {      
+      params= new HashMap<>();      
+      params.put("categoria", categoria.toString("nombre"));      
+      marcas= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaProductosDto", "marcas", params);
+      DefaultSubMenu subMenu= new DefaultSubMenu("MARCA");
+      subMenu.setIcon("fa fa-language");
+      if(marcas!= null && !marcas.isEmpty()) {
+        int count= 0;
+        for (Entity item: marcas) {      
+          DefaultMenuItem marca= new DefaultMenuItem(item.toString("marca"));
+          marca.setIcon("fa fa-twitter");
+          marca.setOncomplete("galeriaPrincipal('".concat(item.toString("marca")).concat("', 'MARCA');"));
+          subMenu.addElement(marca);
+          if(count++> 9)
+            break;
+        } // for
+//        if(marcas.size()> 9) {
+          DefaultMenuItem marca= new DefaultMenuItem("VER MAS ... ");
+          marca.setIcon("fa fa-fire");
+          marca.setOncomplete("marcasPrincipal('".concat(categoria.toString("nombre")).concat("', 'MARCA');"));
+          subMenu.addElement(marca);
+//        } // if  
+      } // if
+      regresar.addElement(subMenu);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+      Methods.clean(marcas);
+    } // finally
+    return regresar;
+  }
+  
+  public DefaultMenuColumn toLoadDivisiones(Entity categoria) {
+    DefaultMenuColumn regresar= new DefaultMenuColumn();
+    List<Entity> divisiones   = null;
+    Map<String, Object> params= new HashMap<>();
+    try {      
+      params.put("categoria", categoria.toString("nombre").concat(Constantes.SEPARADOR));      
+      divisiones= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaProductosDto", "divisiones", params);
+      DefaultSubMenu subMenu= new DefaultSubMenu("DIVISION");
+      subMenu.setIcon("fa fa-language");
+      if(divisiones!= null && !divisiones.isEmpty()) {
+        int count= 0;
+        for (Entity item: divisiones) {      
+          DefaultMenuItem division= new DefaultMenuItem(item.toString("categoria"));
+          division.setIcon("fa fa-yelp");
+          division.setOncomplete("galeriaPrincipal('".concat(item.toString("nombre")).concat("', 'CATEGORIA');"));
+          subMenu.addElement(division);
+          if(count++> 9)
+            break;
+        } // for
+//        if(divisiones.size()> 9) {
+          DefaultMenuItem division= new DefaultMenuItem("VER MAS ...");
+          division.setIcon("fa fa-fire");
+          division.setOncomplete("divisionesPrincipal('".concat(categoria.toString("nombre")).concat(Constantes.SEPARADOR).concat("', 'CATEGORIA');"));
+          subMenu.addElement(division);
+//        } // if  
+      } // if  
+      regresar.addElement(subMenu);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+      Methods.clean(divisiones);
+    } // finally
+    return regresar;
+  }
+  
+  public DefaultMenuColumn toLoadImagen(Entity categoria) {
+    DefaultMenuColumn regresar= new DefaultMenuColumn();
+    try {      
+      DefaultSubMenu subMenu= new DefaultSubMenu(categoria.toString("categoria"));
+      subMenu.setIcon("fa fa-language");
+      regresar.addElement(subMenu);
+      DefaultMenuItem img= new DefaultMenuItem("<img src=\"".concat(this.pathImage.concat("1/categorias/").concat(categoria.toString("imagen"))).concat("?pfdrid_c=true\" width=\"290px\" height=\"260px\" style=\"cursor:pointer;\" onclick=\"galeriaPrincipal('").concat(categoria.toString("nombre")).concat("', 'CATEGORIA');\"/>"));
+      img.setEscape(Boolean.FALSE);
+      subMenu.addElement(img);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    return regresar;
   }
   
 }

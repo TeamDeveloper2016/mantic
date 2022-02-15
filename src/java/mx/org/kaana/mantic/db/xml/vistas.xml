@@ -12,7 +12,7 @@
           concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre) as nombre,
           ifnull(tc_mantic_productos_categorias.icon, 'fa-language') as icon,
           tc_mantic_productos_categorias.ultimo,
-          ifnull(tc_mantic_productos_categorias_archivos.nombre, '') as imagen
+          ifnull(tc_mantic_productos_categorias_archivos.nombre, 'sin-foto.png') as imagen
         from      
           tc_mantic_productos_categorias
         left join

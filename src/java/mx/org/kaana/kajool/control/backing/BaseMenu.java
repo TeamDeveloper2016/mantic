@@ -73,6 +73,10 @@ public class BaseMenu extends IBaseImportar implements Serializable {
     return Portal.getInstance().getCategorias();
   }
   
+  public MenuModel getMegaCategorias() {
+    return Portal.getInstance().getMegaCategorias();
+  }
+  
   @Override
   @PostConstruct
   protected void init() {
