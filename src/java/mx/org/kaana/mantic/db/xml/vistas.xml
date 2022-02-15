@@ -9,6 +9,7 @@
         select      
           tc_mantic_productos_categorias.id_producto_categoria as id_key,
           tc_mantic_productos_categorias.nombre as categoria,
+          tc_mantic_productos_categorias.padre,
           concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre) as nombre,
           ifnull(tc_mantic_productos_categorias.icon, 'fa-language') as icon,
           tc_mantic_productos_categorias.ultimo,
@@ -247,14 +248,20 @@
       <select id="marcas">
         select 
           tc_mantic_productos.id_producto_marca as id_key,
+          tc_mantic_productos_categorias.nombre as categoria,
+          tc_mantic_productos_categorias.padre,
+          concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre) as nombre,
           tc_mantic_productos_marcas.nombre as marca,
-          count(*) as total
+          count(*) as total,
+          ifnull(tc_mantic_productos_marcas_archivos.nombre, 'sin-foto.png') as archivo
         from
           tc_mantic_productos
 				inner join 
           tc_mantic_productos_categorias on tc_mantic_productos.id_producto_categoria= tc_mantic_productos_categorias.id_producto_categoria
 				inner join 
 					tc_mantic_productos_marcas on tc_mantic_productos.id_producto_marca= tc_mantic_productos_marcas.id_producto_marca
+        left join
+          tc_mantic_productos_marcas_archivos on tc_mantic_productos_marcas.id_producto_marca_archivo= tc_mantic_productos_marcas_archivos.id_producto_marca_archivo
         where
           tc_mantic_productos.id_activo= 1
           and concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre) like '{categoria}%'
@@ -268,10 +275,14 @@
           tc_mantic_productos_categorias.id_producto_categoria as id_key,
           tc_mantic_productos_categorias.nivel,
           tc_mantic_productos_categorias.nombre as categoria,
+          tc_mantic_productos_categorias.padre,
           concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre) as nombre,
-          (select count(*) as total from tc_mantic_productos inner join tc_mantic_productos_categorias as tt_mantic_productos_categorias on tt_mantic_productos_categorias.id_producto_categoria= tc_mantic_productos.id_producto_categoria where tc_mantic_productos.id_activo= 1 and tt_mantic_productos_categorias.padre like concat('{categoria}', tc_mantic_productos_categorias.nombre, '%') limit 0, 1) as total
+          (select count(*) as total from tc_mantic_productos inner join tc_mantic_productos_categorias as tt_mantic_productos_categorias on tt_mantic_productos_categorias.id_producto_categoria= tc_mantic_productos.id_producto_categoria where tc_mantic_productos.id_activo= 1 and tt_mantic_productos_categorias.padre like concat('{categoria}', tc_mantic_productos_categorias.nombre, '%') limit 0, 1) as total,
+          ifnull(tc_mantic_productos_categorias_archivos.nombre, 'sin-foto.png') as archivo
         from
           tc_mantic_productos_categorias
+        left join
+          tc_mantic_productos_categorias_archivos on tc_mantic_productos_categorias.id_producto_categoria_archivo= tc_mantic_productos_categorias_archivos.id_producto_categoria_archivo
         where
           tc_mantic_productos_categorias.nivel= 3
           and tc_mantic_productos_categorias.padre like '{categoria}%'

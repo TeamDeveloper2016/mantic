@@ -5,12 +5,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.control.enums.EBusqueda;
-import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
@@ -32,14 +30,13 @@ import org.apache.commons.logging.LogFactory;
  * @author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 @ViewScoped
-@Named(value = "kajoolControlGaleria")
-public class Galeria extends BaseMenu implements Serializable {
+@Named(value = "kajoolControlMarcas")
+public class Marcas extends BaseMenu implements Serializable {
 
-  private static final Log LOG = LogFactory.getLog(Galeria.class);
+  private static final Log LOG = LogFactory.getLog(Marcas.class);
   private static final long serialVersionUID = 5323749709626263802L;
 
   private String codigo;
-  private EBusqueda busqueda;
   private String pathImage;
   
 	public String getPathImage() {
@@ -50,38 +47,30 @@ public class Galeria extends BaseMenu implements Serializable {
   @PostConstruct
   protected void init() {
     super.init();
-    this.codigo  = JsfBase.getFlashAttribute("codigo")== null? "": (String)JsfBase.getFlashAttribute("codigo");
-    this.busqueda= JsfBase.getFlashAttribute("busqueda")== null? EBusqueda.CATEGORIA: (EBusqueda)JsfBase.getFlashAttribute("busqueda");
-    String dns= Configuracion.getInstance().getPropiedadServidor("sistema.dns");
-    this.pathImage= dns.substring(0, dns.lastIndexOf("/")+ 1).concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/galeria/");
+    this.codigo= JsfBase.getFlashAttribute("codigo")== null? "": (String)JsfBase.getFlashAttribute("codigo");
+    String dns = Configuracion.getInstance().getPropiedadServidor("sistema.dns");
+    this.pathImage= dns.substring(0, dns.lastIndexOf("/")+ 1).concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/galeria/1/categorias/");
     if(!Cadena.isVacio(this.codigo))
-      this.doLoadArticulos(this.codigo);
+      this.doLoadMarcas();
   }
 
   @Override
   public void doLoad() {
+    
   }
   
-  public void doLoadArticulos(String codigo) {
+  public void doLoadMarcas() {
     List<Columna> columns     = null;
 		Map<String, Object> params= new HashMap<>();
     try {
 			columns= new ArrayList<>();
-      columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("categoria", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-  		params.put("codigo", codigo.toUpperCase().trim());		
-      params.put("sortOrder", "order by tc_mantic_articulos.nombre, tc_mantic_articulos.actualizado");
-      if(!Cadena.isVacio(codigo)) {
-        this.lazyModel= new FormatCustomLazy("VistaOrdenesComprasDto", "galeria", params, columns);
-        if(Objects.equals(EBusqueda.CATEGORIA, this.busqueda)) 
-          this.attrs.put("links", this.toProcessLinks(this.codigo));
-        else {
-          Entity entity = (Entity)DaoFactory.getInstance().toEntity("VistaOrdenesComprasDto", "galeria", params);
-          if(entity!= null && !entity.isEmpty())
-            this.attrs.put("links", this.toProcessLinks(entity.toString("categoria")));
-          else
-            this.attrs.put("links", null);
-        } // else
+      columns.add(new Columna("marca", EFormatoDinamicos.MAYUSCULAS));
+  		params.put("categoria", this.codigo.toUpperCase().trim());		
+      if(!Cadena.isVacio(this.codigo)) {
+        this.lazyModel= new FormatCustomLazy("VistaProductosDto", "marcas", params, columns);
+        this.attrs.put("links", this.toProcessLinks(this.codigo));
       } // if  
       else
         this.attrs.put("links", null);
@@ -96,18 +85,26 @@ public class Galeria extends BaseMenu implements Serializable {
     } // finally    
   }
   
+  public void doLoadArticulos(String codigo) {
+    JsfBase.setFlashAttribute("codigo", codigo);
+    JsfBase.setFlashAttribute("busqueda", EBusqueda.MARCA);
+  }
+  
   public void doLoadCategoria(String codigo) {
-    this.busqueda= EBusqueda.CATEGORIA;
-    this.codigo  = codigo;
-    this.doLoadArticulos(codigo);
+    JsfBase.setFlashAttribute("codigo", codigo);
+    JsfBase.setFlashAttribute("busqueda", EBusqueda.MARCA);
+  }
+  
+  public void doLoadLocal(String codigo) {
+    this.codigo= codigo;
+    this.doLoadMarcas();
   }
   
   public String doLoadDetalle() {
     Entity row= (Entity)this.attrs.get("seleccionado");
-    JsfBase.setFlashAttribute("idProducto", row.toLong("idProducto"));
-    JsfBase.setFlashAttribute("codigo", this.codigo);
-    JsfBase.setFlashAttribute("busqueda", this.busqueda);
-    return "/Control/individual.jsf".concat(Constantes.REDIRECIONAR);
+    JsfBase.setFlashAttribute("codigo", row.toString("nombre"));
+    JsfBase.setFlashAttribute("busqueda", EBusqueda.CATEGORIA);
+    return "/Control/galeria.jsf".concat(Constantes.REDIRECIONAR);
   }
   
   private String toProcessLinks(String categoria) {
@@ -117,7 +114,7 @@ public class Galeria extends BaseMenu implements Serializable {
     for (String item: items) {
       if(!Cadena.isVacio(item)) {
         link.append(item);
-        regresar.append("<span class=\"ui-panel-title Fs16\"><a onclick=\"busquedaCategoria('").append(link.toString()).
+        regresar.append("<span class=\"ui-panel-title Fs16\"><a onclick=\"busquedaLocal('").append(link.toString()).
                 append("');\" class=\"janal-move-element janal-font-bold\" style=\"color: black; cursor:pointer;\">").
                 append(Cadena.letraCapital(item)).append("</a></span>").append("<span class=\"ui-panel-title janal-color-blue Fs18\">   »   </span>");
         link.append(Constantes.SEPARADOR);

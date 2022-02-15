@@ -20,6 +20,9 @@
 			//]]>
 		</script> 
 		<style type="text/css">
+      .ui-datagrid, .ui-datagrid:hover, .ui-datagrid:focus {border: solid 0px #C0C5C7;}  
+      .ui-commandlink {color: #27AAE1 !important; margin-right: 5px; font-weight: bold; text-decoration: none;}
+      .ui-menu.ui-megamenu .ui-menu-child .ui-menu-list {width: 23em;}
     </style>
 	</ui:define>
 	<ui:define name="contenido">  	
@@ -29,12 +32,13 @@
       <pe:methodParam name="codigo"/>  
     </pe:remoteCommand>
     <div id="janal-opcion-1" class="opciones">
-      <center style="margin-left: 1%; margin-right: 1%;">
+      <center style="margin-left: 0%; margin-right: 0%;">
         <div class="distribucion">
           <div class="categoria lg-pantalla">
-            <p:menu model="#{kajoolControlBaseMenu.menuCategorias}"/>          
+            <p:megaMenu model="#{kajoolControlBaseMenu.megaCategorias}" orientation="vertical"/>
           </div>
           <div class="galeria">
+            <center>
             <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{kajoolControlArticulos.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{kajoolControlArticulos.lazyModel.rowCount gt kajoolControlArticulos.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" style="display: #{empty(kajoolControlArticulos.lazyModel)? 'none': ''}">
               <p:column class="janal-column-left MarAuto Responsive janal-wid-3">
                 <f:facet name="header">
@@ -74,6 +78,7 @@
                 Total [#{kajoolControlArticulos.lazyModel== null? 0: kajoolControlArticulos.lazyModel.rowCount}] registros
               </f:facet>
             </p:dataTable>        
+            </center>
           </div>
         </div>  
       </center>  

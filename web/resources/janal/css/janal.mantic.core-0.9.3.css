@@ -490,7 +490,7 @@ div.ui-panelgrid-content {
   .janal-top-menus {top: 6px;}
 }
 /* long-Smartphones (portrait) ----------- */
-@media  (min-width : 481px) and (max-width : 767px) {
+@media (min-width : 481px) and (max-width : 767px) {
   .distribucion .galeria {width: 100%;}
 	.janal-column-icon {
     text-align: left;
@@ -552,14 +552,14 @@ div.ui-panelgrid-content {
  .janal-top-menus {top: 87px;}
 }
 /* tablets (portrait) ----------- */
-@media   (min-width : 768px) and (max-width : 1400px) {
+@media (min-width : 768px) and (max-width : 1370px) {
    .janal-header-sedesol {
      background-repeat: no-repeat;
      background-size: 80%
    }
 }
-/* monitor extendido (portrait) ----------- */
-@media   (min-width : 1401x) and (max-width : 3000px) {
+/* monitor extendido (landscape) ----------- */
+@media (min-width: 1371px) and (max-width: 3000px) {
   .distribucion .galeria {width: 86%;}
 }
 .janal-mapa {

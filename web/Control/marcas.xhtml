@@ -25,39 +25,41 @@
     </style>
 	</ui:define>
 	<ui:define name="contenido">  	
-    <pe:remoteCommand name="busquedaArticulos" process="@this" actionListener="#{kajoolControlGaleria.doLoadArticulos}" update="tabla categorias">  
+    <pe:remoteCommand name="busquedaArticulos" process="@this" action="/Control/articulos.jsf?faces-redirect=true" actionListener="#{kajoolControlMarcas.doLoadArticulos}">  
       <pe:methodSignature parameters="java.lang.String"/>  
       <pe:methodParam name="codigo"/>  
     </pe:remoteCommand>
-    <pe:remoteCommand name="busquedaCategoria" process="@this" actionListener="#{kajoolControlGaleria.doLoadCategoria}" update="tabla categorias">  
+    <pe:remoteCommand name="busquedaCategoria" process="@this" action="/Control/galeria.jsf?faces-redirect=true" actionListener="#{kajoolControlMarcas.doLoadCategoria}">  
+      <pe:methodSignature parameters="java.lang.String"/>  
+      <pe:methodParam name="codigo"/>  
+    </pe:remoteCommand>
+    <pe:remoteCommand name="busquedaLocal" process="@this" actionListener="#{kajoolControlMarcas.doLoadLocal}" update="tabla categorias">  
       <pe:methodSignature parameters="java.lang.String"/>  
       <pe:methodParam name="codigo"/>  
     </pe:remoteCommand>
     <div id="janal-opcion-1" class="opciones">
       <center style="margin-left: 0%; margin-right: 0%;">
         <div>
-          <p:outputLabel id="categorias" value="#{kajoolControlGaleria.attrs.links}" escape="false" style="display: #{empty kajoolControlGaleria.attrs.links? 'none': ''}"/>
+          <p:outputLabel id="categorias" value="#{kajoolControlMarcas.attrs.links}" escape="false" style="display: #{empty kajoolControlMarcas.attrs.links? 'none': ''}"/>
         </div>
         <div class="distribucion">
           <div class="categoria lg-pantalla">
-            <p:megaMenu model="#{kajoolControlBaseMenu.megaCategorias}" orientation="vertical" style="margin-top: #{empty kajoolControlGaleria.attrs.links? '25': '0'}px;"/>
+            <p:megaMenu model="#{kajoolControlBaseMenu.megaCategorias}" orientation="vertical" style="margin-top: #{empty kajoolControlMarcas.attrs.links? '25': '0'}px;"/>
           </div>  
           <div class="galeria">
-            <p:dataGrid lazy="true" id="tabla" var="row" value="#{kajoolControlGaleria.lazyModel}" columns="4" layout="grid" rows="12" paginator="#{kajoolControlGaleria.lazyModel.rowCount gt kajoolControlGaleria.lazyModel.pageSize}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="6,12,16" paginatorPosition="bottom" rowIndexVar="index" style="display: #{empty(kajoolControlGaleria.lazyModel)? 'none': ''}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}">
-              <p:panel header="#{row['propio']}" styleClass="janal-column-center">
+            <p:dataGrid lazy="true" id="tabla" var="row" value="#{kajoolControlMarcas.lazyModel}" columns="4" layout="grid" rows="12" paginator="#{kajoolControlMarcas.lazyModel.rowCount gt kajoolControlMarcas.lazyModel.pageSize}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="6,12,16" paginatorPosition="bottom" rowIndexVar="index" style="display: #{empty(kajoolControlMarcas.lazyModel)? 'none': ''}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}">
+              <p:panel header="#{row['marca']}" styleClass="janal-column-center">
                 <p:panelGrid columns="1" styleClass="janal-column-center">
-                  <h:outputText value="#{row['marca']}" styleClass="janal-color-blue janal-font-bold" style="float: left;"/>
-                  <a id="tabla:#{index}:source-image" class="janal-control-imagen" data-magnify="gallery" data-caption="#{row['nombre']}" data-group="icon-image" href="#{kajoolControlGaleria.pathImage}#{row.archivo.toString}" title="Ver imagen" style="display: #{row.idImagen.toLong eq 0? 'none': ''}">
-                    <p:graphicImage url="#{kajoolControlGaleria.pathImage}#{row.archivo.toString}" width="200" height="230" style="cursor:zoom-in;"/>
+                  <a id="tabla:#{index}:source-image" class="janal-control-imagen" data-magnify="gallery" data-caption="#{row['marca']}" data-group="icon-image" href="#{kajoolControlMarcas.pathImage}#{row.archivo.toString}" title="Ver imagen" style="display: #{empty(row.archivo)? 'none': ''}">
+                    <p:graphicImage url="#{kajoolControlMarcas.pathImage}#{row.archivo.toString}" width="250" height="120" style="cursor:zoom-in;"/>
                   </a>	
-                  <h:outputText value="#{row['nombre']}"/>
-                  <p:commandLink process="@this" action="#{kajoolControlGaleria.doLoadDetalle}" value="[ VER MAS ]" title="Ver detalle" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" rendered="#{row.idProducto.toLong gt 0}">
-                    <f:setPropertyActionListener value="#{row}" target="#{kajoolControlGaleria.attrs.seleccionado}" />
+                  <p:commandLink process="@this" action="#{kajoolControlMarcas.doLoadDetalle}" value="[ VER MAS ]" title="Buscar marcas" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();">
+                    <f:setPropertyActionListener value="#{row}" target="#{kajoolControlMarcas.attrs.seleccionado}" />
                   </p:commandLink>
                 </p:panelGrid>          
               </p:panel>  
               <f:facet name="footer">
-                Total [#{kajoolControlGaleria.lazyModel== null? 0: kajoolControlGaleria.lazyModel.rowCount}] registros
+                Total [#{kajoolControlMarcas.lazyModel== null? 0: kajoolControlMarcas.lazyModel.rowCount}] registros
               </f:facet>
             </p:dataGrid>        
           </div>
