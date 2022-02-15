@@ -334,7 +334,7 @@ public final class Portal implements Serializable {
       DefaultSubMenu subMenu= new DefaultSubMenu(categoria.toString("categoria"));
       subMenu.setIcon("fa fa-language");
       regresar.addElement(subMenu);
-      DefaultMenuItem img= new DefaultMenuItem("<img src=\"".concat(this.pathImage.concat("1/categorias/").concat(categoria.toString("imagen"))).concat("?pfdrid_c=true\" width=\"290px\" height=\"260px\" style=\"cursor:pointer;\" onclick=\"galeriaPrincipal('").concat(categoria.toString("nombre")).concat("', 'CATEGORIA');\"/>"));
+      DefaultMenuItem img= new DefaultMenuItem("<img src=\"".concat(this.pathImage.concat("1/categorias/").concat(categoria.toString("imagen"))).concat("?pfdrid_c=true\" width=\"290px\" height=\"220px\" style=\"cursor:pointer;\" onclick=\"galeriaPrincipal('").concat(categoria.toString("nombre")).concat("', 'CATEGORIA');\"/>"));
       img.setEscape(Boolean.FALSE);
       subMenu.addElement(img);
     } // try

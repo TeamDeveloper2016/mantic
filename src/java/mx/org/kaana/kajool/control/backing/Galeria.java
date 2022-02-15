@@ -39,6 +39,7 @@ public class Galeria extends BaseMenu implements Serializable {
   private static final long serialVersionUID = 5323749709626263802L;
 
   private String codigo;
+  private String categoria;
   private EBusqueda busqueda;
   private String pathImage;
   
@@ -50,7 +51,8 @@ public class Galeria extends BaseMenu implements Serializable {
   @PostConstruct
   protected void init() {
     super.init();
-    this.codigo  = JsfBase.getFlashAttribute("codigo")== null? "": (String)JsfBase.getFlashAttribute("codigo");
+    this.codigo   = JsfBase.getFlashAttribute("codigo")== null? "": (String)JsfBase.getFlashAttribute("codigo");
+    this.categoria= JsfBase.getFlashAttribute("categoria")== null? "": (String)JsfBase.getFlashAttribute("categoria");
     this.busqueda= JsfBase.getFlashAttribute("busqueda")== null? EBusqueda.CATEGORIA: (EBusqueda)JsfBase.getFlashAttribute("busqueda");
     String dns= Configuracion.getInstance().getPropiedadServidor("sistema.dns");
     this.pathImage= dns.substring(0, dns.lastIndexOf("/")+ 1).concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/galeria/");
@@ -70,7 +72,10 @@ public class Galeria extends BaseMenu implements Serializable {
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
   		params.put("codigo", codigo.toUpperCase().trim());		
-      params.put("sortOrder", "order by tc_mantic_articulos.nombre, tc_mantic_articulos.actualizado");
+      if(Cadena.isVacio(this.categoria))
+        params.put(Constantes.SQL_CONDICION, "(concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre) regexp '.*"+ codigo.toUpperCase().trim()+ ".*' or tc_mantic_productos_marcas.nombre regexp '.*"+ codigo.toUpperCase().trim()+ ".*')");
+      else 
+        params.put(Constantes.SQL_CONDICION, "(concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre) regexp '.*"+ this.categoria.toUpperCase().trim()+ ".*' and tc_mantic_productos_marcas.nombre regexp '.*"+ codigo.toUpperCase().trim()+ ".*')");
       if(!Cadena.isVacio(codigo)) {
         this.lazyModel= new FormatCustomLazy("VistaOrdenesComprasDto", "galeria", params, columns);
         if(Objects.equals(EBusqueda.CATEGORIA, this.busqueda)) 
