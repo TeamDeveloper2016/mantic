@@ -429,7 +429,7 @@ div.ui-panelgrid-content {
 .janal-logo-mini {width: 35px;}
 .distribucion {width: 100%; display: flex; flex-direction: row; -webkit-flex-direction: row; -ms-flex-direction: row; flex-wrap: wrap; justify-content: flex-start;}
 .distribucion .categoria {margin: 0 0 0 0; text-align: left;}    
-.distribucion .galeria  {margin-right: 1%; text-align: center; width: 74%;}
+.distribucion .galeria  {margin-right: 1%; text-align: center; width: 70%;}
 /*==== Media queries =====*/
 /* Smartphones (portrait) ----------- */
 @media  (max-width : 480px) {
@@ -552,14 +552,15 @@ div.ui-panelgrid-content {
  .janal-top-menus {top: 87px;}
 }
 /* tablets (portrait) ----------- */
-@media (min-width : 768px) and (max-width : 1370px) {
+@media (min-width : 768px) and (max-width : 1410px) {
+   .distribucion .galeria {width: 73%;}
    .janal-header-sedesol {
      background-repeat: no-repeat;
      background-size: 80%
    }
 }
 /* monitor extendido (landscape) ----------- */
-@media (min-width: 1371px) and (max-width: 3000px) {
+@media (min-width: 1411px) and (max-width: 3000px) {
   .distribucion .galeria {width: 86%;}
 }
 .janal-mapa {
