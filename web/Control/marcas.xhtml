@@ -51,7 +51,7 @@
               <p:panel header="#{row['marca']}" styleClass="janal-column-center">
                 <p:panelGrid columns="1" styleClass="janal-column-center">
                   <a id="tabla:#{index}:source-image" class="janal-control-imagen" data-magnify="gallery" data-caption="#{row['marca']}" data-group="icon-image" href="#{kajoolControlMarcas.pathImage}#{row.archivo.toString}" title="Ver imagen" style="display: #{empty(row.archivo)? 'none': ''}">
-                    <p:graphicImage url="#{kajoolControlMarcas.pathImage}#{row.archivo.toString}" width="250" height="120" style="cursor:zoom-in;"/>
+                    <p:graphicImage url="#{kajoolControlMarcas.pathImage}#{row.archivo.toString}" width="220" height="90" style="cursor:zoom-in;"/>
                   </a>	
                   <p:commandLink process="@this" action="#{kajoolControlMarcas.doLoadDetalle}" value="[ VER MAS ]" title="Buscar marcas" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();">
                     <f:setPropertyActionListener value="#{row}" target="#{kajoolControlMarcas.attrs.seleccionado}" />

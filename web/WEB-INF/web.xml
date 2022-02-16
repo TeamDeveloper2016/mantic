@@ -97,7 +97,7 @@
 	
   <error-page>
     <exception-type>javax.faces.application.ViewExpiredException</exception-type>
-    <location>/Exclusiones/salir.jsf</location>
+    <location>/Exclusiones/indice.jsf</location>
   </error-page>  
    
   <!-- Filters -->

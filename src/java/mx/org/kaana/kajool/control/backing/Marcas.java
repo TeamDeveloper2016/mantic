@@ -49,7 +49,7 @@ public class Marcas extends BaseMenu implements Serializable {
     super.init();
     this.codigo= JsfBase.getFlashAttribute("codigo")== null? "": (String)JsfBase.getFlashAttribute("codigo");
     String dns = Configuracion.getInstance().getPropiedadServidor("sistema.dns");
-    this.pathImage= dns.substring(0, dns.lastIndexOf("/")+ 1).concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/galeria/1/categorias/");
+    this.pathImage= dns.substring(0, dns.lastIndexOf("/")+ 1).concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/galeria/1/marcas/");
     if(!Cadena.isVacio(this.codigo))
       this.doLoadMarcas();
   }
