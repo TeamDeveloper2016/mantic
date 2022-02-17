@@ -47,8 +47,8 @@
               <p:panel header="#{row['propio']}" styleClass="janal-column-center">
                 <p:panelGrid columns="1" styleClass="janal-column-center">
                   <h:outputText value="#{row['marca']}" styleClass="janal-color-blue janal-font-bold" style="float: left;"/>
-                  <a id="tabla:#{index}:source-image" class="janal-control-imagen" data-magnify="gallery" data-caption="#{row['nombre']}" data-group="icon-image" href="#{kajoolControlGaleria.pathImage}#{row.archivo.toString}" title="Ver imagen" style="display: #{row.idImagen.toLong eq 0? 'none': ''}">
-                    <p:graphicImage url="#{kajoolControlGaleria.pathImage}#{row.archivo.toString}" width="200" height="230" style="cursor:zoom-in;"/>
+                  <a id="tabla:#{index}:source-image" class="janal-control-imagen" data-magnify="gallery" data-caption="#{row['nombre']}" data-group="icon-image" href="#{kajoolControlGaleria.pathImage}#{row.archivo.toString}" title="Ver imagen">
+                    <img src="#{kajoolControlGaleria.pathImage}#{row.archivo.toString}?pfdrid_c=true" width="200" height="230" style="cursor:zoom-in;"/>
                   </a>	
                   <h:outputText value="#{row['nombre']}"/>
                   <p:commandLink process="@this" action="#{kajoolControlGaleria.doLoadDetalle}" value="[ VER MAS ]" title="Ver detalle" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" rendered="#{row.idProducto.toLong gt 0}">

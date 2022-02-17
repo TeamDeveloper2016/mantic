@@ -51,7 +51,7 @@
               <p:panel header="#{row['categoria']}" styleClass="janal-column-center">
                 <p:panelGrid columns="1" styleClass="janal-column-center">
                   <a id="tabla:#{index}:source-image" class="janal-control-imagen" data-magnify="gallery" data-caption="#{row['categoria']}" data-group="icon-image" href="#{kajoolControlDivisiones.pathImage}#{row.archivo.toString}" title="Ver imagen" style="display: #{empty(row.archivo)? 'none': ''}">
-                    <p:graphicImage url="#{kajoolControlDivisiones.pathImage}#{row.archivo.toString}" width="203" height="162" style="cursor:zoom-in;"/>
+                    <img src="#{kajoolControlDivisiones.pathImage}#{row.archivo.toString}?pfdrid_c=true" width="203" height="162" style="cursor:zoom-in;"/>
                   </a>	
                   <p:commandLink process="@this" action="#{kajoolControlDivisiones.doLoadDetalle}" value="[ VER MAS ]" title="Buscar categorías" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();">
                     <f:setPropertyActionListener value="#{row}" target="#{kajoolControlDivisiones.attrs.seleccionado}" />

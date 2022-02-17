@@ -549,7 +549,7 @@ div.ui-panelgrid-content {
   .janal-wid-98 {width: 97% !important}
   .janal-wid-99 {width: 97% !important}
   .janal-wid-col-38 {width: 85px !important;}
- .janal-top-menus {top: 87px;}
+  .janal-top-menus {top: 87px;}
 }
 /* tablets (portrait) ----------- */
 @media (min-width : 768px) and (max-width : 1410px) {

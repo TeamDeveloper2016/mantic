@@ -50,8 +50,8 @@
             <p:dataGrid lazy="true" id="tabla" var="row" value="#{kajoolControlMarcas.lazyModel}" columns="4" layout="grid" rows="12" paginator="#{kajoolControlMarcas.lazyModel.rowCount gt kajoolControlMarcas.lazyModel.pageSize}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="6,12,16" paginatorPosition="bottom" rowIndexVar="index" style="display: #{empty(kajoolControlMarcas.lazyModel)? 'none': ''}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}">
               <p:panel header="#{row['marca']}" styleClass="janal-column-center">
                 <p:panelGrid columns="1" styleClass="janal-column-center">
-                  <a id="tabla:#{index}:source-image" class="janal-control-imagen" data-magnify="gallery" data-caption="#{row['marca']}" data-group="icon-image" href="#{kajoolControlMarcas.pathImage}#{row.archivo.toString}" title="Ver imagen" style="display: #{empty(row.archivo)? 'none': ''}">
-                    <p:graphicImage url="#{kajoolControlMarcas.pathImage}#{row.archivo.toString}" width="220" height="90" style="cursor:zoom-in;"/>
+                  <a id="tabla:#{index}:source-image" class="janal-control-imagen" data-magnify="gallery" data-caption="#{row['marca']}" data-group="icon-image" href="#{kajoolControlMarcas.pathImage}#{row.archivo.toString}" title="Ver imagen">
+                    <img src="#{kajoolControlMarcas.pathImage}#{row.archivo.toString}?pfdrid_c=true" width="200" height="90" style="cursor:zoom-in;"/>
                   </a>	
                   <p:commandLink process="@this" action="#{kajoolControlMarcas.doLoadDetalle}" value="[ VER MAS ]" title="Buscar marcas" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();">
                     <f:setPropertyActionListener value="#{row}" target="#{kajoolControlMarcas.attrs.seleccionado}" />
