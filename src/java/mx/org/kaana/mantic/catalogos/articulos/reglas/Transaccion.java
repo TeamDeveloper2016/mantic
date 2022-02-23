@@ -369,7 +369,7 @@ public class Transaccion extends TransaccionFactura {
 		catch (Exception e) {			
 			throw e;
 		} // catch		
-		finally{
+		finally {
 			this.messageError="Ocurrió un error al realizar la actualización, probablemente ya existe un registro en la base de datos. Favor de validar.";
 		} // finally
 		return regresar;

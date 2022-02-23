@@ -71,11 +71,10 @@ public class Galeria extends BaseMenu implements Serializable {
 			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-  		params.put("codigo", codigo.toUpperCase().trim());		
       if(Cadena.isVacio(this.categoria))
-        params.put(Constantes.SQL_CONDICION, "(concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre) regexp '.*"+ codigo.toUpperCase().trim()+ ".*' or tc_mantic_productos_marcas.nombre regexp '.*"+ codigo.toUpperCase().trim()+ ".*')");
+    		params.put("codigo", codigo.toUpperCase().trim());		
       else 
-        params.put(Constantes.SQL_CONDICION, "(concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre) regexp '.*"+ this.categoria.toUpperCase().trim()+ ".*' and tc_mantic_productos_marcas.nombre regexp '.*"+ codigo.toUpperCase().trim()+ ".*')");
+    		params.put("codigo", this.categoria.toUpperCase().trim());		
       if(!Cadena.isVacio(codigo)) {
         this.lazyModel= new FormatCustomLazy("VistaOrdenesComprasDto", "galeria", params, columns);
         if(Objects.equals(EBusqueda.CATEGORIA, this.busqueda)) 

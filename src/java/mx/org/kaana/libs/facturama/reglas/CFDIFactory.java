@@ -471,23 +471,30 @@ public class CFDIFactory implements Serializable {
 	public Product updateProduct(ArticuloFactura detalleArticulo, String id) throws Exception {
 		Product regresar= null;
 		Product pivote  = this.productFindById(id);
-		if(pivote!= null) {
-			Product product= this.loadProduct(detalleArticulo);			
-			pivote.getTaxes().clear();
-			pivote.setTaxes(product.getTaxes());
-			pivote.setUnit(Cadena.letraCapital(product.getUnit()));
-			pivote.setUnitCode(product.getUnitCode());
-			pivote.setIdentificationNumber(product.getIdentificationNumber());
-			pivote.setName(product.getName());			
-			pivote.setDescription(Cadena.isVacio(product.getDescription()) ? product.getName(): product.getDescription());						
-			pivote.setPrice(product.getPrice());			
-			pivote.setCodeProdServ(product.getCodeProdServ());
-			pivote.setCuentaPredial(null);
-			if(Configuracion.getInstance().isEtapaProduccion() || Configuracion.getInstance().isEtapaPruebas() || Configuracion.getInstance().isEtapaDesarrollo())
-				regresar= this.facturama.Products().Update(pivote, pivote.getId());
-		}	// if
-		else
-			throw new RuntimeException("El articulo no existe en facturama: "+ detalleArticulo);
+    try {
+      if(pivote!= null) {
+        LOG.error("SI ENTRO A REALIZAR LA ACTUALIZACIÓN DEL ARTICULO EN FACTURAMA");
+        Product product= this.loadProduct(detalleArticulo);			
+        pivote.getTaxes().clear();
+        pivote.setTaxes(product.getTaxes());
+        pivote.setUnit(Cadena.letraCapital(product.getUnit()));
+        pivote.setUnitCode(product.getUnitCode());
+        pivote.setIdentificationNumber(product.getIdentificationNumber());
+        pivote.setName(product.getName());			
+        pivote.setDescription(Cadena.isVacio(product.getDescription()) ? product.getName(): product.getDescription());						
+        pivote.setPrice(product.getPrice());			
+        pivote.setCodeProdServ(product.getCodeProdServ());
+        pivote.setCuentaPredial(null);
+        if(Configuracion.getInstance().isEtapaProduccion() || Configuracion.getInstance().isEtapaPruebas() || Configuracion.getInstance().isEtapaDesarrollo())
+          regresar= this.facturama.Products().Update(pivote, pivote.getId());
+        LOG.error("SE ACTUALIZÓ DEL ARTICULO EN FACTURAMA");
+      }	// if
+      else
+        throw new RuntimeException("El articulo no existe en facturama: "+ detalleArticulo);
+    } // try
+    catch(Exception e) {
+      throw e;
+    } // catch
 		return regresar;
 	} // updateProduct
 	
@@ -543,8 +550,9 @@ public class CFDIFactory implements Serializable {
 			regresar= new ArrayList<>();
 			tax     = new ProductTax();
       tax.setName(DESCRIPCION_IVA);
-      tax.setRate(iva>1 ? (iva/100) : iva);
-      tax.setIsRetention(false);			
+      tax.setRate(iva> 1? (iva/100): iva);
+      tax.setIsRetention(Boolean.FALSE);
+      tax.setIsFederalTax(Boolean.TRUE);
 			regresar.add(tax);			
 		} // try
 		catch (Exception e) {			

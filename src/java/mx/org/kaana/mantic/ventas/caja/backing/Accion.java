@@ -1914,7 +1914,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			ticketVenta.setDescuentos(this.getAdminOrden().getTotales().getDescuentos());
 			ticketVenta.setImpuestos(this.getAdminOrden().getTotales().getIva());
 			ticketVenta.setUtilidad(this.getAdminOrden().getTotales().getUtilidad());
-      boolean imprimir= Objects.equals(ticketVenta.getIdVentaEstatus(), EEstatusVentas.ELABORADA.getIdEstatusVenta());
+      boolean imprimir= Objects.equals(ticketVenta.getIdVentaEstatus(), EEstatusVentas.ELABORADA.getIdEstatusVenta()) || Objects.equals(ticketVenta.getIdVentaEstatus(), EEstatusVentas.COTIZACION.getIdEstatusVenta());
       transaccion = new Transaccion(ticketVenta, this.getAdminOrden().getArticulos());
 			if(!transaccion.ejecutar(EAccion.MOVIMIENTOS))
 				JsfBase.addMessage("Ocurrió un error al generar la cotización", ETipoMensaje.ERROR);			  

@@ -31,7 +31,6 @@ public class MotorBusqueda implements Serializable{
 
 	private static final long serialVersionUID= 5366287658013154045L;
 	private static final String BYTES         = " Bytes";	
-	private static final String K_BYTES       = " Kb";	
 	private Long idArticulo;
 
 	public MotorBusqueda(Long idArticulo) {
@@ -42,8 +41,8 @@ public class MotorBusqueda implements Serializable{
 		TcManticArticulosDto regresar= null;
 		try {
 			regresar= (TcManticArticulosDto) DaoFactory.getInstance().findById(TcManticArticulosDto.class, this.idArticulo);
-			if(regresar.getIva().equals(0D))
-				regresar.setIva(16D);
+			if(regresar.getIva()< 0D)
+			 	regresar.setIva(16D);
 		} // try
 		catch (Exception e) {			
 			throw e;

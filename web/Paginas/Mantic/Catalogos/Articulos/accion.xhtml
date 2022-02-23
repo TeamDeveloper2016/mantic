@@ -22,7 +22,7 @@
 				'contenedorGrupos\\:mayoreo'        : {validaciones: 'requerido', mascara: 'flotante'},
 				'contenedorGrupos\\:especial'       : {validaciones: 'requerido', mascara: 'flotante'},
 				'contenedorGrupos\\:sat'            : {validaciones: 'libre', mascara: 'ocho-digitos', formatos: 'cambiar-mayusculas'},
-				'contenedorGrupos\\:iva'            : {validaciones: 'requerido', mascara: 'flotante'},
+				'contenedorGrupos\\:iva'            : {validaciones: 'requerido|mayor-igual({"cuanto": 0})', mascara: 'flotante'},
 				'contenedorGrupos\\:pesoEstimado'   : {validaciones: 'requerido', mascara: 'flotante'},
 				'contenedorGrupos\\:desperidicio'   : {validaciones: 'requerido', mascara: 'flotante'},
 				'contenedorGrupos\\:idTipoArticulo' : {validaciones: 'requerido', mascara: 'libre'},

@@ -292,9 +292,9 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 						"", // extras
 						0D, // importe
 						"", // propio
-						Double.parseDouble(concepto.getTraslado().getTasaCuota())* 100, // iva
+						Numero.getDouble(concepto.getTraslado().getTasaCuota(), 0D)* 100, // iva
 						0D, // totalImpuesto 
-						Numero.toRedondearSat(Double.parseDouble(concepto.getTraslado().getBase())), // subTotal
+						Numero.toRedondearSat(Numero.getDouble(concepto.getTraslado().getBase(), 0D)), // subTotal
 						Double.parseDouble(concepto.getCantidad()), // cantidad
 						-1L, // idOrdenDetalle 
 						new Random().nextLong(), // idArticulo 
