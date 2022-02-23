@@ -17,9 +17,9 @@
       function callWindowSize() {
         var width = screen.width;
         var height= screen.height- 200;
-        var porcentaje= Number.parseFloat(height* 100/ 1440).toFixed(2)- 5;
-        height= Number.parseInt(porcentaje* 1440/ 100);
-        width= Number.parseInt(porcentaje* 2560/ 100);
+        var porcentaje= Number.parseFloat(height* 100/ 475).toFixed(2)- 5;
+        height= Number.parseInt(porcentaje* 475/ 100);
+        width= Number.parseInt(porcentaje* 1365/ 100);
         $('img.galeria').attr('width', width+ 'px').attr('height', height+ 'px');
         //$('img.galeria').attr('height', height+ 'px');
       }
@@ -35,12 +35,11 @@
 	</ui:define>
 	<ui:define name="contenido">  	
     <p:menubar model="#{kajoolControlInicio.model}" styleClass="janal-wid-100-txt"/>
-    <p:poll listener="#{kajoolControlInicio.doLoadGallery}" update="galeria" interval="18000" autoStart="true" />
     <div id="janal-opcion-1" class="opciones">
       <center style="margin: 10px">
         <p:imageSwitch id="galeria" effect="shuffle" slideshowAuto="true">
           <ui:repeat value="#{kajoolControlInicio.images}" var="image">
-            <p:graphicImage styleClass="galeria" url="#{kajoolControlInicio.path}#{image}" width="1022px" height="575px"/>
+            <p:graphicImage styleClass="galeria" url="#{kajoolControlInicio.path}#{image}" width="1365px" height="475px"/>
           </ui:repeat>
         </p:imageSwitch>          
       </center>  

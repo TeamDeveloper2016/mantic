@@ -16,12 +16,11 @@
 			//<![CDATA[
       function callWindowSize() {
         var width = screen.width;
-        var height= screen.height- 200;
-        var porcentaje= Number.parseFloat(height* 100/ 1440).toFixed(2)- 5;
-        height= Number.parseInt(porcentaje* 1440/ 100);
-        width= Number.parseInt(porcentaje* 2560/ 100);
+        var height= screen.height- 293;
+        var porcentaje= Number.parseFloat(height* 100/ 475).toFixed(2);
+        height= Number.parseInt((porcentaje- 0.1)* 475/ 100);
+        width = Number.parseInt((porcentaje- 0.5)* 1365/ 100);
         $('img.galeria').attr('width', width+ 'px').attr('height', height+ 'px');
-        //$('img.galeria').attr('height', height+ 'px');
       }
       
 			$(document).ready(function() {
