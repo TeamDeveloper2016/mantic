@@ -7,7 +7,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
-	<ui:param name="titulo" value="#{manticProductosAccion.attrs.nombreAccion} al catálogo de productos" />
+	<ui:param name="titulo" value="#{manticProductosAccion.attrs.nombreAccion} el catálogo de productos" />
 	<ui:define name="librerias">
     <h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryKardexJs}"/>
 		<script type="text/javascript">
@@ -316,6 +316,7 @@
                         <p:graphicImage url="#{manticProductosAccion.path}#{row.archivo}" style="cursor:zoom-in;"/>
                       </a>  
                       <span>#{row.descripcion}</span>
+                      <br/><span class="janal-color-black janal-font-bold">[width:600px, height:450px]</span>
                     </div> 
                     <div class="producto-list-detail">
                       <div class="producto-description">Descripción: 
@@ -397,7 +398,8 @@
                 <a id="view#{manticProductosAccion.imagen.id}" data-magnify="gallery" href="#{manticProductosAccion.source}#{manticProductosAccion.imagen.importado.name}" data-caption="#{manticProductosAccion.imagen.importado.name}" data-group="icon-image" class="icon">
                   <p:graphicImage url="#{manticProductosAccion.source}#{manticProductosAccion.imagen.importado.name}" style="cursor:zoom-in; display: #{empty manticProductosAccion.imagen? 'none': ''}" width="450px" height="250px"/>
                 </a>  
-                <span class="janal-font-bold janal-color-black">#{manticProductosAccion.imagen.importado.name}</span>
+                <span>#{manticProductosAccion.imagen.importado.name}</span>
+               <br/><span class="janal-color-black janal-font-bold">[width:600px, height:450px]</span>
               </p:panelGrid>  
 						</p:tab>
 					</p:tabView>

@@ -44,13 +44,14 @@
           </div>  
           <div class="galeria">
             <p:dataGrid lazy="true" id="tabla" var="row" value="#{kajoolControlGaleria.lazyModel}" columns="4" layout="grid" rows="12" paginator="#{kajoolControlGaleria.lazyModel.rowCount gt kajoolControlGaleria.lazyModel.pageSize}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="6,12,16" paginatorPosition="bottom" rowIndexVar="index" style="display: #{empty(kajoolControlGaleria.lazyModel)? 'none': ''}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}">
-              <p:panel header="#{row['propio']}" styleClass="janal-column-center">
+              <p:panel header="#{row['nombre']}" styleClass="janal-column-center">
                 <p:panelGrid columns="1" styleClass="janal-column-center">
                   <h:outputText value="#{row['marca']}" styleClass="janal-color-blue janal-font-bold" style="float: left;"/>
                   <a id="tabla:#{index}:source-image" class="janal-control-imagen" data-magnify="gallery" data-caption="#{row['nombre']}" data-group="icon-image" href="#{kajoolControlGaleria.pathImage}#{row.archivo.toString}" title="Ver imagen">
                     <img src="#{kajoolControlGaleria.pathImage}#{row.archivo.toString}?pfdrid_c=true" width="200" height="230" style="cursor:zoom-in;"/>
                   </a>	
-                  <h:outputText value="#{row['nombre']}"/>
+                  <!-- h:outputText value="#{row['partidas']}"/-->
+                  <h:outputText value="&lt;span class='janal-color-black janal-font-bold'&gt;Partidas: &lt;/span&gt;#{row['partidas']}" escape="false"/>
                   <p:commandLink process="@this" action="#{kajoolControlGaleria.doLoadDetalle}" value="[ VER MAS ]" title="Ver detalle" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" rendered="#{row.idProducto.toLong gt 0}">
                     <f:setPropertyActionListener value="#{row}" target="#{kajoolControlGaleria.attrs.seleccionado}" />
                   </p:commandLink>

@@ -6754,7 +6754,8 @@
 				  concat(tc_mantic_articulos.id_empresa, '/', ifnull(tc_mantic_imagenes.archivo, 'sin-foto.png')) as archivo,
 				  max(ifnull(tc_mantic_productos_detalles.id_producto, 0)) as id_producto,
 				  concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre) as categoria,
-				  tc_mantic_productos_marcas.nombre as marca
+				  tc_mantic_productos_marcas.nombre as marca,
+          count(distinct(tc_mantic_productos_detalles.id_producto_detalle)) as partidas     
 				from 
 					tc_mantic_articulos
 				inner join

@@ -43,6 +43,12 @@
         .ui-menu .ui-menu-parent .ui-menu-child {
           width: 19.5em;
         }
+        .janal-center-menu.ui-menubar {
+          text-align: center;
+        }
+        .janal-center-menu .ui-menu-list {
+          display: inline-block;
+        }      
       </style>  
 			<title>#{kajoolUtilAplicacion.tituloSistema}</title>
 		</h:head>
@@ -84,7 +90,7 @@
 								</f:facet>
 							</p:ajaxStatus>
 						</div>
-            <p:menubar widgetVar="janal-menu-portal" model="#{kajoolControlBaseMenu.menuGeneral}" styleClass="janal-wid-100-txt"/>
+            <p:menubar widgetVar="janal-menu-portal" model="#{kajoolControlBaseMenu.menuGeneral}" styleClass="janal-wid-100-txt janal-center-menu"/>
   					<ui:insert name="contenido"/>
             <p:blockUI block="principal" widgetVar="bloqueo" trigger="#{componenteBloqueo}">
               <i class="fa fa-spinner fa-spin fa-2x"></i>

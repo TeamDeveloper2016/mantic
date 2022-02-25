@@ -134,7 +134,8 @@ public class Transaccion extends IBaseTnx {
           this.categoria= clon;
         } // if  
       } // for
-      this.toCheckDeleteFile(sesion, this.categoria.getImportado().getName());
+      if(this.categoria.getImportado()!= null && this.categoria.getImportado().getName()!= null)
+        this.toCheckDeleteFile(sesion, this.categoria.getImportado().getName());
     } // try
     catch (Exception e) {
       throw e;
@@ -177,8 +178,9 @@ public class Transaccion extends IBaseTnx {
             DaoFactory.getInstance().update(sesion, item);
           } // for
         } // if
-        this.toCheckDeleteFile(sesion, this.categoria.getImportado().getName());
       } // if
+      if(this.categoria.getImportado()!= null && this.categoria.getImportado().getName()!= null)
+        this.toCheckDeleteFile(sesion, this.categoria.getImportado().getName());
     } // try
     catch (Exception e) {
       throw e;
