@@ -6469,6 +6469,18 @@
 				  id_empresa= {idEmpresa}
           and consecutivo = '{consecutivo}'
       </select>
+      <select id="almacen">
+        select      
+				  tc_mantic_transferencias.id_transferencia as id_key,
+				  tc_mantic_almacenes.nombre as almacen
+        from      
+          tc_mantic_transferencias
+        inner join
+          tc_mantic_almacenes on tc_mantic_transferencias.id_destino= tc_mantic_almacenes.id_almacen     
+        where      
+				  tc_mantic_transferencias.id_empresa= {idEmpresa}
+          and tc_mantic_transferencias.consecutivo = '{consecutivo}'
+      </select>
     </unit>
     <unit id="TcManticTransferenciasBitacoraDto">
       <select id="row">

@@ -1151,5 +1151,37 @@ public class Kardex extends IBaseAttribute implements Serializable {
 	public String toColorPrecio(TiposVentas row) {
 		return Objects.equals(row.getNombre(), "ESPECIAL")? "janal-tr-orange": "";
 	} 
-  
+
+  public String doLookForAlmacen(Entity row) {
+    String regresar           = null;
+    Map<String, Object> params= new HashMap<>();
+    try {      
+      // TRASPASOS
+      if(row!= null) {
+        regresar= row.toString("almacen");
+        if(Objects.equals(4L, row.toLong("idTipoMovimiento"))) {
+          UISelectEntity idAlmacen= (UISelectEntity)this.attrs.get("idAlmacen");
+          if(idAlmacen!= null && idAlmacen.size()<= 1) {
+            List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("depositos");
+            int index= almacenes.indexOf(idAlmacen);
+            if(index>= 0)
+              idAlmacen= almacenes.get(index);
+          } // if  
+          params.put("idEmpresa", idAlmacen.toLong("idEmpresa"));      
+          params.put("consecutivo", row.toString("consecutivo"));      
+          Entity entity = (Entity)DaoFactory.getInstance().toEntity("TcManticTransferenciasDto", "almacen", params);
+          if(entity!= null && !entity.isEmpty())
+            regresar= entity.toString("almacen");
+        } // if  
+      } // if  
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  }
 }
