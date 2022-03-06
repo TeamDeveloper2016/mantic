@@ -37,13 +37,17 @@ import mx.org.kaana.mantic.enums.ETipoPersona;
 import mx.org.kaana.mantic.enums.ETipoVenta;
 import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.enums.ETiposDomicilios;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.primefaces.event.SelectEvent;
 
 @Named(value = "manticCatalogosClientesAccion")
 @ViewScoped
 public class Accion extends IBaseAttribute implements Serializable {
 
+  private static final Log LOG = LogFactory.getLog(Accion.class);
   private static final long serialVersionUID = -7668104942302148046L;
+  
   private RegistroCliente registroCliente;
 	private UISelectEntity domicilioBusqueda;
 
@@ -117,7 +121,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 					this.loadCollections();
 					this.doCompleteCodigoPostal(this.registroCliente.getDomicilio().getCodigoPostal());
 					this.asignaCodigoPostal();
-					if(!this.registroCliente.getClientesDomicilio().isEmpty()){
+					if(!this.registroCliente.getClientesDomicilio().isEmpty()) {
 						this.registroCliente.setClienteDomicilioSelecion(this.registroCliente.getClientesDomicilio().get(0));
 						this.doConsultarClienteDomicilio();
 					} // if
@@ -140,6 +144,8 @@ public class Accion extends IBaseAttribute implements Serializable {
     Transaccion transaccion = null;
     String regresar = null;
     try {
+      if(this.registroCliente.getClienteDomicilioSelecion()!= null)
+        this.registroCliente.toUpdateClientePivote(this.registroCliente.getClienteDomicilioSelecion(), Boolean.TRUE);
       transaccion = new Transaccion(this.registroCliente);
       if (transaccion.ejecutar((EAccion) this.attrs.get("accion"))) {
 				JsfBase.setFlashAttribute("puntoVenta", this.attrs.get("puntoVenta"));
@@ -232,17 +238,17 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // finally
   } // loadEntidades
 	
-	private void toAsignaEntidad(){
-		Entity domicilio= null;
+	private void toAsignaEntidad() {
+		Entity domicilio     = null;
 		List<Entity>entidades= null;
 		try {
-			if(!this.registroCliente.getDomicilio().getIdDomicilio().equals(-1L)){
-				domicilio= this.registroCliente.getDomicilio().getDomicilio();
-				entidades= (List<Entity>) this.attrs.get("entidades");
-				for(Entity entidad: entidades){
-					if(entidad.getKey().equals(domicilio.toLong("idEntidad")))
-						this.registroCliente.getDomicilio().setIdEntidad(entidad);
-				} // for
+      domicilio= this.registroCliente.getDomicilio().getDomicilio();
+      if(domicilio!= null && domicilio.getKey()> 0L) {
+        entidades= (List<Entity>) this.attrs.get("entidades");
+        for(Entity entidad: entidades){
+          if(entidad.getKey().equals(domicilio.toLong("idEntidad")))
+            this.registroCliente.getDomicilio().setIdEntidad(entidad);
+        } // for
 			} // if
 			else
 				this.registroCliente.getDomicilio().setIdEntidad(new Entity(-1L));
@@ -456,26 +462,24 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // finally
   } // doLoadDomicilios
 
-	public void doAsignaDomicilio(){
+	public void doAsignaDomicilio() {
 		List<UISelectEntity> domicilios        = null;
 		List<UISelectEntity> domiciliosBusqueda= null;
 		UISelectEntity domicilio               = null;
 		try {
 			domiciliosBusqueda=(List<UISelectEntity>) this.attrs.get("domiciliosBusqueda");
-			domicilio= domiciliosBusqueda.get(domiciliosBusqueda.indexOf(this.domicilioBusqueda));
+			domicilio = domiciliosBusqueda.get(domiciliosBusqueda.indexOf(this.domicilioBusqueda));
 			domicilios= new ArrayList<>();
 			domicilios.add(domicilio);
 			this.attrs.put("domicilios", domicilios);			
 			this.registroCliente.getDomicilio().setDomicilio(domicilio);
       this.registroCliente.getDomicilio().setIdDomicilio(domicilio.getKey());
-			toAsignaEntidad();
-			loadMunicipios();
-			toAsignaMunicipio();
-			loadLocalidades();
-			toAsignaLocalidad();
-			//loadCodigosPostales();      
-			//toAsignaCodigoPostal();
-			loadAtributosComplemento();			
+			this.toAsignaEntidad();
+			this.loadMunicipios();
+			this.toAsignaMunicipio();
+			this.loadLocalidades();
+			this.toAsignaLocalidad();
+			this.loadAtributosComplemento();			
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -549,7 +553,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 		List<Entity> domicilios= null;
     try {
 			if(all){
-				if(!this.registroCliente.getDomicilio().getDomicilio().getKey().equals(-1L)){
+				if(!this.registroCliente.getDomicilio().getDomicilio().getKey().equals(-1L)) {
 					domicilios= (List<Entity>) this.attrs.get("domicilios");
 					this.registroCliente.getDomicilio().setDomicilio(domicilios.get(domicilios.indexOf(this.registroCliente.getDomicilio().getDomicilio())));
 					this.registroCliente.getDomicilio().setIdDomicilio(domicilios.get(domicilios.indexOf(this.registroCliente.getDomicilio().getDomicilio())).getKey());
@@ -616,8 +620,8 @@ public class Accion extends IBaseAttribute implements Serializable {
     try {
       this.registroCliente.doAgregarClienteDomicilio();
       this.registroCliente.setDomicilio(new Domicilio());
-      loadDomicilios();
-      doLoadAtributos(true);
+      this.loadDomicilios();
+      this.doLoadAtributos(true);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -627,13 +631,13 @@ public class Accion extends IBaseAttribute implements Serializable {
 
   public void doConsultarClienteDomicilio() {
     Domicilio domicilio = null;
-    List<UISelectItem> codigos = null;
     try {
       this.registroCliente.doConsultarClienteDomicilio();
 			domicilio = this.registroCliente.getDomicilioPivote();
       this.registroCliente.getDomicilio().setIdDomicilio(domicilio.getIdDomicilio());
       this.registroCliente.getDomicilio().setDomicilio(domicilio.getDomicilio());      			
       this.registroCliente.getDomicilio().setIdEntidad(domicilio.getIdEntidad());	
+			this.registroCliente.getDomicilio().getDomicilio().put("idKey", new Value("idKey", domicilio.getIdEntidad().getKey()));
 			this.registroCliente.getDomicilio().getDomicilio().put("idEntidad", new Value("idEntidad", domicilio.getIdEntidad().getKey()));
       this.toAsignaEntidad();
 			this.loadMunicipios();
@@ -655,6 +659,10 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.registroCliente.getDomicilio().setYcalle(domicilio.getYcalle());
       this.registroCliente.getDomicilio().setIdTipoDomicilio(domicilio.getIdTipoDomicilio());
       this.registroCliente.getDomicilio().setPrincipal(domicilio.getPrincipal());
+			this.registroCliente.getDomicilio().setCodigoPostal(domicilio.getCodigoPostal());
+      UISelectEntity codigoPostal= new UISelectEntity(-1L); 
+      codigoPostal.put("codigo", new Value("codigo", domicilio.getCodigoPostal()));
+      this.attrs.put("codigoSeleccionado", codigoPostal); 
 			this.registroCliente.getDomicilio().setNuevoCp(domicilio.isNuevoCp());
     } // try
     catch (Exception e) {
@@ -663,12 +671,12 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // catch		
   } // doEliminarArticuloCodigo	
 	
-	public void doActualizaDomicilio(){
+	public void doActualizaDomicilio() {
 		try {
 			this.registroCliente.doActualizarClienteDomicilio();
 			this.registroCliente.setDomicilio(new Domicilio());
-      loadDomicilios();
-      doLoadAtributos(true);
+      this.loadDomicilios();
+      this.doLoadAtributos(true);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -763,7 +771,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 	} // loadTiposVentas
 	
 	public List<UISelectEntity> doCompleteCodigoPostal(String query) {		
-		if(this.registroCliente.getDomicilio().getIdEntidad().getKey()>= 1L && !Cadena.isVacio(query)){
+		if(this.registroCliente.getDomicilio().getIdEntidad().getKey()>= 1L && !Cadena.isVacio(query)) {
 			this.attrs.put("condicionCodigoPostal", query);
 			this.doUpdateCodigosPostales();		
 			return (List<UISelectEntity>)this.attrs.get("allCodigosPostales");
@@ -894,5 +902,9 @@ public class Accion extends IBaseAttribute implements Serializable {
   public void doCreateUser(ClienteContactoRepresentante row) {
     
   }
+
+  public void doUpdateChange() {
+    LOG.info(this.registroCliente.getClientesDomicilio().size());
+  } 
   
 }

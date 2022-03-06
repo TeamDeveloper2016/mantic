@@ -4598,21 +4598,29 @@
           tc_mantic_domicilios
         where 
           id_localidad={idLocalidad}
-        and
-          codigo_postal='{codigoPostal}'
-        and
-          calle='{calle}'
-        and
-          numero_exterior= '{numeroExterior}'
-        and
-          numero_interior='{numeroInterior}'
-        and
-					asentamiento='{asentamiento}'
-        and
-					entre_calle='{entreCalle}'
-        and
-					y_calle='{yCalle}'
+          and codigo_postal='{codigoPostal}'
+          and calle='{calle}'
+          and numero_exterior= '{numeroExterior}'
+          and numero_interior='{numeroInterior}'
+          and asentamiento='{asentamiento}'
+          and entre_calle='{entreCalle}'
+          and y_calle='{yCalle}'
 			</select>
+      <update id="rows">
+        update 
+          tc_mantic_domicilios
+        set
+          id_localidad={idLocalidad},
+          codigo_postal='{codigoPostal}',
+          calle= upper('{calle}'),
+          numero_exterior= upper('{numeroExterior}'),
+          numero_interior= upper('{numeroInterior}'),
+          asentamiento= upper('{asentamiento}'),
+          entre_calle= upper('{entreCalle}'),
+          y_calle= upper('{yCalle}')
+        where
+          id_domicilio= {idDomicilio}
+      </update>
     </unit>	        
     <unit id="TcManticHistorialIvaDto">
 			<select id="row">

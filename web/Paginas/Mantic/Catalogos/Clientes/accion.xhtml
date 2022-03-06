@@ -174,26 +174,43 @@
 											</h:panelGrid>
 										</f:facet>
 									</p:autoComplete>													
-									<p:inputText placeholder="Captura el nuevo código postal. Ej. 20284" id="cp" styleClass="janal-wid-100-txt cp-style" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.codigoPostal}" rendered="#{!manticCatalogosClientesAccion.registroCliente.domicilio.nuevoCp}"/>																																	
+									<p:inputText placeholder="Captura el nuevo código postal. Ej. 20284" id="cp" styleClass="janal-wid-100-txt cp-style" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.codigoPostal}" rendered="#{!manticCatalogosClientesAccion.registroCliente.domicilio.nuevoCp}">
+                    <p:ajax event="change" listener="#{manticCatalogosClientesAccion.doUpdateChange}" process="@this"/>
+                  </p:inputText>
 									<p:spacer/><p:spacer/>
                   <p:outputLabel for="calle" value="Calle:"/>
-                  <p:inputText id="calle" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.calle}" />
+                  <p:inputText id="calle" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.calle}">
+                    <p:ajax event="change" listener="#{manticCatalogosClientesAccion.doUpdateChange}" process="@this"/>
+                  </p:inputText>
                   <p:outputLabel for="exterior" value="Número exterior:"/>
-                  <p:inputText id="exterior" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.numeroExterior}" />
+                  <p:inputText id="exterior" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.numeroExterior}">
+                    <p:ajax event="change" listener="#{manticCatalogosClientesAccion.doUpdateChange}" process="@this"/>
+                  </p:inputText>
                   <p:outputLabel for="interior" value="Número interior:"/>
-                  <p:inputText id="interior" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.numeroInterior}"/>	
+                  <p:inputText id="interior" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.numeroInterior}">	
+                    <p:ajax event="change" listener="#{manticCatalogosClientesAccion.doUpdateChange}" process="@this"/>
+                  </p:inputText>
                   <p:outputLabel for="asentamiento" value="Colonia:"/>
-                  <p:inputText id="asentamiento" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.asentamiento}"/>	
+                  <p:inputText id="asentamiento" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.asentamiento}">	
+                    <p:ajax event="change" listener="#{manticCatalogosClientesAccion.doUpdateChange}" process="@this"/>
+                  </p:inputText>
                   <p:outputLabel for="entreCalle" value="Entre calle:"/>
-                  <p:inputText id="entreCalle" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.entreCalle}"/>	
+                  <p:inputText id="entreCalle" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.entreCalle}">	
+                    <p:ajax event="change" listener="#{manticCatalogosClientesAccion.doUpdateChange}" process="@this"/>
+                  </p:inputText>
                   <p:outputLabel for="ycalle" value="Y calle:"/>
-                  <p:inputText id="ycalle" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.ycalle}"/>	
+                  <p:inputText id="ycalle" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.ycalle}">	
+                    <p:ajax event="change" listener="#{manticCatalogosClientesAccion.doUpdateChange}" process="@this"/>
+                  </p:inputText>
                   <p:outputLabel for="tipoDomicilio" value="Tipo domicilio:"/>
-                  <p:selectOneMenu id="tipoDomicilio" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.idTipoDomicilio}" styleClass="janal-wid-100-txt">									
+                  <p:selectOneMenu id="tipoDomicilio" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.idTipoDomicilio}" styleClass="janal-wid-100-txt">
+                    <p:ajax event="change" listener="#{manticCatalogosClientesAccion.doUpdateChange}" process="@this"/>
                     <f:selectItems value="#{manticCatalogosClientesAccion.attrs.tiposDomicilios}"/>
                   </p:selectOneMenu>	
                   <p:outputLabel for="principal" value="Principal:"/>
-									<p:selectBooleanCheckbox id="principal" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.principal}" styleClass="janal-wid-100-txt" />                    
+									<p:selectBooleanCheckbox id="principal" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.principal}" styleClass="janal-wid-100-txt">
+                    <p:ajax event="change" listener="#{manticCatalogosClientesAccion.doUpdateChange}" process="@this"/>
+                  </p:selectBooleanCheckbox>
                 </p:panelGrid>
               </p:panelGrid>
             </p:tab>

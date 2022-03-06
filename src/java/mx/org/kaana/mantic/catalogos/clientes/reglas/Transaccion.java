@@ -142,7 +142,7 @@ public class Transaccion extends TransaccionFactura {
     return regresar;
   } // procesarCliente
 
-	private void registraClienteFacturama(Session sesion, Long idCliente){		
+	private void registraClienteFacturama(Session sesion, Long idCliente) {		
 		CFDIGestor gestor     = null;
 		ClienteFactura cliente= null;
 		try {
@@ -156,7 +156,7 @@ public class Transaccion extends TransaccionFactura {
 		} // catch		
 	} // registraArticuloFacturama
 	
-	private void actualizarClienteFacturama(Session sesion, Long idCliente){		
+	private void actualizarClienteFacturama(Session sesion, Long idCliente) {
 		CFDIGestor gestor     = null;
 		ClienteFactura cliente= null;
 		try {
@@ -173,7 +173,7 @@ public class Transaccion extends TransaccionFactura {
 		} // catch		
 	} // actualizarArticuloFacturama
 	
-	private void eliminarClienteFacturama(Session sesion, String idCliente){						
+	private void eliminarClienteFacturama(Session sesion, String idCliente) {						
 		try {			
 			if(idCliente!= null && Long.valueOf(idCliente)>= 1L)
 				removeCliente(sesion, idCliente);
@@ -184,17 +184,22 @@ public class Transaccion extends TransaccionFactura {
 	} // actualizarArticuloFacturama
 	
   private boolean actualizarCliente(Session sesion) throws Exception {
-    boolean regresar = false;
-    Long idCliente = this.registroCliente.getIdCliente();
-		if (registraClientesDomicilios(sesion, idCliente)) {
-			if (registraClientesRepresentantes(sesion, idCliente)) {
-				if (registraClientesTipoContacto(sesion, idCliente)) {
-					regresar = DaoFactory.getInstance().update(sesion, this.registroCliente.getCliente()) >= 1L;
-					sesion.flush();
-					actualizarClienteFacturama(sesion, this.registroCliente.getIdCliente());
-				}
-			} // if
-		} // if    
+    boolean regresar= false;
+    Long idCliente  = this.registroCliente.getIdCliente();
+    try {
+      if (this.registraClientesDomicilios(sesion, idCliente)) {
+        if (this.registraClientesRepresentantes(sesion, idCliente)) {
+          if (this.registraClientesTipoContacto(sesion, idCliente)) {
+            regresar = DaoFactory.getInstance().update(sesion, this.registroCliente.getCliente()) >= 1L;
+            sesion.flush();
+            this.actualizarClienteFacturama(sesion, this.registroCliente.getIdCliente());
+          }
+        } // if
+      } // if    
+    } // try  
+    catch(Exception e) {
+      throw e;
+    } // catch
     return regresar;
   } // actualizarCliente
 
@@ -208,11 +213,14 @@ public class Transaccion extends TransaccionFactura {
         if (DaoFactory.getInstance().deleteAll(sesion, TrManticClienteRepresentanteDto.class, params) > -1L) {
           if (DaoFactory.getInstance().deleteAll(sesion, TrManticClienteTipoContactoDto.class, params) > -1L) {
             regresar = DaoFactory.getInstance().delete(sesion, TcManticClientesDto.class, this.registroCliente.getIdCliente()) >= 1L;
-						eliminarClienteFacturama(sesion, this.registroCliente.getCliente().getIdFacturama());
+						this.eliminarClienteFacturama(sesion, this.registroCliente.getCliente().getIdFacturama());
           }
         } // if
       } // if
-    } // try // try    
+    } // try 
+    catch(Exception e) {
+      throw e;
+    } // catch
     finally {
       Methods.clean(params);
     } // finally
@@ -236,17 +244,17 @@ public class Transaccion extends TransaccionFactura {
 					clienteDomicilio.setIdPrincipal(1L);
         clienteDomicilio.setIdCliente(idCliente);
         clienteDomicilio.setIdUsuario(JsfBase.getIdUsuario());
-				clienteDomicilio.setIdDomicilio(toIdDomicilio(sesion, clienteDomicilio));		
+				clienteDomicilio.setIdDomicilio(this.toIdDomicilio(sesion, clienteDomicilio));		
         dto = (TrManticClienteDomicilioDto) clienteDomicilio;
         sqlAccion = clienteDomicilio.getSqlAccion();
         switch (sqlAccion) {
           case INSERT:
 						dto.setIdPrincipal(dto.getIdPrincipal().equals(1L) ? dto.getIdPrincipal() : 2L);
             dto.setIdClienteDomicilio(-1L);
-            validate = registrar(sesion, dto);
+            validate = this.registrar(sesion, dto);
             break;
           case UPDATE:
-            validate = actualizar(sesion, dto);
+            validate = this.actualizar(sesion, dto);
             break;
         } // switch
         if (validate) {
@@ -255,6 +263,9 @@ public class Transaccion extends TransaccionFactura {
       } // for		
       regresar = count == this.registroCliente.getClientesDomicilio().size();
     } // try    
+    catch(Exception e) {
+      throw e;
+    } // catch
     finally {
       this.messageError = "Error al registrar los domicilios, verifique que no haya duplicados";
     } // finally
@@ -304,14 +315,17 @@ public class Transaccion extends TransaccionFactura {
         } // if
       } // for		
       regresar = count == this.registroCliente.getPersonasTiposContacto().size();
-    } // try // try    
+    } // try 
+    catch(Exception e) {
+      throw e;
+    } // catch
     finally {
       this.messageError = "Error al registrar los representantes, verifique que no haya duplicados";
     } // finally
     return regresar;
   } // registraClientesRepresentantes
 	
-	private Long addRepresentante(Session sesion, ClienteContactoRepresentante clienteRepresentante) throws Exception{
+	private Long addRepresentante(Session sesion, ClienteContactoRepresentante clienteRepresentante) throws Exception {
 		Long regresar              = -1L;
 		TcManticPersonasDto persona= null;
 		try {
@@ -327,7 +341,10 @@ public class Transaccion extends TransaccionFactura {
 			if(regresar > -1L)
 				this.registraPersonasTipoContacto(sesion, regresar, clienteRepresentante.getContactos());
 		} // try		
-		finally{
+    catch(Exception e) {
+      throw e;
+    } // catch
+		finally {
 			this.messageError = "Error al registrar los representantes, verifique que no haya duplicados";
 		} // finally
 		return regresar;
@@ -364,6 +381,9 @@ public class Transaccion extends TransaccionFactura {
       } // for		
       regresar = count == tiposContactos.size();
     } // try    
+    catch(Exception e) {
+      throw e;
+    } // catch
     finally {
       this.messageError = "Error al registrar los tipos de contacto, verifique que no haya duplicados";
     } // finally
@@ -422,15 +442,18 @@ public class Transaccion extends TransaccionFactura {
   } // registraClientesTipoContacto
 
   private boolean eliminarRegistros(Session sesion) throws Exception {
-    boolean regresar = true;
-    int count = 0;
+    boolean regresar= true;
+    int count       = 0;
     try {
-      for (IBaseDto dto : this.registroCliente.getDeleteList()) {
+      for (IBaseDto dto: this.registroCliente.getDeleteList()) {
         if (DaoFactory.getInstance().delete(sesion, dto) >= 1L) 
           count++;        
       } // for
       regresar= (count == this.registroCliente.getDeleteList().size());
     } // try    
+    catch(Exception e) {
+      throw e;
+    } // catch
     finally {
       this.messageError = "Error al eliminar registros";
     } // finally
@@ -449,31 +472,41 @@ public class Transaccion extends TransaccionFactura {
     return DaoFactory.getInstance().update(sesion, dto) >= 1L;
   } // actualizar
 	
-	private Long toIdDomicilio(Session sesion, ClienteDomicilio clienteDomicilio) throws Exception{		
+	private Long toIdDomicilio(Session sesion, ClienteDomicilio clienteDomicilio) throws Exception {		
 		Entity entityDomicilio= null;
 		Long regresar         = -1L;		
-		entityDomicilio= toDomicilio(sesion, clienteDomicilio);
-		if(entityDomicilio!= null)
-			regresar= entityDomicilio.getKey();
-		else
-			regresar= insertDomicilio(sesion, clienteDomicilio);									
+    try {
+      entityDomicilio       = this.toDomicilio(sesion, clienteDomicilio);
+      if(entityDomicilio!= null)
+        regresar= entityDomicilio.getKey();
+      else
+        regresar= this.insertDomicilio(sesion, clienteDomicilio);									
+    } // try  
+    catch(Exception e) {
+      throw e;
+    } // catch
 		return regresar;
 	} // registrarDomicilio	
 	
-	private Long insertDomicilio(Session sesion, ClienteDomicilio clienteDomicilio) throws Exception{
+	private Long insertDomicilio(Session sesion, ClienteDomicilio clienteDomicilio) throws Exception {
+		Long regresar                  = -1L;		
 		TcManticDomiciliosDto domicilio= null;
-		Long regresar= -1L;		
-		domicilio= new TcManticDomiciliosDto();
-		domicilio.setIdLocalidad(clienteDomicilio.getIdLocalidad().getKey());
-		domicilio.setAsentamiento(clienteDomicilio.getColonia());
-		domicilio.setCalle(clienteDomicilio.getCalle());
-		domicilio.setCodigoPostal(clienteDomicilio.getCodigoPostal());
-		domicilio.setEntreCalle(clienteDomicilio.getEntreCalle());
-		domicilio.setIdUsuario(JsfBase.getIdUsuario());
-		domicilio.setNumeroExterior(clienteDomicilio.getExterior());
-		domicilio.setNumeroInterior(clienteDomicilio.getInterior());
-		domicilio.setYcalle(clienteDomicilio.getyCalle());
-		regresar= DaoFactory.getInstance().insert(sesion, domicilio);		
+    try {
+      domicilio= new TcManticDomiciliosDto();
+      domicilio.setIdLocalidad(clienteDomicilio.getIdLocalidad().getKey());
+      domicilio.setAsentamiento(clienteDomicilio.getColonia());
+      domicilio.setCalle(clienteDomicilio.getCalle());
+      domicilio.setCodigoPostal(clienteDomicilio.getCodigoPostal());
+      domicilio.setEntreCalle(clienteDomicilio.getEntreCalle());
+      domicilio.setIdUsuario(JsfBase.getIdUsuario());
+      domicilio.setNumeroExterior(clienteDomicilio.getExterior());
+      domicilio.setNumeroInterior(clienteDomicilio.getInterior());
+      domicilio.setYcalle(clienteDomicilio.getyCalle());
+      regresar= DaoFactory.getInstance().insert(sesion, domicilio);		
+    } // try
+    catch(Exception e) {
+      throw e;
+    } // catch
 		return regresar;
 	} // insertDomicilio
 	
@@ -482,16 +515,25 @@ public class Transaccion extends TransaccionFactura {
 		Map<String, Object>params= null;
 		try {
 			params= new HashMap<>();
+			params.put("idDomicilio", clienteDomicilio.getIdDomicilio());
 			params.put("idLocalidad", clienteDomicilio.getIdLocalidad().getKey());
-			params.put("codigoPostal", clienteDomicilio.getCodigoPostal());
-			params.put("calle", clienteDomicilio.getCalle());
-			params.put("numeroExterior", clienteDomicilio.getExterior());
-			params.put("numeroInterior", clienteDomicilio.getInterior());
-			params.put("asentamiento", clienteDomicilio.getColonia());
-			params.put("entreCalle", clienteDomicilio.getEntreCalle());
-			params.put("yCalle", clienteDomicilio.getyCalle());
-			regresar= (Entity) DaoFactory.getInstance().toEntity(sesion, "TcManticDomiciliosDto", "domicilioExiste", params);
+			params.put("codigoPostal", clienteDomicilio.getCodigoPostal()!= null? clienteDomicilio.getCodigoPostal(): "");
+			params.put("calle", clienteDomicilio.getCalle()!= null? clienteDomicilio.getCalle(): "");
+			params.put("numeroExterior", clienteDomicilio.getExterior()!= null? clienteDomicilio.getExterior(): "");
+			params.put("numeroInterior", clienteDomicilio.getInterior()!= null? clienteDomicilio.getInterior(): "");
+			params.put("asentamiento", clienteDomicilio.getColonia()!= null? clienteDomicilio.getColonia(): "");
+			params.put("entreCalle", clienteDomicilio.getEntreCalle()!= null? clienteDomicilio.getEntreCalle(): "");
+			params.put("yCalle", clienteDomicilio.getyCalle()!= null? clienteDomicilio.getyCalle(): "");
+      if(clienteDomicilio.getIdDomicilio()!= null && clienteDomicilio.getIdDomicilio()> 0L) {
+        DaoFactory.getInstance().updateAll(sesion, TcManticDomiciliosDto.class, params);
+        regresar= new Entity(clienteDomicilio.getIdDomicilio());
+      } // if  
+      else
+			  regresar= (Entity) DaoFactory.getInstance().toEntity(sesion, "TcManticDomiciliosDto", "domicilioExiste", params);
 		} // try		
+    catch(Exception e) {
+      throw e;
+    } // catch
 		finally {
 			Methods.clean(params);
 		} // finally

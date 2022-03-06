@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
@@ -44,12 +45,12 @@ public class RegistroCliente implements Serializable{
 	}
 	
 	public RegistroCliente(Long idCliente) {
-		this.idCliente  = idCliente;
-		this.contadores = new ContadoresListas();
-		this.countIndice= 0L;
-		this.deleteList = new ArrayList<>();
-		this.domicilio  = new Domicilio();
-		this.domicilioPivote    = new Domicilio();
+		this.idCliente          = idCliente;
+		this.contadores         = new ContadoresListas();
+		this.countIndice        = 0L;
+		this.deleteList         = new ArrayList<>();
+		this.domicilioPivote    = this.domicilio;
+		this.domicilio          = new Domicilio();
 		this.personaTipoContactoPivote= new ClienteContactoRepresentante();
 		this.personaTipoContacto= new ClienteContactoRepresentante();		
     this.index              = -1;
@@ -247,7 +248,7 @@ public class RegistroCliente implements Serializable{
 		ClienteDomicilio clienteDomicilio= null;
 		try {								
 			clienteDomicilio= new ClienteDomicilio(this.contadores.getTotalClientesDomicilios()+ this.countIndice, ESql.INSERT, true);	
-			setValuesClienteDomicilio(clienteDomicilio, false);			
+			this.toUpdateClientePivote(clienteDomicilio, false);			
 			this.clientesDomicilio.add(clienteDomicilio);			
 		} // try
 		catch (Exception e) {
@@ -304,12 +305,12 @@ public class RegistroCliente implements Serializable{
 		} // catch		
 	} // doConsultarClienteDomicilio
 	
-	public void doActualizarClienteDomicilio(){
+	public void doActualizarClienteDomicilio() {
 		ClienteDomicilio pivote= null;
 		try {			
 			pivote= this.clientesDomicilio.get(this.clientesDomicilio.indexOf(this.clienteDomicilioSelecion));			
 			pivote.setModificar(false);
-			setValuesClienteDomicilio(pivote, true);						
+			this.toUpdateClientePivote(pivote, true);						
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -317,18 +318,15 @@ public class RegistroCliente implements Serializable{
 		} // catch				
 	} // doActualizarClienteDomicilio
 	
-	private void setValuesClienteDomicilio(ClienteDomicilio clienteDomicilio, boolean actualizar) throws Exception{
+	public void toUpdateClientePivote(ClienteDomicilio clienteDomicilio, boolean actualizar) throws Exception {
 		try {
-			if(this.domicilio.getPrincipal()){
+			if(this.domicilio.getPrincipal()) {
 				for(ClienteDomicilio record: this.clientesDomicilio)
 					record.setIdPrincipal(0L);
 			} // if
-			clienteDomicilio.setIdPrincipal(this.domicilio.getPrincipal() ? 1L : 2L);
-			/*if(this.domicilio.getIdDomicilio().equals(-1L))
-				clienteDomicilio.setIdDomicilio(registrarDomicilio());
-			else*/
-			clienteDomicilio.setDomicilio(this.domicilio.getDomicilio());
-			clienteDomicilio.setIdDomicilio(this.domicilio.getDomicilio().getKey());
+  		clienteDomicilio.setIdDomicilio(this.getDomicilioPivote().getIdDomicilio());
+			clienteDomicilio.setIdPrincipal(this.domicilio.getPrincipal()? 1L: 2L);
+			clienteDomicilio.setDomicilio(new Entity(this.getDomicilioPivote().getIdDomicilio()));
 			clienteDomicilio.setIdUsuario(JsfBase.getIdUsuario());
 			clienteDomicilio.setIdTipoDomicilio(this.domicilio.getIdTipoDomicilio());
 			if(!actualizar)
@@ -343,12 +341,13 @@ public class RegistroCliente implements Serializable{
 			clienteDomicilio.setEntreCalle(this.domicilio.getEntreCalle());
 			clienteDomicilio.setyCalle(this.domicilio.getYcalle());
 			clienteDomicilio.setColonia(this.domicilio.getAsentamiento());
+			clienteDomicilio.setCodigoPostal(this.domicilio.getCodigoPostal());
 			clienteDomicilio.setNuevoCp(this.domicilio.getCodigoPostal()!= null && !Cadena.isVacio(this.domicilio.getCodigoPostal()));
 		} // try
 		catch (Exception e) {			
 			throw e;
 		} // catch		
-	} // setValuesClienteDomicilio
+	} // toUpdateClientePivote
 	
 	public void doAgregarClienteRepresentante(){
 		ClienteRepresentante clienteRepresentante= null;
