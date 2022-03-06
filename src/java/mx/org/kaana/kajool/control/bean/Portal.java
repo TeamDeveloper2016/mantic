@@ -137,7 +137,7 @@ public final class Portal implements Serializable {
       this.menu.addElement(sub);
       sub= new DefaultSubMenu("Facturación");
       sub.setIcon("fa fa-qrcode");
-      item = new DefaultMenuItem("Desargar");
+      item = new DefaultMenuItem("Descargar");
       item.setIcon("fa fa-download");
       item.setUrl("/Control/descargar.jsf".concat(Constantes.REDIRECIONAR));
       sub.addElement(item);      
@@ -177,6 +177,7 @@ public final class Portal implements Serializable {
           } // if
           else {
             DefaultSubMenu sub= new DefaultSubMenu(nombre);
+            sub.setStyleClass("categoria janal-".concat(categoria.toString("nombre").replaceAll("[ ]", "_")));
             sub.setIcon("fa ".concat(categoria.toString("icon")));
             this.toLoadCategorias(sub, categoria.toString("nombre"), nivel+ 1);
             root.addElement(sub);

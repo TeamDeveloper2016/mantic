@@ -22,6 +22,8 @@
 			<ui:insert name="librerias"/>
 			<script type="text/javascript">
   			//<![CDATA[
+        var pageOffEventClick= true;
+        
 				$(document).ready(function() {
           if(#{empty showSearchButton? false: true})
             $('button.janal-codigo-global').hide();
@@ -36,6 +38,19 @@
                 break;
             } // switch
           });    
+          
+          $(document).on('click', 'li.categoria', function(e) {
+            var styles= $(this).attr('class');
+            $.each(styles.split(' '), function(index, value) { 
+     	 			  if(value.startsWith('janal')) { 
+		   			    var categoria= value.substring(6).replace(/_/g, ' ');
+                if(pageOffEventClick) {
+                  galeriaPrincipal(categoria, 'CATEGORIA');
+                  pageOffEventClick= false;
+                } // if  
+              } // if   
+            });
+          });
   		  });
   			//]]>
 			</script>	

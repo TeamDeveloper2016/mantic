@@ -157,7 +157,9 @@ public final class Encriptar {
   public static void main(String [] args) throws IOException, Exception {
     Encriptar encriptado= new Encriptar();
     //pass.setFijar(true);
-		String texto= encriptado.encriptar("12148899", encriptado._CLAVE);
+    //                     dia,horas,minutos,segundos  
+    // 2022-03-05 20:25:49 %d%H%i%S
+		String texto= encriptado.encriptar("05202549", encriptado._CLAVE);
     //String texto = encriptado.encriptar("jdbc:oracle:thin:@10.1.8.41:1521:bddesa", _CLAVE);
    // String texto = encriptado.encriptar("Hola", _CLAVE);
     //LOG.debug("encriptado: " + texto);

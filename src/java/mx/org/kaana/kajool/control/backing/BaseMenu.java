@@ -81,8 +81,8 @@ public class BaseMenu extends IBaseImportar implements Serializable {
   @PostConstruct
   protected void init() {
 		this.attrs.put("rfc", ""); // ATT1811272YA
-		this.attrs.put("folio", ""); // 2021040490
-		this.attrs.put("seguridad", ""); // 443c2f2e2d2c291708 12144402
+		this.attrs.put("folio", ""); // 2022900001
+		this.attrs.put("seguridad", ""); // e751c7b7a89785f770 05202549
 		this.attrs.put("codigo", "");
 		this.attrs.put("pdfFile", null);
 		this.attrs.put("xmlFile", null);

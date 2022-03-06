@@ -88,7 +88,7 @@ public class Generar extends BaseMenu implements Serializable {
              JsfBase.addAlert("Error", "Este ticket corresponde a otro cliente !", ETipoMensaje.ERROR);
           } // if
           else 
-            JsfBase.addAlert("Error", "Este cliente no puede facturar !", ETipoMensaje.ERROR);
+            JsfBase.addAlert("Error", "Este cliente no puede facturar, consulte al negocio !", ETipoMensaje.ERROR);
         } // if
         else 
           if(!Cadena.isVacio(venta.getIdFactura()) && venta.getIdFactura()> 0L) {
@@ -96,7 +96,7 @@ public class Generar extends BaseMenu implements Serializable {
             this.toLoadDocumentos();
           } // if
           else
-            JsfBase.addAlert("Error", "Este ticket ya expiro !", ETipoMensaje.ERROR);
+            JsfBase.addAlert("Error", "Este ticket ya expiró, solo se facturan tickets del mismo mes !", ETipoMensaje.ERROR);
       } // if
       else 
         JsfBase.addAlert("Error", "Los datos capturados son incorrectos !", ETipoMensaje.ERROR);
