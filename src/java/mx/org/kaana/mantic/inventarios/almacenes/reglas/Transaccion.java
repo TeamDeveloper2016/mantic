@@ -110,6 +110,7 @@ public class Transaccion extends IBaseTnx {
 					articulo.setPrecio(this.precio);
 					articulo.setDescuento(this.descuento);
 					articulo.setExtra(this.extra);
+					articulo.setSat(this.sat);
 					articulo.setMenudeo(this.articulos.get(ETiposVentas.MENUDEO.ordinal()).getPrecio());
 					articulo.setLimiteMedioMayoreo(this.articulos.get(ETiposVentas.MENUDEO.ordinal()).getLimite());
 					articulo.setMedioMayoreo(this.articulos.get(ETiposVentas.MEDIO_MAYOREO.ordinal()).getPrecio());

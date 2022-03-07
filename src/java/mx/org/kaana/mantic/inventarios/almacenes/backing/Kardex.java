@@ -956,7 +956,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
     Transaccion transaccion= null;
     try {			
       UISelectEntity proveedor= (UISelectEntity)this.attrs.get("proveedor");
-			transaccion = new Transaccion((Long)this.attrs.get("idArticulo"), (String)this.attrs.get("auxiliar"), proveedor== null || proveedor.isEmpty()? null: proveedor.getKey());
+			transaccion = new Transaccion((Long)this.attrs.get("idArticulo"), (String)this.attrs.get("sat"), proveedor== null || proveedor.isEmpty()? null: proveedor.getKey());
 			if (transaccion.ejecutar(EAccion.COMPLEMENTAR)) 
 				JsfBase.addMessage("Se modificó el código del SAT ["+ (String)this.attrs.get("sat")+ "] del articulo.", ETipoMensaje.INFORMACION);
 			else 
