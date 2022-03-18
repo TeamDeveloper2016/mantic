@@ -110,7 +110,7 @@ public class Filtro extends mx.org.kaana.mantic.ventas.backing.Filtro implements
 		  regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
 		if(Cadena.isVacio(this.attrs.get("fechaInicio")) && Cadena.isVacio(this.attrs.get("fechaTermino"))) {
       Periodo periodo= new Periodo();
-      periodo.addMeses(-1);
+      periodo.addMeses(-6);
 		  regresar.put(Constantes.SQL_CONDICION, sb.substring(0, sb.length()- 4)+ " and date_format(tc_mantic_ventas.registro, '%Y%m%d')>= '".concat(periodo.toString()).concat("'"));
     } // if  
 		else	

@@ -334,16 +334,15 @@ public class TransaccionFactura extends IBaseTnx {
 	} // procesarClientes
 	
 	protected boolean actualizarProducto(Session sesion, Long id, String idFacturama) throws Exception{
-		boolean regresar            = false;
-		TcManticArticulosDto articulo= null;		
-		articulo= (TcManticArticulosDto) DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, id);
-		articulo.setIdFacturama(idFacturama);
-		regresar= DaoFactory.getInstance().update(sesion, articulo)>= 1L;		
+		boolean regresar         = false;
+		TcManticArticulosDto item= (TcManticArticulosDto) DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, id);
+		item.setIdFacturama(idFacturama);
+		regresar= DaoFactory.getInstance().update(sesion, item)>= 1L;		
 		return regresar;
 	} // actualizarCliente
 	
-	public boolean generarCfdi(Session sesion) throws Exception{
-		return generarCfdi(sesion, JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString(), JsfBase.getIdUsuario());
+	public boolean generarCfdi(Session sesion) throws Exception {
+		return generarCfdi(sesion, JsfBase.getAutentifica()== null? "1": JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString(), JsfBase.getIdUsuario());
 	} // generarCfdi
 	
 	public boolean generarCfdi(Session sesion, String idEmpresa, Long idUsuario) throws Exception{
@@ -361,7 +360,7 @@ public class TransaccionFactura extends IBaseTnx {
 				this.toUpdateData(sesion, cfdi, this.cliente.getIdFactura(), path, idUsuario);
 				this.insertFiles(sesion, calendar, cfdi, path, this.cliente.getRfc(), this.cliente.getIdFactura(), idUsuario);
 			} // if
-			else{
+      else {
 				this.registrarBitacora(sesion, this.cliente.getIdFactura(), cfdi.getId(), REGISTRO_CFDI);
 				actualizarFacturaAutomatico(sesion, this.cliente.getIdFactura(), idUsuario);
 			} // else

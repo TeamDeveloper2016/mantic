@@ -27,7 +27,11 @@ public class JsfBase extends JsfUtilities {
   } // getAutentifica
 
   public static Long getIdUsuario() {
-    return getAutentifica().getPersona().getIdUsuario();
+    Long regresar= 2L;
+    Autentifica autentifica= getAutentifica();
+    if(autentifica!= null && autentifica.getPersona()!= null)
+      regresar= autentifica.getPersona().getIdUsuario();
+    return regresar;
   } // getIdUsuario
 
   public static boolean isAdmin() throws Exception {
