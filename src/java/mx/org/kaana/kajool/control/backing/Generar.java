@@ -73,13 +73,17 @@ public class Generar extends BaseMenu implements Serializable {
           if(cliente!= null && !Cadena.isVacio(cliente.getIdFacturama())) {
             if(Objects.equals(Constantes.VENTA_AL_PUBLICO_GENERAL_ID_KEY, venta.getIdCliente()) || Objects.equals(cliente.getIdCliente(), venta.getIdCliente())) {
               if(Objects.equals(venta.getIdFicticiaEstatus(), EEstatusVentas.PAGADA.getIdEstatusVenta())) {
-                venta.setIdUsoCfdi(((UISelectEntity)this.attrs.get("cfdi")).getKey());
-                venta.setIdCliente(cliente.getIdCliente());
-                Transaccion transaccion = new Transaccion(venta, "ESTA FACTURA SE GENERO EN LINEA");
-                if(transaccion.ejecutar(EAccion.TRANSFORMACION))
-                  this.toLoadDocumentos();
-                else
-                  JsfBase.addAlert("Error", "Ocurrio un error al intentar facturar !", ETipoMensaje.ERROR);
+                if(venta.getTotal()>= 50D) {
+                  venta.setIdUsoCfdi(((UISelectEntity)this.attrs.get("cfdi")).getKey());
+                  venta.setIdCliente(cliente.getIdCliente());
+                  Transaccion transaccion = new Transaccion(venta, "ESTA FACTURA SE GENERO EN LINEA");
+                  if(transaccion.ejecutar(EAccion.TRANSFORMACION))
+                    this.toLoadDocumentos();
+                  else
+                    JsfBase.addAlert("Error", "Ocurrio un error al intentar facturar !", ETipoMensaje.ERROR);
+                } // if
+                else 
+                 JsfBase.addAlert("Error", "Este ticket no puede ser facturado, el importe es menor a 50MX !", ETipoMensaje.ERROR);
               } // if
               else 
                JsfBase.addAlert("Error", "Este ticket no puede ser facturado !", ETipoMensaje.ERROR);

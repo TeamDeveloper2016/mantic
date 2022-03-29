@@ -105,7 +105,7 @@ public class BaseMenu extends IBaseImportar implements Serializable {
       if(this.attrs.get("xmlFile")== null || this.attrs.get("pdfFile")== null) 
         JsfBase.addAlert("Error", "La factura no existe con los datos propocionados !", ETipoMensaje.ERROR);
       else 
-        UIBackingUtilities.execute("$(\"div[panel='1']\").removeClass('Container100');$(\"div[panel]\").addClass('Container50');$(\"div[panel='2']\").show();$('#download').click();");
+        UIBackingUtilities.execute("$(\"div[panel='1']\").removeClass('Container100');$(\"div[panel]\").addClass('Container50');$(\"div[panel='2']\").show();$('div[panel=2]').click();");
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
