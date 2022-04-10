@@ -313,6 +313,7 @@
                   <p:commandButton icon="fa fa-bullseye" title="Seleccionar" actionListener="#{manticCatalogosInventariosConteos.doRowConteoActivo(row)}" process="@this" update="@(.filas) contenedorGrupos:tabla contenedorGrupos:panelImage" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
                 </p:column>
 								<f:facet name="footer">
+                  <p:outputLabel value="Las filas en color naranja son articulos que ya cuentan con un conteo" styleClass="janal-align-left"/>
 									<p:outputLabel value="Total [#{manticCatalogosInventariosConteos.lazyConteos== null? 0: manticCatalogosInventariosConteos.lazyConteos.rowCount}] registros"/>
 								</f:facet>
 							</p:dataTable>		

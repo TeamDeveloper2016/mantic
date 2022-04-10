@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -46,7 +47,6 @@ public class Filtro extends Comun implements Serializable {
     try {
     	this.attrs.put("buscaPorCodigo", false);
       this.attrs.put("codigo", "");
-      this.attrs.put("idTipoArticulo", 1L);
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());      
 			this.toLoadCatalog();
     } // try
@@ -67,7 +67,7 @@ public class Filtro extends Comun implements Serializable {
       columns.add(new Columna("fecha", EFormatoDinamicos.FECHA_CORTA));
       columns.add(new Columna("hora", EFormatoDinamicos.HORA_LARGA));
       columns.add(new Columna("stock", EFormatoDinamicos.NUMERO_CON_DECIMALES));
-      params.put("sortOrder", "order by tc_mantic_articulos.nombre, tc_mantic_articulos.actualizado");
+      params.put("sortOrder", "order by tc_mantic_inventarios.registro desc");
       this.lazyModel = new FormatCustomLazy("VistaArticulosDto", "conteo", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try
@@ -113,7 +113,7 @@ public class Filtro extends Comun implements Serializable {
 
 	private Map<String, Object> toPrepare() throws Exception {
 		Map<String, Object> regresar= new HashMap<>();
-		StringBuilder sb= new StringBuilder("tc_mantic_articulos.id_articulo_tipo=").append(this.attrs.get("idTipoArticulo")).append(" and ");			
+		StringBuilder sb= new StringBuilder();			
 		if(!Cadena.isVacio(JsfBase.getParametro("codigo_input")))
 			sb.append("upper(tc_mantic_articulos_codigos.codigo) like upper('%").append(JsfBase.getParametro("codigo_input")).append("%') and ");						
 		if(this.attrs.get("nombre")!= null && ((UISelectEntity)this.attrs.get("nombre")).getKey()> 0L) 
@@ -133,6 +133,8 @@ public class Filtro extends Comun implements Serializable {
 				sb.append("(tc_mantic_inventarios.id_automatico= 2) and ");
 			else
 				sb.append("(tc_mantic_inventarios.id_automatico!= 2) and ");
+		if(!Cadena.isVacio(this.attrs.get("idVerificado")) && !this.attrs.get("idVerificado").toString().equals("-1"))
+			sb.append("(tc_mantic_inventarios.id_verificado=").append(this.attrs.get("idVerificado").toString()).append(") and ");
 		regresar.put("idAlmacen", ((UISelectEntity)this.attrs.get("idAlmacen")).getKey());
 		regresar.put("ejercicio", ((UISelectEntity)this.attrs.get("ejercicio")).getKey());
 		if(Cadena.isVacio(sb.toString()))
@@ -393,6 +395,8 @@ public class Filtro extends Comun implements Serializable {
     return "/Paginas/Mantic/Catalogos/Masivos/importar".concat(Constantes.REDIRECIONAR);
 	} // doMasivo	
 	
-
-
+	public String toColor(Entity row) {
+		return Objects.equals(row.toLong("idVerificado"), 1L)? "janal-tr-orange": "";
+	} 
+ 
 }

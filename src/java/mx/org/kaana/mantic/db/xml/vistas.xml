@@ -1076,18 +1076,17 @@
 				inner join
 					tc_mantic_almacenes on tc_mantic_inventarios.id_almacen= tc_mantic_almacenes.id_almacen
 				inner join (
-						select
-							max(tc_mantic_inventarios.id_inventario) as id_inventario
-						from
-							tc_mantic_inventarios         
-						where
-							id_automatico= 2
-						group by
-							id_almacen, id_articulo
+					select
+						max(tc_mantic_inventarios.id_inventario) as id_inventario
+					from
+						tc_mantic_inventarios         
+					where
+						id_automatico= 2
+					group by
+						id_almacen, id_articulo
 				) as tc_mantic_maximos on tc_mantic_inventarios.id_inventario= tc_mantic_maximos.id_inventario
         where
           (tc_mantic_almacenes.id_almacen= {idAlmacen} or {idAlmacen}= -1)
-          and tc_mantic_inventarios.id_verificado!= 1
 				{sortOrder}
       </select>
 		</unit>	
@@ -4414,7 +4413,8 @@
 				  tc_mantic_inventarios.stock,
 				  tc_mantic_inventarios.registro as fecha,
 				  tc_mantic_inventarios.registro as hora,
-				  tc_mantic_inventarios.ejercicio
+				  tc_mantic_inventarios.ejercicio,
+          tc_mantic_inventarios.id_verificado
 				from 
 					tc_mantic_articulos
 				left join
