@@ -98,7 +98,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			this.attrs.put("descuentoIndividual", 0);
 			this.attrs.put("descuentoGlobal", 0);
 			this.attrs.put("tipoDescuento", INDIVIDUAL);
-			doActivarDescuento();
+			this.doActivarDescuento();
 			this.attrs.put("descripcion", "Imagen no disponible");
 			this.attrs.put("mostrarBanco", false);
 			this.attrs.put("decuentoAutorizadoActivo", false);
@@ -110,7 +110,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			this.attrs.put("isMatriz", JsfBase.isAdminEncuestaOrAdmin());
 			this.loadClienteDefault();
 			if(JsfBase.isAdminEncuestaOrAdmin())
-				loadSucursales();
+				this.loadSucursales();
 			this.loadBancos();
 			this.loadCfdis();
 			this.loadTiposMediosPagos();
@@ -247,7 +247,6 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			this.getAdminOrden().toAdjustArticulos();
 			if (transaccion.ejecutar(eaccion)) {
 				if(eaccion.equals(EAccion.AGREGAR)) { 				  
-    			// UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 la factura ', '"+ ((FacturaFicticia)this.getAdminOrden().getOrden()).getTicket()+ "');");
     			JsfBase.setFlashAttribute("idFicticia", ((FacturaFicticia)this.getAdminOrden().getOrden()).getIdFicticia());				
 					this.init();
 				} // if	

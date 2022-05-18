@@ -176,7 +176,7 @@ public class Timbrado extends IBaseJob {
 			files.add(new Attachment(Especial.getInstance().getPath(), "logo", ECorreos.FACTURACION.getImages().concat("logo.png"), Boolean.TRUE));
 			params.put("attach", attachments.getId());
 			emails= new String[] {facturacion.getCorreos()};
-			for (String item : emails) {
+			for (String item: emails) {
 				try {
 					if (!Cadena.isVacio(item)) {
 						IBaseAttachment notificar= new IBaseAttachment(ECorreos.FACTURACION, ECorreos.FACTURACION.getEmail(), item, "controlbonanza@gmail.com", "Ferreteria Bonanza - Factura", params, files);

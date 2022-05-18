@@ -3354,8 +3354,6 @@
 			</select>
 		</unit>
 		<unit id="VistaVentasDto">
-			<select id="generar">
-      </select>
 			<select id="pagosVenta">
 				select 					
 					tc_mantic_tipos_medios_pagos.id_tipo_medio_pago as id_key,

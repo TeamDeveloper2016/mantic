@@ -4388,6 +4388,30 @@
           id_empresa in ({sucursales})
 				  and razon_social like '%{razonSocial}%'
 			</select>
+			<select id="correos">
+        select
+          tr_mantic_cliente_tipo_contacto.id_cliente_tipo_contacto as id_key,
+          tr_mantic_cliente_tipo_contacto.id_cliente_tipo_contacto,
+          tc_mantic_clientes.razon_social,
+          tr_mantic_cliente_tipo_contacto.valor
+        from
+          tc_mantic_clientes
+        inner join  
+          tr_mantic_cliente_tipo_contacto on tc_mantic_clientes.id_cliente= tr_mantic_cliente_tipo_contacto.id_cliente
+        where
+          tr_mantic_cliente_tipo_contacto.id_tipo_contacto in (9, 10, 11)  
+          and tr_mantic_cliente_tipo_contacto.id_validado= 2
+        order by
+          tc_mantic_clientes.razon_social        
+			</select>
+			<update id="correos">
+        update
+          tr_mantic_cliente_tipo_contacto
+        set
+          id_validado= 1
+        where
+          id_cliente_tipo_contacto= {idClienteTipoContacto}
+			</update>
 		</unit>		
 		<unit id="TcManticImagenesDto">
       <select id="row">

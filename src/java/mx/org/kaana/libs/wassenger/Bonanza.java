@@ -48,7 +48,9 @@ public final class Bonanza implements Serializable {
   private static final String BODY_GASTO_CHICA = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, te notificamos que los gastos a pagar por concepto de caja chica ascienden a {reporte} pesos de la semana *{nomina}* del {periodo} \\nSi tienes alguna duda, favor de reportarlo de inmediato a tu administrativo.\\n\\nCAFU Construcciones\"";
   private static final String BODY_CAJA_CHICA  = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, te hacemos llegar el reporte de caja chica de los *residentes* de la semana *{nomina}* del {periodo}, hacer clic en el siguiente enlace: https://cafu.jvmhost.net/Temporal/Pdf/{reporte}\\nSe tienen *24 hrs* para descargar el reporte de gastos de caja chica.\\n\\nCAFU Construcciones\"";
   private static final String BODY_OPEN_NOMINA = "\"group\":\"{celular}\",\"message\":\"Estimad@s _{nombre}_,\\n\\n{saludo}, en este momento se ha hecho corte de la nómina *{nomina}* del {periodo}, con un total de *{reporte}* favor de verificar el registro de los destajos; se les hace saber tambien que a las *14:00 hrs* se hará el *corte de caja chica* para que de favor verifiquen el registro de sus gastos. Si se hace algún *ajuste* en los *destajos* a partir de este momento de algun *contratista* o *subcontratista* favor de *indicarlo* en este *chat* para reprocesar su nómina.\\n\\nCAFU Construcciones\"";
-  private static final String BODY_CLOSE_NOMINA= "\"group\":\"{celular}\",\"message\":\"Estimad@s _{nombre}_,\\n\\n{saludo}, en este momento se ha hecho *cierre* de la nómina *{nomina}*; cualquier registro de destajos y de gasto de caja chica se vera reflejado para la siguiente nómina ó _semana_.\\n\\nCAFU Construcciones\"";
+  private static final String BODY_CLOSE_NOMINA= "\"group\":\"{celular}\",\"message\":\"Estimad@s _{nombre}_,\\n\\n{saludo}, en este momento se ha hecho *cierre* de la nómina *{nomina}*; cualquier registro de destajos y de gasto de caja chica se vera reflejado para la siguiente nómina ó _semana_.\\n\\n_Ferreteria Bonanza_\"";
+  private static final String BODY_CHECK_CORREO= "\"group\":\"{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, se te hace llegar la lista de correos que fueron eliminados del servidor de *producción* de los clientes por ser incorrectos o porque no son validos con corte al *{fecha}*\\n\\n{reporte}_Ferreteria Bonanza_\"";
+  
   private static final String PATH_REPORT      = "{numero}.- {documento}; https://ferreteriabonanza.com/Temporal/Pdf/{reporte}\\n";
   private static final int LENGTH_CELL_PHONE   = 10;
 
@@ -60,6 +62,10 @@ public final class Bonanza implements Serializable {
   private String fecha;
   private Map<String, Object> contratistas;
 
+  public Bonanza() {
+    this("", "");
+  }
+  
   public Bonanza(String nombre, String celular) {
     this(nombre, celular, "", "", Collections.EMPTY_MAP);
   }
@@ -117,6 +123,14 @@ public final class Bonanza implements Serializable {
 
   public void setContratistas(Map<String, Object> contratistas) {
     this.contratistas = contratistas;
+  }
+
+  public void setTicket(String ticket) {
+    this.ticket = ticket;
+  }
+
+  public void setFecha(String fecha) {
+    this.fecha = fecha;
   }
 
   @Override
@@ -839,6 +853,67 @@ public final class Bonanza implements Serializable {
     else 
       LOG.error("[doSendCajaChica] No se puedo enviar el mensaje por whatsapp al celular ["+ this.celular+ "]");
   }
+  
+  public void doSendCorreo() {
+    this.doSendCorreo(null);
+  }
+  
+  public void doSendCorreo(Session sesion) {
+    if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE)) {
+      Message message= null;
+      Map<String, Object> params = new HashMap<>();        
+      try {
+        params.put("nombre", this.nombre);
+        params.put("celular", this.celular);
+        params.put("reporte", this.reporte);
+        params.put("ticket", this.ticket);
+        params.put("fecha", this.fecha);
+        params.put("saludo", this.toSaludo());
+        if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.PRODUCCION))
+          LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_CHECK_CORREO, params, true)+ "}");
+        else {  
+          HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
+          .header("Content-Type", "application/json")
+          .header("Token", this.token)
+          .body("{"+ Cadena.replaceParams(BODY_CHECK_CORREO, params, true)+ "}")
+          .asString();
+          if(Objects.equals(response.getStatus(), 201)) {
+            LOG.warn("Enviado: "+ response.getBody());
+            Gson gson= new Gson();
+            message= gson.fromJson(response.getBody(), Message.class);
+            if(message!= null) 
+              message.init();
+            else {
+              message= new Message();
+              message.setMessage(" {"+ Cadena.replaceParams(BODY_CHECK_CORREO, params, true)+ "}");
+            } // else  
+          } // if  
+          else {
+            LOG.error("[doSendCorreo] No se puedo enviar el mensaje por whatsapp al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            message= new Message();
+            message.setMessage(" {"+ Cadena.replaceParams(BODY_CHECK_CORREO, params, true)+ "}");
+          } // if  
+          message.setTelefono(this.celular);
+          message.setIdSendStatus(new Long(response.getStatus()));
+          message.setSendStatus(response.getStatusText());
+          message.setIdTipoMensaje(ETypeMessage.ADMINISTRADOR.getId());
+          message.setIdUsuario(JsfBase.getAutentifica()!= null && JsfBase.getAutentifica().getPersona()!= null? JsfBase.getIdUsuario(): 2L);
+          if(sesion!= null)
+            DaoFactory.getInstance().insert(sesion, message);
+          else
+            DaoFactory.getInstance().insert(message);
+        } // else
+      } // try
+      catch(Exception e) {
+        Error.mensaje(e);
+      } // catch
+      finally {
+        Methods.clean(params);
+      } // finally
+    } // if
+    else 
+      LOG.error("[doSendCorreo]No se puedo enviar el mensaje por whatsapp al celular ["+ this.celular+ "]");
+  } // doSendCorreo
   
   private void prepare() {
     StringBuilder archivos= new StringBuilder();

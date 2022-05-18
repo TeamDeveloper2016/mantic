@@ -29,6 +29,7 @@ import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
+import mx.org.kaana.mantic.db.dto.TcManticFacturasDto;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.facturas.beans.FacturaFicticia;
 import mx.org.kaana.mantic.facturas.reglas.Transaccion;
@@ -68,11 +69,11 @@ public class Generar extends BaseMenu implements Serializable {
       params.put("folio", this.attrs.get("folio"));
       FacturaFicticia venta= (FacturaFicticia)DaoFactory.getInstance().toEntity(FacturaFicticia.class, "TcManticVentasDto", "codigo", params);
       if(venta!= null) {
+        TcManticClientesDto cliente= (TcManticClientesDto)DaoFactory.getInstance().toEntity(TcManticClientesDto.class, "TcManticClientesDto", "rfc", params);
         if(Cadena.isVacio(venta.getIdFactura()) && this.toCheckDate(venta)) {
-          TcManticClientesDto cliente= (TcManticClientesDto)DaoFactory.getInstance().toEntity(TcManticClientesDto.class, "TcManticClientesDto", "rfc", params);
           if(cliente!= null && !Cadena.isVacio(cliente.getIdFacturama())) {
             if(Objects.equals(Constantes.VENTA_AL_PUBLICO_GENERAL_ID_KEY, venta.getIdCliente()) || Objects.equals(cliente.getIdCliente(), venta.getIdCliente())) {
-              if(Objects.equals(venta.getIdFicticiaEstatus(), EEstatusVentas.PAGADA.getIdEstatusVenta())) {
+              if(Objects.equals(venta.getIdFicticiaEstatus(), EEstatusVentas.PAGADA.getIdEstatusVenta()) || Objects.equals(venta.getIdFicticiaEstatus(), EEstatusVentas.ABIERTA.getIdEstatusVenta())) {
                 if(venta.getTotal()>= 50D) {
                   venta.setIdUsoCfdi(((UISelectEntity)this.attrs.get("cfdi")).getKey());
                   venta.setIdCliente(cliente.getIdCliente());
@@ -92,12 +93,22 @@ public class Generar extends BaseMenu implements Serializable {
              JsfBase.addAlert("Error", "Este ticket corresponde a otro cliente !", ETipoMensaje.ERROR);
           } // if
           else 
-            JsfBase.addAlert("Error", "Este cliente no puede facturar, consulte al negocio !", ETipoMensaje.ERROR);
+            JsfBase.addAlert("Error", "Ud. no puede facturar porque le falta un dato por favor consulte al negocio por whatsapp (449)5087505 !", ETipoMensaje.ERROR);
         } // if
         else 
           if(!Cadena.isVacio(venta.getIdFactura()) && venta.getIdFactura()> 0L) {
-            JsfBase.addAlert("Error", "Este ticket ya fue facturado !", ETipoMensaje.ERROR);
-            this.toLoadDocumentos();
+            TcManticFacturasDto factura= (TcManticFacturasDto)DaoFactory.getInstance().findById(TcManticFacturasDto.class, venta.getIdFactura());
+            if(!Cadena.isVacio(factura.getIdFacturama()))
+              this.toLoadDocumentos();
+            else {
+              venta.setIdUsoCfdi(((UISelectEntity)this.attrs.get("cfdi")).getKey());
+              venta.setIdCliente(cliente.getIdCliente());
+              Transaccion transaccion = new Transaccion(venta, "ESTA FACTURA SE GENERO EN LINEA");
+              if(transaccion.ejecutar(EAccion.TRANSFORMACION))
+                this.toLoadDocumentos();
+              else
+                JsfBase.addAlert("Error", "Ocurrio un error al intentar facturar !", ETipoMensaje.ERROR);
+            } // else  
           } // if
           else
             JsfBase.addAlert("Error", "Este ticket ya expiró, solo se facturan tickets del mismo mes !", ETipoMensaje.ERROR);
