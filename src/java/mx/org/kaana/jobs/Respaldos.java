@@ -35,12 +35,12 @@ public class Respaldos extends IBaseJob {
 		Map<String, Object> params= null;
 		try {
 			if(!Configuracion.getInstance().isEtapaDesarrollo() && !Configuracion.getInstance().isEtapaCapacitacion()) {
+        LOG.error("----------------ENTRO A REALIZAR UN RESPALDO A LA BD -----------------------------");
 				transaccion= new Transaccion();
 				if(transaccion.ejecutar(EAccion.AGREGAR))
 					LOG.error("Se realizo el respaldo de la BD de forma correcta");
 				else
 					LOG.error("Ocurrio un error al realizar el respaldo de la BD");			
-				
 				Periodo periodo= new Periodo();
 				periodo.addDias(-20);
   			params=new HashMap<>();

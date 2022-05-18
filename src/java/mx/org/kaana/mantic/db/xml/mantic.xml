@@ -4404,14 +4404,6 @@
         order by
           tc_mantic_clientes.razon_social        
 			</select>
-			<update id="correos">
-        update
-          tr_mantic_cliente_tipo_contacto
-        set
-          id_validado= {idValidado}
-        where
-          id_cliente_tipo_contacto= {idClienteTipoContacto}
-			</update>
 		</unit>		
 		<unit id="TcManticImagenesDto">
       <select id="row">
@@ -4561,6 +4553,14 @@
         inner join
           tr_mantic_cliente_representante on tr_mantic_persona_tipo_contacto.id_persona= tr_mantic_cliente_representante.id_representante and tr_mantic_cliente_representante.id_cliente= {idCliente}
 			</select>
+			<update id="rows">
+        update
+          tr_mantic_cliente_tipo_contacto
+        set
+          id_validado= {idValidado}
+        where
+          id_cliente_tipo_contacto= {idClienteTipoContacto}
+			</update>
 			<delete id="rows">
         delete from tr_mantic_cliente_tipo_contacto where id_cliente= {idCliente}
       </delete>

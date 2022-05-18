@@ -58,8 +58,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 			scheduler= Especial.getInstance().getScheduler();			
 			if(scheduler!= null){				
 				regresar= new ArrayList<>();				
-				for (String groupName : scheduler.getJobGroupNames()) { 
-					for (JobKey jobKey : scheduler.getJobKeys(GroupMatcher.jobGroupEquals(groupName))) { 																							
+				for (String groupName: scheduler.getJobGroupNames()) { 
+					for (JobKey jobKey: scheduler.getJobKeys(GroupMatcher.jobGroupEquals(groupName))) { 																							
 						Trigger trigger = ((List<Trigger>) scheduler.getTriggersOfJob(jobKey)).get(0);						
 						server= scheduler.getJobDetail(jobKey).getJobDataMap().getString("server");
 						regresar.add(new Jobs(jobKey.getName(), jobKey.getGroup().toUpperCase(), trigger.getNextFireTime(), trigger.getPreviousFireTime(), jobKey, toSemaforo(scheduler.getTriggerState(trigger.getKey())), ((CronTrigger) trigger).getCronExpression(), ((CronTrigger) trigger).getExpressionSummary(), server));
@@ -162,7 +162,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		return regresar;
 	} // isMostrarCaptura
 	
-	public void doAceptar(){
+	public void doAceptar() {
 		Jobs seleccionado            = null;
 		Scheduler scheduler          = null;
 		Trigger trigger              = null;
@@ -222,5 +222,16 @@ public class Filtro extends IBaseFilter implements Serializable {
   public boolean doAplicarEstilo(String pathJob){
     return Especial.getInstance().getPath().equals(pathJob) || pathJob.equals("*");
   } // doAplicarEstilo	
+  
+	public void doReload() {
+    try {      
+      Especial.getInstance().reload();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+  }
+  
   
 }

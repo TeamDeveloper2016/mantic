@@ -14,7 +14,6 @@ import mx.org.kaana.kajool.seguridad.quartz.Especial;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
 
 public final class Loader {
 
@@ -42,17 +41,12 @@ public final class Loader {
     return instance;
   }
 
-  private String toParameter(ServletContextEvent servletContextEvent, String parameter) {
-    return servletContextEvent.getServletContext().getInitParameter(parameter);
-  }
-
   public void start(ServletContextEvent cfg) {
     String startOnLoad = null;
     try {
       startOnLoad = Configuracion.getInstance().getPropiedadServidor("sistema.quartz");
       if (startOnLoad.equals("true")) {
-        Especial.getInstance().validate(cfg);
-        Especial.getInstance().init();
+        Especial.getInstance().init(cfg);
         LOG.error("Quartz ha sido inicializado ...");
       } // if
 			else {

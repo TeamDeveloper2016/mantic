@@ -57,12 +57,12 @@ public class Correos extends IBaseJob implements Serializable {
             if(token.getValid()) {
               params.put("idClienteTipoContacto", item.toLong("idClienteTipoContacto"));
               params.put("idValidado", 1L);
-              DaoFactory.getInstance().updateAll(TrManticClienteTipoContactoDto.class, params, "correos");
+              DaoFactory.getInstance().updateAll(TrManticClienteTipoContactoDto.class, params);
             }  // if
             else { 
               params.put("idClienteTipoContacto", item.toLong("idClienteTipoContacto"));
               params.put("idValidado", 3L);
-              DaoFactory.getInstance().updateAll(TrManticClienteTipoContactoDto.class, params, "correos");
+              DaoFactory.getInstance().updateAll(TrManticClienteTipoContactoDto.class, params);
 //              DaoFactory.getInstance().delete(TrManticClienteTipoContactoDto.class, item.toLong("idClienteTipoContacto"));
               sb.append(count).append(".- *Cliente:* ").append(item.toString("razonSocial")).append("\\n_Correo:_ ").append(item.toString("valor")).append("\\n_Error:_ ").append(item.toString("mensaje")).append("\\n\\n");
               count++;

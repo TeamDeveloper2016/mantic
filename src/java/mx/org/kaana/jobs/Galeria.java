@@ -19,8 +19,8 @@ import org.quartz.JobExecutionException;
 
 public class Galeria extends IBaseJob {
 
-	private static final Log LOG              =LogFactory.getLog(Galeria.class);
-	private static final long serialVersionUID=7505746848602636876L;
+	private static final Log LOG              = LogFactory.getLog(Galeria.class);
+	private static final long serialVersionUID= 7505746848602636876L;
 
 	@Override
 	public void procesar(JobExecutionContext jec) throws JobExecutionException {

@@ -33,20 +33,22 @@
 						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
 						<f:facet name="header" >							
               <div class="lg-pantalla">
-                <p:menuButton   value="Opciones">
-                  <p:menuitem id="activar" icon="fa fa-check" value="Activar" onstart="return janal.bloquear()" process="@this" actionListener="#{kajoolMantenimientoUtileriasQuartzFiltro.doActivar}" oncomplete="janal.desbloquear()" update="tabla" rendered="#{kajoolMantenimientoUtileriasQuartzFiltro.mostrarActivar}"/>
-									<p:menuitem id="recargar" icon="fa fa-gear" value="Recargar" onstart="return janal.bloquear()" process="@this" actionListener="#{kajoolMantenimientoUtileriasQuartzFiltro.doLoad}" oncomplete="janal.desbloquear()" update="tabla"/>
+                <p:menuButton value="Opciones">
+                  <p:menuitem icon="fa fa-check" value="Activar" onstart="return janal.bloquear()" process="@this" actionListener="#{kajoolMantenimientoUtileriasQuartzFiltro.doActivar}" oncomplete="janal.desbloquear()" update="tabla" rendered="#{kajoolMantenimientoUtileriasQuartzFiltro.mostrarActivar}"/>
+									<p:menuitem icon="fa fa-gear" value="Recargar" onstart="return janal.bloquear()" process="@this" actionListener="#{kajoolMantenimientoUtileriasQuartzFiltro.doLoad}" oncomplete="janal.desbloquear()" update="tabla"/>
 									<p:separator/>
-                  <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-                  <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                  <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                  <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+									<p:separator/>
+									<p:menuitem icon="fa fa-gear" value="Inicializar" onstart="return janal.bloquear()" process="@this" actionListener="#{kajoolMantenimientoUtileriasQuartzFiltro.doReload}" oncomplete="janal.desbloquear()" update="tabla"/>
                 </p:menuButton>
               </div>  
               <div class="xs-pantalla">              
-								<p:menuitem id="activarIcon" icon="icono-modificar" value="Activar" onstart="return janal.bloquear()" process="@this" actionListener="#{kajoolMantenimientoUtileriasQuartzFiltro.doActivar}" oncomplete="janal.desbloquear()" update="tabla" rendered="#{kajoolMantenimientoUtileriasQuartzFiltro.mostrarActivar}"/>
-								<p:menuitem id="recargarIcon" icon="icono-procesar" value="Recargar" onstart="return janal.bloquear()" process="@this" actionListener="#{kajoolMantenimientoUtileriasQuartzFiltro.doLoad}" oncomplete="janal.desbloquear()" update="tabla"/>
-								<p:separator/>
-								<p:menuitem id="pdf" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-								<p:menuitem id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+								<p:commandButton icon="icono-modificar" title="Activar" onstart="return janal.bloquear()" process="@this" actionListener="#{kajoolMantenimientoUtileriasQuartzFiltro.doActivar}" oncomplete="janal.desbloquear()" update="tabla" rendered="#{kajoolMantenimientoUtileriasQuartzFiltro.mostrarActivar}"/>
+								<p:commandButton icon="icono-procesar" title="Recargar" onstart="return janal.bloquear()" process="@this" actionListener="#{kajoolMantenimientoUtileriasQuartzFiltro.doLoad}" oncomplete="janal.desbloquear()" update="tabla"/>
+                <p:commandButton icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+								<p:commandButton icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+								<p:commandButton icon="fa fa-gear" title="Inicializar" onstart="return janal.bloquear()" process="@this" actionListener="#{kajoolMantenimientoUtileriasQuartzFiltro.doReload}" oncomplete="janal.desbloquear()" update="tabla"/>
               </div>  
             </f:facet>												
             <p:columnGroup type="header">

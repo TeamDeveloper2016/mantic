@@ -63,6 +63,7 @@ public class Timbrado extends IBaseJob {
 		String correos              = null;
 		try {
 			if (!Configuracion.getInstance().isEtapaDesarrollo() && !Configuracion.getInstance().isEtapaCapacitacion() && this.validateHora()) {
+        LOG.error("----------------ENTRO A REALIZAR EL TIMBRADO DE LAS FACTURAS -----------------------------");
 				pendientes= this.toFacturasPendientes();
 				LOG.error("Timbrado de facturas JOB : "+ (pendientes!= null? pendientes.size(): 0));
 				for (Facturacion factura: pendientes) {
