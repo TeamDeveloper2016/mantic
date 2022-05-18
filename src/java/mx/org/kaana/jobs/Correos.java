@@ -56,14 +56,21 @@ public class Correos extends IBaseJob implements Serializable {
             item.put("mensaje", new Value("mensaje", token.getMessage()));
             if(token.getValid()) {
               params.put("idClienteTipoContacto", item.toLong("idClienteTipoContacto"));
-              DaoFactory.getInstance().updateAll(TrManticClienteTipoContactoDto.class, params, "correo");
+              params.put("idValidado", 1L);
+              DaoFactory.getInstance().updateAll(TrManticClienteTipoContactoDto.class, params, "correos");
             }  // if
             else { 
-              DaoFactory.getInstance().delete(TrManticClienteTipoContactoDto.class, item.toLong("idClienteTipoContacto"));
+              params.put("idClienteTipoContacto", item.toLong("idClienteTipoContacto"));
+              params.put("idValidado", 3L);
+              DaoFactory.getInstance().updateAll(TrManticClienteTipoContactoDto.class, params, "correos");
+//              DaoFactory.getInstance().delete(TrManticClienteTipoContactoDto.class, item.toLong("idClienteTipoContacto"));
               sb.append(count).append(".- *Cliente:* ").append(item.toString("razonSocial")).append("\\n_Correo:_ ").append(item.toString("valor")).append("\\n_Error:_ ").append(item.toString("mensaje")).append("\\n\\n");
               count++;
             } // else 
           } // for
+          LOG.error("----------------CHECK EMAILS-----------------------------");
+          LOG.error(sb.toString());
+          LOG.error("---------------------------------------------------------");
           actores.put("Alejandro Jiménez García", encriptar.desencriptar("cd4b3e3924191b057b8187"));
           actores.put("Daniel Davalos Gutiérrez", encriptar.desencriptar("443124130375ec53c7c5cd"));
           actores.put("Sandy Martínez Montoya", encriptar.desencriptar("2b160b0a71ea69d54a4cb4"));
