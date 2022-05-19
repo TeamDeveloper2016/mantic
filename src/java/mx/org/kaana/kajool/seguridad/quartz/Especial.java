@@ -1,7 +1,5 @@
 package mx.org.kaana.kajool.seguridad.quartz;
 
-
-
 import java.io.File;
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -31,18 +29,16 @@ public final class Especial implements Serializable {
 	
 	private static final long serialVersionUID= 4320495081656905398L;
 	private static final Log LOG              = LogFactory.getLog(Especial.class);	
-  
 	private static Object mutex;
   private static Especial instance;
 	private Scheduler scheduler;	
-  private Jobs jobs;
+	private Jobs jobs;	
 	private List<TareaServidor> tareaServidor;
 	private ServletContextEvent servletContextEvent;
 	private String path;
 	private Timestamp registro;	
 	
-	private Especial() {			
-    this.init();
+	private Especial() {						
 	}
 	
 	static {
@@ -76,26 +72,32 @@ public final class Especial implements Serializable {
 		return path;
 	}
 
-	public Timestamp getRegistro() {
-		return registro;
-	}		
+  public Timestamp getRegistro() {
+    return registro;
+  }
 
-	private void init() {
-		try {						
-			SchedulerFactory sf= new StdSchedulerFactory(this.toParameter(servletContextEvent, "quartz-config-file"));
-			this.scheduler= sf.getScheduler();
-			this.addParameters(this.servletContextEvent);			
-			this.getScheduler().start();
-			LOG.error("Iniciando la ejecutando quartz");
-			this.jobs= new Jobs(this.scheduler);
-			this.jobs.toBuild();
+	private boolean asignaLocalServidor() {
+		TareaServidor tarea= null;	
+		boolean regresar   = true;
+		try {
+			tarea = new TareaServidor(this.path,"0 2/5 * * * ?");
+			tareaServidor.add(tarea);
 		} // try
 		catch (Exception e) {
+			regresar = false;
 			Error.mensaje(e);
-		} // catch
+		} // cath
+		return regresar;
 	}
-  
-	public boolean init(ServletContextEvent servletContextEvent) {
+	
+	public void refreshPath(ServletContextEvent servletContextEvent) {				
+	  this.registro = new Timestamp(Calendar.getInstance().getTimeInMillis());
+		this.path= servletContextEvent.getServletContext().getRealPath("").concat(File.separator);		
+		this.path= Cadena.reemplazarCaracter(this.path,'/',File.separatorChar);		
+		this.path= Cadena.reemplazarCaracter(this.path,'\\',File.separatorChar);	
+	}
+	
+	public boolean validate(ServletContextEvent servletContextEvent) {
 		boolean regresar  = false;		
 		String realPath   = null;
 		int pos           = 0;
@@ -124,28 +126,7 @@ public final class Especial implements Serializable {
 		} // catch		
 		return regresar;
 	}
-  
-	public void refreshPath(ServletContextEvent servletContextEvent) {				
-	  this.registro = new Timestamp(Calendar.getInstance().getTimeInMillis());
-		this.path= servletContextEvent.getServletContext().getRealPath("").concat(File.separator);		
-		this.path= Cadena.reemplazarCaracter(this.path,'/',File.separatorChar);		
-		this.path= Cadena.reemplazarCaracter(this.path,'\\',File.separatorChar);	
-	}
-  
-	private boolean asignaLocalServidor() {
-		TareaServidor tarea= null;	
-		boolean regresar   = true;
-		try {
-			tarea = new TareaServidor(this.path,"0 2/5 * * * ?");
-			tareaServidor.add(tarea);
-		} // try
-		catch (Exception e) {
-			regresar = false;
-			Error.mensaje(e);
-		} // cath
-		return regresar;
-	}
-	
+
 	private String toParameter (ServletContextEvent servletContextEvent , String parameter) {
     return servletContextEvent.getServletContext().getInitParameter(parameter);
   }
@@ -156,10 +137,34 @@ public final class Especial implements Serializable {
     this.scheduler.getContext().put("servidor", this.toParameter(cfg, "servidor"));
   }	
 	
+	public void init() {
+		try {						
+			SchedulerFactory sf= new StdSchedulerFactory(this.toParameter(servletContextEvent, "quartz-config-file"));
+			this.scheduler= sf.getScheduler();
+			this.addParameters(this.servletContextEvent);			
+			this.getScheduler().start();
+			LOG.error("Ejecutando quartz");
+			this.load();
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+		} // catch
+	}
+
+	private void load() throws Exception {		
+		try {	
+			this.jobs= new Jobs(this.scheduler);
+			this.jobs.toBuild();
+		} // try
+		catch (Exception e) {
+		  throw e;
+		} // catch
+  }
+  
   public void reload() throws Exception {	
     this.scheduler.pauseAll();
     this.scheduler.clear();
 	  this.jobs.toBuild();
-  }
+  }  
   
 }

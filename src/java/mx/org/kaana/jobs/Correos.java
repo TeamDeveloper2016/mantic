@@ -16,6 +16,7 @@ import mx.org.kaana.jobs.comun.IBaseJob;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
+import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Encriptar;
 import mx.org.kaana.libs.formato.Error;
@@ -44,9 +45,10 @@ public class Correos extends IBaseJob implements Serializable {
 		try {
       StringBuilder sb= new StringBuilder();
 			if(Configuracion.getInstance().isEtapaProduccion()) {
+          LOG.error("----------------ENTRO A CHECK EMAILS-----------------------------");
           Email email= new Email();
           Token token= null;
-          List<Entity> correos= (List<Entity>)DaoFactory.getInstance().toEntitySet("TcManticClientesDto", "correos", params);
+          List<Entity> correos= (List<Entity>)DaoFactory.getInstance().toEntitySet("TcManticClientesDto", "correos", params, 500L);
           int count= 1;
           for (Entity item : correos) {
             email.setNombre(item.toString("razonSocial"));
@@ -68,7 +70,6 @@ public class Correos extends IBaseJob implements Serializable {
               count++;
             } // else 
           } // for
-          LOG.error("----------------CHECK EMAILS-----------------------------");
           LOG.error(sb.toString());
           LOG.error("---------------------------------------------------------");
           actores.put("Alejandro Jiménez García", encriptar.desencriptar("cd4b3e3924191b057b8187"));

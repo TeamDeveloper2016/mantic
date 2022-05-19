@@ -43,13 +43,13 @@ public final class Bonanza implements Serializable {
   private static final String BODY_DEVOLUCION  = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, su cuenta presenta un movimiento, en el siguiente link se adjuntan el archivo PDF referente a ello\\n\\n https://ferreteriabonanza.com/Temporal/Pdf/{reporte}\\n\\nPara cualquier duda o aclaración *ventas@ferreteriabonanza.com* y/o al telefono/whatsapp *4495087505*, se tienen *24 hrs* para descargar todos los documentos.\\n\\nAgradecemos su preferencia *_Ferreteria Bonanza_*.\"";
   private static final String BODY_PAGO_CUENTA = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, gracias por su pago, en el siguiente link se adjunta un PDF con un resumen y estatus de los tickets/facturas a los cuales fue abonado el pago\\n\\n https://ferreteriabonanza.com/Temporal/Pdf/{reporte}\\n\\nPara cualquier duda o aclaración *ventas@ferreteriabonanza.com* y/o al telefono/whatsapp *4495087505*, se tienen *24 hrs* para descargar todos los documentos.\\n\\nAgradecemos su preferencia *_Ferreteria Bonanza_*.\"";
   private static final String BODY_ORDEN_COMPRA= "\"phone\":\"+521{celular}\",\"message\":\"Estimado proveedor _{nombre}_:\\n\\n{saludo}, en el siguiente link se adjunta un PDF con una orden de compra\\n\\nhttps://ferreteriabonanza.com/Temporal/Pdf/{reporte}\\n\\nFavor de verificar en la misma orden la sucursal de entrega.\\n\\nPara cualquier duda o aclaración *ventas@ferreteriabonanza.com* y/o al telefono/whatsapp *4495087505*.\\n\\n*_Ferreteria Bonanza_*.\"";
+  private static final String BODY_CHECK_CORREO= "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, se te hace llegar la lista de correos que fueron eliminados del servidor de *producción* de los clientes por ser incorrectos o porque no son validos con corte al *{fecha}*\\n\\n{reporte}_Ferreteria Bonanza_\"";
   
   private static final String BODY_RESIDENTE   = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, te hacemos llegar los reportes de los destajos de los *contratistas* o *subcontratistas* de la nómina *{nomina}* del {periodo}, hacer clic en los siguientes enlaces:\\n{reporte}\\nSe tienen *24 hrs* para descargar todos los reportes.\\n\\nCAFU Construcciones\"";
   private static final String BODY_GASTO_CHICA = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, te notificamos que los gastos a pagar por concepto de caja chica ascienden a {reporte} pesos de la semana *{nomina}* del {periodo} \\nSi tienes alguna duda, favor de reportarlo de inmediato a tu administrativo.\\n\\nCAFU Construcciones\"";
   private static final String BODY_CAJA_CHICA  = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, te hacemos llegar el reporte de caja chica de los *residentes* de la semana *{nomina}* del {periodo}, hacer clic en el siguiente enlace: https://cafu.jvmhost.net/Temporal/Pdf/{reporte}\\nSe tienen *24 hrs* para descargar el reporte de gastos de caja chica.\\n\\nCAFU Construcciones\"";
   private static final String BODY_OPEN_NOMINA = "\"group\":\"{celular}\",\"message\":\"Estimad@s _{nombre}_,\\n\\n{saludo}, en este momento se ha hecho corte de la nómina *{nomina}* del {periodo}, con un total de *{reporte}* favor de verificar el registro de los destajos; se les hace saber tambien que a las *14:00 hrs* se hará el *corte de caja chica* para que de favor verifiquen el registro de sus gastos. Si se hace algún *ajuste* en los *destajos* a partir de este momento de algun *contratista* o *subcontratista* favor de *indicarlo* en este *chat* para reprocesar su nómina.\\n\\nCAFU Construcciones\"";
   private static final String BODY_CLOSE_NOMINA= "\"group\":\"{celular}\",\"message\":\"Estimad@s _{nombre}_,\\n\\n{saludo}, en este momento se ha hecho *cierre* de la nómina *{nomina}*; cualquier registro de destajos y de gasto de caja chica se vera reflejado para la siguiente nómina ó _semana_.\\n\\n_Ferreteria Bonanza_\"";
-  private static final String BODY_CHECK_CORREO= "\"group\":\"{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, se te hace llegar la lista de correos que fueron eliminados del servidor de *producción* de los clientes por ser incorrectos o porque no son validos con corte al *{fecha}*\\n\\n{reporte}_Ferreteria Bonanza_\"";
   
   private static final String PATH_REPORT      = "{numero}.- {documento}; https://ferreteriabonanza.com/Temporal/Pdf/{reporte}\\n";
   private static final int LENGTH_CELL_PHONE   = 10;
@@ -175,8 +175,8 @@ public final class Bonanza implements Serializable {
             .header("Token", this.token)
             .body("{"+ Cadena.replaceParams(BODY_MESSAGE, params, true)+ "}")
             .asString();
+            LOG.error("Enviado: "+ response.getBody());
             if(Objects.equals(response.getStatus(), 201)) {
-              LOG.warn("Enviado: "+ response.getBody());
               Gson gson= new Gson();
               message  = gson.fromJson(response.getBody(), Message.class);
               if(message!= null)
@@ -237,8 +237,8 @@ public final class Bonanza implements Serializable {
             .header("Token", this.token)
             .body("{"+ Cadena.replaceParams(BODY_PROVEEDOR, params, true)+ "}")
             .asString();
+            LOG.error("Enviado: "+ response.getBody());
             if(Objects.equals(response.getStatus(), 201)) {
-              LOG.warn("Enviado: "+ response.getBody());
               Gson gson= new Gson();
               message  = gson.fromJson(response.getBody(), Message.class);
               if(message!= null)
@@ -294,8 +294,8 @@ public final class Bonanza implements Serializable {
         .header("Token", this.token)
         .body("{"+ Cadena.replaceParams(BODY_OPEN_NOMINA, params, true)+ "}")
         .asString();
+        LOG.error("Enviado: "+ response.getBody());
         if(Objects.equals(response.getStatus(), 201)) {
-          LOG.warn("Enviado: "+ response.getBody());
           Gson gson= new Gson();
           message  = gson.fromJson(response.getBody(), Message.class);
           if(message!= null)
@@ -345,8 +345,8 @@ public final class Bonanza implements Serializable {
         .header("Token", this.token)
         .body("{"+ Cadena.replaceParams(BODY_CLOSE_NOMINA, params, true)+ "}")
         .asString();
+        LOG.error("Enviado: "+ response.getBody());
         if(Objects.equals(response.getStatus(), 201)) {
-          LOG.warn("Enviado: "+ response.getBody());
           Gson gson= new Gson();
           message  = gson.fromJson(response.getBody(), Message.class);
           if(message!= null)
@@ -409,8 +409,8 @@ public final class Bonanza implements Serializable {
           .header("Token", this.token)
           .body("{"+ Cadena.replaceParams(BODY_FACTURA, params, true)+ "}")
           .asString();
+          LOG.error("Enviado: "+ response.getBody());
           if(Objects.equals(response.getStatus(), 201)) {
-            LOG.warn("Enviado: "+ response.getBody());
             Gson gson= new Gson();
             message= gson.fromJson(response.getBody(), Message.class);
             if(message!= null) 
@@ -429,7 +429,7 @@ public final class Bonanza implements Serializable {
           message.setIdSendStatus(new Long(response.getStatus()));
           message.setSendStatus(response.getStatusText());
           message.setIdTipoMensaje(ETypeMessage.CONTRATISTA.getId());
-          message.setIdUsuario(JsfBase.getAutentifica()!= null && JsfBase.getAutentifica().getPersona()!= null? JsfBase.getIdUsuario(): 2L);
+          message.setIdUsuario(JsfBase.getFacesContext()!= null && JsfBase.getRequest()!= null && JsfBase.getAutentifica()!= null && JsfBase.getAutentifica().getPersona()!= null? JsfBase.getIdUsuario(): 2L);
           if(sesion!= null)
             DaoFactory.getInstance().insert(sesion, message);
           else
@@ -470,8 +470,8 @@ public final class Bonanza implements Serializable {
           .header("Token", this.token)
           .body("{"+ Cadena.replaceParams(BODY_TICKET, params, true)+ "}")
           .asString();
+          LOG.error("Enviado: "+ response.getBody());
           if(Objects.equals(response.getStatus(), 201)) {
-            LOG.warn("Enviado: "+ response.getBody());
             Gson gson= new Gson();
             message= gson.fromJson(response.getBody(), Message.class);
             if(message!= null) 
@@ -490,7 +490,7 @@ public final class Bonanza implements Serializable {
           message.setIdSendStatus(new Long(response.getStatus()));
           message.setSendStatus(response.getStatusText());
           message.setIdTipoMensaje(ETypeMessage.CLIENTE.getId());
-          message.setIdUsuario(JsfBase.getAutentifica()!= null && JsfBase.getAutentifica().getPersona()!= null? JsfBase.getIdUsuario(): 2L);
+          message.setIdUsuario(JsfBase.getFacesContext()!= null && JsfBase.getRequest()!= null && JsfBase.getAutentifica()!= null && JsfBase.getAutentifica().getPersona()!= null? JsfBase.getIdUsuario(): 2L);
           if(sesion!= null)
             DaoFactory.getInstance().insert(sesion, message);
           else
@@ -527,8 +527,8 @@ public final class Bonanza implements Serializable {
           .header("Token", this.token)
           .body("{"+ Cadena.replaceParams(BODY_DEVOLUCION, params, true)+ "}")
           .asString();
+          LOG.error("Enviado: "+ response.getBody());
           if(Objects.equals(response.getStatus(), 201)) {
-            LOG.warn("Enviado: "+ response.getBody());
             Gson gson= new Gson();
             message= gson.fromJson(response.getBody(), Message.class);
             if(message!= null) 
@@ -547,7 +547,7 @@ public final class Bonanza implements Serializable {
           message.setIdSendStatus(new Long(response.getStatus()));
           message.setSendStatus(response.getStatusText());
           message.setIdTipoMensaje(ETypeMessage.CLIENTE.getId());
-          message.setIdUsuario(JsfBase.getAutentifica()!= null && JsfBase.getAutentifica().getPersona()!= null? JsfBase.getIdUsuario(): 2L);
+          message.setIdUsuario(JsfBase.getFacesContext()!= null && JsfBase.getRequest()!= null && JsfBase.getAutentifica()!= null && JsfBase.getAutentifica().getPersona()!= null? JsfBase.getIdUsuario(): 2L);
           if(sesion!= null)
             DaoFactory.getInstance().insert(sesion, message);
           else
@@ -584,8 +584,8 @@ public final class Bonanza implements Serializable {
           .header("Token", this.token)
           .body("{"+ Cadena.replaceParams(BODY_PAGO_CUENTA, params, true)+ "}")
           .asString();
+          LOG.error("Enviado: "+ response.getBody());
           if(Objects.equals(response.getStatus(), 201)) {
-            LOG.warn("Enviado: "+ response.getBody());
             Gson gson= new Gson();
             message= gson.fromJson(response.getBody(), Message.class);
             if(message!= null) 
@@ -604,7 +604,7 @@ public final class Bonanza implements Serializable {
           message.setIdSendStatus(new Long(response.getStatus()));
           message.setSendStatus(response.getStatusText());
           message.setIdTipoMensaje(ETypeMessage.CLIENTE.getId());
-          message.setIdUsuario(JsfBase.getAutentifica()!= null && JsfBase.getAutentifica().getPersona()!= null? JsfBase.getIdUsuario(): 2L);
+          message.setIdUsuario(JsfBase.getFacesContext()!= null && JsfBase.getRequest()!= null && JsfBase.getAutentifica()!= null && JsfBase.getAutentifica().getPersona()!= null? JsfBase.getIdUsuario(): 2L);
           if(sesion!= null)
             DaoFactory.getInstance().insert(sesion, message);
           else
@@ -645,8 +645,8 @@ public final class Bonanza implements Serializable {
           .header("Token", this.token)
           .body("{"+ Cadena.replaceParams(BODY_ORDEN_COMPRA, params, true)+ "}")
           .asString();
+          LOG.error("Enviado: "+ response.getBody());
           if(Objects.equals(response.getStatus(), 201)) {
-            LOG.warn("Enviado: "+ response.getBody());
             Gson gson= new Gson();
             message= gson.fromJson(response.getBody(), Message.class);
             if(message!= null) 
@@ -665,7 +665,7 @@ public final class Bonanza implements Serializable {
           message.setIdSendStatus(new Long(response.getStatus()));
           message.setSendStatus(response.getStatusText());
           message.setIdTipoMensaje(ETypeMessage.CLIENTE.getId());
-          message.setIdUsuario(JsfBase.getAutentifica()!= null && JsfBase.getAutentifica().getPersona()!= null? JsfBase.getIdUsuario(): 2L);
+          message.setIdUsuario(JsfBase.getFacesContext()!= null && JsfBase.getRequest()!= null && JsfBase.getAutentifica()!= null && JsfBase.getAutentifica().getPersona()!= null? JsfBase.getIdUsuario(): 2L);
           if(sesion!= null)
             DaoFactory.getInstance().insert(sesion, message);
           else
@@ -702,8 +702,8 @@ public final class Bonanza implements Serializable {
           .header("Token", this.token)
           .body("{"+ Cadena.replaceParams(BODY_RESIDENTE, params, true)+ "}")
           .asString();
+          LOG.error("Enviado: "+ response.getBody());
           if(Objects.equals(response.getStatus(), 201)) {
-            LOG.warn("Enviado: "+ response.getBody());
             Gson gson= new Gson();
             message= gson.fromJson(response.getBody(), Message.class);
             if(message!= null) 
@@ -759,8 +759,8 @@ public final class Bonanza implements Serializable {
           .header("Token", this.token)
           .body("{"+ Cadena.replaceParams(BODY_GASTO_CHICA, params, true)+ "}")
           .asString();
+          LOG.error("Enviado: "+ response.getBody());
           if(Objects.equals(response.getStatus(), 201)) {
-            LOG.warn("Enviado: "+ response.getBody());
             Gson gson= new Gson();
             message= gson.fromJson(response.getBody(), Message.class);
             if(message!= null) 
@@ -816,8 +816,8 @@ public final class Bonanza implements Serializable {
           .header("Token", this.token)
           .body("{"+ Cadena.replaceParams(BODY_CAJA_CHICA, params, true)+ "}")
           .asString();
+          LOG.error("Enviado: "+ response.getBody());
           if(Objects.equals(response.getStatus(), 201)) {
-            LOG.warn("Enviado: "+ response.getBody());
             Gson gson= new Gson();
             message= gson.fromJson(response.getBody(), Message.class);
             if(message!= null) 
@@ -877,8 +877,8 @@ public final class Bonanza implements Serializable {
           .header("Token", this.token)
           .body("{"+ Cadena.replaceParams(BODY_CHECK_CORREO, params, true)+ "}")
           .asString();
+          LOG.error("Enviado: "+ response.getBody());
           if(Objects.equals(response.getStatus(), 201)) {
-            LOG.warn("Enviado: "+ response.getBody());
             Gson gson= new Gson();
             message= gson.fromJson(response.getBody(), Message.class);
             if(message!= null) 
@@ -897,7 +897,7 @@ public final class Bonanza implements Serializable {
           message.setIdSendStatus(new Long(response.getStatus()));
           message.setSendStatus(response.getStatusText());
           message.setIdTipoMensaje(ETypeMessage.ADMINISTRADOR.getId());
-          message.setIdUsuario(JsfBase.getAutentifica()!= null && JsfBase.getAutentifica().getPersona()!= null? JsfBase.getIdUsuario(): 2L);
+          message.setIdUsuario(JsfBase.getFacesContext()!= null && JsfBase.getRequest()!= null && JsfBase.getAutentifica()!= null && JsfBase.getAutentifica().getPersona()!= null? JsfBase.getIdUsuario(): 2L);
           if(sesion!= null)
             DaoFactory.getInstance().insert(sesion, message);
           else
@@ -991,8 +991,8 @@ public final class Bonanza implements Serializable {
           .header("Token", this.token)
           .body("{"+ Cadena.replaceParams(BODY_MESSAGE, params, true)+ "}")
           .asString();
+          LOG.error("Enviado: "+ response.getBody());
           if(Objects.equals(response.getStatus(), 201)) {
-            LOG.warn("Enviado: "+ response.getBody());
             Gson gson= new Gson();
             message  = gson.fromJson(response.getBody(), Message.class);
             if(message!= null)

@@ -46,12 +46,13 @@ public final class Loader {
     try {
       startOnLoad = Configuracion.getInstance().getPropiedadServidor("sistema.quartz");
       if (startOnLoad.equals("true")) {
-        Especial.getInstance().init(cfg);
+        Especial.getInstance().validate(cfg);
+        Especial.getInstance().init();
         LOG.error("Quartz ha sido inicializado ...");
       } // if
 			else {
-        LOG.error("Scheduler has not been started. Verify configuration.properties");
-        cfg.getServletContext().log("Scheduler has not been started. Verify configuration.properties.");
+        LOG.error("Scheduler has not been started, verify configuration.properties");
+        cfg.getServletContext().log("Scheduler has not been started, verify configuration.properties.");
       } // else
     } // try
     catch (Exception e) {
@@ -65,7 +66,7 @@ public final class Loader {
     try {
       if (this.scheduler != null) {
         this.scheduler.shutdown();
-        LOG.info("Quartz Scheduler successful shutdown.");
+        LOG.info("Quartz sheduler successful shutdown.");
       }// if
     } // try
     catch (Exception e) {
