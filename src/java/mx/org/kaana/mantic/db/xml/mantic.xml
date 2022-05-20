@@ -4404,6 +4404,27 @@
         order by
           tc_mantic_clientes.razon_social        
 			</select>
+			<select id="rfcs">
+        select
+          tc_mantic_clientes.id_cliente as id_key,
+          tc_mantic_clientes.id_cliente,
+          tc_mantic_clientes.razon_social,
+          tc_mantic_clientes.rfc
+        from
+          tc_mantic_clientes
+        where
+          tc_mantic_clientes.id_validado= 2
+        order by
+          tc_mantic_clientes.razon_social        
+			</select>
+			<update id="rows">
+        update
+          tc_mantic_clientes
+        set
+          id_validado= {idValidado}
+        where
+          id_cliente= {idCliente}
+			</update>
 		</unit>		
 		<unit id="TcManticImagenesDto">
       <select id="row">

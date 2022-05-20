@@ -3,7 +3,7 @@ package mx.org.kaana.jobs;
 /**
  *@company KAANA
  *@project KAJOOL (Control system polls)
- *@date 17-mayo-2022
+ *@date 20-mayo-2022
  *@time 9:11:42
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
@@ -23,17 +23,17 @@ import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.libs.wassenger.Bonanza;
-import mx.org.kaana.libs.wassenger.Email;
-import mx.org.kaana.libs.wassenger.Token;
-import mx.org.kaana.mantic.db.dto.TrManticClienteTipoContactoDto;
+import mx.org.kaana.libs.wassenger.Rfc;
+import mx.org.kaana.libs.wassenger.Sat;
+import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
-public class Correos extends IBaseJob implements Serializable {
+public class Rfcs extends IBaseJob implements Serializable {
 
-	private static final Log LOG              = LogFactory.getLog(Correos.class);
+	private static final Log LOG              = LogFactory.getLog(Rfcs.class);
 	private static final long serialVersionUID= 7960794038594054563L;
 
 	@Override
@@ -44,28 +44,29 @@ public class Correos extends IBaseJob implements Serializable {
 		try {
       StringBuilder sb= new StringBuilder();
 			if(Configuracion.getInstance().isEtapaProduccion()) {
-          LOG.error("----------------ENTRO A CHECK EMAILS-----------------------------");
-          Email email= new Email();
-          Token token= null;
-          List<Entity> correos= (List<Entity>)DaoFactory.getInstance().toEntitySet("TcManticClientesDto", "correos", params, 500L);
+          LOG.error("----------------ENTRO A CHECK RFC's-----------------------------");
+          Rfc rfc= new Rfc();
+          Sat token= null;
+          List<Entity> correos= (List<Entity>)DaoFactory.getInstance().toEntitySet("TcManticClientesDto", "rfcs", params, 500L);
           int count= 1;
           for (Entity item : correos) {
-            email.setNombre(item.toString("razonSocial"));
-            email.setCorreo(item.toString("valor"));
-            token= email.doValidate();
-            item.put("valido", new Value("valido", token.getValid()));
-            item.put("mensaje", new Value("mensaje", token.getMessage()));
-            if(token.getValid()) {
-              params.put("idClienteTipoContacto", item.toLong("idClienteTipoContacto"));
+            rfc.setRfc(item.toString("rfc"));
+            token= rfc.doValidate();
+            item.put("rfc", new Value("rfc", token.getRfc()));
+            item.put("formato", new Value("formato", token.getFormatoCorrecto()));
+            item.put("activo", new Value("activo", token.getActivo()));
+            item.put("localizado", new Value("localizado", token.getLocalizado()));
+            if(token.getFormatoCorrecto() && token.getActivo() && token.getLocalizado()) {
+              params.put("idCliente", item.toLong("idCliente"));
               params.put("idValidado", 1L);
-              DaoFactory.getInstance().updateAll(TrManticClienteTipoContactoDto.class, params);
+              DaoFactory.getInstance().updateAll(TcManticClientesDto.class, params);
             }  // if
             else { 
-              params.put("idClienteTipoContacto", item.toLong("idClienteTipoContacto"));
+              params.put("idCliente", item.toLong("idCliente"));
               params.put("idValidado", 3L);
-              DaoFactory.getInstance().updateAll(TrManticClienteTipoContactoDto.class, params);
+              DaoFactory.getInstance().updateAll(TcManticClientesDto.class, params);
 //              DaoFactory.getInstance().delete(TrManticClienteTipoContactoDto.class, item.toLong("idClienteTipoContacto"));
-              sb.append(count).append(".- *Cliente:* ").append(item.toString("razonSocial")).append("\\n_Correo:_ ").append(item.toString("valor")).append("\\n_Error:_ ").append(item.toString("mensaje")).append("\\n\\n");
+              sb.append(count).append(".- *Cliente:* ").append(item.toString("razonSocial")).append("\\n_RFC:_ ").append(item.toString("rfc")).append("\\n_Formato correcto:_ ").append(item.toString("formato")).append("\\n_Activo:_ ").append(item.toString("activo")).append("\\n_Localizado:_ ").append(item.toString("localizado")).append("\\n\\n");
               count++;
             } // else 
           } // for
@@ -82,7 +83,7 @@ public class Correos extends IBaseJob implements Serializable {
               notificar.setReporte(sb.toString());
               notificar.setFecha(Fecha.formatear(Fecha.DIA_FECHA_HORA_CORTA));
               LOG.info("Enviando mensaje de whatsapp al celular: "+ notificar.getCelular());
-              notificar.doSendCorreo();
+              notificar.doSendRfc();
             } // for
           } // if
       } // if
@@ -98,7 +99,7 @@ public class Correos extends IBaseJob implements Serializable {
 	} // execute
   
   public static void main(String ... args) throws JobExecutionException {
-    Correos correo= new Correos();
+    Rfcs correo= new Rfcs();
     correo.procesar(null);
   }
   

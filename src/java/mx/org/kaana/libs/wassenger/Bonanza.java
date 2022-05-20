@@ -43,7 +43,8 @@ public final class Bonanza implements Serializable {
   private static final String BODY_DEVOLUCION  = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, su cuenta presenta un movimiento, en el siguiente link se adjuntan el archivo PDF referente a ello\\n\\n https://ferreteriabonanza.com/Temporal/Pdf/{reporte}\\n\\nPara cualquier duda o aclaración *ventas@ferreteriabonanza.com* y/o al telefono/whatsapp *4495087505*, se tienen *24 hrs* para descargar todos los documentos.\\n\\nAgradecemos su preferencia *_Ferreteria Bonanza_*.\"";
   private static final String BODY_PAGO_CUENTA = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, gracias por su pago, en el siguiente link se adjunta un PDF con un resumen y estatus de los tickets/facturas a los cuales fue abonado el pago\\n\\n https://ferreteriabonanza.com/Temporal/Pdf/{reporte}\\n\\nPara cualquier duda o aclaración *ventas@ferreteriabonanza.com* y/o al telefono/whatsapp *4495087505*, se tienen *24 hrs* para descargar todos los documentos.\\n\\nAgradecemos su preferencia *_Ferreteria Bonanza_*.\"";
   private static final String BODY_ORDEN_COMPRA= "\"phone\":\"+521{celular}\",\"message\":\"Estimado proveedor _{nombre}_:\\n\\n{saludo}, en el siguiente link se adjunta un PDF con una orden de compra\\n\\nhttps://ferreteriabonanza.com/Temporal/Pdf/{reporte}\\n\\nFavor de verificar en la misma orden la sucursal de entrega.\\n\\nPara cualquier duda o aclaración *ventas@ferreteriabonanza.com* y/o al telefono/whatsapp *4495087505*.\\n\\n*_Ferreteria Bonanza_*.\"";
-  private static final String BODY_CHECK_CORREO= "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, se te hace llegar la lista de correos que fueron eliminados del servidor de *producción* de los clientes por ser incorrectos o porque no son validos con corte al *{fecha}*\\n\\n{reporte}_Ferreteria Bonanza_\"";
+  private static final String BODY_CHECK_CORREO= "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, se te hace llegar la lista de correos de los clientes que fueron eliminados del servidor de *producción* por ser incorrectos o porque no son validos con corte al *{fecha}*\\n\\n{reporte}_Ferreteria Bonanza_\"";
+  private static final String BODY_CHECK_RFC   = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, se te hace llegar la lista de *RFC's* de los clientes que fueron eliminados del servidor de *producción* por estar con formato incorrecto, no estan activos o no estan dados de alta en el SAT, con corte al *{fecha}*\\n\\n{reporte}_Ferreteria Bonanza_\"";
   
   private static final String BODY_RESIDENTE   = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, te hacemos llegar los reportes de los destajos de los *contratistas* o *subcontratistas* de la nómina *{nomina}* del {periodo}, hacer clic en los siguientes enlaces:\\n{reporte}\\nSe tienen *24 hrs* para descargar todos los reportes.\\n\\nCAFU Construcciones\"";
   private static final String BODY_GASTO_CHICA = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, te notificamos que los gastos a pagar por concepto de caja chica ascienden a {reporte} pesos de la semana *{nomina}* del {periodo} \\nSi tienes alguna duda, favor de reportarlo de inmediato a tu administrativo.\\n\\nCAFU Construcciones\"";
@@ -914,6 +915,67 @@ public final class Bonanza implements Serializable {
     else 
       LOG.error("[doSendCorreo]No se puedo enviar el mensaje por whatsapp al celular ["+ this.celular+ "]");
   } // doSendCorreo
+  
+  public void doSendRfc() {
+    this.doSendRfc(null);
+  }
+  
+  public void doSendRfc(Session sesion) {
+    if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE)) {
+      Message message= null;
+      Map<String, Object> params = new HashMap<>();        
+      try {
+        params.put("nombre", this.nombre);
+        params.put("celular", this.celular);
+        params.put("reporte", this.reporte);
+        params.put("ticket", this.ticket);
+        params.put("fecha", this.fecha);
+        params.put("saludo", this.toSaludo());
+        if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.PRODUCCION))
+          LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_CHECK_RFC, params, true)+ "}");
+        else {  
+          HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
+          .header("Content-Type", "application/json")
+          .header("Token", this.token)
+          .body("{"+ Cadena.replaceParams(BODY_CHECK_RFC, params, true)+ "}")
+          .asString();
+          LOG.error("Enviado: "+ response.getBody());
+          if(Objects.equals(response.getStatus(), 201)) {
+            Gson gson= new Gson();
+            message= gson.fromJson(response.getBody(), Message.class);
+            if(message!= null) 
+              message.init();
+            else {
+              message= new Message();
+              message.setMessage(" {"+ Cadena.replaceParams(BODY_CHECK_RFC, params, true)+ "}");
+            } // else  
+          } // if  
+          else {
+            LOG.error("[doSendRfc] No se puedo enviar el mensaje por whatsapp al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            message= new Message();
+            message.setMessage(" {"+ Cadena.replaceParams(BODY_CHECK_RFC, params, true)+ "}");
+          } // if  
+          message.setTelefono(this.celular);
+          message.setIdSendStatus(new Long(response.getStatus()));
+          message.setSendStatus(response.getStatusText());
+          message.setIdTipoMensaje(ETypeMessage.ADMINISTRADOR.getId());
+          message.setIdUsuario(JsfBase.getFacesContext()!= null && JsfBase.getRequest()!= null && JsfBase.getAutentifica()!= null && JsfBase.getAutentifica().getPersona()!= null? JsfBase.getIdUsuario(): 2L);
+          if(sesion!= null)
+            DaoFactory.getInstance().insert(sesion, message);
+          else
+            DaoFactory.getInstance().insert(message);
+        } // else
+      } // try
+      catch(Exception e) {
+        Error.mensaje(e);
+      } // catch
+      finally {
+        Methods.clean(params);
+      } // finally
+    } // if
+    else 
+      LOG.error("[doSendRfc]No se puedo enviar el mensaje por whatsapp al celular ["+ this.celular+ "]");
+  } // doSendRfc
   
   private void prepare() {
     StringBuilder archivos= new StringBuilder();

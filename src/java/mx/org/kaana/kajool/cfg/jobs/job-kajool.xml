@@ -14,6 +14,7 @@
 		 <clase expresion="0 0 7,14 ? * * *"   id="descargas"   description="Descargas de respaldos"     load="false" desarrollo="*" pruebas="*" produccion="*">mx.org.kaana.jobs.Descargas</clase>
 		 <clase expresion="0 0 0/1 1/1 * ? *"  id="facturacion" description="Facturación automatica"     load="true"  desarrollo="*" pruebas="*" produccion="*">mx.org.kaana.jobs.Timbrado</clase>		 
      <clase expresion="0 0 2 1/1 * ? *"    id="galeria"     description="Galería del portal"         load="true"  desarrollo="*" pruebas="*" produccion="*">mx.org.kaana.jobs.Galeria</clase>     				
-		 <clase expresion="0 15 8 1/1 * ? *"   id="correos"     description="Verifica los correos"       load="true"  desarrollo="*" pruebas="*" produccion="*">mx.org.kaana.jobs.Correos</clase>
-   </tarea>      	        
+		 <clase expresion="0 10 8 1/1 * ? *"   id="correos"     description="Verifica los correos"       load="true"  desarrollo="*" pruebas="*" produccion="*">mx.org.kaana.jobs.Correos</clase>
+		 <clase expresion="0 10 9 1/1 * ? *"   id="rfc"         description="Validar los rfc SAT"        load="true"  desarrollo="*" pruebas="*" produccion="*">mx.org.kaana.jobs.Rfcs</clase>
+   </tarea>      	         
 </tareas>
