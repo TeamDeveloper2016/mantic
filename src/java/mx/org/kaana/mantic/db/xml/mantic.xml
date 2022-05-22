@@ -4421,7 +4421,8 @@
         update
           tc_mantic_clientes
         set
-          id_validado= {idValidado}
+          id_validado= {idValidado},
+          rfc= {rfc}
         where
           id_cliente= {idCliente}
 			</update>

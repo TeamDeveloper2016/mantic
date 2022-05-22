@@ -14,6 +14,8 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EEtapaServidor;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Encriptar;
+import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
@@ -1085,8 +1087,22 @@ public final class Bonanza implements Serializable {
   }
   
   public static void main(String ... args) {
-    Bonanza message= new Bonanza("Alejandro Jiménez García", "449-209-05-86", "holix.pdf", "2021-20", "15/06/2021 al 30/06/2021");
-    message.doSendSaludo();
+    //Bonanza message= new Bonanza("Alejandro Jiménez García", "449-209-05-86", "holix.pdf", "2021-20", "15/06/2021 al 30/06/2021");
+    //message.doSendSaludo();
+    Map<String, Object> actores= new HashMap<>();
+    Encriptar encriptar        = new Encriptar();    
+    actores.put("Alejandro Jiménez García", encriptar.desencriptar("cd4b3e3924191b057b8187"));
+    actores.put("Daniel Davalos Gutiérrez", encriptar.desencriptar("443124130375ec53c7c5cd"));
+    actores.put("Sandy Martínez Montoya", encriptar.desencriptar("2b160b0a71ea69d54a4cb4"));
+    Bonanza notificar= new Bonanza();
+    for (String item: actores.keySet()) {
+      notificar.setNombre(Cadena.nombrePersona(item));
+      notificar.setCelular((String)actores.get(item));
+      notificar.setReporte("Hola");
+      notificar.setFecha(Fecha.formatear(Fecha.DIA_FECHA_HORA_CORTA));
+      LOG.info("Enviando mensaje de whatsapp al celular: "+ notificar.getCelular());
+      notificar.doSendRfc();
+    } // for
   }  
   
 }
