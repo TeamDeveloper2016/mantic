@@ -51,23 +51,29 @@ public class Correos extends IBaseJob implements Serializable {
           int count= 1;
           for (Entity item : correos) {
             email.setNombre(item.toString("razonSocial"));
-            email.setCorreo(item.toString("valor"));
-            token= email.doValidate();
-            item.put("valido", new Value("valido", token.getValid()));
-            item.put("mensaje", new Value("mensaje", token.getMessage()));
-            if(token.getValid()) {
-              params.put("idClienteTipoContacto", item.toLong("idClienteTipoContacto"));
-              params.put("idValidado", 1L);
-              DaoFactory.getInstance().updateAll(TrManticClienteTipoContactoDto.class, params);
-            }  // if
-            else { 
-              params.put("idClienteTipoContacto", item.toLong("idClienteTipoContacto"));
-              params.put("idValidado", 3L);
-              DaoFactory.getInstance().updateAll(TrManticClienteTipoContactoDto.class, params);
-//              DaoFactory.getInstance().delete(TrManticClienteTipoContactoDto.class, item.toLong("idClienteTipoContacto"));
-              sb.append(count).append(".- *Cliente:* ").append(item.toString("razonSocial")).append("\\n_Correo:_ ").append(item.toString("valor")).append("\\n_Error:_ ").append(item.toString("mensaje")).append("\\n\\n");
-              count++;
-            } // else 
+            String correo= item.toString("valor");
+            if(correo!= null && correo.trim().length()> 0) {
+              correo= correo.replaceAll(" ", "");
+              email.setCorreo(correo);
+              token= email.doValidate();
+              item.put("valido", new Value("valido", token.getValid()));
+              item.put("mensaje", new Value("mensaje", token.getMessage()));
+              if(token.getValid()) {
+                params.put("idClienteTipoContacto", item.toLong("idClienteTipoContacto"));
+                params.put("idValidado", 1L);
+                params.put("valor", correo);
+                DaoFactory.getInstance().updateAll(TrManticClienteTipoContactoDto.class, params);
+              }  // if
+              else { 
+                params.put("idClienteTipoContacto", item.toLong("idClienteTipoContacto"));
+                params.put("idValidado", 3L);
+                params.put("valor", correo);
+                DaoFactory.getInstance().updateAll(TrManticClienteTipoContactoDto.class, params);
+  //              DaoFactory.getInstance().delete(TrManticClienteTipoContactoDto.class, item.toLong("idClienteTipoContacto"));
+                sb.append(count).append(".- *Cliente:* ").append(item.toString("razonSocial")).append("\\n_Correo:_ ").append(item.toString("valor")).append("\\n_Error:_ ").append(item.toString("mensaje")).append("\\n\\n");
+                count++;
+              } // else 
+            } // if
           } // for
           LOG.error(sb.toString());
           LOG.error("---------------------------------------------------------");

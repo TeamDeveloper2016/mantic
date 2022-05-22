@@ -4578,7 +4578,8 @@
         update
           tr_mantic_cliente_tipo_contacto
         set
-          id_validado= {idValidado}
+          id_validado= {idValidado},
+          correo= {correo}
         where
           id_cliente_tipo_contacto= {idClienteTipoContacto}
 			</update>
