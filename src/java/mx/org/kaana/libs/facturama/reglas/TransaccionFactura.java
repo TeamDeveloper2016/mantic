@@ -5,6 +5,7 @@ import java.io.StringWriter;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
@@ -367,7 +368,7 @@ public class TransaccionFactura extends IBaseTnx {
 		} // try
 		catch (Exception e) {						
 			if(this.existFactura(sesion)) {
-				this.registrarBitacoraFactura(sesion, this.cliente.getIdFactura(), EEstatusFacturas.AUTOMATICO.getIdEstatusFactura(), "Ocurrió un error al realizar la facturación automatica.", idUsuario);		
+				this.registrarBitacoraFactura(sesion, this.cliente.getIdFactura(), EEstatusFacturas.AUTOMATICO.getIdEstatusFactura(), "OCURRIÓ UN ERROR AL REALIZAR EL TIMBRADO AUTOMATICO.", idUsuario);		
 				this.actualizarFacturaAutomatico(sesion, this.cliente.getIdFactura(), idUsuario, EEstatusFacturas.AUTOMATICO.getIdEstatusFactura());
 			} // if
 			throw e;
@@ -394,7 +395,7 @@ public class TransaccionFactura extends IBaseTnx {
 		try {
 			if(factura!= null && factura.getSelloSat()== null && factura.getCadenaOriginal()== null) {
 				LOG.warn("Actualizando datos de la factura ["+ detail.getFolio()+ "] del cliente ["+ this.cliente.getRfc()+ "] porque estaba incompleto el registro !");			
-				this.registrarBitacoraFactura(sesion, idFactura, EEstatusFacturas.TIMBRADA.getIdEstatusFactura(), "ESTA FACTURA FUE RECUPERADA DE FACTURAMA.", idUsuario);
+				this.registrarBitacoraFactura(sesion, idFactura, EEstatusFacturas.TIMBRADA.getIdEstatusFactura(), "ESTA FACTURA FUE RECUPERADA DE FACTURAMA", idUsuario);
 				Complement complement = detail.getComplement();
 				factura.setComentarios("ESTA FACTURA FUE RECUPERADA DE FACTURAMA !");
 				factura.setSelloCfdi(complement.getTaxStamp().getCfdiSign());
@@ -500,12 +501,19 @@ public class TransaccionFactura extends IBaseTnx {
 	} // actualizarFacturaAutomatico
 	
 	public boolean actualizarFacturaAutomatico(Session sesion, Long id, Long idUsuario, Long idEstatus) throws Exception {
+    return this.actualizarFacturaAutomatico(sesion, id, idUsuario, idEstatus, 1L, null);
+  }
+  
+	public boolean actualizarFacturaAutomatico(Session sesion, Long id, Long idUsuario, Long idEstatus, Long intentos, String comentario) throws Exception {
     boolean regresar= false;
     try {
       TcManticFacturasDto factura= (TcManticFacturasDto) DaoFactory.getInstance().findById(sesion, TcManticFacturasDto.class, id);
-      this.registrarBitacoraFactura(sesion, id, idEstatus, "ASIGNACION A FACTURACION AUTOMATICA", idUsuario);				
+      if(Objects.equals(intentos, 10L))
+        this.registrarBitacoraFactura(sesion, id, idEstatus, comentario, idUsuario);				
+      else
+        this.registrarBitacoraFactura(sesion, id, idEstatus, "ASIGNACION A FACTURACION AUTOMATICA", idUsuario);				
       factura.setIdFacturaEstatus(idEstatus);		
-      factura.setIntentos(factura.getIntentos()+1L);
+      factura.setIntentos(factura.getIntentos()+ intentos);
       regresar= DaoFactory.getInstance().update(sesion, factura)>= 1L;
     } // try
     catch(Exception e) {

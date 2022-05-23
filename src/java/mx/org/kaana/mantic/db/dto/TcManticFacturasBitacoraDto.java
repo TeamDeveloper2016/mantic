@@ -36,8 +36,8 @@ public class TcManticFacturasBitacoraDto implements IBaseDto, Serializable {
   private String justificacion;
   @Column (name="id_usuario")
   private Long idUsuario;
-  @Column (name="registros")
-  private Timestamp registros;
+  @Column (name="registro")
+  private Timestamp registro;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 	@Column (name="id_factura_bitacora")
@@ -48,16 +48,16 @@ public class TcManticFacturasBitacoraDto implements IBaseDto, Serializable {
   }
 
   public TcManticFacturasBitacoraDto(Long key) {
-    this(null, null, null, null, new Timestamp(Calendar.getInstance().getTimeInMillis()), new Long(-1L));
+    this(null, null, null, null, new Long(-1L));
     setKey(key);
   }
 
-  public TcManticFacturasBitacoraDto(Long idFacturaEstatus, Long idFactura, String justificacion, Long idUsuario, Timestamp registros, Long idFacturaBitacora) {
+  public TcManticFacturasBitacoraDto(Long idFacturaEstatus, Long idFactura, String justificacion, Long idUsuario, Long idFacturaBitacora) {
     setIdFacturaEstatus(idFacturaEstatus);
     setIdFactura(idFactura);
     setJustificacion(justificacion);
     setIdUsuario(idUsuario);
-    setRegistros(registros);
+    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
     setIdFacturaBitacora(idFacturaBitacora);
   }
 	
@@ -93,12 +93,12 @@ public class TcManticFacturasBitacoraDto implements IBaseDto, Serializable {
     return idUsuario;
   }
 
-  public void setRegistros(Timestamp registros) {
-    this.registros = registros;
+  public void setRegistro(Timestamp registro) {
+    this.registro = registro;
   }
 
-  public Timestamp getRegistros() {
-    return registros;
+  public Timestamp getRegistro() {
+    return registro;
   }
 
   public void setIdFacturaBitacora(Long idFacturaBitacora) {
@@ -132,7 +132,7 @@ public class TcManticFacturasBitacoraDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuario());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getRegistros());
+		regresar.append(getRegistro());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdFacturaBitacora());
     regresar.append("]");
@@ -146,7 +146,7 @@ public class TcManticFacturasBitacoraDto implements IBaseDto, Serializable {
 		regresar.put("idFactura", getIdFactura());
 		regresar.put("justificacion", getJustificacion());
 		regresar.put("idUsuario", getIdUsuario());
-		regresar.put("registros", getRegistros());
+		regresar.put("registro", getRegistro());
 		regresar.put("idFacturaBitacora", getIdFacturaBitacora());
   	return regresar;
   }
@@ -154,7 +154,7 @@ public class TcManticFacturasBitacoraDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdFacturaEstatus(), getIdFactura(), getJustificacion(), getIdUsuario(), getRegistros(), getIdFacturaBitacora()
+      getIdFacturaEstatus(), getIdFactura(), getJustificacion(), getIdUsuario(), getRegistro(), getIdFacturaBitacora()
     };
     return regresar;
   }

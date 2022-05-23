@@ -44,6 +44,7 @@ import mx.org.kaana.mantic.db.dto.TcManticCierresAlertasDto;
 import mx.org.kaana.mantic.db.dto.TcManticCierresCajasDto;
 import mx.org.kaana.mantic.db.dto.TcManticCierresDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
+import mx.org.kaana.mantic.db.dto.TcManticFacturasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticFacturasDto;
 import mx.org.kaana.mantic.db.dto.TcManticInventariosDto;
 import mx.org.kaana.mantic.db.dto.TcManticMovimientosDto;
@@ -1270,7 +1271,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 	
 	private boolean generarTimbradoFactura(Session sesion) {
 		boolean regresar             = true;
-		TransaccionFactura factura   = null;
+		TransaccionFactura documento = null;
 		CFDIGestor gestor            = null;
 		ClienteFactura clienteFactura= null;
 		TcManticVentasDto venta      = null;
@@ -1278,14 +1279,14 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 			sesion.flush();
 			this.actualizarClienteFacturama(sesion, this.facturacion.getIdCliente(), this.facturacion.getIdClienteDomicilio());
 			gestor= new CFDIGestor(this.facturacion.getIdVenta());			
-			factura= new TransaccionFactura();			
-			factura.actualizarFacturaAutomatico(sesion, this.facturacion.getIdFactura(), this.facturacion.getIdUsuario(), EEstatusFacturas.PROCESANDO.getIdEstatusFactura());
-			factura.setArticulos(gestor.toDetalleCfdiVentas(sesion));
+			documento= new TransaccionFactura();			
+			documento.actualizarFacturaAutomatico(sesion, this.facturacion.getIdFactura(), this.facturacion.getIdUsuario(), EEstatusFacturas.PROCESANDO.getIdEstatusFactura());
+			documento.setArticulos(gestor.toDetalleCfdiVentas(sesion));
 			clienteFactura= this.facturacion.getIdTipoDocumento().equals(ETipoDocumento.VENTAS_NORMALES.getIdTipoDocumento()) ? gestor.toClienteCfdiVenta(sesion) : gestor.toClienteCfdiFicticia(sesion);			
 			clienteFactura.setMetodoPago(ETipoPago.fromIdTipoPago(this.facturacion.getIdTipoPago()).getClave());
-			factura.setCliente(clienteFactura);
-			factura.getCliente().setIdFactura(this.facturacion.getIdFactura());
-			factura.generarCfdi(sesion, this.facturacion.getIdEmpresa().toString(), this.facturacion.getIdUsuario());						
+			documento.setCliente(clienteFactura);
+			documento.getCliente().setIdFactura(this.facturacion.getIdFactura());
+			documento.generarCfdi(sesion, this.facturacion.getIdEmpresa().toString(), this.facturacion.getIdUsuario());						
 			venta= (TcManticVentasDto) DaoFactory.getInstance().findById(sesion, TcManticVentasDto.class, this.facturacion.getIdVenta());
 			venta.setIdVentaEstatus(this.facturacion.getIdTipoDocumento().equals(ETipoDocumento.VENTAS_NORMALES.getIdTipoDocumento()) ? EEstatusVentas.TIMBRADA.getIdEstatusVenta() : EEstatusFicticias.TIMBRADA.getIdEstatusFicticia());
 			DaoFactory.getInstance().update(sesion, venta);
@@ -1293,8 +1294,8 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		catch (Exception e) {	
 			Error.mensaje(e);
 			try {
-				if(factura!= null)
-					factura.actualizarFacturaAutomatico(sesion, this.facturacion.getIdFactura(), this.facturacion.getIdUsuario(), EEstatusFacturas.AUTOMATICO.getIdEstatusFactura());
+				if(documento!= null) 
+					documento.actualizarFacturaAutomatico(sesion, this.facturacion.getIdFactura(), this.facturacion.getIdUsuario(), EEstatusFacturas.REGISTRADA.getIdEstatusFactura(), 10L, "ERROR AL TIMBRAR LA FACTURA "+ e);
 				regresar= false;
 			} // try
 			catch (Exception ex) {				
@@ -1305,11 +1306,11 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 	} // generarTimbradoFactura
 	
 	private boolean assignStatusAutomatico(Session sesion) throws Exception {
-		boolean regresar          = false;		
-		TransaccionFactura factura= null;
+		boolean regresar            = false;		
+		TransaccionFactura documento= null;
 		try {
-			factura= new TransaccionFactura();
-			regresar= factura.actualizarFacturaAutomatico(sesion, this.facturacion.getIdFactura(), JsfBase.getIdUsuario());
+			documento= new TransaccionFactura();
+			regresar= documento.actualizarFacturaAutomatico(sesion, this.facturacion.getIdFactura(), JsfBase.getIdUsuario());
 		} // try
 		catch (Exception e) {		
 			throw e;

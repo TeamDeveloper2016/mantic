@@ -50,7 +50,7 @@ public class Rfcs extends IBaseJob implements Serializable {
           List<Entity> correos= (List<Entity>)DaoFactory.getInstance().toEntitySet("TcManticClientesDto", "rfcs", params, 500L);
           int count= 1;
           for (Entity item : correos) {
-            String valor= item.toString("valor");
+            String valor= item.toString("rfc");
             if(valor!= null && valor.trim().length()> 0) {
               valor= valor.replaceAll(" ", "");
               rfc.setRfc(valor);
@@ -64,7 +64,7 @@ public class Rfcs extends IBaseJob implements Serializable {
                 params.put("idValidado", 1L);
                 params.put("rfc", valor);
                 DaoFactory.getInstance().updateAll(TcManticClientesDto.class, params);
-              }  // if
+              } // if
               else { 
                 params.put("idCliente", item.toLong("idCliente"));
                 params.put("idValidado", 3L);

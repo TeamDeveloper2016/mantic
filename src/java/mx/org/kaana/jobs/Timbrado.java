@@ -43,6 +43,8 @@ import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.wassenger.Bonanza;
+import mx.org.kaana.mantic.db.dto.TcManticFacturasBitacoraDto;
+import mx.org.kaana.mantic.db.dto.TcManticFacturasDto;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.quartz.JobExecutionContext;
@@ -77,9 +79,6 @@ public class Timbrado extends IBaseJob {
 									this.doSendMail(factura);
 									LOG.error("Se realizó la facturación de forma correcta "+ factura.getRazonSocial());
 								} // if
-								else {
-									LOG.error("Ocurrio un error al realizar la facturación");
-								}
 							} // if
 						} // if
 					}
