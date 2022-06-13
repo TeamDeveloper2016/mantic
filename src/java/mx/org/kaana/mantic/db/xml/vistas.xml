@@ -2017,7 +2017,7 @@
 					tc_mantic_cajas.id_caja,            
 					tc_mantic_cajas.clave caja,					
 					tr_mantic_venta_medio_pago.importe,
-					tc_mantic_ventas.total,	
+					tr_mantic_venta_medio_pago.importe as total,	
 				  tc_mantic_ventas.registro as fecha,
 					tc_mantic_tipos_medios_pagos.id_tipo_medio_pago,
 					tc_mantic_tipos_medios_pagos.nombre as tipo_medio_pago,
