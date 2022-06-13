@@ -91,8 +91,8 @@ public class Exportar implements Serializable {
 	public void procesar(EFormatos formato) throws Exception {
     this.formato= formato;
     try {
-      fill();
-      procesar();
+      this.fill();
+      this.procesar();
     } // try
     catch (Exception e) {
       throw e;

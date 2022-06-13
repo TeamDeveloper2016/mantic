@@ -4422,7 +4422,7 @@
           tc_mantic_clientes
         set
           id_validado= {idValidado},
-          rfc= {rfc}
+          rfc= '{rfc}'
         where
           id_cliente= {idCliente}
 			</update>
@@ -4554,13 +4554,23 @@
       </select>
 			<select id="contacto">
         select      
-          tr_mantic_cliente_tipo_contacto.*
+          tr_mantic_cliente_tipo_contacto.id_cliente_tipo_contacto as id_key,
+          tr_mantic_cliente_tipo_contacto.id_cliente_tipo_contacto,
+          tr_mantic_cliente_tipo_contacto.id_cliente,
+          tr_mantic_cliente_tipo_contacto.id_tipo_contacto,
+          tr_mantic_cliente_tipo_contacto.valor,
+          tr_mantic_cliente_tipo_contacto.orden,
+          tr_mantic_cliente_tipo_contacto.id_preferido,
+          tr_mantic_cliente_tipo_contacto.observaciones,
+          tr_mantic_cliente_tipo_contacto.id_usuario,
+          tr_mantic_cliente_tipo_contacto.registro
         from      
           tr_mantic_cliente_tipo_contacto
         where 
           tr_mantic_cliente_tipo_contacto.id_cliente= {idCliente}
         union all
         select      
+          tr_mantic_persona_tipo_contacto.id_persona_tipo_contacto as id_key,
           tr_mantic_persona_tipo_contacto.id_persona_tipo_contacto as id_cliente_tipo_contacto,
           tr_mantic_persona_tipo_contacto.id_persona as id_cliente,
           tr_mantic_persona_tipo_contacto.id_tipo_contacto,
@@ -4580,12 +4590,15 @@
           tr_mantic_cliente_tipo_contacto
         set
           id_validado= {idValidado},
-          correo= {correo}
+          valor= '{valor}'
         where
           id_cliente_tipo_contacto= {idClienteTipoContacto}
 			</update>
 			<delete id="rows">
-        delete from tr_mantic_cliente_tipo_contacto where id_cliente= {idCliente}
+        delete from 
+          tr_mantic_cliente_tipo_contacto 
+        where 
+          id_cliente= {idCliente}
       </delete>
     </unit>		
 		<unit id="TcManticDomiciliosDto">

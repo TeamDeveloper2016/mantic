@@ -166,7 +166,7 @@ public class BaseReportes extends IBaseAttribute implements Serializable {
 	protected void init() {
 	}
 	
-	protected void llenarFormatos () {
+	protected void fills() {
 	  for(EFormatos formato: EFormatos.values()) 
       if (formato.getType().equals(ETipoFormato.IREPORT) && !formato.equals(EFormatos.DOC) && !formato.equals(EFormatos.PPT) && !formato.equals(EFormatos.JXL))  
         this.formatos.add(new UISelectItem(formato, formato.name()));

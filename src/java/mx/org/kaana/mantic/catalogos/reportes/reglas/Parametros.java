@@ -20,7 +20,7 @@ public final class Parametros implements Serializable {
 
   public Parametros(Long idEmpresa) throws Exception {
     this.idEmpresa = idEmpresa;
-    setComunes(toDatosEmpresa());
+    this.setComunes(this.toDatosEmpresa());
   }
 
   public Parametros(Long idEmpresa, Long idAlmacen, Long idAlmacenDestino) throws Exception {
@@ -29,9 +29,9 @@ public final class Parametros implements Serializable {
     this.idAlmacenDestino = idAlmacenDestino;
     setComunes(toDatosEmpresa());
     if(this.idAlmacen != -1L)
-      toComplementarAlmacen(this.idAlmacen, true);
+      this.toComplementarAlmacen(this.idAlmacen, true);
     if(this.idAlmacenDestino != -1L)
-      toComplementarAlmacen(this.idAlmacenDestino, false);
+      this.toComplementarAlmacen(this.idAlmacenDestino, false);
   }
   
   public Parametros(Long idEmpresa, Long idAlmacen, Long idProveedor, Long idCliente) throws Exception {
@@ -72,11 +72,11 @@ public final class Parametros implements Serializable {
         regresar.put("REPORTE_EMPRESA_CP", datosEmpresa.toString("nombre")!=null?datosEmpresa.toString("codigoPostal"):" ");
         regresar.put("REPORTE_EMPRESA_CONTACTO", datosEmpresa.toString("codigoPostal")!=null?datosEmpresa.toString("responsableEmpresa"):" ");
         //regresar.put("REPORTE_EMPRESA_CONTACTO", "JOSE ANTONIO DAVALOS PADILLA");
+        //regresar.put("REPORTE_EMPRESA_RFC", "DAPA580118TK4");
         regresar.put("REPORTE_EMPRESA_TELEFONOS", datosEmpresa.toString("telefonosEmpresa")!=null?datosEmpresa.toString("telefonosEmpresa"):" ");
         regresar.put("REPORTE_EMPRESA_EMAILS", datosEmpresa.toString("emailsEmpresa")!=null?datosEmpresa.toString("emailsEmpresa"):" ");
         regresar.put("REPORTE_EMPRESA_MUNICIPIO", datosEmpresa.toString("empresaRegion")!=null?datosEmpresa.toString("empresaRegion"):" ");
         regresar.put("REPORTE_EMPRESA_RFC", datosEmpresa.toString("rfcEmpresa")!=null?datosEmpresa.toString("rfcEmpresa"):" ");
-        //regresar.put("REPORTE_EMPRESA_RFC", "DAPA580118TK4");
         regresar.put("REPORTE_EMPRESA_CLAVE", datosEmpresa.toString("clave")!=null?datosEmpresa.toString("clave"):" ");
       }
     } // try

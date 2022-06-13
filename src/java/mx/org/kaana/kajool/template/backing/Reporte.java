@@ -65,7 +65,7 @@ public class Reporte extends BaseReportes implements Serializable{
 			this.habilitarXls = Boolean.toString(true);
       this.prefijo      = Constantes.ARCHIVO_PATRON_NOMBRE;
       this.fileName     = "";
-			this.llenarFormatos();	
+			this.fills();	
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

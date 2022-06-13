@@ -75,7 +75,7 @@ public class Rfcs extends IBaseJob implements Serializable {
                 count++;
               } // else 
             } // if
-            if(sb.length()< 5500)
+            if(sb.length()> 5500)
               break;
           } // for
           LOG.error(sb.toString());

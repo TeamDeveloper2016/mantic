@@ -32,7 +32,9 @@ import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
 import mx.org.kaana.mantic.catalogos.clientes.reglas.MotorBusqueda;
+import mx.org.kaana.mantic.catalogos.clientes.reglas.NotificaCliente;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
+import mx.org.kaana.mantic.correos.enums.ECorreos;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesUbicacionesDto;
 import mx.org.kaana.mantic.db.dto.TcManticApartadosBitacoraDto;
@@ -44,7 +46,6 @@ import mx.org.kaana.mantic.db.dto.TcManticCierresAlertasDto;
 import mx.org.kaana.mantic.db.dto.TcManticCierresCajasDto;
 import mx.org.kaana.mantic.db.dto.TcManticCierresDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
-import mx.org.kaana.mantic.db.dto.TcManticFacturasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticFacturasDto;
 import mx.org.kaana.mantic.db.dto.TcManticInventariosDto;
 import mx.org.kaana.mantic.db.dto.TcManticMovimientosDto;
@@ -59,6 +60,7 @@ import mx.org.kaana.mantic.enums.EEstatusFacturas;
 import mx.org.kaana.mantic.enums.EEstatusFicticias;
 import mx.org.kaana.mantic.enums.EEstatusServicios;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
+import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.enums.ETipoDocumento;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import mx.org.kaana.mantic.enums.ETipoPago;
@@ -313,7 +315,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 	} // toSiguienteCotizacion
 	
 	private boolean procesarVenta(Session sesion) throws Exception {
-		boolean regresar= this.pagarVenta(sesion, this.ventaFinalizada.getApartado() ? EEstatusVentas.APARTADOS.getIdEstatusVenta() : (this.ventaFinalizada.isCredito() ? EEstatusVentas.CREDITO.getIdEstatusVenta() : EEstatusVentas.PAGADA.getIdEstatusVenta()));
+		boolean regresar= this.pagarVenta(sesion, this.ventaFinalizada.getApartado()? EEstatusVentas.APARTADOS.getIdEstatusVenta(): (this.ventaFinalizada.isCredito() ? EEstatusVentas.CREDITO.getIdEstatusVenta() : EEstatusVentas.PAGADA.getIdEstatusVenta()));
 		if(regresar) {
 			if(this.ventaFinalizada.isFacturar() && !this.ventaFinalizada.getApartado())
 				regresar= this.registrarFactura(sesion);
@@ -326,11 +328,11 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 				} // if
 			} // if
 			if(this.ventaFinalizada.getApartado())
-				regresar= registrarApartado(sesion);
+				regresar= this.registrarApartado(sesion);
 			else if(this.ventaFinalizada.getTipoCuenta().equals(EEstatusVentas.APARTADOS.name()))
-				regresar= liquidarApartado(sesion);			
+				regresar= this.liquidarApartado(sesion);			
 			if(this.ventaFinalizada.getTicketVenta().getIdServicio() > 0L)
-				actualizarServicio(sesion);
+				this.actualizarServicio(sesion);
 		} // if		
 		return regresar;
 	} // procesarVenta
@@ -648,7 +650,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		} // try		
 		finally{
 			Methods.clean(params);
-			setMessageError("ERROR AL REGISTRAR EL PAGO DE LA VENTA");
+			this.setMessageError("ERROR AL REGISTRAR EL PAGO DE LA VENTA");
 		} // finally			
 		return regresar;
 	} // pagarVenta
@@ -1530,5 +1532,25 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
     } // finally
     return regresar;
   }
-  
+
+  private void processNotificacionCredito(Session sesion) throws Exception {
+    try {      
+      sesion.flush();
+      NotificaCliente notifica= new NotificaCliente(sesion,
+        this.ventaFinalizada.getCliente().getIdCliente(), // Long idCliente, 
+        this.ventaFinalizada.getCliente().getRazonSocial(), // String razonSocial, 
+        null, // String correos, 
+        EReportes.valueOf("CUENTAS_POR_COBRAR"), // EReportes reportes, 
+        ECorreos.valueOf("CREDITO"), // ECorreos correo, 
+        true, // boolean notifica
+        this.ventaFinalizada.getTicketVenta().getIdVenta() // idVenta
+      );
+      notifica.doSendMail();
+      notifica.doSendWhatsup();
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+  }
+    
 }

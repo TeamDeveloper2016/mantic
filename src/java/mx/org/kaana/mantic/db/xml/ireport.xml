@@ -348,11 +348,11 @@
         	  when tc_mantic_ventas.id_venta_estatus= 12 or tc_mantic_ventas.id_venta_estatus= 15 then 'FACTURA No.'
         	  else 'TICKET No.'
         	end as leyenda_venta,
-        	tt_mantic_temporal.medio_pago,
-        	tt_mantic_temporal.importe_pago,
-        	tt_mantic_temporal.total,
-        	(tt_mantic_temporal.importe_pago- tt_mantic_temporal.total) as cambio,
-          tt_mantic_temporal.nombre_cobro,
+          ifnull(tt_mantic_temporal.medio_pago, 0) as medio_pago,
+          ifnull(tt_mantic_temporal.importe_pago, 0) as importe_pago,
+          ifnull(tt_mantic_temporal.total, 0) as total,
+          (ifnull(tt_mantic_temporal.importe_pago, 0)- ifnull(tt_mantic_temporal.total, 0)) as cambio,
+          ifnull(tt_mantic_temporal.nombre_cobro, concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', ifnull(tc_mantic_personas.materno, ' '))) as nombre_cobro,
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre_vendio
         from 
           tc_mantic_ventas 
@@ -366,7 +366,7 @@
 					tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_persona
 				inner join				
 					tc_mantic_empresas on tc_mantic_ventas.id_empresa = tc_mantic_empresas.id_empresa
-				inner join (
+				left join (
 					select
 						tr_mantic_venta_medio_pago.id_venta,
 						tc_mantic_tipos_medios_pagos.nombre as medio_pago, 

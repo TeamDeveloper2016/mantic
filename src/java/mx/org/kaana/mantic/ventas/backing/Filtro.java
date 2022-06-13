@@ -634,13 +634,12 @@ public class Filtro extends IBaseTicket implements Serializable {
   }
   
 	public void doReporte(boolean email) throws Exception {
-		Map<String, Object>params    = null;
+		Map<String, Object>params    = new HashMap<>();
 		Map<String, Object>parametros= null;
 		EReportes reporteSeleccion   = null;
 		try{				
 			reporteSeleccion= EReportes.TICKET_VENTA;
 			this.reporte= JsfBase.toReporte();
-			params= new HashMap<>();
 			params.put("idVenta", ((Entity)this.attrs.get("seleccionado")).getKey());			
       Parametros comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			parametros= comunes.getComunes();

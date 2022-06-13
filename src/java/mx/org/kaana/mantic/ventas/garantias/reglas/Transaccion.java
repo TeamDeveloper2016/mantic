@@ -404,7 +404,8 @@ public class Transaccion extends IBaseTnx {
           sesion, // sesion
           this.detalleGarantia.getIdCliente(), // Long idCliente, 
           EReportes.CUENTAS_POR_COBRAR, // EReportes reportes, 
-          ECorreos.DEVOLUCION // ECorreos correo
+          ECorreos.DEVOLUCION, // ECorreos correo
+          this.garantia.getTicketVenta().getIdVenta() // idVenta
         );
         notifica.doSendMail();
         notifica.doSendWhatsup();

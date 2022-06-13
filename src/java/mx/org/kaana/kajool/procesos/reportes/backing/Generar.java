@@ -55,7 +55,7 @@ public class Generar extends BaseReportes implements Serializable {
 				this.total=toSize();
 				this.nombre=this.idFormato.toPath().concat(Archivo.toFormatNameFile(this.ireporte.getNombre().concat("."))).concat(this.idFormato.name().toLowerCase());
 				this.formatos=new ArrayList<UISelectItem>();
-				llenarFormatos();
+				fills();
 				if (this.ireporte.getAutomatico()) {
 					this.automatico="setTimeout(\"$('#aceptar').click()\", 1000);";
 				} // if

@@ -722,7 +722,8 @@ public class Transaccion extends TransaccionFactura {
         sesion, // sesion
         this.getOrden().getIdCliente(), // Long idCliente, 
         EReportes.CUENTAS_POR_COBRAR, // EReportes reportes, 
-        ECorreos.CREDITO // ECorreos correo
+        ECorreos.CREDITO, // ECorreos correo
+        this.getOrden().getIdVenta() // Long idVenta
       );
       notifica.doSendMail();
       notifica.doSendWhatsup();
