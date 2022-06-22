@@ -18,6 +18,7 @@ public class Concepto implements Serializable {
 
   private Long id;
   private String folio;
+  private String tipo;
   private String claveProducto;
   private String noIdentificacion;
   private String descripcion;
@@ -37,16 +38,17 @@ public class Concepto implements Serializable {
   }
 
   public Concepto(Long id) {
-    this(id, "", "", "", "", "", "", "", "", "", "", "", "", "", "");
+    this(id, "", "", "", "", "", "", "", "", "", "", "", "", "", "", "");
   }
   
-  public Concepto(String folio, String claveProducto, String noIdentificacion, String descripcion, String claveUnidad, String unidad, String precioUnitario, String cantidad, String tasaImpuesto, String subtotal, String descuento, String iva, String total, String archivo) {
-    this(new Random().nextLong(), folio, claveProducto, noIdentificacion, descripcion, claveUnidad, unidad, precioUnitario, cantidad, tasaImpuesto, subtotal, descuento, iva, total, archivo);
+  public Concepto(String folio, String tipo, String claveProducto, String noIdentificacion, String descripcion, String claveUnidad, String unidad, String precioUnitario, String cantidad, String tasaImpuesto, String subtotal, String descuento, String iva, String total, String archivo) {
+    this(new Random().nextLong(), folio, tipo, claveProducto, noIdentificacion, descripcion, claveUnidad, unidad, precioUnitario, cantidad, tasaImpuesto, subtotal, descuento, iva, total, archivo);
   }
   
-  public Concepto(Long id, String folio, String claveProducto, String noIdentificacion, String descripcion, String claveUnidad, String unidad, String precioUnitario, String cantidad, String tasaImpuesto, String subtotal, String descuento, String iva, String total, String archivo) {
+  public Concepto(Long id, String folio, String tipo, String claveProducto, String noIdentificacion, String descripcion, String claveUnidad, String unidad, String precioUnitario, String cantidad, String tasaImpuesto, String subtotal, String descuento, String iva, String total, String archivo) {
     this.id = id;
     this.folio = folio;
+    this.tipo = tipo;
     this.claveProducto = claveProducto;
     this.noIdentificacion = noIdentificacion;
     this.descripcion = descripcion;
@@ -76,6 +78,14 @@ public class Concepto implements Serializable {
 
   public void setFolio(String folio) {
     this.folio = folio;
+  }
+
+  public String getTipo() {
+    return tipo;
+  }
+
+  public void setTipo(String tipo) {
+    this.tipo = tipo;
   }
 
   public String getClaveProducto() {
@@ -209,7 +219,7 @@ public class Concepto implements Serializable {
 
   @Override
   public String toString() {
-    return "Concepto{" + "id=" + id + ", folio=" + folio + ", claveProducto=" + claveProducto + ", noIdentificacion=" + noIdentificacion + ", descripcion=" + descripcion + ", claveUnidad=" + claveUnidad + ", unidad=" + unidad + ", precioUnitario=" + precioUnitario + ", cantidad=" + cantidad + ", tasaImpuesto=" + tasaImpuesto + ", descuento=" + descuento + ", subtotal=" + subtotal + ", iva=" + iva + ", total=" + total + ", archivo=" + archivo + '}';
+    return "Concepto{" + "id=" + id + ", folio=" + folio + ", tipo=" + tipo + ", claveProducto=" + claveProducto + ", noIdentificacion=" + noIdentificacion + ", descripcion=" + descripcion + ", claveUnidad=" + claveUnidad + ", unidad=" + unidad + ", precioUnitario=" + precioUnitario + ", cantidad=" + cantidad + ", tasaImpuesto=" + tasaImpuesto + ", descuento=" + descuento + ", subtotal=" + subtotal + ", iva=" + iva + ", total=" + total + ", archivo=" + archivo + '}';
   }
 
 }

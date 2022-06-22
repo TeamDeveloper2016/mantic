@@ -140,6 +140,7 @@ public class Procesar extends IBaseImportar implements IBaseStorage, Serializabl
           for (mx.org.kaana.mantic.libs.factura.beans.Concepto item: this.getFactura().getConceptos()) {
             this.conceptos.add(new Concepto(
               this.getFactura().getFolio(), // String folio      
+              this.getFactura().getTipoDeComprobante(), // String tipo
               item.getClaveProdServ(), // String claveProducto, 
               item.getNoIdentificacion(), // String noIdentificacion, 
               item.getDescripcion(), // String descripcion, 
@@ -156,6 +157,7 @@ public class Procesar extends IBaseImportar implements IBaseStorage, Serializabl
             ));
           } // for
           this.toSaveFileRecord(event.getFile().getFileName().toUpperCase(), ruta, path.toString(), this.listado.get(this.listado.size()- 1).getXml().getName());            
+          this.getFactura().getConceptos().clear();
         } // if
       } // if
       else {

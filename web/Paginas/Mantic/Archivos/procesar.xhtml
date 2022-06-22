@@ -74,25 +74,25 @@
                     <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('contenedorGrupos\\:dataXlsDocumentos', 'contenedorGrupos\\:documentos')" oncomplete="janal.desbloquear()"/>
                   </p:menuButton>
                 </f:facet>
-                <p:column styleClass="janal-column-left Responsive janal-wid-5">
+                <p:column styleClass="janal-column-left MarAuto Responsive janal-wid-5">
                   <f:facet name="header">
                     <h:outputText value="No."/>
                   </f:facet>
                   <h:outputText value="#{index+ 1}."/>
                 </p:column>
-                <p:column styleClass="janal-column-left Responsive">
+                <p:column styleClass="janal-column-left MarAuto Responsive">
                   <f:facet name="header">
                     <h:outputText value="Nombre"/>
                   </f:facet>
                   <h:outputText value="#{row.original}"/>
                 </p:column>                    
-                <p:column styleClass="janal-column-left Responsive">
+                <p:column styleClass="janal-column-left MarAuto Responsive">
                   <f:facet name="header">
                     <h:outputText value="Archivo"/>
                   </f:facet>
                   <h:outputText value="#{row.name}"/>
                 </p:column>                    
-                <p:column styleClass="janal-column-left Responsive janal-display-none">
+                <p:column styleClass="janal-column-left MarAuto Responsive janal-display-none">
                   <f:facet name="header">
                     <h:outputText value="Ruta"/>
                   </f:facet>
@@ -122,7 +122,7 @@
                     <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('contenedorGrupos\\:dataXlsReferencias', 'contenedorGrupos\\:referencias')" oncomplete="janal.desbloquear()"/>
                   </p:menuButton>
                 </f:facet>
-                <p:column styleClass="janal-column-left Responsive janal-wid-6">
+                <p:column styleClass="janal-column-left MarAuto Responsive janal-wid-6">
                   <f:facet name="header">
                     <h:outputText value="Folio"/>
                   </f:facet>
@@ -189,13 +189,19 @@
                     <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('contenedorGrupos\\:dataXlsConceptos', 'contenedorGrupos\\:conceptos')" oncomplete="janal.desbloquear()"/>
                   </p:menuButton>
                 </f:facet>
-                <p:column styleClass="janal-column-left Responsive janal-wid-6">
+                <p:column styleClass="janal-column-left MarAuto Responsive janal-wid-6">
                   <f:facet name="header">
                     <h:outputText value="Factura"/>
                   </f:facet>
-                  <h:outputText value="#{row.folio}"  />
+                  <h:outputText value="#{row.folio}"/>
                 </p:column>                    
-                <p:column styleClass="janal-column-left Responsive janal-wid-8">
+                <p:column styleClass="janal-column-left MarAuto Responsive janal-wid-2 janal-display-none">
+                  <f:facet name="header">
+                    <h:outputText value="Tipo"/>
+                  </f:facet>
+                  <h:outputText value="#{row.tipo}"/>
+                </p:column>                    
+                <p:column styleClass="janal-column-left MarAuto Responsive janal-wid-8">
                   <f:facet name="header">
                     <h:outputText value="Producto"/>
                   </f:facet>
