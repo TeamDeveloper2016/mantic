@@ -600,6 +600,22 @@ public class Fecha {
 		} // try
 		catch(Exception e) {
 			regresar= new java.sql.Date(Fecha.getRegistroTypeDate().getTime());
+      Error.mensaje(e);
+		} // catch
+	  return regresar;
+  }
+	
+  public static String toFechaSat(String fecha) {
+    // YYYY-MM-DDTHH-mm-SS
+    // 2022-06-01T17:03:28
+    // 0123456789012346567
+		String regresar= null;
+		try {
+      regresar= fecha.substring(8, 10).concat("/").concat(fecha.substring(5, 7)).concat("/").concat(fecha.substring(0, 4)).concat(" ").concat(fecha.substring(11));
+		} // try
+		catch(Exception e) {
+			regresar= fecha;
+      Error.mensaje(e);
 		} // catch
 	  return regresar;
   }

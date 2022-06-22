@@ -11,7 +11,7 @@ public class Traslado extends Articulo implements Serializable {
 	private String tasaCuota;
 
 	public Traslado() {
-		this(null, null, null, null);
+		this("0", "0", "002", "0");
 	}
 
 	public Traslado(String base, String impuesto, String tipoFactor, String tasaCuota) {

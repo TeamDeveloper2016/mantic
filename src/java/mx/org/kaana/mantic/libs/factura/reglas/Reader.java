@@ -272,32 +272,34 @@ public class Reader implements Serializable {
 		String valAttr       = null;
 		try {			
 			regresar = new Traslado();
-			traslados= impuestos.getFirstChild()== null? impuestos.getNextSibling(): impuestos.getFirstChild().getNodeName().equals("#text")? impuestos.getFirstChild().getNextSibling(): impuestos.getFirstChild();
-			if(traslados.getNodeName().equals("cfdi:Traslados")){
-				traslado= traslados.getFirstChild().getNodeName().equals("#text")? traslados.getFirstChild().getNextSibling(): traslados.getFirstChild();
-				if(traslado.getNodeName().equals("cfdi:Traslado")){
-					mapAttrs= traslado.getAttributes();
-					for (int count = 0; count < mapAttrs.getLength(); count++){
-						nameAttr= mapAttrs.item(count).getNodeName();
-						valAttr= mapAttrs.item(count).getNodeValue();
-						switch(nameAttr){
-							case "Base":
-								regresar.setBase(valAttr);
-								break;
-							case "Importe":
-								regresar.setImporte(valAttr);
-								break;
-							case "Impuesto":
-								regresar.setImpuesto(valAttr);
-								break;
-							case "TasaOCuota":
-								regresar.setTasaCuota(valAttr);
-								break;
-							case "TipoFactor":
-								regresar.setTipoFactor(valAttr);
-								break;
-						} // switch
-					} // for
+			if(impuestos!= null) {
+        traslados= impuestos.getFirstChild()== null? impuestos.getNextSibling(): impuestos.getFirstChild().getNodeName().equals("#text")? impuestos.getFirstChild().getNextSibling(): impuestos.getFirstChild();
+        if(traslados!= null && traslados.getNodeName().equals("cfdi:Traslados")) {
+          traslado= traslados.getFirstChild().getNodeName().equals("#text")? traslados.getFirstChild().getNextSibling(): traslados.getFirstChild();
+          if(traslado.getNodeName().equals("cfdi:Traslado")) {
+            mapAttrs= traslado.getAttributes();
+            for (int count= 0; count< mapAttrs.getLength(); count++){
+              nameAttr= mapAttrs.item(count).getNodeName();
+              valAttr= mapAttrs.item(count).getNodeValue();
+              switch(nameAttr){
+                case "Base":
+                  regresar.setBase(valAttr);
+                  break;
+                case "Importe":
+                  regresar.setImporte(valAttr);
+                  break;
+                case "Impuesto":
+                  regresar.setImpuesto(valAttr);
+                  break;
+                case "TasaOCuota":
+                  regresar.setTasaCuota(valAttr);
+                  break;
+                case "TipoFactor":
+                  regresar.setTipoFactor(valAttr);
+                  break;
+              } // switch
+            } // for
+  				} // if
 				} // if
 			} // if
 		} // try

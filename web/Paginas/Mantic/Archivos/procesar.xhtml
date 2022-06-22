@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+	<ui:param name="titulo" value="Procesar documentos XML's"/>
+  <ui:param name="janalBackingPage" value="#{manticArchivosProcesar}"/>
+  <ui:param name="janalEventPage" value="doGlobalEvent"	/>	
+	<ui:define name="librerias">
+		<h:outputStylesheet library="janal" name="css/sh.css"/>
+		<h:outputStylesheet library="janal" name="css/shCore.css"/>
+		<h:outputStylesheet library="janal" name="css/shThemeDefault.css"/>
+		<h:outputScript library="janal" name="js/sh.js"/>
+	  <h:outputScript library="janal" name="js/shCore.js"/>
+	  <h:outputScript library="janal" name="js/shAutoloader.js"/>
+	  <h:outputScript library="janal" name="js/shBrushXml.js"/>
+	  <h:outputScript library="janal" name="js/shBrushCss.js"/>
+		<script type="text/javascript">
+			Janal.Control.fields = {				 				
+				'archivos': {validaciones: 'libre', mascara: 'libre', grupo: 'general'}				
+			};
+			
+    	$(document).ready(function() {
+        $(window).bind('beforeunload', function() { 
+          cleanFiles();
+          return ;
+        });			
+      });
+			
+			function start() {
+        PF('statusDialog').show();
+      };
+ 
+      function stop() {
+        PF('statusDialog').hide();
+      };
+			
+			function load() {
+			  SyntaxHighlighter.highlight();	
+			}
+		</script>   
+		<style>
+			.janal-upload-frame {border: solid 1px #D1D3D4;margin-bottom: 6px;border-radius: 5px;}
+			.syntaxhighlighter {overflow-y: auto !important;overflow-x: auto !important;max-height: 370px;}			
+		</style>
+	</ui:define>
+	<ui:define name="contenido">
+		<p:hotkey bind="esc" handler="if($('#primefacesmessagedlg > div.ui-dialog-titlebar > a.ui-dialog-titlebar-icon')){$('#primefacesmessagedlg > div.ui-dialog-titlebar > a.ui-dialog-titlebar-icon').click();}"/>
+		<p:remoteCommand name="cleanFiles" actionListener="#{manticArchivosProcesar.doCleanFiles}" process="@this"/>
+		<p:remoteCommand name="viewFile" actionListener="#{manticArchivosProcesar.doViewFile}" process="@this" update="@(.viewXML)" onstart="return janal.bloquear();" oncomplete="PF('dlgXML').show();"/>
+		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">
+					<h:outputText id="tabla" value="Solo sirve para la ventana emergente de articulos express" style="display:none"/>					
+					<div class="janal-wid-100-txt janal-column-center janal-font-bold">
+						<p:outputLabel value="LA CARGA DE ARCHIVOS XML'S SE (AUTO)GUARDO EL DIA #{manticArchivosProcesar.attrs.autoSave} HRS.&lt;br/&gt;" style="display: #{empty(manticArchivosProcesar.attrs.autoSave)? 'none': ''}" styleClass="recalculo janal-color-orange" escape="false"/>
+					</div>
+					<p:tabView id="contenedorGrupos">
+            <p:ajax event="tabChange" listener="#{manticArchivosProcesar.doTabChange}" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+						<p:tab title="Importar">
+							<p:fileUpload fileUploadListener="#{manticArchivosProcesar.doFileUpload}" 
+								mode="advanced" process="@this" update="contenedorGrupos:documentos contenedorGrupos:referencias contenedorGrupos:conceptos @(.importado)" label="Selecciona XML" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="3145728"
+								multiple="multiple" allowTypes="#{manticArchivosProcesar.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100 janal-upload-frame"
+								invalidSizeMessage="El tamaño máximo permitido del archivo es de 3 MB" invalidFileMessage="Solo se permiten archivos en formato #{manticArchivosProcesar.attrs.formatos}" oncomplete="janal.desbloquear()"/>
+							<br/>
+              <p:dataTable lazy="false" id="documentos" var="row" rowIndexVar="index" value="#{manticArchivosProcesar.listado}" paginator="true" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" styleClass="janal-wid-100-txt importado" reflow="true" paginatorPosition="bottom" rowKey="#{row.id}">
+                <f:facet name="header">
+                  <p:menuButton value="Opciones">
+                    <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('contenedorGrupos\\:dataPdfDocumentos', 'contenedorGrupos\\:documentos')" oncomplete="janal.desbloquear()"/>
+                    <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('contenedorGrupos\\:dataXlsDocumentos', 'contenedorGrupos\\:documentos')" oncomplete="janal.desbloquear()"/>
+                  </p:menuButton>
+                </f:facet>
+                <p:column styleClass="janal-column-left Responsive janal-wid-5">
+                  <f:facet name="header">
+                    <h:outputText value="No."/>
+                  </f:facet>
+                  <h:outputText value="#{index+ 1}."/>
+                </p:column>
+                <p:column styleClass="janal-column-left Responsive">
+                  <f:facet name="header">
+                    <h:outputText value="Nombre"/>
+                  </f:facet>
+                  <h:outputText value="#{row.original}"/>
+                </p:column>                    
+                <p:column styleClass="janal-column-left Responsive">
+                  <f:facet name="header">
+                    <h:outputText value="Archivo"/>
+                  </f:facet>
+                  <h:outputText value="#{row.name}"/>
+                </p:column>                    
+                <p:column styleClass="janal-column-left Responsive janal-display-none">
+                  <f:facet name="header">
+                    <h:outputText value="Ruta"/>
+                  </f:facet>
+                  <h:outputText value="#{row.path}"/>
+                </p:column> 
+								<p:column style="text-align: center" styleClass="janal-wid-col-38">
+									<p:commandLink actionListener="#{manticArchivosProcesar.doViewXml(row)}" process="@this" update="@(.viewXML)" onstart="return janal.bloquear();" oncomplete="PF('dlgXML').show();">
+									  <p:commandButton icon="fa fa-eye" title="Ver documento XML" ajax="false" type="button"/>
+									</p:commandLink>	
+								</p:column>
+                <f:facet name="footer">
+                  <p:outputLabel value="Total [#{manticArchivosProcesar.listado.size()}] registros"/>
+                </f:facet>
+              </p:dataTable>
+              <h:commandLink id="dataPdfDocumentos">                    
+                <pe:exporter type="pdf" skipComponents="com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="documentos" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
+              </h:commandLink>
+              <h:commandLink id="dataXlsDocumentos">
+                <pe:exporter type="xlsx" skipComponents="org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="documentos" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/>                
+              </h:commandLink>	                  
+						</p:tab>
+						<p:tab title="Documento(s)">
+              <p:dataTable lazy="false" id="referencias" var="row" rowIndexVar="index" value="#{manticArchivosProcesar.referencias}" paginator="true" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" styleClass="janal-wid-100-txt importado" reflow="true" paginatorPosition="bottom" rowKey="#{row.id}">
+                <f:facet name="header">
+                  <p:menuButton value="Opciones">
+                    <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('contenedorGrupos\\:dataPdfReferencias', 'contenedorGrupos\\:referencias')" oncomplete="janal.desbloquear()"/>
+                    <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('contenedorGrupos\\:dataXlsReferencias', 'contenedorGrupos\\:referencias')" oncomplete="janal.desbloquear()"/>
+                  </p:menuButton>
+                </f:facet>
+                <p:column styleClass="janal-column-left Responsive janal-wid-6">
+                  <f:facet name="header">
+                    <h:outputText value="Folio"/>
+                  </f:facet>
+                  <h:outputText value="#{row.folio}"/>
+                </p:column>                    
+                <p:column styleClass="MarAuto Responsive janal-column-left janal-wid-8">
+                  <f:facet name="header">
+                    <h:outputText value="RFC"/>
+                  </f:facet>
+                  <h:outputText value="#{row.rfc}"/>
+                </p:column>                    
+                <p:column styleClass="MarAuto Responsive janal-column-left">
+                  <f:facet name="header">
+                    <h:outputText value="Emisor"/>
+                  </f:facet>
+                  <h:outputText value="#{row.emisor}"/>
+                </p:column>                    
+                <p:column styleClass="MarAuto Responsive janal-column-left janal-wid-25">
+                  <f:facet name="header">
+                    <h:outputText value="UUID"/>
+                  </f:facet>
+                  <h:outputText value="#{row.uuid}"/>
+                </p:column>                    
+                <p:column styleClass="MarAuto Responsive janal-column-left janal-wid-5">
+                  <f:facet name="header">
+                    <h:outputText value="Tipo"/>
+                  </f:facet>
+                  <h:outputText value="#{row.tipo}"/>
+                </p:column>                    
+                <p:column styleClass="MarAuto Responsive janal-column-center janal-wid-13">
+                  <f:facet name="header">
+                    <h:outputText value="Fecha"/>
+                  </f:facet>
+                  <h:outputText value="#{row.fecha}"/>
+                </p:column>                    
+                <p:column styleClass="MarAuto Responsive janal-column-right janal-wid-8">
+                  <f:facet name="header">
+                    <h:outputText value="Total"/>
+                  </f:facet>
+                  <h:outputText value="#{row.total}"/>
+                </p:column>                    
+                <p:column styleClass="MarAuto Responsive janal-column-left janal-wid-2 janal-display-none">
+                  <f:facet name="header">
+                    <h:outputText value="Archivo"/>
+                  </f:facet>
+                  <h:outputText value="#{row.archivo}"/>
+                </p:column>                    
+                <f:facet name="footer">
+                  <p:outputLabel value="Total [#{manticArchivosProcesar.referencias.size()}] registros"/>
+                </f:facet>
+              </p:dataTable>
+              <h:commandLink id="dataPdfReferencias">                    
+                <pe:exporter type="pdf" skipComponents="com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="referencias" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
+              </h:commandLink>
+              <h:commandLink id="dataXlsReferencias">
+                <pe:exporter type="xlsx" skipComponents="org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="referencias" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/>                
+              </h:commandLink>	                  
+						</p:tab>
+						<p:tab title="Concepto(s)">
+              <p:dataTable lazy="false" id="conceptos" var="row" rowIndexVar="index" value="#{manticArchivosProcesar.conceptos}" paginator="true" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" styleClass="janal-wid-100-txt importado" reflow="true" paginatorPosition="bottom" rowKey="#{row.id}">
+                <f:facet name="header">
+                  <p:menuButton value="Opciones">
+                    <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('contenedorGrupos\\:dataPdfConceptos', 'contenedorGrupos\\:conceptos')" oncomplete="janal.desbloquear()"/>
+                    <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('contenedorGrupos\\:dataXlsConceptos', 'contenedorGrupos\\:conceptos')" oncomplete="janal.desbloquear()"/>
+                  </p:menuButton>
+                </f:facet>
+                <p:column styleClass="janal-column-left Responsive janal-wid-6">
+                  <f:facet name="header">
+                    <h:outputText value="Factura"/>
+                  </f:facet>
+                  <h:outputText value="#{row.folio}"  />
+                </p:column>                    
+                <p:column styleClass="janal-column-left Responsive janal-wid-8">
+                  <f:facet name="header">
+                    <h:outputText value="Producto"/>
+                  </f:facet>
+                  <h:outputText value="#{row.claveProducto}"  />
+                </p:column>                    
+                <p:column styleClass="MarAuto Responsive janal-column-left janal-wid-6">
+                  <f:facet name="header">
+                    <h:outputText value="Clave"/>
+                  </f:facet>
+                  <h:outputText value="#{row.noIdentificacion}"/>
+                </p:column>                    
+                <p:column styleClass="MarAuto Responsive janal-column-left">
+                  <f:facet name="header">
+                    <h:outputText value="Descripción"/>
+                  </f:facet>
+                  <h:outputText value="#{row.descripcion}"/>
+                </p:column>                    
+                <p:column styleClass="MarAuto Responsive janal-column-left janal-wid-2 janal-display-none">
+                  <f:facet name="header">
+                    <h:outputText value="Clave unidad"/>
+                  </f:facet>
+                  <h:outputText value="#{row.claveUnidad}"/>
+                </p:column>                    
+                <p:column styleClass="MarAuto Responsive janal-column-left janal-wid-6">
+                  <f:facet name="header">
+                    <h:outputText value="Unidad"/>
+                  </f:facet>
+                  <h:outputText value="#{row.unidad}"/>
+                </p:column>                    
+                <p:column styleClass="MarAuto Responsive janal-column-right janal-wid-6">
+                  <f:facet name="header">
+                    <h:outputText value="Cantidad"/>
+                  </f:facet>
+                  <h:outputText value="#{row.cantidad}"/>
+                </p:column>                    
+                <p:column styleClass="MarAuto Responsive janal-column-right janal-wid-6">
+                  <f:facet name="header">
+                    <h:outputText value="Unitario"/>
+                  </f:facet>
+                  <h:outputText value="#{row.precioUnitario}"/>
+                </p:column>                    
+                <p:column styleClass="MarAuto Responsive janal-column-right janal-wid-2 janal-display-none">
+                  <f:facet name="header">
+                    <h:outputText value="Impuesto"/>
+                  </f:facet>
+                  <h:outputText value="#{row.tasaImpuesto}"/>
+                </p:column>                    
+                <p:column styleClass="MarAuto Responsive janal-column-right janal-wid-8">
+                  <f:facet name="header">
+                    <h:outputText value="Sub total"/>
+                  </f:facet>
+                  <h:outputText value="#{row.subtotal}"/>
+                </p:column>                    
+                <p:column styleClass="MarAuto Responsive janal-column-right janal-wid-6">
+                  <f:facet name="header">
+                    <h:outputText value="IVA"/>
+                  </f:facet>
+                  <h:outputText value="#{row.iva}"/>
+                </p:column>                    
+                <p:column styleClass="MarAuto Responsive janal-column-right janal-wid-6">
+                  <f:facet name="header">
+                    <h:outputText value="Total"/>
+                  </f:facet>
+                  <h:outputText value="#{row.total}"/>
+                </p:column>                    
+                <p:column styleClass="MarAuto Responsive janal-column-left janal-wid-2 janal-display-none" >
+                  <f:facet name="header">
+                    <h:outputText value="Archivo"/>
+                  </f:facet>
+                  <h:outputText value="#{row.archivo}"/>
+                </p:column>                    
+                <f:facet name="footer">
+                  <p:outputLabel value="Total [#{manticArchivosProcesar.conceptos.size()}] registros"/>
+                </f:facet>
+              </p:dataTable>
+              <h:commandLink id="dataPdfConceptos">                    
+                <pe:exporter type="pdf" skipComponents="com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="conceptos" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
+              </h:commandLink>
+              <h:commandLink id="dataXlsConceptos">
+                <pe:exporter type="xlsx" skipComponents="org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="conceptos" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/>                
+              </h:commandLink>	                         
+						</p:tab>
+					</p:tabView>
+				</div>
+			</div>
+		</div>		
+	</ui:define>   
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+      <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-download" accesskey="a" process="@form" action="#{manticArchivosProcesar.doAceptar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear()" rendered="false"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-download" process="@form" action="#{manticArchivosProcesar.doAceptar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear()" rendered="false"/>
+		</div>		
+	</ui:define>
+	<ui:define name="dialogos">
+		<h:form prependId="true">
+			<p:dialog id="dialogoXML" widgetVar="dlgXML" styleClass="viewXML" header="Factura en formato XML" onShow="load();" onHide="janal.desbloquear();" height="450px" width="950px" resizable="false" closeOnEscape="true" closable="true" dynamic="true">
+				<pre id="documentXml" class="brush: xml;" style="width: 925px; height: 370px;">
+#{manticArchivosProcesar.attrs.temporal}
+				</pre>
+  			<hr class="ui-widget-content"/>
+	  		<div class="janal-line-button">
+					<p:commandButton process="@this" icon="fa fa-remove" value="Cerrar" oncomplete="PF('dlgXML').hide();"/>
+			  </div>
+			</p:dialog>
+		</h:form>
+	</ui:define>
+</ui:composition>

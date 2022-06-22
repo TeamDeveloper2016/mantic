@@ -587,9 +587,7 @@ public class Transaccion extends TransaccionFactura {
 	} // registrarDomicilio	
 	
 	private Long insertDomicilio(Session sesion, ClienteDomicilio clienteDomicilio) throws Exception{
-		TcManticDomiciliosDto domicilio= null;
-		Long regresar= -1L;		
-		domicilio= new TcManticDomiciliosDto();
+		TcManticDomiciliosDto domicilio= new TcManticDomiciliosDto();
 		domicilio.setIdLocalidad(clienteDomicilio.getIdLocalidad().getKey());
 		domicilio.setAsentamiento(clienteDomicilio.getColonia());
 		domicilio.setCalle(clienteDomicilio.getCalle());
@@ -599,8 +597,7 @@ public class Transaccion extends TransaccionFactura {
 		domicilio.setNumeroExterior(clienteDomicilio.getExterior());
 		domicilio.setNumeroInterior(clienteDomicilio.getInterior());
 		domicilio.setYcalle(clienteDomicilio.getyCalle());
-		regresar= DaoFactory.getInstance().insert(sesion, domicilio);		
-		return regresar;
+		return DaoFactory.getInstance().insert(sesion, domicilio);
 	} // insertDomicilio
 	
 	private Entity toDomicilio(Session sesion, ClienteDomicilio clienteDomicilio) throws Exception{

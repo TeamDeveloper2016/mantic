@@ -213,11 +213,11 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 		} // catch
 	} // doFileUpload	
 	
-	private void toWriteFile(File result, InputStream upload) throws Exception {
+	protected void toWriteFile(File result, InputStream upload) throws Exception {
 		toWriteFile(result, upload, false);
 	} // toWriteFile
 	
-	private void toWriteFile(File result, InputStream upload, boolean xml) throws Exception {
+	protected void toWriteFile(File result, InputStream upload, boolean xml) throws Exception {
 		FileOutputStream fileOutputStream= new FileOutputStream(result);
 		InputStream inputStream          = upload;
 		byte[] buffer                    = new byte[Constantes.BUFFER_SIZE];
@@ -614,7 +614,7 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
    3 SIGNIFICA QUE EL ARCHIVO YA FUE ELIMINADO
    4 SIGNIFICA QUE EL ARCHIVO SE INTENTO ELIMINAR PERO NO EXISTE
   */
-  private void toSaveFileRecord(String archivo, String ruta, String alias, String nombre) throws Exception {
+  protected void toSaveFileRecord(String archivo, String ruta, String alias, String nombre) throws Exception {
 		TcManticArchivosDto registro= new TcManticArchivosDto(
 			archivo, // String archivo, 
 			2L, // Long idEliminado, 

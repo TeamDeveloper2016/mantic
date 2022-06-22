@@ -185,7 +185,7 @@ public final class Archivo {
 
   public static boolean delete(String ruta) {
     boolean regresar= true;
-    File dir = new File(ruta.substring(0,ruta.lastIndexOf(File.separator)));
+    File dir = new File(ruta.substring(0, ruta.lastIndexOf(File.separator)));
     if(dir.exists())
       regresar=dir.delete();
     return regresar;
@@ -215,5 +215,23 @@ public final class Archivo {
 		fileOutputStream.close();
 		inputStream.close();
 	} // toWriteFile
-	
+
+  public static void delteFiles(String path) throws Exception {
+    File dir= new File(path);
+    if(dir.exists())
+      for(File file: dir.listFiles()) {
+        if (!file.isDirectory())
+          file.delete();
+      } // for
+  }
+  
+  public static void delteAllFiles(String path) throws Exception {
+    File dir= new File(path);
+    if(dir.exists())
+      for(File file: dir.listFiles()) {
+        if (file.isDirectory())
+          delteAllFiles(dir.getAbsolutePath());
+      } // for
+  }
+  
 }
