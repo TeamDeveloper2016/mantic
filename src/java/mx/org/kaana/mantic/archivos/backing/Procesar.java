@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -129,7 +128,7 @@ public class Procesar extends IBaseImportar implements IBaseStorage, Serializabl
             this.getFactura().getFolio(), // String folio, 
             this.getEmisor().getRfc(), // String rfc
             this.getEmisor().getNombre(), // String emisor, 
-            this.getFactura().getTimbreFiscalDigital().getUuid(), // String uuid, 
+            this.getFactura().getSello(), // String uuid, 
             Fecha.toFechaSat(this.getFactura().getFecha()), // String fecha, 
             this.getFactura().getTipoDeComprobante(), // String tipo, 
             this.getFactura().getTotal(), // String total, 
@@ -153,7 +152,9 @@ public class Procesar extends IBaseImportar implements IBaseStorage, Serializabl
               String.valueOf(Numero.redondearSat(Numero.getDouble(item.getDescuento(), 0D))), // String descuento
               String.valueOf(Numero.redondearSat(Numero.getDouble(item.getTraslado().getImporte(), 0D))), // String iva, 
               String.valueOf(Numero.redondearSat(Numero.getDouble(item.getImporte(), 0D)+ Numero.getDouble(item.getTraslado().getImporte(), 0D))), // String total, 
-              event.getFile().getFileName().toUpperCase() // String archivo
+              event.getFile().getFileName().toUpperCase(), // String archivo
+              Fecha.toFechaSat(this.getFactura().getFecha()), // String fecha
+              this.getEmisor().getNombre() // String proveedor
             ));
           } // for
           this.toSaveFileRecord(event.getFile().getFileName().toUpperCase(), ruta, path.toString(), this.listado.get(this.listado.size()- 1).getXml().getName());            

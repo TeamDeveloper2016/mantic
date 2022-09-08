@@ -1,4 +1,4 @@
-package mx.org.kaana.mantic.ventas.backing;
+package mx.org.kaana.mantic.clientes.backing;
 
 import java.io.InputStream;
 import java.io.Serializable;
@@ -19,11 +19,12 @@ import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.reglas.MotorBusqueda;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
+import mx.org.kaana.mantic.ventas.backing.Accion;
 import org.apache.log4j.Logger;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
-@Named(value= "manticVentasMovil")
+@Named(value= "manticClientesMovil")
 @ViewScoped
 public class Movil extends Accion implements Serializable {
 

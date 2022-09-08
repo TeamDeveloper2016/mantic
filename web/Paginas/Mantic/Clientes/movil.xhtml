@@ -19,8 +19,8 @@
 			};	
 			
     	$(document).ready(function() {
-        jsArticulos= new Janal.Control.Articulos.Core(#{manticVentasMovil.adminOrden.articulos.size()}, 'tabla\\:');
-				janal.readingMode('#{manticVentasMovil.attrs.nombreAccion}');
+        jsArticulos= new Janal.Control.Articulos.Core(#{manticClientesMovil.adminOrden.articulos.size()}, 'tabla\\:');
+				janal.readingMode('#{manticClientesMovil.attrs.nombreAccion}');
         $(".janal-global-help").hide();
         $("a.janal-global-dashboard").click(function(event) {event.preventDefault(); return true;});
       });			
@@ -88,29 +88,29 @@
 		</style>
 	</ui:define>
 	<ui:define name="contenido">
-		<pe:remoteCommand name="unlockVenta" process="@this" actionListener="#{manticVentasMovil.unlockVenta}"/>
-		<p:commandLink id="listadoPrecios" value="Articulos" action="#{manticVentasMovil.doIrPage}" process="@form" style="display: none;"/>
-		<p:commandLink id="catalogoPrecios" value="Catalogos" action="#{manticVentasMovil.doIrPage}" process="@form" style="display: none;"/>
-		<p:poll listener="#{manticVentasMovil.doActivatePage}" process="@this" interval="60"/>
-		<pe:remoteCommand name="locate" process="@this @(.filas)" update="@(.filas) @(.recalculo) @(.informacion) deudor" actionListener="#{manticVentasMovil.doUpdateArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();">  
+		<pe:remoteCommand name="unlockVenta" process="@this" actionListener="#{manticClientesMovil.unlockVenta}"/>
+		<p:commandLink id="listadoPrecios" value="Articulos" action="#{manticClientesMovil.doIrPage}" process="@form" style="display: none;"/>
+		<p:commandLink id="catalogoPrecios" value="Catalogos" action="#{manticClientesMovil.doIrPage}" process="@form" style="display: none;"/>
+		<p:poll listener="#{manticClientesMovil.doActivatePage}" process="@this" interval="60"/>
+		<pe:remoteCommand name="locate" process="@this @(.filas)" update="@(.filas) @(.recalculo) @(.informacion) deudor" actionListener="#{manticClientesMovil.doUpdateArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();">  
 			<pe:methodSignature parameters="java.lang.String, java.lang.Integer"/>  
 			<pe:methodParam name="codigo"/>  
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>		
-		<pe:remoteCommand name="suppress" process="@this @(.filas)" update="@(.filas) @(.recalculo)" actionListener="#{manticVentasMovil.doDeleteArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.move();">  
+		<pe:remoteCommand name="suppress" process="@this @(.filas)" update="@(.filas) @(.recalculo)" actionListener="#{manticClientesMovil.doDeleteArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.move();">  
 			<pe:methodSignature parameters="java.lang.Integer"/>  
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>		
-		<pe:remoteCommand name="refresh" process="@this @(.filas)" update="@(.filas) @(.recalculo) deudor" actionListener="#{manticVentasMovil.doCalculate}" onstart="return janal.bloquear();" oncomplete="janal.reset(); janal.desbloquear();">  
+		<pe:remoteCommand name="refresh" process="@this @(.filas)" update="@(.filas) @(.recalculo) deudor" actionListener="#{manticClientesMovil.doCalculate}" onstart="return janal.bloquear();" oncomplete="janal.reset(); janal.desbloquear();">  
 			<pe:methodSignature parameters="java.lang.Integer"/>  
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>		
-		<pe:remoteCommand name="search" process="@this" update="@(.informacion)" actionListener="#{manticVentasMovil.doSearchArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();">  
+		<pe:remoteCommand name="search" process="@this" update="@(.informacion)" actionListener="#{manticClientesMovil.doSearchArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();">  
 			<pe:methodSignature parameters="java.lang.Long, java.lang.Integer"/>  
 			<pe:methodParam name="idArticulo"/>  
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>		
-		<pe:remoteCommand name="replace" process="@this @(.filas)" update="@(.filas) @(.recalculo) @(.informacion) deudor panelTotales" actionListener="#{manticVentasMovil.doFindArticulo}" onstart="return janal.bloquear();" oncomplete="jsArticulos.process();">  
+		<pe:remoteCommand name="replace" process="@this @(.filas)" update="@(.filas) @(.recalculo) @(.informacion) deudor panelTotales" actionListener="#{manticClientesMovil.doFindArticulo}" onstart="return janal.bloquear();" oncomplete="jsArticulos.process();">  
 			<pe:methodSignature parameters="java.lang.Integer"/>  
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>
@@ -118,25 +118,25 @@
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
       <div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">					
-					<p:panelGrid id="deudor" columns="1" layout="grid" styleClass="janal-wid-100 janal-column-center janal-display-none" columnClasses="janal-wid-100" style="display: #{manticVentasMovil.saldoCliente.deudor} ? 'none' : ''">
-						<p:outputLabel value="#{manticVentasMovil.saldoCliente.mensaje}" styleClass="janal-column-center janal-color-orange" style="font-weight: bold !important"/>
+					<p:panelGrid id="deudor" columns="1" layout="grid" styleClass="janal-wid-100 janal-column-center janal-display-none" columnClasses="janal-wid-100" style="display: #{manticClientesMovil.saldoCliente.deudor} ? 'none' : ''">
+						<p:outputLabel value="#{manticClientesMovil.saldoCliente.mensaje}" styleClass="janal-column-center janal-color-orange" style="font-weight: bold !important"/>
 					</p:panelGrid>	
           <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
             <p:panelGrid columns="4" styleClass="janal-wid-100-txt" columnClasses="janal-fix-20, janal-fix-30 janal-column-center, janal-fix-20, janal-fix-30 janal-column-center">
               <p:outputLabel value="Articulos:" styleClass="janal-total-compra janal-color-blue"/>
-              <p:outputLabel styleClass="janal-wid-100-txt recalculo janal-total-compra janal-color-blue" value="#{manticVentasMovil.adminOrden.totales.reales}"/>
+              <p:outputLabel styleClass="janal-wid-100-txt recalculo janal-total-compra janal-color-blue" value="#{manticClientesMovil.adminOrden.totales.reales}"/>
               <p:outputLabel value="Total:" styleClass="janal-total-compra janal-color-orange"/>
-              <p:outputLabel styleClass="janal-wid-100-txt recalculo janal-total-compra janal-color-orange" value="$ #{manticVentasMovil.adminOrden.totales.totalDosDecimales$}"/>
+              <p:outputLabel styleClass="janal-wid-100-txt recalculo janal-total-compra janal-color-orange" value="$ #{manticClientesMovil.adminOrden.totales.totalDosDecimales$}"/>
             </p:panelGrid>	  
             <p:panelGrid columns="2" styleClass="janal-wid-99" columnClasses="janal-fix-50, janal-fix-60 janal-column-right">
               <p:outputLabel value="Buscar por código:"/>
-              <p:selectBooleanCheckbox value="#{manticVentasMovil.attrs.buscaPorCodigo}" title="Buscar por código:" styleClass="filas">
+              <p:selectBooleanCheckbox value="#{manticClientesMovil.attrs.buscaPorCodigo}" title="Buscar por código:" styleClass="filas">
                 <p:ajax event="change" process="@this"/>
               </p:selectBooleanCheckbox>
             </p:panelGrid>  
 					</p:panelGrid>	
           <p:panelGrid id="contenido" columns="1" layout="grid" styleClass="janal-wid-100-txt" style="height:480px !important;overflow-y: auto" columnClasses="janal-wid-100">					
-            <p:dataGrid id="tabla" widgetVar="kajoolTable" var="row" value="#{manticVentasMovil.adminOrden.articulos}" paginator="false" columns="1" rows="1000" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" styleClass="filas">
+            <p:dataGrid id="tabla" widgetVar="kajoolTable" var="row" value="#{manticClientesMovil.adminOrden.articulos}" paginator="false" columns="1" rows="1000" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" styleClass="filas">
               <f:facet name="header" class="janal-align-left">
                 <span class="Fs16" style="font-weight: normal;">Por favor ingrese su lista de articulos</span>
               </f:facet>
@@ -148,8 +148,8 @@
                 <h:outputText value="#{row['detallePrecio']}" escape="false" rendered="false"/>
                 <div class="producto-list-item p-p-1">
                   <div class="producto-item-search">
-                    <a data-magnify="gallery" href="#{manticVentasMovil.path}#{row['imagen']}" data-caption="#{row['imagen']}" data-group="icon-image" title="Click para ver más grande la imagen">
-                      <p:graphicImage url="#{manticVentasMovil.path}#{row['imagen']}" style="cursor:zoom-in;"/>
+                    <a data-magnify="gallery" href="#{manticClientesMovil.path}#{row['imagen']}" data-caption="#{row['imagen']}" data-group="icon-image" title="Click para ver más grande la imagen">
+                      <p:graphicImage url="#{manticClientesMovil.path}#{row['imagen']}" style="cursor:zoom-in;"/>
                     </a>  
                   </div>	
                   <div class="producto-list-detail">
@@ -196,14 +196,14 @@
                   <div class="producto-input">
                     <p:inputText id="keys" value="#{row['idArticulo']}" style="display:none"/>
                     <p:inputText id="locks" value="0" style="display:none"/>
-                    <p:autoComplete id="codigos" styleClass="janal-wid-100-txt" widgetVar="listado" var="custom" itemLabel="#{custom.nombre}" inputStyleClass="janal-wid-93 key-down-event filas" itemValue="#{custom}" value="#{manticVentasMovil.attrs.articulo}" completeMethod="#{manticVentasMovil.doCompleteArticuloPrecioCliente}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" forceSelection="true" placeholder="#{row['idArticulo'] eq -1? 'Buscar articulo ej. martillo': 'Teclear cantidad [Clic boton]'}">
+                    <p:autoComplete id="codigos" styleClass="janal-wid-100-txt" widgetVar="listado" var="custom" itemLabel="#{custom.nombre}" inputStyleClass="janal-wid-93 key-down-event filas" itemValue="#{custom}" value="#{manticClientesMovil.attrs.articulo}" completeMethod="#{manticClientesMovil.doCompleteArticuloPrecioCliente}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" forceSelection="true" placeholder="#{row['idArticulo'] eq -1? 'Buscar articulo ej. martillo': 'Teclear cantidad [Clic boton]'}">
                       <p:ajax event="itemSelect" process="@this" oncomplete="jsArticulos.close();"/>
-                      <p:ajax event="focus" process="@this" listener="#{manticVentasMovil.doActualizaImage(row['idArticulo'], row['nombre'])}" update="panelTotales" onstart="return jsArticulos.valid();" oncomplete="$('#source-image').attr('href', $('#icon-image').attr('src'));" />
+                      <p:ajax event="focus" process="@this" listener="#{manticClientesMovil.doActualizaImage(row['idArticulo'], row['nombre'])}" update="panelTotales" onstart="return jsArticulos.valid();" oncomplete="$('#source-image').attr('href', $('#icon-image').attr('src'));" />
                       <f:facet name="itemtip">
                         <h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300" columnClasses="janal-fix-40, janal-fix-60">
                           <f:facet name="header" class="TexAlCenter">
-                            <a data-magnify="gallery" href="#{manticVentasMovil.path}#{custom.archivo}" data-caption="#{custom.archivo}" data-group="icon-image" title="Click para ver más grande la imagen">
-                              <p:graphicImage url="#{manticVentasMovil.path}#{custom.archivo}" width="105" height="80" style="cursor:zoom-in;"/>
+                            <a data-magnify="gallery" href="#{manticClientesMovil.path}#{custom.archivo}" data-caption="#{custom.archivo}" data-group="icon-image" title="Click para ver más grande la imagen">
+                              <p:graphicImage url="#{manticClientesMovil.path}#{custom.archivo}" width="105" height="80" style="cursor:zoom-in;"/>
                             </a>
                           </f:facet>
                           <h:outputText value="Código:" />
@@ -226,38 +226,38 @@
             <p:panelGrid id="panelTotales" columns="1" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-100">
               <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-30, janal-fix-70 janal-column-right">
                 <p:outputLabel for="articulos" value="Articulos:"/>
-                <p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasMovil.adminOrden.totales.reales}"/>
+                <p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticClientesMovil.adminOrden.totales.reales}"/>
                 <p:outputLabel value="Descuento:"/>
-                <p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasMovil.adminOrden.totales.descuentoDosDecimales$}"/>
+                <p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticClientesMovil.adminOrden.totales.descuentoDosDecimales$}"/>
                 <p:outputLabel value="Global:" rendered="false"/>
-                <p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasMovil.adminOrden.totales.globalDosDecimales$}" rendered="false"/>
+                <p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticClientesMovil.adminOrden.totales.globalDosDecimales$}" rendered="false"/>
                 <p:outputLabel value="Subtotal:"/>
-                <p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasMovil.adminOrden.totales.subTotalDosDecimales$}"/>
+                <p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticClientesMovil.adminOrden.totales.subTotalDosDecimales$}"/>
                 <p:outputLabel value="IVA:"/>
-                <p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasMovil.adminOrden.totales.ivaDosDecimales$}"/>
+                <p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticClientesMovil.adminOrden.totales.ivaDosDecimales$}"/>
                 <p:outputLabel for="total" value="Total:" styleClass="janal-total-compra janal-color-orange"/>
-                <p:outputLabel styleClass="janal-wid-100-txt recalculo janal-total-compra janal-color-orange" value="$ #{manticVentasMovil.adminOrden.totales.totalDosDecimales$}"/>
+                <p:outputLabel styleClass="janal-wid-100-txt recalculo janal-total-compra janal-color-orange" value="$ #{manticClientesMovil.adminOrden.totales.totalDosDecimales$}"/>
               </p:panelGrid>
             </p:panelGrid>
           </p:panelGrid>
-					<p:inputText id="articulos" value="#{manticVentasMovil.adminOrden.totales.articulos}" styleClass="recalculo" style="display:none"/>
-          <p:inputText id="total" value="#{manticVentasMovil.adminOrden.totales.totalDosDecimales}" styleClass="recalculo" style="display:none"/>
+					<p:inputText id="articulos" value="#{manticClientesMovil.adminOrden.totales.articulos}" styleClass="recalculo" style="display:none"/>
+          <p:inputText id="total" value="#{manticClientesMovil.adminOrden.totales.totalDosDecimales}" styleClass="recalculo" style="display:none"/>
 				</div>
 			</div>
 		</div>
 	</ui:define>    
 	<ui:define name="acciones">
     <div class="lg-pantalla">
-      <p:commandButton value="Exportar" icon="fa fa-cloud-download" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" styleClass="filas" style="display: #{manticVentasMovil.adminOrden.articulos.size() lt 2? 'none': ''}">
-  			<p:fileDownload value="#{manticVentasMovil.archivo}"/>
+      <p:commandButton value="Exportar" icon="fa fa-cloud-download" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" styleClass="filas" style="display: #{manticClientesMovil.adminOrden.articulos.size() lt 2? 'none': ''}">
+  			<p:fileDownload value="#{manticClientesMovil.archivo}"/>
       </p:commandButton>  
-      <p:commandButton value="Limpiar" icon="fa fa-recycle" accesskey="r" process="@this" action="#{manticVentasMovil.doCancelar}" ajax="false" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>						
+      <p:commandButton value="Limpiar" icon="fa fa-recycle" accesskey="r" process="@this" action="#{manticClientesMovil.doCancelar}" ajax="false" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>						
     </div>	
     <div class="xs-pantalla">
-      <p:commandButton title="Exportar" icon="fa fa-cloud-download" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" styleClass="filas" style="display: #{manticVentasMovil.adminOrden.articulos.size() lt 2? 'none': ''}">
-  			<p:fileDownload value="#{manticVentasMovil.archivo}"/>
+      <p:commandButton title="Exportar" icon="fa fa-cloud-download" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" styleClass="filas" style="display: #{manticClientesMovil.adminOrden.articulos.size() lt 2? 'none': ''}">
+  			<p:fileDownload value="#{manticClientesMovil.archivo}"/>
       </p:commandButton>  
-      <p:commandButton title="Limpiar" icon="fa fa-recycle" accesskey="r"  process="@this" action="#{manticVentasMovil.doCancelar}" ajax="false" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+      <p:commandButton title="Limpiar" icon="fa fa-recycle" accesskey="r"  process="@this" action="#{manticClientesMovil.doCancelar}" ajax="false" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
     </div>		
 	</ui:define>	
 	<ui:define name="dialogos">

@@ -44,7 +44,7 @@ public class Correos extends IBaseJob implements Serializable {
 		try {
       StringBuilder sb= new StringBuilder();
 			if(Configuracion.getInstance().isEtapaProduccion()) {
-          LOG.error("----------------ENTRO A CHECK EMAILS-----------------------------");
+          LOG.error("------------------------ENTRO A CHECK EMAILS-----------------------------");
           Email email= new Email();
           Token token= null;
           List<Entity> correos= (List<Entity>)DaoFactory.getInstance().toEntitySet("TcManticClientesDto", "correos", params, 500L);

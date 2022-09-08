@@ -9,8 +9,6 @@ import java.util.Map;
 import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
-import mx.org.kaana.kajool.enums.EFormatoDinamicos;
-import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.recurso.Configuracion;
@@ -45,6 +43,7 @@ public final class Portal implements Serializable {
 
   private MenuModel megaCategorias;
   private MenuModel menu;
+  private MenuModel individual;
   private MenuModel categorias;
   private List<String> images;
   private String pathImage;
@@ -82,6 +81,10 @@ public final class Portal implements Serializable {
   
   public MenuModel getMegaCategorias() {
     return this.megaCategorias;
+  }
+
+  public MenuModel getIndividual() {
+    return individual;
   }
   
   public void reload() {
@@ -122,7 +125,7 @@ public final class Portal implements Serializable {
       this.menu.addElement(item);      
       DefaultSubMenu sub= new DefaultSubMenu("Categorías");
       sub.setIcon("fa fa-language");
-      this.toLoadCategorias(sub, "null", 2);
+      this.toLoadCategorias(sub, "null", 2, "galeriaPrincipal");
       this.menu.addElement(sub);
       sub= new DefaultSubMenu("Marcas");
       sub.setIcon("fa fa-picture-o");
@@ -147,6 +150,7 @@ public final class Portal implements Serializable {
       sub.addElement(item);      
       this.menu.addElement(sub);      
       LOG.error("Menu del portal: "+ this.images);
+      this.toLoadIndividual(marcas);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -157,7 +161,32 @@ public final class Portal implements Serializable {
     } // finally
 	}  
   
-  private void toLoadCategorias(DefaultSubMenu root, String padre, Integer nivel) {
+  private void toLoadIndividual(List<Entity> marcas) {
+    try {
+      this.individual = new DefaultMenuModel();
+      DefaultSubMenu sub= new DefaultSubMenu("Categorías");
+      sub.setIcon("fa fa-language");
+      this.toLoadCategorias(sub, "null", 2, "galeriaIndividual");
+      this.individual.addElement(sub);
+      sub= new DefaultSubMenu("Marcas");
+      sub.setIcon("fa fa-picture-o");
+      if(marcas!= null && !marcas.isEmpty()) {
+        for (Entity entity: marcas) {
+          DefaultMenuItem item= new DefaultMenuItem(entity.toString("descripcion"));
+          item.setIcon("fa fa-picture-o");
+          item.setOncomplete("galeriaIndividual('".concat(entity.toString("descripcion")).concat("', 'MARCA');"));
+          sub.addElement(item);      
+        } // for
+      } // if  
+      this.individual.addElement(sub);
+      LOG.error("Menu individual: "+ this.individual);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+    } // catch	
+  }
+  
+  private void toLoadCategorias(DefaultSubMenu root, String padre, Integer nivel, String metodo) {
     List<Entity> items        = null;
     Map<String, Object> params= null;
     try {      
@@ -172,14 +201,14 @@ public final class Portal implements Serializable {
           if(Objects.equals(categoria.toLong("ultimo"), 1L)) {
             DefaultMenuItem item= new DefaultMenuItem(nombre);
             item.setIcon("fa ".concat(categoria.toString("icon")));
-            item.setOncomplete("galeriaPrincipal('".concat(categoria.toString("nombre")).concat("', 'CATEGORIA');"));
+            item.setOncomplete(metodo.concat("('").concat(categoria.toString("nombre")).concat("', 'CATEGORIA');"));
             root.addElement(item);      
           } // if
           else {
             DefaultSubMenu sub= new DefaultSubMenu(nombre);
             sub.setStyleClass("categoria janal-".concat(categoria.toString("nombre").replaceAll("[ ]", "_")));
             sub.setIcon("fa ".concat(categoria.toString("icon")));
-            this.toLoadCategorias(sub, categoria.toString("nombre"), nivel+ 1);
+            this.toLoadCategorias(sub, categoria.toString("nombre"), nivel+ 1, metodo);
             root.addElement(sub);
           } // else  
         } // for

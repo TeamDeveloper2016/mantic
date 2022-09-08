@@ -124,7 +124,7 @@
                 </f:facet>
                 <p:column styleClass="janal-column-left MarAuto Responsive janal-wid-6">
                   <f:facet name="header">
-                    <h:outputText value="Folio"/>
+                    <h:outputText value="Factura"/>
                   </f:facet>
                   <h:outputText value="#{row.folio}"/>
                 </p:column>                    
@@ -140,18 +140,6 @@
                   </f:facet>
                   <h:outputText value="#{row.emisor}"/>
                 </p:column>                    
-                <p:column styleClass="MarAuto Responsive janal-column-left janal-wid-25">
-                  <f:facet name="header">
-                    <h:outputText value="UUID"/>
-                  </f:facet>
-                  <h:outputText value="#{row.uuid}"/>
-                </p:column>                    
-                <p:column styleClass="MarAuto Responsive janal-column-left janal-wid-5">
-                  <f:facet name="header">
-                    <h:outputText value="Tipo"/>
-                  </f:facet>
-                  <h:outputText value="#{row.tipo}"/>
-                </p:column>                    
                 <p:column styleClass="MarAuto Responsive janal-column-center janal-wid-13">
                   <f:facet name="header">
                     <h:outputText value="Fecha"/>
@@ -163,6 +151,18 @@
                     <h:outputText value="Total"/>
                   </f:facet>
                   <h:outputText value="#{row.total}"/>
+                </p:column>              
+                <p:column styleClass="MarAuto Responsive janal-column-left janal-wid-25">
+                  <f:facet name="header">
+                    <h:outputText value="Sello"/>
+                  </f:facet>
+                  <h:outputText value="#{row.uuid}"/>
+                </p:column>                    
+                <p:column styleClass="MarAuto Responsive janal-column-left janal-wid-5">
+                  <f:facet name="header">
+                    <h:outputText value="Tipo"/>
+                  </f:facet>
+                  <h:outputText value="#{row.tipo}"/>
                 </p:column>                    
                 <p:column styleClass="MarAuto Responsive janal-column-left janal-wid-2 janal-display-none">
                   <f:facet name="header">
@@ -195,71 +195,41 @@
                   </f:facet>
                   <h:outputText value="#{row.folio}"/>
                 </p:column>                    
-                <p:column styleClass="janal-column-left MarAuto Responsive janal-wid-2 janal-display-none">
-                  <f:facet name="header">
-                    <h:outputText value="Tipo"/>
-                  </f:facet>
-                  <h:outputText value="#{row.tipo}"/>
-                </p:column>                    
-                <p:column styleClass="janal-column-left MarAuto Responsive janal-wid-8">
-                  <f:facet name="header">
-                    <h:outputText value="Producto"/>
-                  </f:facet>
-                  <h:outputText value="#{row.claveProducto}"  />
-                </p:column>                    
                 <p:column styleClass="MarAuto Responsive janal-column-left janal-wid-6">
                   <f:facet name="header">
                     <h:outputText value="Clave"/>
                   </f:facet>
                   <h:outputText value="#{row.noIdentificacion}"/>
                 </p:column>                    
-                <p:column styleClass="MarAuto Responsive janal-column-left">
-                  <f:facet name="header">
-                    <h:outputText value="Descripción"/>
-                  </f:facet>
-                  <h:outputText value="#{row.descripcion}"/>
-                </p:column>                    
-                <p:column styleClass="MarAuto Responsive janal-column-left janal-wid-2 janal-display-none">
-                  <f:facet name="header">
-                    <h:outputText value="Clave unidad"/>
-                  </f:facet>
-                  <h:outputText value="#{row.claveUnidad}"/>
-                </p:column>                    
-                <p:column styleClass="MarAuto Responsive janal-column-left janal-wid-6">
-                  <f:facet name="header">
-                    <h:outputText value="Unidad"/>
-                  </f:facet>
-                  <h:outputText value="#{row.unidad}"/>
-                </p:column>                    
                 <p:column styleClass="MarAuto Responsive janal-column-right janal-wid-6">
                   <f:facet name="header">
                     <h:outputText value="Cantidad"/>
                   </f:facet>
                   <h:outputText value="#{row.cantidad}"/>
-                </p:column>                    
+                </p:column>                 
                 <p:column styleClass="MarAuto Responsive janal-column-right janal-wid-6">
                   <f:facet name="header">
                     <h:outputText value="Unitario"/>
                   </f:facet>
                   <h:outputText value="#{row.precioUnitario}"/>
                 </p:column>                    
-                <p:column styleClass="MarAuto Responsive janal-column-right janal-wid-2 janal-display-none">
+                <p:column styleClass="MarAuto Responsive janal-column-left">
                   <f:facet name="header">
-                    <h:outputText value="Impuesto"/>
+                    <h:outputText value="Descripción"/>
                   </f:facet>
-                  <h:outputText value="#{row.tasaImpuesto}"/>
+                  <h:outputText value="#{row.descripcion}"/>
+                </p:column>     
+                <p:column styleClass="MarAuto Responsive janal-column-right">
+                  <f:facet name="header">
+                    <h:outputText value="Proveedor"/>
+                  </f:facet>
+                  <h:outputText value="#{row.proveedor}"/>
                 </p:column>                    
-                <p:column styleClass="MarAuto Responsive janal-column-right janal-wid-8">
+                <p:column styleClass="MarAuto Responsive janal-column-right janal-wid-10">
                   <f:facet name="header">
-                    <h:outputText value="Sub total"/>
+                    <h:outputText value="Fecha"/>
                   </f:facet>
-                  <h:outputText value="#{row.subtotal}"/>
-                </p:column>                    
-                <p:column styleClass="MarAuto Responsive janal-column-right janal-wid-6">
-                  <f:facet name="header">
-                    <h:outputText value="IVA"/>
-                  </f:facet>
-                  <h:outputText value="#{row.iva}"/>
+                  <h:outputText value="#{row.fecha}"/>
                 </p:column>                    
                 <p:column styleClass="MarAuto Responsive janal-column-right janal-wid-6">
                   <f:facet name="header">
@@ -267,12 +237,36 @@
                   </f:facet>
                   <h:outputText value="#{row.total}"/>
                 </p:column>                    
+                <p:column styleClass="janal-column-left MarAuto Responsive janal-wid-2 janal-display-none">
+                  <f:facet name="header">
+                    <h:outputText value="Tipo"/>
+                  </f:facet>
+                  <h:outputText value="#{row.tipo}"/>
+                </p:column>                    
                 <p:column styleClass="MarAuto Responsive janal-column-left janal-wid-2 janal-display-none" >
                   <f:facet name="header">
                     <h:outputText value="Archivo"/>
                   </f:facet>
                   <h:outputText value="#{row.archivo}"/>
+                </p:column>           
+                <p:column styleClass="MarAuto Responsive janal-column-right janal-wid-2 janal-display-none" exportable="false">
+                  <f:facet name="header">
+                    <h:outputText value="Impuesto"/>
+                  </f:facet>
+                  <h:outputText value="#{row.tasaImpuesto}"/>
                 </p:column>                    
+                <p:column styleClass="MarAuto Responsive janal-column-right janal-wid-8" exportable="false">
+                  <f:facet name="header">
+                    <h:outputText value="Sub total"/>
+                  </f:facet>
+                  <h:outputText value="#{row.subtotal}"/>
+                </p:column>                    
+                <p:column styleClass="MarAuto Responsive janal-column-right janal-wid-6" exportable="false">
+                  <f:facet name="header">
+                    <h:outputText value="IVA"/>
+                  </f:facet>
+                  <h:outputText value="#{row.iva}"/>
+                </p:column>                 
                 <f:facet name="footer">
                   <p:outputLabel value="Total [#{manticArchivosProcesar.conceptos.size()}] registros"/>
                 </f:facet>

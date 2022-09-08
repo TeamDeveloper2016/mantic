@@ -72,6 +72,8 @@ public class Saldos extends IBaseFilter implements Serializable {
 	private List<Entity> pagosRealizados;
   protected FormatLazyModel lazyPagosRealizados;
   private EAccion pivote;
+	private FormatLazyModel pagosSegmento;
+	private List<Entity> seleccionadosSegmento;
 
 	public UISelectEntity getEncontrado() {
 		return encontrado;
@@ -117,6 +119,18 @@ public class Saldos extends IBaseFilter implements Serializable {
     return lazyPagosRealizados;
   }
 
+	public FormatLazyModel getPagosSegmento() {
+		return pagosSegmento;
+	}	
+
+	public List<Entity> getSeleccionadosSegmento() {
+		return seleccionadosSegmento;
+	}
+
+	public void setSeleccionadosSegmento(List<Entity> seleccionadosSegmento) {
+		this.seleccionadosSegmento = seleccionadosSegmento;
+	}	
+  
   @PostConstruct
   @Override
   protected void init() {
@@ -416,6 +430,68 @@ public class Saldos extends IBaseFilter implements Serializable {
     } // catch	
   } // doReporte
   
+  public void doDetallado(Entity seleccionado) throws Exception {
+		List<Columna> columns     = new ArrayList<>();
+	  Map<String, Object> params= new HashMap<>();	
+		try {
+			this.seleccionadosSegmento= new ArrayList<>();
+			params.put("idCliente", seleccionado.toLong("idCliente"));						
+			params.put("sortOrder", "order by dias desc");
+      UISelectEntity estatus= (UISelectEntity) this.attrs.get("idClienteEstatus");
+      if(estatus!= null)
+        if(Objects.equals(0L, estatus.getKey()))
+          params.put(Constantes.SQL_CONDICION, " tc_mantic_clientes_deudas.id_cliente_estatus in (1, 2)");			
+        else
+          if(!Objects.equals(-1L, estatus.getKey()))
+            params.put(Constantes.SQL_CONDICION, " tc_mantic_clientes_deudas.id_cliente_estatus= ".concat(estatus.getKey().toString()).concat(")"));			
+          else
+            params.put(Constantes.SQL_CONDICION, " tc_mantic_clientes_deudas.saldo > 0 and tc_mantic_clientes_deudas.id_cliente_estatus in (1, 2)");			
+			columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
+			columns.add(new Columna("limite", EFormatoDinamicos.FECHA_CORTA));
+			columns.add(new Columna("saldo", EFormatoDinamicos.MILES_SAT_DECIMALES));
+			columns.add(new Columna("importe", EFormatoDinamicos.MILES_SAT_DECIMALES));
+			columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));						
+			this.pagosSegmento= new FormatLazyModel("VistaClientesDto", "cuentas", params, columns);      
+      UIBackingUtilities.resetDataTable("tablaSegmentos");		
+      this.attrs.put("clientePivot", seleccionado);
+		} // try 
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+		} // catch 		
+  } // doDetallado
+
+  public void doReporteDetallado() throws Exception {
+    Parametros comunes           = null;
+		Map<String, Object>params    = new HashMap<>();
+		Map<String, Object>parametros= null;
+		EReportes reporteSeleccion   = EReportes.CUENTA_COBRAR_TICKETS;
+		try {		
+      Entity seleccionado = (Entity)this.attrs.get("clientePivot");
+      StringBuilder ventas= new StringBuilder();
+      for (Entity item: this.seleccionadosSegmento) {
+        ventas.append(item.toLong("idVenta")).append(", ");
+      } // for
+      ventas.delete(ventas.length()- 2, ventas.length());
+      params.put("ventas", ventas.toString());
+			params.put("cliente", this.attrs.get("cliente"));
+      comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), -1L, -1L , seleccionado.toLong("idCliente"));
+      this.reporte= JsfBase.toReporte();	
+      parametros= comunes.getComunes();
+      parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
+      parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
+      parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			
+      this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));		
+      this.doVerificarReporte();
+      this.reporte.doAceptar();		
+ 		} // try 
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+		} // catch 		
+  } // doReporteDetallado
+
   public boolean doVerificarReporte() {
     boolean regresar = false;
 		RequestContext rc= UIBackingUtilities.getCurrentInstance();
@@ -908,5 +984,9 @@ public class Saldos extends IBaseFilter implements Serializable {
     } // catch
 		return regresar;
 	}
+ 
+  public void doRowSeleccionado() {
+    LOG.info(this.seleccionadosSegmento.size());
+  }
   
 }

@@ -1,8 +1,11 @@
 package mx.org.kaana.mantic.archivos.beans;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Random;
+import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.libs.formato.Global;
 
 /**
  *@company KAANA
@@ -32,20 +35,22 @@ public class Concepto implements Serializable {
   private String iva;
   private String total;
   private String archivo;
+  private String fecha;
+  private String proveedor;
 
   public Concepto() {
     this(new Random().nextLong());
   }
 
   public Concepto(Long id) {
-    this(id, "", "", "", "", "", "", "", "", "", "", "", "", "", "", "");
+    this(id, "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", Global.format(EFormatoDinamicos.FECHA_HORA, LocalDate.now()), "");
   }
   
-  public Concepto(String folio, String tipo, String claveProducto, String noIdentificacion, String descripcion, String claveUnidad, String unidad, String precioUnitario, String cantidad, String tasaImpuesto, String subtotal, String descuento, String iva, String total, String archivo) {
-    this(new Random().nextLong(), folio, tipo, claveProducto, noIdentificacion, descripcion, claveUnidad, unidad, precioUnitario, cantidad, tasaImpuesto, subtotal, descuento, iva, total, archivo);
+  public Concepto(String folio, String tipo, String claveProducto, String noIdentificacion, String descripcion, String claveUnidad, String unidad, String precioUnitario, String cantidad, String tasaImpuesto, String subtotal, String descuento, String iva, String total, String archivo, String fecha, String proveedor) {
+    this(new Random().nextLong(), folio, tipo, claveProducto, noIdentificacion, descripcion, claveUnidad, unidad, precioUnitario, cantidad, tasaImpuesto, subtotal, descuento, iva, total, archivo, fecha, proveedor);
   }
   
-  public Concepto(Long id, String folio, String tipo, String claveProducto, String noIdentificacion, String descripcion, String claveUnidad, String unidad, String precioUnitario, String cantidad, String tasaImpuesto, String subtotal, String descuento, String iva, String total, String archivo) {
+  public Concepto(Long id, String folio, String tipo, String claveProducto, String noIdentificacion, String descripcion, String claveUnidad, String unidad, String precioUnitario, String cantidad, String tasaImpuesto, String subtotal, String descuento, String iva, String total, String archivo, String fecha, String proveedor) {
     this.id = id;
     this.folio = folio;
     this.tipo = tipo;
@@ -62,6 +67,8 @@ public class Concepto implements Serializable {
     this.iva = iva;
     this.total = total;
     this.archivo = archivo;
+    this.fecha = fecha;
+    this.proveedor = proveedor;
   }
 
   public Long getId() {
@@ -190,6 +197,22 @@ public class Concepto implements Serializable {
 
   public void setArchivo(String archivo) {
     this.archivo = archivo;
+  }
+
+  public String getFecha() {
+    return fecha;
+  }
+
+  public void setFecha(String fecha) {
+    this.fecha = fecha;
+  }
+
+  public String getProveedor() {
+    return proveedor;
+  }
+
+  public void setProveedor(String proveedor) {
+    this.proveedor = proveedor;
   }
 
   @Override

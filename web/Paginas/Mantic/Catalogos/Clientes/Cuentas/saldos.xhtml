@@ -34,6 +34,10 @@
 				justificacion: {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'credenciales'}
 			};
       
+			fieldsDialogCuentas ={
+				'tablaSegmentos_selection': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogoSegmento'}
+			};
+      
 			fieldsDialog = {
 				'busqueda'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas'},
         'encontrados' : {validaciones: 'requerido', mascara: 'libre', grupo: 'aceptado'}
@@ -181,12 +185,12 @@
                     <p:menuButton value="Opciones">
                       <p:menuitem value="Ticket express" action="#{manticCatalogosClientesCuentasSaldos.doTicketExpress(cliente)}" icon="fa fa-file-text-o" title="Generar ticket express" onstart="return janal.bloquear()"/>						
                       <p:separator/>
-                      <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('tabla\\:#{index}\\:detallePdf', 'detalle');" oncomplete="janal.desbloquear();"/>
-                      <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('tabla\\:#{index}\\:detalleXls', 'detalle');" oncomplete="janal.desbloquear();"/>
+                      <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('tabla\\:#{index}\\:detallePdf', 'detalle');" oncomplete="janal.desbloquear();"/>
+                      <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('tabla\\:#{index}\\:detalleXls', 'detalle');" oncomplete="janal.desbloquear();"/>
                       <p:separator/>
-                      <p:menuitem id="reporteIcon" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this detalle" actionListener="#{manticCatalogosClientesCuentasSaldos.doReporte('CUENTAS_POR_COBRAR', cliente)}" oncomplete="janal.desbloquear();" update="descargar"/>
+                      <p:menuitem icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this detalle" actionListener="#{manticCatalogosClientesCuentasSaldos.doReporte('CUENTAS_POR_COBRAR', cliente)}" oncomplete="janal.desbloquear();" update="descargar"/>
                       <p:separator/>					
-                      <p:menuitem id="reenviar" icon="fa fa-mail-forward" value="Enviar correo" onstart="return janal.bloquear()" process="@this detalle" actionListener="#{manticCatalogosClientesCuentasSaldos.doLoadEstatus('CUENTAS_POR_COBRAR', 'CREDITO', cliente)}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos"/>
+                      <p:menuitem icon="fa fa-mail-forward" value="Enviar correo" onstart="return janal.bloquear()" process="@this detalle" actionListener="#{manticCatalogosClientesCuentasSaldos.doLoadEstatus('CUENTAS_POR_COBRAR', 'CREDITO', cliente)}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos"/>
                     </p:menuButton>
                   </div>  
                   <div class="xs-pantalla">   
@@ -270,18 +274,19 @@
                 </f:facet>
               </p:dataTable>     
               <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="detalle">            
-                <p:menuitem id="consultar" icon="fa fa-search" value="Consultar" onstart="return janal.bloquear()" action="#{manticCatalogosClientesCuentasSaldos.doAccion}" process="@this detalle"/>
+                <p:menuitem icon="fa fa-search" value="Consultar" onstart="return janal.bloquear()" action="#{manticCatalogosClientesCuentasSaldos.doAccion}" process="@this detalle"/>
                 <p:separator/>
-                <p:menuitem id="pago" icon="fa fa-money" value="Registrar un pago" onstart="return janal.bloquear()" action="#{manticCatalogosClientesCuentasSaldos.doPago}" process="@this detalle" />					
-                <p:menuitem id="deuda" icon="fa fa-minus-circle" value="Pago a la deuda" onstart="return janal.bloquear()" action="#{manticCatalogosClientesCuentasSaldos.doDeuda}" process="@this detalle"/>					
+                <p:menuitem icon="fa fa-money" value="Registrar un pago" onstart="return janal.bloquear()" action="#{manticCatalogosClientesCuentasSaldos.doPago}" process="@this detalle" />					
+                <p:menuitem icon="fa fa-minus-circle" value="Pago a la deuda" onstart="return janal.bloquear()" action="#{manticCatalogosClientesCuentasSaldos.doDeuda}" process="@this detalle"/>					
                 <p:separator/>					
-                <p:menuitem id="importar" icon="fa fa-external-link" value="Importar" title="Importar identificacion de representante" onstart="return janal.bloquear()" process="@this detalle" action="#{manticCatalogosClientesCuentasSaldos.doImportar}"/>
+                <p:menuitem icon="fa fa-external-link" value="Importar" title="Importar identificacion de representante" onstart="return janal.bloquear()" process="@this detalle" action="#{manticCatalogosClientesCuentasSaldos.doImportar}"/>
                 <p:separator/>					
-                <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this detalle" actionListener="#{manticCatalogosClientesCuentasSaldos.doReporte('CUENTA_COBRAR_DETALLE', cliente)}" oncomplete="janal.desbloquear();" update="descargar"/>
-                <p:menuitem id="reporteDetalle" icon="fa fa-file-pdf-o" value="Cuenta por cobrar" onstart="return janal.bloquear()" process="@this detalle" actionListener="#{manticCatalogosClientesCuentasSaldos.doReporte('DEUDAS_CLIENTES_DETALLE', cliente)}" oncomplete="janal.desbloquear();" update="descargar"/>
-                <p:menuitem id="estadoDeCuenta" icon="fa fa-file-pdf-o" value="Estado de cuenta" onstart="return janal.bloquear()" process="@this detalle" oncomplete="PF('dlgPlazo').show();" update="dialogoPlazo"/>										
+                <p:menuitem icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this detalle" actionListener="#{manticCatalogosClientesCuentasSaldos.doReporte('CUENTA_COBRAR_DETALLE', cliente)}" oncomplete="janal.desbloquear();" update="descargar"/>
+                <p:menuitem icon="fa fa-file-word-o" value="Tickets de venta" onstart="return janal.bloquear()" process="@this detalle" actionListener="#{manticCatalogosClientesCuentasSaldos.doDetallado(cliente)}" oncomplete="PF('dlgCuentas').show();" update="dialogoCuentas"/>
+                <p:menuitem icon="fa fa-file-pdf-o" value="Cuenta por cobrar" onstart="return janal.bloquear()" process="@this detalle" actionListener="#{manticCatalogosClientesCuentasSaldos.doReporte('DEUDAS_CLIENTES_DETALLE', cliente)}" oncomplete="janal.desbloquear();" update="descargar"/>
+                <p:menuitem icon="fa fa-file-pdf-o" value="Estado de cuenta" onstart="return janal.bloquear()" process="@this detalle" oncomplete="PF('dlgPlazo').show();" update="dialogoPlazo"/>										
                 <p:separator/>					
-                <p:menuitem id="reenviar" icon="fa fa-mail-forward" value="Enviar correo" onstart="return janal.bloquear()" process="@this detalle" actionListener="#{manticCatalogosClientesCuentasSaldos.doLoadEstatus('seleccionadoDetalle', 'DEUDAS_CLIENTES_PENDIENTES', 'CREDITO')}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos"/>
+                <p:menuitem icon="fa fa-mail-forward" value="Enviar correo" onstart="return janal.bloquear()" process="@this detalle" actionListener="#{manticCatalogosClientesCuentasSaldos.doLoadEstatus('seleccionadoDetalle', 'DEUDAS_CLIENTES_PENDIENTES', 'CREDITO')}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos"/>
                 <p:separator/>
                 <p:menuitem icon="fa fa-calendar" value="Ajustar vencimiento" onstart="return janal.bloquear()" process="@this detalle" actionListener="#{manticCatalogosClientesCuentasSaldos.doUpdateFechaPago()}" update="dialogoAutorizacion"/>
               </p:contextMenu>
@@ -440,6 +445,61 @@
 	</ui:define>	
   <ui:param name="componenteBloqueo" value="tabla" />
 	<ui:define name="dialogos">
+    <p:dialog id="dialogoCuentas" widgetVar="dlgCuentas" header="Cuentas disponibles para la generación del reporte" dynamic="true" resizable="false" closable="true" responsive="true" width="75%" onShow="janal.change('formDialogoCuentas', fieldsDialogCuentas); janal.refresh();" onHide="janal.restore(); janal.desbloquear();" appendTo="@(body)">
+			<h:form id="formDialogoCuentas" prependId="false">
+        <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-99" style="height:348px !important;overflow-y: auto" columnClasses="janal-wid-100">
+          <p:dataTable lazy="true" id="tablaSegmentos" widgetVar="segmentosTable" var="row" value="#{manticCatalogosClientesCuentasSaldos.pagosSegmento}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="1000" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="1000, 1005" selection="#{manticCatalogosClientesCuentasSaldos.seleccionadosSegmento}" paginator="false" rowIndexVar="index" reflow="true" paginatorPosition="bottom" sortMode="single">												
+            <p:ajax event="rowUnselectCheckbox" listener="#{manticCatalogosClientesCuentasSaldos.doRowSeleccionado}" process="@this tablaSegmentos" oncomplete="PF('segmentosTable').writeSelections()" skipChildren="false"/>
+            <p:ajax event="rowSelectCheckbox" listener="#{manticCatalogosClientesCuentasSaldos.doRowSeleccionado}" process="@this tablaSegmentos" oncomplete="PF('segmentosTable').writeSelections()" skipChildren="false"/>
+            <p:column selectionMode="multiple" styleClass="janal-column-center MarAuto Responsive janal-wid-3"/>							
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.ticket}">
+              <f:facet name="header">
+                <h:outputText value="Ticket"/>
+              </f:facet>
+              <h:outputText value="#{row['ticket']}"/>
+            </p:column>														
+            <p:column styleClass="janal-column-left MarAuto Responsive" sortBy="#{row.persona}" rendered="false">
+              <f:facet name="header">
+                <h:outputText value="Vendedor"/>
+              </f:facet>
+              <h:outputText value="#{row['persona']}"/>
+            </p:column>											
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{row.registro}">
+              <f:facet name="header">
+                <h:outputText value="Fecha"/>
+              </f:facet>
+              <h:outputText value="#{row['registro']}"/>
+            </p:column>						
+            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{row.dias}">
+              <f:facet name="header">
+                <h:outputText value="Días por vencer"/>
+              </f:facet>
+              <h:outputText value="#{row['dias']}"/>
+            </p:column>						
+            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{row.importe}">
+              <f:facet name="header">
+                <h:outputText value="Importe"/>
+              </f:facet>
+              <h:outputText value="#{row['importe']}"/>
+            </p:column>						
+            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{row.saldo}">
+              <f:facet name="header">
+                <h:outputText value="Saldo"/>
+              </f:facet>
+              <h:outputText value="#{row['saldo']}"/>
+            </p:column>																				
+            <f:facet name="footer">
+              <p:outputLabel value="Total [#{manticCatalogosClientesCuentasSaldos.pagosSegmento== null? 0: manticCatalogosClientesCuentasSaldos.pagosSegmento.rowCount}] registros"/>
+            </f:facet>
+          </p:dataTable>													
+        </p:panelGrid>
+				<hr class="ui-widget-content"/>
+				<div class="janal-line-button">
+					<p:commandButton value="Reporte" icon="fa fa-check" process="@this dialogoCuentas" update="descargar" actionListener="#{manticCatalogosClientesCuentasSaldos.doReporteDetallado()}" onstart="if(janal.partial('dialogoSegmento')) {PF('dlgCuentas').hide(); return true;} else {return false;}" oncomplete="janal.desbloquear();"/>
+					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgCuentas').hide();" oncomplete="janal.desbloquear();"/>
+				</div>
+			</h:form>
+		</p:dialog> 
 		<p:dialog id="dialogoAutorizacion" widgetVar="widgetDialogoAutorizacion" header="Persona que autoriza #{manticCatalogosClientesCuentasSaldos.attrs.msgAutorizacion}" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onShow="janal.change('formAutorizacion', Janal.Control.#{manticCatalogosClientesCuentasSaldos.attrs.limitePago});" width="50%" onHide="janal.restore(); janal.desbloquear();">
 			<h:form id="formAutorizacion" prependId="false">
 				<div class="janal-wid-100-txt janal-column-center">
