@@ -89,14 +89,20 @@ public class Galeria extends BaseMenu implements Serializable {
     List<Columna> columns     = new ArrayList<>();
 		Map<String, Object> params= new HashMap<>();
     try {
+  		params.put("porcentaje", this.cliente.toDouble("especial"));
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("menudeo", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("medioMayoreo", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("mayoreo", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("especial", EFormatoDinamicos.MILES_CON_DECIMALES));
+      params.put("sortOrder", "order by tc_mantic_productos.nombre, tc_mantic_productos_detalles.orden");
       if(Cadena.isVacio(this.categoria))
     		params.put("codigo", codigo.toUpperCase().trim());		
       else 
     		params.put("codigo", this.categoria.toUpperCase().trim());		
       if(!Cadena.isVacio(codigo)) {
-        this.lazyModel= new FormatCustomLazy("VistaOrdenesComprasDto", "galeria", params, columns);
+        this.lazyModel= new FormatCustomLazy("VistaOrdenesComprasDto", "exportar", params, columns);
         if(Objects.equals(EBusqueda.CATEGORIA, this.busqueda)) 
           this.attrs.put("links", this.toProcessLinks(this.codigo));
         else {

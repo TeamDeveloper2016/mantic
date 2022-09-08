@@ -58,6 +58,12 @@
         </f:facet>
         <h:outputText value="#{index+ 1}.-"/>
       </p:column>														
+      <p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.marca}">
+        <f:facet name="header">
+          <h:outputText value="Marca"/>
+        </f:facet>
+        <h:outputText value="#{row['marca']}"/>
+      </p:column>					
       <p:column class="janal-column-left MarAuto Responsive janal-wid-12" sortBy="#{row.propio}">
         <f:facet name="header">
           <h:outputText value="Código"/>
@@ -70,6 +76,12 @@
         </f:facet>
         <h:outputText value="#{row['nombre']}"/>
       </p:column>														
+      <p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.medida}">
+        <f:facet name="header">
+          <h:outputText value="Medida"/>
+        </f:facet>
+        <h:outputText value="#{row['medida']}"/>
+      </p:column>					
       <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.menudeo}">
         <f:facet name="header">
           <h:outputText value="Menudeo"/>
