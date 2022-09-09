@@ -18,6 +18,7 @@ import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -34,6 +35,10 @@ public class Normal extends IBaseFilter implements Serializable {
   private static final long serialVersionUID = 8793667741599428879L;
   private Entity cliente;
 
+  public String getHoy() {
+    return Fecha.getHoyCorreo();
+  }
+  
   @PostConstruct
   @Override
   protected void init() {

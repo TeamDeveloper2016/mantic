@@ -20,6 +20,7 @@ import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
@@ -50,6 +51,10 @@ public class Galeria extends BaseMenu implements Serializable {
 	public String getPathImage() {
 		return pathImage;
 	}
+  
+  public String getHoy() {
+    return Fecha.getHoyCorreo();
+  }
   
   @Override
   @PostConstruct

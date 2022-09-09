@@ -20,7 +20,8 @@
 		</script> 
 		<style type="text/css">
       .janal-center-menu.ui-menubar {text-align: center;}
-      .janal-center-menu .ui-menu-list {display: inline-block;}      
+      .janal-center-menu ul.ui-menu-list {display: inline-block; }      
+      .janal-center-menu .ui-menu .ui-menu-parent .ui-menu-child { width: 300px;}      
     </style>
 	</ui:define>
 	<ui:define name="contenido">  	
@@ -37,7 +38,9 @@
       <pe:methodParam name="codigo"/>  
       <pe:methodParam name="busqueda"/>  
     </pe:remoteCommand>
-    <p:menubar id="productos" widgetVar="janal-menu-portal" model="#{kajoolControlBaseMenu.menuIndividual}" styleClass="janal-wid-100-txt janal-center-menu"/>
+    <div class="janal-center-menu">
+      <p:menubar id="productos" widgetVar="janal-menu-portal" model="#{kajoolControlBaseMenu.menuIndividual}" styleClass="janal-wid-100-txt janal-center-menu"/>
+    </div>
     <br/>
     <div id="janal-opcion-1" class="opciones">
       <center style="margin-left: 0%; margin-right: 0%;">
@@ -49,8 +52,8 @@
     <br/>
     <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticClientesGaleria.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticClientesGaleria.lazyModel.rowCount gt manticClientesGaleria.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" styleClass="janal-wid-100-txt janal-column-center">
       <f:facet name="header">
-        <h:outputText value="Listado de productos" styleClass="janal-icons-header"/>
-        <p:commandButton icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()" disabled="#{manticClientesGaleria.lazyModel== null or manticClientesGaleria.lazyModel.rowCount gt 1000? true: false}"/>
+        <h:outputText value="Listado de productos con corte al #{manticClientesGaleria.hoy}" styleClass="janal-icons-header"/>
+        <p:commandButton icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()" disabled="#{manticClientesGaleria.lazyModel== null or manticClientesGaleria.lazyModel.rowCount gt 2000? true: false}"/>
       </f:facet>												
       <p:column class="janal-column-left MarAuto Responsive janal-wid-2">
         <f:facet name="header">
@@ -100,7 +103,7 @@
         </f:facet>
         <h:outputText value="#{row['mayoreo']}"/>
       </p:column>											
-      <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.especial}">
+      <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.especial}">
         <f:facet name="header">
           <h:outputText value="Precio cliente"/>
         </f:facet>

@@ -69,7 +69,7 @@
 					<div class="ui-grid-row janal-grid-row">
 						<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticClientesNormal.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticClientesNormal.lazyModel.rowCount gt manticClientesNormal.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
 							<f:facet name="header">
-								<h:outputText value="Listado de articulos" styleClass="janal-icons-header"/>
+								<h:outputText value="Listado de articulos con corte al #{manticClientesNormal.hoy}" styleClass="janal-icons-header"/>
                 <p:commandButton icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()" disabled="#{manticClientesNormal.lazyModel== null or manticClientesNormal.lazyModel.rowCount gt 1000? true: false}"/>
 							</f:facet>												
 							<p:column class="janal-column-left MarAuto Responsive janal-wid-2">
@@ -108,7 +108,7 @@
 								</f:facet>
 								<h:outputText value="#{row['mayoreo']}"/>
 							</p:column>											
-							<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.especial}">
+							<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.especial}">
 								<f:facet name="header">
 									<h:outputText value="Precio cliente"/>
 								</f:facet>
