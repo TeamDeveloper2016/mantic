@@ -17,6 +17,7 @@ import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Cifrar;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UISelectEntity;
@@ -64,6 +65,19 @@ public class Filtro extends Contenedor implements Serializable {
   
 	public String getPath() {
     return path;
+  }
+  
+  public String getCodigo() {
+    String url= "";
+    try {
+      if(this.categoria.getNombre()!= null)
+        url= "https://ferreteriabonanza.com/Control/galeria.jsf?zAiOx=".concat(Cifrar.cifrar(this.categoria.getNombre()));
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch		
+    return url;  
   }
   
   @PostConstruct
@@ -202,6 +216,11 @@ public class Filtro extends Contenedor implements Serializable {
             this.categoria.setIdPadre(((UISelectEntity)father.getData()).toLong("idProductoCategoria"));
             this.doAccion();
           } // else  
+          break;
+        case PROCESAR:
+          this.doModificar((UISelectEntity)((TreeNode)this.attrs.get("seleccionado")).getData());
+          TreeNode father= ((TreeNode)this.attrs.get("seleccionado")).getParent();
+          this.categoria.setIdPadre(((UISelectEntity)father.getData()).toLong("idProductoCategoria"));
           break;
       } // switch
 		} // try

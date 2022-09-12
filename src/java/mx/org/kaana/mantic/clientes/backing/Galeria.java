@@ -20,7 +20,9 @@ import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Cifrar;
 import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
@@ -53,21 +55,35 @@ public class Galeria extends BaseMenu implements Serializable {
 	}
   
   public String getHoy() {
-    return Fecha.getHoyCorreo();
+    return Fecha.getHoyCorreo().concat("; ").concat(Fecha.getHoraExtendida());
+  }
+  
+  public Boolean getIsEmpty() {
+    return Cadena.isVacio(this.codigo);  
   }
   
   @Override
   @PostConstruct
   protected void init() {
     super.init();
-    this.codigo   = JsfBase.getFlashAttribute("codigo")== null? "": (String)JsfBase.getFlashAttribute("codigo");
-    this.categoria= JsfBase.getFlashAttribute("categoria")== null? "": (String)JsfBase.getFlashAttribute("categoria");
-    this.busqueda = JsfBase.getFlashAttribute("busqueda")== null? EBusqueda.CATEGORIA: (EBusqueda)JsfBase.getFlashAttribute("busqueda");
-    String dns= Configuracion.getInstance().getPropiedadServidor("sistema.dns");
-    this.pathImage= dns.substring(0, dns.lastIndexOf("/")+ 1).concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/galeria/");
-    if(!Cadena.isVacio(this.codigo))
-      this.doLoadArticulos(this.codigo);
-    this.doLoad();
+    try {
+      this.codigo= JsfBase.getParametro("zOxAi");
+      if(!Cadena.isVacio(this.codigo)) {
+        this.codigo= Cifrar.descifrar(this.codigo);
+      } // if  
+      else
+        this.codigo = JsfBase.getFlashAttribute("codigo")== null? "": (String)JsfBase.getFlashAttribute("codigo");
+      this.categoria= JsfBase.getFlashAttribute("categoria")== null? "": (String)JsfBase.getFlashAttribute("categoria");
+      this.busqueda = JsfBase.getFlashAttribute("busqueda")== null? EBusqueda.CATEGORIA: (EBusqueda)JsfBase.getFlashAttribute("busqueda");
+      String dns= Configuracion.getInstance().getPropiedadServidor("sistema.dns");
+      this.pathImage= dns.substring(0, dns.lastIndexOf("/")+ 1).concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/galeria/");
+      if(!Cadena.isVacio(this.codigo))
+        this.doLoadArticulos(this.codigo);
+      this.doLoad();
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+    } // catch   
   }
 
   @Override

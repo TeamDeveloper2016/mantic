@@ -5000,9 +5000,9 @@
           0 as total_final
 				from 
 					tc_mantic_ventas
-				inner join
+				left join
 					tc_mantic_ventas_detalles on tc_mantic_ventas.id_venta= tc_mantic_ventas_detalles.id_venta
-				inner join 
+				left join 
 					tc_mantic_clientes on tc_mantic_ventas.id_cliente= tc_mantic_clientes.id_cliente
 				where 
 					tc_mantic_ventas.id_venta in ({ventas})

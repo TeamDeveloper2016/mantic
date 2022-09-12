@@ -15,6 +15,10 @@
 			};
 			//<![CDATA[
 			$(document).ready(function() {
+        var url = window.location.href;
+        var page= url.substring(0, url.lastIndexOf('/Control')+ 1)+ 'indice.jsf?faces-redirect=true';
+        if(#{kajoolControlGaleria.isEmpty})
+          window.location.href= page;
 			});
 			//]]>
 		</script> 

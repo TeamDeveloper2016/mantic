@@ -182,7 +182,7 @@ public final class Numero {
   }
 
   public static Long getLong(String value) {
-    return getLong(value,new Long(0));
+    return getLong(value, new Long(0));
   }
 
   public Short getShort(String value,Short defecto) {

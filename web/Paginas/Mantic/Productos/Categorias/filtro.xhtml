@@ -53,7 +53,7 @@
             <p:ajax event="select" process="@this" update="kajoolContextMenu"/>
             <p:treeNode>
               <h:outputText value="#{row['porcentaje']}%" class="ui-widget-content janal-nodo-title janal-font-bold"/>
-              <h:outputText value="#{row['nombre']}" class="ui-widget-content janal-nodo-descripcion"/>
+              <h:outputText value="#{row['nombre']}" class="ui-widget-content janal-nodo-descripcion" escape="false"/>
               <div class="janal-nivel-#{row['nivel']} janal-nodo-nivel">
                 <span class="janal-icons-header">#[ #{row['total']} ]</span>
                 <span>N-#{row['nivel']}</span>
@@ -72,10 +72,24 @@
             <p:menuitem icon="fa fa-picture-o" process="@this tabla" action="#{manticProductosCategoriasFiltro.doGaleria()}" ajax="false" value="Galeria" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>					
             <p:separator/>
             <p:menuitem icon="fa fa-columns" process="@this tabla" action="#{manticProductosCategoriasFiltro.doProductos()}" ajax="false" value="Productos" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>					
+            <p:separator/>
+            <p:menuitem icon="fa fa-shirtsinbulk" value="URL" process="@this tabla" actionListener="#{manticProductosCategoriasFiltro.doOperacion('PROCESAR')}" onstart="return janal.bloquear();" oncomplete="PF('widgetUrl').show();" update="dialogoUrl"/>					
           </p:contextMenu>
         </div>
       </div>
     </div>		        
+    <p:dialog id="dialogoUrl" dynamic="true" widgetVar="widgetUrl" header="Publicar categoría" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="true" resizable="false" onHide="janal.restore(); janal.refresh(); janal.desbloquear();" onShow="janal.change('producto', categoria); janal.refresh();" appendTo="@(body)">
+      <h:form prependId="false">
+        <h:panelGrid columns="1" class="janal-wid-100">
+          <p:outputLabel value="URL:"/>
+          <p:outputLabel value="#{manticProductosCategoriasFiltro.codigo}" styleClass="janal-font-bold janal-color-black"/>
+        </h:panelGrid> 
+        <hr class="ui-widget-content"/>
+        <div class="janal-line-button">
+          <p:commandButton icon="fa fa-close" value="Cancelar" onstart="PF('widgetUrl').hide(); return true;" oncomplete="janal.desbloquear();" /> 
+        </div>
+      </h:form>  
+    </p:dialog>  
     <p:dialog id="dialogoCategoria" dynamic="true" widgetVar="widgetCategoria" header="[ #{manticProductosCategoriasFiltro.titulo} ] Datos de la categoría" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="true" resizable="false" onHide="janal.restore(); janal.refresh(); janal.desbloquear();" onShow="janal.change('producto', categoria); janal.refresh();" appendTo="@(body)">
       <h:form id="producto" prependId="false">
         <h:panelGrid class="janal-wid-100">

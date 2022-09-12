@@ -6,6 +6,8 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Cifrar;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.mantic.productos.beans.Caracteristica;
@@ -43,16 +45,31 @@ public class Individual extends BaseMenu implements Serializable {
     return producto;
   }
   
+  public Boolean getIsEmpty() {
+    return (Long)this.attrs.get("idProducto")== -1L;  
+  }
+  
   @Override
   @PostConstruct
   protected void init() {
     super.init();
-    this.attrs.put("idProducto", JsfBase.getFlashAttribute("idProducto"));
-    this.attrs.put("codigo", JsfBase.getFlashAttribute("codigo")== null? "": JsfBase.getFlashAttribute("codigo"));
-    String dns= Configuracion.getInstance().getPropiedadServidor("sistema.dns");
-    this.pathImage= dns.substring(0, dns.lastIndexOf("/")+ 1).concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/galeria/");
-    if(!Cadena.isVacio(this.attrs.get("idProducto")))
-      this.doLoadArticulo();
+    try {
+      String idProducto= JsfBase.getParametro("zAiOx");
+      if(!Cadena.isVacio(idProducto)) {
+        String codigo= Cifrar.descifrar(idProducto);
+        idProducto= String.valueOf(Numero.getLong(codigo, -1L));
+      } // if  
+      else
+        idProducto= String.valueOf(JsfBase.getFlashAttribute("idProducto")== null? "-1": (Long)JsfBase.getFlashAttribute("idProducto"));
+      this.attrs.put("idProducto", idProducto== null? -1L: Numero.getLong(idProducto, -1L));
+      String dns= Configuracion.getInstance().getPropiedadServidor("sistema.dns");
+      this.pathImage= dns.substring(0, dns.lastIndexOf("/")+ 1).concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/galeria/");
+      if(!Cadena.isVacio(this.attrs.get("idProducto")))
+        this.doLoadArticulo();
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+    } // catch   
   }
 
   @Override

@@ -36,7 +36,7 @@ public class Normal extends IBaseFilter implements Serializable {
   private Entity cliente;
 
   public String getHoy() {
-    return Fecha.getHoyCorreo();
+    return Fecha.getHoyCorreo().concat("; ").concat(Fecha.getHoraExtendida());
   }
   
   @PostConstruct
