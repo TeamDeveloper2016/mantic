@@ -2,6 +2,7 @@ package mx.org.kaana.kajool.control.backing;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
@@ -79,6 +80,10 @@ public class BaseMenu extends IBaseImportar implements Serializable {
   
   public MenuModel getMegaCategorias() {
     return Portal.getInstance().getMegaCategorias();
+  }
+  
+  public List<String> getCategorias() {
+    return Portal.getInstance().getNombres();
   }
   
   @Override

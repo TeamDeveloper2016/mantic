@@ -46,6 +46,7 @@ public final class Portal implements Serializable {
   private MenuModel individual;
   private MenuModel categorias;
   private List<String> images;
+  private List<String> nombres;
   private String pathImage;
 
   static {
@@ -86,6 +87,10 @@ public final class Portal implements Serializable {
   public MenuModel getIndividual() {
     return individual;
   }
+
+  public List<String> getNombres() {
+    return Collections.unmodifiableList(nombres);
+  }
   
   public void reload() {
     try {
@@ -111,9 +116,9 @@ public final class Portal implements Serializable {
   
 	private void toLoadMenu() {
     List<Entity> marcas       = null;
-    Map<String, Object> params= null;
+    Map<String, Object> params= new HashMap<>();
     try {      
-      params = new HashMap<>();      
+      this.nombres       = new ArrayList<>();
       params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);      
       params.put("sortOrder", "order by tc_mantic_productos_marcas.nombre");
       marcas = (List<Entity>)DaoFactory.getInstance().toEntitySet("TcManticProductosMarcasDto", "lazy", params);
@@ -211,6 +216,7 @@ public final class Portal implements Serializable {
             this.toLoadCategorias(sub, categoria.toString("nombre"), nivel+ 1, metodo);
             root.addElement(sub);
           } // else  
+          this.nombres.add(categoria.toString("categoria"));
         } // for
     } // try
     catch (Exception e) {

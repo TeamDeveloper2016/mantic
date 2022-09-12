@@ -18,6 +18,7 @@ import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Cifrar;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
@@ -47,17 +48,32 @@ public class Galeria extends BaseMenu implements Serializable {
 		return pathImage;
 	}
   
+  public Boolean getIsEmpty() {
+    return Boolean.FALSE; // Cadena.isVacio(this.codigo);  
+  }
+  
   @Override
   @PostConstruct
   protected void init() {
     super.init();
-    this.codigo   = JsfBase.getFlashAttribute("codigo")== null? "": (String)JsfBase.getFlashAttribute("codigo");
-    this.categoria= JsfBase.getFlashAttribute("categoria")== null? "": (String)JsfBase.getFlashAttribute("categoria");
-    this.busqueda= JsfBase.getFlashAttribute("busqueda")== null? EBusqueda.CATEGORIA: (EBusqueda)JsfBase.getFlashAttribute("busqueda");
-    String dns= Configuracion.getInstance().getPropiedadServidor("sistema.dns");
-    this.pathImage= dns.substring(0, dns.lastIndexOf("/")+ 1).concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/galeria/");
-    if(!Cadena.isVacio(this.codigo))
-      this.doLoadArticulos(this.codigo);
+    try {
+      this.codigo= JsfBase.getParametro("zOxAi");
+      if(!Cadena.isVacio(this.codigo)) {
+        this.codigo= Cifrar.descifrar(this.codigo);
+        this.codigo= this.toFindCategoria(codigo.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim());
+      } // if  
+      else
+        this.codigo = JsfBase.getFlashAttribute("codigo")== null? "": (String)JsfBase.getFlashAttribute("codigo");
+      this.categoria= JsfBase.getFlashAttribute("categoria")== null? "": (String)JsfBase.getFlashAttribute("categoria");
+      this.busqueda= JsfBase.getFlashAttribute("busqueda")== null? EBusqueda.CATEGORIA: (EBusqueda)JsfBase.getFlashAttribute("busqueda");
+      String dns= Configuracion.getInstance().getPropiedadServidor("sistema.dns");
+      this.pathImage= dns.substring(0, dns.lastIndexOf("/")+ 1).concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/galeria/");
+      if(!Cadena.isVacio(this.codigo))
+        this.doLoadArticulos(this.codigo);
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+    } // catch   
   }
 
   @Override
@@ -130,6 +146,23 @@ public class Galeria extends BaseMenu implements Serializable {
     if(regresar.length()> 0)
       regresar.delete(regresar.length()- 66, regresar.length());
     return regresar.toString();
+  }
+  
+  private String toFindCategoria(String text) {
+    String regresar= text;
+    try {
+      int index= this.getCategorias().indexOf(regresar);
+      if(index<= 0)
+        regresar= "";
+ 		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+   } // catch   
+    return regresar;
+  }
+  
+  public static void main(String ... args) throws Exception {
+    LOG.info(Cifrar.cifrar("CONEXIONES"));
   }
   
 }

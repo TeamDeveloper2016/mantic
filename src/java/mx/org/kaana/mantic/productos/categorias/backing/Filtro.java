@@ -71,7 +71,7 @@ public class Filtro extends Contenedor implements Serializable {
     String url= "";
     try {
       if(this.categoria.getNombre()!= null)
-        url= "https://ferreteriabonanza.com/Control/galeria.jsf?zAiOx=".concat(Cifrar.cifrar(this.categoria.getNombre()));
+        url= "https://ferreteriabonanza.com/Control/galeria.jsf?zOxAi=".concat(Cifrar.cifrar(this.categoria.getNombre()));
     } // try
     catch (Exception e) {
       Error.mensaje(e);
