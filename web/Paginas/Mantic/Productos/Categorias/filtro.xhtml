@@ -81,8 +81,8 @@
     <p:dialog id="dialogoUrl" dynamic="true" widgetVar="widgetUrl" header="Publicar categoría" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="true" resizable="false" onHide="janal.restore(); janal.refresh(); janal.desbloquear();" onShow="janal.change('producto', categoria); janal.refresh();" appendTo="@(body)">
       <h:form prependId="false">
         <h:panelGrid columns="1" class="janal-wid-100">
-          <p:outputLabel value="URL:"/>
-          <p:outputLabel value="#{manticProductosCategoriasFiltro.codigo}" styleClass="janal-font-bold janal-color-black"/>
+          <p:outputLabel value="Publicar producto (URL):" styleClass="janal-color-orange Fs16"/>
+          <p:outputLabel value="#{manticProductosCategoriasFiltro.codigo}" styleClass="janal-color-black Fs16"/>
         </h:panelGrid> 
         <hr class="ui-widget-content"/>
         <div class="janal-line-button">
