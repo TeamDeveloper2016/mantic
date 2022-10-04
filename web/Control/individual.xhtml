@@ -28,7 +28,7 @@
       .producto {width: 100%; display: flex; flex-direction: row; -webkit-flex-direction: row; -ms-flex-direction: row; flex-wrap: wrap; justify-content: center; align-items: center;}
       .producto .item-image {margin: 0 0 0 0; text-align: left;}
       .producto .item-image img {width: #{kajoolUtilAplicacion.isMobile? '400': '600'}px; height: #{kajoolUtilAplicacion.isMobile? '250': '450'}px; margin-right: 3px;}      
-      .producto .container {width: #{kajoolUtilAplicacion.isMobile? '99%': '50%'}; display: flex; flex-direction: row; flex-wrap: wrap; justify-content: center; margin-left: 15px; height: 453px;}
+      .producto .container {width: #{kajoolUtilAplicacion.isMobile? '95%': '50%'}; display: flex; flex-direction: row; flex-wrap: wrap; justify-content: center; margin-left: 15px; height: 453px;}
       .producto .galeria  {width: 770px;}
       .producto .galeria .galeria-header {margin: 0 0 0 0; text-align: left;}
       .producto .galeria .galeria-list {border: 0px; padding-right: 0px;}
@@ -74,7 +74,7 @@
                   <p:column headerText="Código" styleClass="janal-fix-20">
                     <p:outputLabel value="#{row.codigo}"/>
                   </p:column>   
-                  <p:column headerText="Descripción" styleClass="janal-column-left" style="#{kajoolUtilAplicacion.isMobile? '': 'white-space: nowrap;'}">
+                  <p:column headerText="Descripción" styleClass="janal-column-left">
                     <p:outputLabel value="#{row.descripcion}"/>
                   </p:column>   
                   <p:column headerText="Medida" styleClass="#{kajoolUtilAplicacion.isMobile? 'janal-fix-17': 'janal-fix-12'}">

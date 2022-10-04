@@ -519,7 +519,7 @@ div.ui-panelgrid-content {
     margin: -10px;
   }
   .janal-grid-row {}
-  .producto .container {width: 100% !important;}
+  .producto .container {width: 95% !important;}
   .producto .item-image img {width: 435px !important; height: 250px !important;}
   .producto .galeria .galeria-nombre {font-size: 0.8rem !important;}
   .producto .galeria .galeria-marca {font-size: 1.0rem !important;}
