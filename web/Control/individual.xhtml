@@ -29,7 +29,7 @@
       .producto .item-image {margin: 0 0 0 0; text-align: left;}
       .producto .item-image img {width: #{kajoolUtilAplicacion.isMobile? '400': '600'}px; height: #{kajoolUtilAplicacion.isMobile? '250': '450'}px; margin-right: 3px;}      
       .producto .container {width: #{kajoolUtilAplicacion.isMobile? '95%': '50%'}; display: flex; flex-direction: row; flex-wrap: wrap; justify-content: center; margin-left: 15px; height: 453px;}
-      .producto .galeria  {width: 770px;}
+      .producto .galeria  {width: 95%;}
       .producto .galeria .galeria-header {margin: 0 0 0 0; text-align: left;}
       .producto .galeria .galeria-list {border: 0px; padding-right: 0px;}
       .producto .galeria .galeria-description {margin: 0 0 0.1rem -1.2rem; font-size: 0.8rem; padding-left: 0px !important; font-weight: normal !important;}
@@ -58,13 +58,13 @@
                 <span class="galeria-marca">#{kajoolControlIndividual.producto.producto.marca}</span><br/>
                 <span class="galeria-nombre">#{kajoolControlIndividual.producto.producto.nombre}</span>
                 <div style="float: right; margin-top: -33px;">
-                  <p:graphicImage url="#{kajoolControlIndividual.brand}#{kajoolControlIndividual.producto.producto.logo}" width="#{kajoolUtilAplicacion.isMobile? '80': '200'}px" height="#{kajoolUtilAplicacion.isMobile? '30': '60'}px"/>
+                  <p:graphicImage url="#{kajoolControlIndividual.brand}#{kajoolControlIndividual.producto.producto.logo}"/>
                 </div>  
               </div>  
               <div class="galeria-list-item p-p-1">
                 <div class="galeria-list-detail">
                   <span class="janal-color-orange" style="font-size: 0.9rem; font-weight: bold;">ESPECIFICACIONES:</span><br/>
-                  <p:dataList var="item" value="#{kajoolControlIndividual.producto.caracteristicas}" styleClass="galeria-list" itemStyleClass="galeria-description" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" style="white-space: nowrap;">
+                  <p:dataList var="item" value="#{kajoolControlIndividual.producto.caracteristicas}" styleClass="galeria-list" itemStyleClass="galeria-description" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" style="#{kajoolUtilAplicacion.isMobile? '': 'white-space: nowrap'};">
                     #{kajoolControlIndividual.doLetraCapital(item)}
                   </p:dataList>
                 </div>  

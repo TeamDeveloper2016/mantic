@@ -1310,7 +1310,7 @@
 			alert(msg);
     }, // alert
     version: function() {
-      return '0.3.5.7';
+      return '0.3.6.5';
     }, // version
     align: function(pixels) {
       try {
