@@ -151,7 +151,7 @@
                     <div class="galeria">
                       <div class="galeria-header p-p-2">
                         <span class="galeria-marca">#{row.data.producto.marca}</span><br/>
-                        <span class="galeria-nombre">#{row.data.producto.nombre}</span>
+                        <span class="galeria-nombre">#{row.data.producto.nombre}  <p:commandLink action="#{manticProductosGaleria.doAceptar(row)}" title="Editar producto"><i class="fa fa-edit"></i></p:commandLink></span>
                         <div style="float:right;margin-top:-33px;">
                           <p:graphicImage url="#{manticProductosGaleria.brand}#{row.data.producto.logo}" width="200px" height="60px"/>
                         </div>  
@@ -201,7 +201,7 @@
                       <div class="galeria">
                         <div class="galeria-header p-p-2">
                           <span class="galeria-marca">#{row.producto.marca}</span><br/>
-                          <span class="galeria-nombre">#{row.producto.nombre}</span>
+                          <span class="galeria-nombre">#{row.producto.nombre}  <p:commandLink action="#{manticProductosGaleria.doAceptar(row)}" title="Editar producto"><i class="fa fa-edit"></i></p:commandLink></span>
                           <div style="float:right;margin-top:-33px;">
                             <p:graphicImage url="#{manticProductosGaleria.brand}#{row.producto.logo}" width="200px" height="60px"/>
                           </div>  

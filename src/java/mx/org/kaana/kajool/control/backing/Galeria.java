@@ -81,16 +81,16 @@ public class Galeria extends BaseMenu implements Serializable {
   }
   
   public void doLoadArticulos(String codigo) {
-    List<Columna> columns     = null;
+    List<Columna> columns     = new ArrayList<>();
 		Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       if(Cadena.isVacio(this.categoria))
     		params.put("codigo", codigo.toUpperCase().trim());		
       else 
     		params.put("codigo", this.categoria.toUpperCase().trim());		
+      this.attrs.put("subs", null);
       if(!Cadena.isVacio(codigo)) {
         this.lazyModel= new FormatCustomLazy("VistaOrdenesComprasDto", "galeria", params, columns);
         if(Objects.equals(EBusqueda.CATEGORIA, this.busqueda)) 
@@ -145,7 +145,37 @@ public class Galeria extends BaseMenu implements Serializable {
     } // for
     if(regresar.length()> 0)
       regresar.delete(regresar.length()- 66, regresar.length());
+    this.toLoadSubcategoria(categoria);
     return regresar.toString();
+  }
+  
+  public void toLoadSubcategoria(String categoria) {
+    List<Columna> columns     = new ArrayList<>();
+		Map<String, Object> params= new HashMap<>();
+    StringBuilder regresar    = new StringBuilder();
+    try {
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      params.put("categoria", categoria);
+      List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaProductosDto", "hijos", params);
+      if(items!= null && items.size()> 0) {
+        regresar.append(" <br></br><span>Subcategorías: </span>");
+        for (Entity item: items) {
+          regresar.append("[ <span class=\"ui-panel-title Fs16\"><a onclick=\"busquedaCategoria('").append(categoria).append(Constantes.SEPARADOR).append(item.toString("nombre")).
+                   append("');\" class=\"janal-move-element\" style=\"color: orange; cursor:pointer;\">").
+                   append(Cadena.letraCapital(item.toString("nombre"))).append("</a></span>").append(" ]<span class=\"ui-panel-title janal-color-black Fs18\">   »   </span>");
+        } // for
+        regresar.delete(regresar.length()- 66, regresar.length());
+        // this.attrs.put("subs", regresar.toString());
+      } // if
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally    
   }
   
   private String toFindCategoria(String text) {

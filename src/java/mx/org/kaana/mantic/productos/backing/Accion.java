@@ -84,16 +84,16 @@ public class Accion extends Contenedor implements Serializable {
   }
   
   public String getUrl() {
-    String url= "";
+    String regresar= "";
     try {
       if(this.producto.getProducto().getIdProducto()!= null && this.producto.getProducto().getIdProducto()!= -1L)
-        url= "https://ferreteriabonanza.com/Control/individual.jsf?zAiOx=".concat(Cifrar.cifrar(String.valueOf(this.producto.getProducto().getIdProducto())));
+        regresar= "https://ferreteriabonanza.com/Control/individual.jsf?zAiOx=".concat(Cifrar.cifrar(String.valueOf(this.producto.getProducto().getIdProducto())));
     } // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
-    return url;  
+    return regresar;  
   }
   
   @PostConstruct

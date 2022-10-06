@@ -11,6 +11,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
@@ -194,8 +195,11 @@ public class Galeria extends Contenedor implements Serializable {
     } // finally
 	}
   
-  public String doAceptar() {  
-    return null;
+  public String doAceptar(Producto item) {  
+    JsfBase.setFlashAttribute("accion", EAccion.MODIFICAR);		
+    JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Productos/galeria");		
+    JsfBase.setFlashAttribute("idProducto", item.getProducto().getIdProducto()); 
+    return "/Paginas/Mantic/Productos/accion".concat(Constantes.REDIRECIONAR);
   } // doAccion
 
   public String doCancelar() {   

@@ -41,7 +41,7 @@
     <div id="janal-opcion-1" class="opciones">
       <center style="margin-left: 0%; margin-right: 0%;">
         <div>
-          <p:outputLabel id="categorias" value="#{kajoolControlGaleria.attrs.links}" escape="false" style="display: #{empty kajoolControlGaleria.attrs.links? 'none': ''}"/>
+          <p:outputLabel id="categorias" value="#{kajoolControlGaleria.attrs.links} #{empty kajoolControlGaleria.attrs.subs? '': kajoolControlGaleria.attrs.subs}" escape="false" style="display: #{empty kajoolControlGaleria.attrs.links? 'none': ''}"/>
         </div>
         <div class="distribucion">
           <div class="categoria lg-pantalla">

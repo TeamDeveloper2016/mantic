@@ -22,6 +22,8 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UIEntity;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import org.apache.commons.logging.Log;
@@ -61,6 +63,7 @@ public class Galeria extends BaseMenu implements Serializable {
   protected void init() {
     super.init();
     try {
+			this.attrs.put("isGerente", JsfBase.isAdminEncuestaOrAdmin());
       this.codigo = JsfBase.getFlashAttribute("codigo")== null? "": (String)JsfBase.getFlashAttribute("codigo");
       this.categoria= JsfBase.getFlashAttribute("categoria")== null? "": (String)JsfBase.getFlashAttribute("categoria");
       this.busqueda = JsfBase.getFlashAttribute("busqueda")== null? EBusqueda.CATEGORIA: (EBusqueda)JsfBase.getFlashAttribute("busqueda");
@@ -68,6 +71,7 @@ public class Galeria extends BaseMenu implements Serializable {
       this.pathImage= dns.substring(0, dns.lastIndexOf("/")+ 1).concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/galeria/");
       if(!Cadena.isVacio(this.codigo))
         this.doLoadArticulos(this.codigo);
+      this.toLoadCatalog();
       this.doLoad();
 		} // try
 	  catch (Exception e) {
@@ -79,7 +83,10 @@ public class Galeria extends BaseMenu implements Serializable {
   public void doLoad() {
     Map<String, Object> params = new HashMap<>();
     try {      
-      params.put("idUsuario", JsfBase.getIdUsuario());      
+      if (!Cadena.isVacio(this.attrs.get("idCliente")) && !this.attrs.get("idCliente").toString().equals("-1")) 
+        params.put("idUsuario", this.attrs.get("idCliente"));
+      else 
+        params.put("idUsuario", JsfBase.getIdUsuario());     
       this.cliente= (Entity)DaoFactory.getInstance().toEntity("VistaClientesRepresentantesDto", "cliente", params);
       if(this.cliente== null) {
         this.cliente= new Entity(JsfBase.getIdUsuario());
@@ -94,6 +101,24 @@ public class Galeria extends BaseMenu implements Serializable {
       Methods.clean(params);
     } // finally
   }
+  
+	private void toLoadCatalog() {
+		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
+    try {
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      columns.add(new Columna("nombreCompleto", EFormatoDinamicos.MAYUSCULAS));
+      this.attrs.put("clientes", (List<UISelectEntity>) UIEntity.build("VistaClientesRepresentantesDto", "todos", params, columns));
+			this.attrs.put("idCliente", new UISelectEntity("-1"));
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
+	}
   
   public void doLoadArticulos(String codigo) {
     List<Columna> columns     = new ArrayList<>();

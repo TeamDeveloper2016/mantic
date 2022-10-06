@@ -121,16 +121,29 @@
             </f:facet>
           </p:dataTable>
           <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-						<p:menuitem id="modificar" icon="fa fa-edit" action="#{manticProductosFiltro.doAccion('MODIFICAR')}" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
-            <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>					
+						<p:menuitem icon="fa fa-edit" action="#{manticProductosFiltro.doAccion('MODIFICAR')}" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+            <p:menuitem icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>					
             <p:separator/>
-            <p:menuitem id="ordenar" icon="fa fa-sort-alpha-asc" action="#{manticProductosFiltro.doOrdenar()}" ajax="false" value="Ordenar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>					
+            <p:menuitem icon="fa fa-sort-alpha-asc" action="#{manticProductosFiltro.doOrdenar()}" ajax="false" value="Ordenar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>					
             <p:separator/>
-            <p:menuitem id="galeria" icon="fa fa-picture-o" action="#{manticProductosFiltro.doGaleria()}" ajax="false" value="Galeria" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>					
+            <p:menuitem icon="fa fa-picture-o" action="#{manticProductosFiltro.doGaleria()}" ajax="false" value="Galeria" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>					
+            <p:menuitem icon="fa fa-shirtsinbulk" value="URL" process="@this tabla" onstart="return janal.bloquear();" oncomplete="PF('widgetUrl').show();" update="dialogoUrl"/>					
           </p:contextMenu>
         </div>
       </div>
-    </div>		           				
+    </div>		    
+    <p:dialog id="dialogoUrl" dynamic="true" widgetVar="widgetUrl" header="Publicar categoría" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="true" resizable="false" onHide="janal.desbloquear();" appendTo="@(body)">
+      <h:form prependId="false">
+        <h:panelGrid columns="1" class="janal-wid-100">
+          <p:outputLabel value="Publicar producto (URL):" styleClass="janal-color-orange Fs16"/>
+          <p:outputLabel value="#{manticProductosFiltro.codigo}" styleClass="janal-color-black Fs16"/>
+        </h:panelGrid> 
+        <hr class="ui-widget-content"/>
+        <div class="janal-line-button">
+          <p:commandButton icon="fa fa-close" value="Cancelar" onstart="PF('widgetUrl').hide(); return true;" oncomplete="janal.desbloquear();" /> 
+        </div>
+      </h:form>  
+    </p:dialog>  
   </ui:define>   
   <ui:param name="componenteBloqueo" value="buscar buscarIcon tabla"/>
   <ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar el producto ?" />

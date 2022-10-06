@@ -68,16 +68,16 @@ public class Filtro extends Contenedor implements Serializable {
   }
   
   public String getCodigo() {
-    String url= "";
+    String regresar= "";
     try {
       if(this.categoria.getNombre()!= null)
-        url= "https://ferreteriabonanza.com/Control/galeria.jsf?zOxAi=".concat(Cifrar.cifrar(this.categoria.getNombre()));
+        regresar= "https://ferreteriabonanza.com/Control/galeria.jsf?zOxAi=".concat(Cifrar.cifrar(this.categoria.getNombre()));
     } // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
-    return url;  
+    return regresar;  
   }
   
   @PostConstruct

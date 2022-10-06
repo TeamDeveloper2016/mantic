@@ -5,6 +5,17 @@
 <process>
 	<dml> 
 		<unit id="VistaProductosDto">
+      <select id="hijos">
+        select      
+          tc_mantic_productos_categorias.id_producto_categoria as id_key,
+          tc_mantic_productos_categorias.nombre
+        from
+          tc_mantic_productos_categorias
+        where
+          tc_mantic_productos_categorias.padre= '{categoria}|'
+        order by
+          tc_mantic_productos_categorias.orden
+      </select>
       <select id="categorias">
         select      
           tc_mantic_productos_categorias.id_producto_categoria as id_key,
@@ -128,7 +139,7 @@
           tc_mantic_articulos_codigos.id_principal,
           tc_mantic_articulos_codigos.codigo
       </select>
-			<select id="lazy">
+			<select id="lazy">  
         select 
           tc_mantic_productos.id_producto as id_key,
           count(tc_mantic_productos_detalles.id_producto) as articulos,
@@ -9783,6 +9794,31 @@
 					tc_mantic_personas on tr_mantic_cliente_representante.id_representante = tc_mantic_personas.id_persona
 				where 
 					tr_mantic_cliente_representante.id_cliente={idCliente}
+			</select>
+			<select id="todos">
+				select 
+					tc_janal_usuarios.id_usuario as id_key,
+					tr_mantic_cliente_representante.id_cliente,
+          tc_mantic_clientes.especial,
+					tr_mantic_cliente_representante.id_representante,
+					tr_mantic_cliente_representante.id_principal,
+					concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as nombre_completo,
+					tc_mantic_personas.rfc,
+					tc_mantic_personas.curp,
+					tr_mantic_cliente_representante.observaciones,
+					tr_mantic_cliente_representante.registro
+				from 	
+					tr_mantic_cliente_representante
+				inner join
+					tc_mantic_personas on tr_mantic_cliente_representante.id_representante = tc_mantic_personas.id_persona
+        inner join
+          tc_mantic_clientes on tr_mantic_cliente_representante.id_cliente = tc_mantic_clientes.id_cliente
+        inner join 
+          tc_janal_usuarios on tc_mantic_personas.id_persona= tc_janal_usuarios.id_persona
+        where
+          tc_mantic_clientes.especial&gt; 0
+				order by
+         concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, ''))
 			</select>
 			<select id="cliente">
 				select 

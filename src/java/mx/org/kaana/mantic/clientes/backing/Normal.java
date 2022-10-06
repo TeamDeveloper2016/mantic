@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -47,7 +48,6 @@ public class Normal extends IBaseFilter implements Serializable {
       this.attrs.put("codigo", "");
       //this.attrs.put("nombre", "");
       this.attrs.put("idTipoArticulo", 1L);
-      this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());      
 			this.attrs.put("isGerente", JsfBase.isAdminEncuestaOrAdmin());
 			this.attrs.put("idUsuario", JsfBase.getIdUsuario());
@@ -66,10 +66,10 @@ public class Normal extends IBaseFilter implements Serializable {
 
   @Override
   public void doLoad() {
-    List<Columna> columns     = null;
-		Map<String, Object> params= this.toPrepare();
+    List<Columna> columns     = new ArrayList<>();
+		Map<String, Object> params= null;
     try {
-      columns = new ArrayList<>();
+  		params= this.toPrepare();
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("menudeo", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("medioMayoreo", EFormatoDinamicos.MILES_CON_DECIMALES));
@@ -89,11 +89,10 @@ public class Normal extends IBaseFilter implements Serializable {
   } // doLoad
 	
 	private void toLoadCatalog() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
-			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
+      if(JsfBase.getAutentifica().getEmpresa().isMatriz())
         params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
 			else
 				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
@@ -102,9 +101,12 @@ public class Normal extends IBaseFilter implements Serializable {
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       this.attrs.put("empresas", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
-			this.attrs.put("idEmpresa", new UISelectEntity("-1"));
-      this.attrs.put("almacenes", (List<UISelectEntity>) UIEntity.build("TcManticAlmacenesDto", "almacenes", params, columns));
-			this.attrs.put("idAlmacen", new UISelectEntity("-1"));
+			this.attrs.put("idEmpresa", new UISelectEntity("-1"));      
+      columns.clear();
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      columns.add(new Columna("nombreCompleto", EFormatoDinamicos.MAYUSCULAS));
+      this.attrs.put("clientes", (List<UISelectEntity>) UIEntity.build("VistaClientesRepresentantesDto", "todos", params, columns));
+			this.attrs.put("idCliente", new UISelectEntity("-1"));
     } // try
     catch (Exception e) {
       throw e;
@@ -115,10 +117,17 @@ public class Normal extends IBaseFilter implements Serializable {
     }// finally
 	}
 
-	private Map<String, Object> toPrepare() {
+	private Map<String, Object> toPrepare() throws Exception {
 		Map<String, Object> regresar= new HashMap<>();
 		StringBuilder sb            = null;
 		try {
+      if (!Cadena.isVacio(this.attrs.get("idCliente")) && !this.attrs.get("idCliente").toString().equals("-1")) {
+        regresar.put("idUsuario", this.attrs.get("idCliente"));
+        this.cliente= (Entity)DaoFactory.getInstance().toEntity("VistaClientesRepresentantesDto", "cliente", regresar);
+      } // if
+      else 
+        if (!Cadena.isVacio(this.attrs.get("idCliente")) && this.attrs.get("idCliente").toString().equals("-1") && !Objects.equals(this.cliente.toDouble("especial"), -1D))
+          this.cliente.get("especial").setData(-1D);
   		regresar.put("porcentaje", this.cliente.toDouble("especial"));
   		regresar.put("codigos", Constantes.SQL_VERDADERO);
 			sb= new StringBuilder("tc_mantic_articulos.id_articulo_tipo=").append(this.attrs.get("idTipoArticulo")).append(" and ");			

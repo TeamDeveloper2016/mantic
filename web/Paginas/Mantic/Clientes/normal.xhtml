@@ -37,32 +37,48 @@
 				<div id="collapse-content" class="ui-grid-col-12">
 					<div class="ui-grid-row janal-grid-row">
 						<div class="ui-grid-col-12">
-              <p:panelGrid columns="3" styleClass="janal-wid-100-txt" columnClasses="#{kajoolUtilAplicacion.isMobile? 'janal-fix-13': 'janal-fix-5'}, janal-fix-85, janal-fix-2  janal-column-center">
-                <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-96, janal-wid-2 janal-column-center">
-                  <p:outputLabel for="codigos" value="Código:"/>
-                  <p:selectBooleanCheckbox value="#{manticClientesNormal.attrs.buscaPorCodigo}" title="Buscar por código" styleClass="filas">
-                    <p:ajax event="change" process="@this" update="@this"/>
-                  </p:selectBooleanCheckbox>
+              <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
+                <p:panelGrid columns="3" styleClass="janal-wid-100-txt" columnClasses="#{kajoolUtilAplicacion.isMobile? 'janal-fix-13': 'janal-fix-5'}, janal-fix-85, janal-fix-2  janal-column-center">
+                  <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-96, janal-wid-2 janal-column-center">
+                    <p:outputLabel for="codigos" value="Código:"/>
+                    <p:selectBooleanCheckbox value="#{manticClientesNormal.attrs.buscaPorCodigo}" title="Buscar por código" styleClass="filas">
+                      <p:ajax event="change" process="@this" update="@this"/>
+                    </p:selectBooleanCheckbox>
+                  </p:panelGrid>   
+                  <p:autoComplete id="codigos" var="custom" placeholder="ejemplo: AU125" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticClientesNormal.attrs.custom}" completeMethod="#{manticClientesNormal.doCompleteArticulo}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+                    <!-- p:ajax event="itemSelect" oncomplete="$('#replace').click();"/-->
+                    <f:facet name="itemtip">
+                      <h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
+                        <f:facet name="header" class="TexAlCenter">
+                          <p:graphicImage library="janal" name="img/sistema/bonanza.svg" styleClass="janal-logo-mini" width="50" height="30"/>
+                        </f:facet>
+                        <h:outputText value="Propio:" />
+                        <h:outputText value="#{custom.propio}" />
+                        <h:outputText value="Nombre:" />
+                        <h:outputText value="#{custom.nombre}" />
+                        <h:outputText value="IVA:" />
+                        <h:outputText value="#{custom.iva}" />
+                        <h:outputText value="Costo:" />
+                        <h:outputText value="$ #{custom.precio}" />
+                      </h:panelGrid>
+                    </f:facet>
+                  </p:autoComplete>			
+                  <p:commandButton styleClass="janal-text-white" icon="fa fa-filter" accesskey="b" onstart="return janal.execute(true);" process="@form" actionListener="#{manticClientesNormal.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
                 </p:panelGrid>   
-                <p:autoComplete id="codigos" var="custom" placeholder="ejemplo: AU125" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticClientesNormal.attrs.custom}" completeMethod="#{manticClientesNormal.doCompleteArticulo}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
-                  <!-- p:ajax event="itemSelect" oncomplete="$('#replace').click();"/-->
-                  <f:facet name="itemtip">
-                    <h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
-                      <f:facet name="header" class="TexAlCenter">
-                        <p:graphicImage library="janal" name="img/sistema/bonanza.svg" styleClass="janal-logo-mini" width="50" height="30"/>
-                      </f:facet>
-                      <h:outputText value="Propio:" />
-                      <h:outputText value="#{custom.propio}" />
-                      <h:outputText value="Nombre:" />
-                      <h:outputText value="#{custom.nombre}" />
-                      <h:outputText value="IVA:" />
-                      <h:outputText value="#{custom.iva}" />
-                      <h:outputText value="Costo:" />
-                      <h:outputText value="$ #{custom.precio}" />
-                    </h:panelGrid>
-                  </f:facet>
-                </p:autoComplete>			
-                <p:commandButton styleClass="janal-text-white" icon="fa fa-filter" accesskey="b" onstart="return janal.execute(true);" process="@form" actionListener="#{manticClientesNormal.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
+                <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="#{kajoolUtilAplicacion.isMobile? 'janal-fix-13': 'janal-fix-5'}, janal-wid-95" rendered="#{manticClientesGaleria.attrs.isGerente}">
+                  <p:outputLabel for="idCliente" value="Cliente:" rendered="#{manticClientesGaleria.attrs.isGerente}"/>
+                  <p:selectOneMenu id="idCliente" value="#{manticClientesNormal.attrs.idCliente}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{manticClientesGaleria.attrs.isGerente}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                    <p:ajax event="change" process="@this" update="tabla" listener="#{manticClientesNormal.doLoad}" onstart="return janal.execute(true);" oncomplete="janal.desbloquear();" />
+                    <f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
+                    <f:selectItems value="#{manticClientesNormal.attrs.clientes}" var="element" itemValue="#{element}" itemLabel="#{element.nombreCompleto}"/>
+                    <p:column headerText="Nombre">
+                      <h:outputText value="#{item.nombreCompleto}"/>
+                    </p:column>   
+                    <p:column headerText="Porcentaje" styleClass="janal-fix-20 janal-column-center">
+                      <h:outputText value="#{item.especial}%"/>
+                    </p:column>   
+                  </p:selectOneMenu>
+                </p:panelGrid>   
               </p:panelGrid>   
 						</div>
 					</div>
