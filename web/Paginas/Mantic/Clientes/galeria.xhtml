@@ -41,7 +41,7 @@
     <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="#{kajoolUtilAplicacion.isMobile? 'janal-fix-13': 'janal-fix-5'}, janal-wid-95" rendered="#{manticClientesGaleria.attrs.isGerente}">
       <p:outputLabel for="idCliente" value="Cliente:" rendered="#{manticClientesGaleria.attrs.isGerente}"/>
       <p:selectOneMenu id="idCliente" value="#{manticClientesGaleria.attrs.idCliente}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{manticClientesGaleria.attrs.isGerente}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-        <p:ajax event="change" process="@this" update="tabla" listener="#{manticClientesGaleria.doLoad}" onstart="return janal.execute(true);" oncomplete="janal.desbloquear();" />
+        <p:ajax event="change" process="@this" update="tabla" listener="#{manticClientesGaleria.doLoadArticulos}" onstart="return janal.execute(true);" oncomplete="janal.desbloquear();" />
         <f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
         <f:selectItems value="#{manticClientesGaleria.attrs.clientes}" var="element" itemValue="#{element}" itemLabel="#{element.nombreCompleto}"/>
         <p:column headerText="Nombre">
@@ -59,7 +59,7 @@
     <div id="janal-opcion-1" class="opciones">
       <center style="margin-left: 0%; margin-right: 0%;">
         <div>
-          <p:outputLabel id="categorias" value="#{manticClientesGaleria.attrs.links}" escape="false" style="display: #{empty manticClientesGaleria.attrs.links? 'none': ''}"/>
+          <p:outputLabel id="categorias" value="#{manticClientesGaleria.attrs.links} #{empty manticClientesGaleria.attrs.subs? '': manticClientesGaleria.attrs.subs}" escape="false" style="display: #{empty manticClientesGaleria.attrs.links? 'none': ''}"/>
         </div>
       </center>  
     </div>  

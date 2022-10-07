@@ -70,7 +70,7 @@ public class Galeria extends BaseMenu implements Serializable {
       String dns= Configuracion.getInstance().getPropiedadServidor("sistema.dns");
       this.pathImage= dns.substring(0, dns.lastIndexOf("/")+ 1).concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/galeria/");
       if(!Cadena.isVacio(this.codigo))
-        this.doLoadArticulos(this.codigo);
+        this.doLoadArticulos();
       this.toLoadCatalog();
       this.doLoad();
 		} // try
@@ -91,6 +91,7 @@ public class Galeria extends BaseMenu implements Serializable {
       if(this.cliente== null) {
         this.cliente= new Entity(JsfBase.getIdUsuario());
         this.cliente.put("especial", new Value("especial", -1D));
+        this.cliente.put("idUsuario", new Value("idUsuario", -1L));
       } // if  
     } // try
     catch (Exception e) {
@@ -120,10 +121,19 @@ public class Galeria extends BaseMenu implements Serializable {
     }// finally
 	}
   
-  public void doLoadArticulos(String codigo) {
+  public void doLoadArticulos() {
     List<Columna> columns     = new ArrayList<>();
 		Map<String, Object> params= new HashMap<>();
     try {
+      if (!Cadena.isVacio(this.attrs.get("idCliente")) && !this.attrs.get("idCliente").toString().equals("-1") && !Objects.equals(this.cliente.toLong("idUsuario"), new Long(this.attrs.get("idCliente").toString()))) {
+        params.put("idUsuario", this.attrs.get("idCliente"));
+        this.cliente= (Entity)DaoFactory.getInstance().toEntity("VistaClientesRepresentantesDto", "cliente", params);
+      } // if
+      else 
+        if (!Cadena.isVacio(this.attrs.get("idCliente")) && this.attrs.get("idCliente").toString().equals("-1") && !Objects.equals(this.cliente.toDouble("especial"), -1D)) {
+          this.cliente.get("especial").setData(-1D);
+          this.cliente.get("idUsuario").setData(-1L);
+        } // if  
   		params.put("porcentaje", this.cliente.toDouble("especial"));
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
@@ -133,9 +143,10 @@ public class Galeria extends BaseMenu implements Serializable {
       columns.add(new Columna("especial", EFormatoDinamicos.MILES_CON_DECIMALES));
       params.put("sortOrder", "order by tc_mantic_productos.nombre, tc_mantic_productos_detalles.orden");
       if(Cadena.isVacio(this.categoria))
-    		params.put("codigo", codigo.toUpperCase().trim());		
+    		params.put("codigo", this.codigo);		
       else 
     		params.put("codigo", this.categoria.toUpperCase().trim());		
+      this.attrs.put("subs", null);
       if(!Cadena.isVacio(codigo)) {
         this.lazyModel= new FormatCustomLazy("VistaOrdenesComprasDto", "exportar", params, columns);
         if(Objects.equals(EBusqueda.CATEGORIA, this.busqueda)) 
@@ -164,7 +175,7 @@ public class Galeria extends BaseMenu implements Serializable {
   public void doLoadCategoria(String codigo) {
     this.busqueda= EBusqueda.CATEGORIA;
     this.codigo  = codigo;
-    this.doLoadArticulos(codigo);
+    this.doLoadArticulos();
   }
   
   private String toProcessLinks(String categoria) {
@@ -182,13 +193,43 @@ public class Galeria extends BaseMenu implements Serializable {
     } // for
     if(regresar.length()> 0)
       regresar.delete(regresar.length()- 66, regresar.length());
+    this.toLoadSubcategoria(categoria);
     return regresar.toString();
   }
  
   public void doLoadProducto(String codigo, String busqueda) {
     this.codigo   = codigo;
     this.busqueda= EBusqueda.valueOf(busqueda);
-    this.doLoadArticulos(this.codigo);
+    this.doLoadArticulos();
+  }
+  
+  public void toLoadSubcategoria(String categoria) {
+    List<Columna> columns     = new ArrayList<>();
+		Map<String, Object> params= new HashMap<>();
+    StringBuilder regresar    = new StringBuilder();
+    try {
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      params.put("categoria", categoria);
+      List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaProductosDto", "hijos", params);
+      if(items!= null && items.size()> 0) {
+        regresar.append(" <br></br><span>Subcategorías: </span>");
+        for (Entity item: items) {
+          regresar.append("[ <span class=\"ui-panel-title Fs16\"><a onclick=\"busquedaCategoria('").append(categoria).append(Constantes.SEPARADOR).append(item.toString("nombre")).
+                   append("');\" class=\"janal-move-element\" style=\"color: orange; cursor:pointer;\">").
+                   append(Cadena.letraCapital(item.toString("nombre")).trim()).append("</a> ]</span>").append("<span class=\"ui-panel-title janal-color-black Fs18\">   »   </span>");
+        } // for
+        regresar.delete(regresar.length()- 66, regresar.length());
+        this.attrs.put("subs", regresar.toString());
+      } // if
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally    
   }
   
 }

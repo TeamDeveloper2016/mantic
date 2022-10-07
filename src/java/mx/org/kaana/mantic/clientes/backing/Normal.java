@@ -55,6 +55,7 @@ public class Normal extends IBaseFilter implements Serializable {
       if(this.cliente== null) {
         this.cliente= new Entity(JsfBase.getIdUsuario());
         this.cliente.put("especial", new Value("especial", -1D));
+        this.cliente.put("idUsuario", new Value("idUsuario", -1L));
       } // if  
 			this.toLoadCatalog();
     } // try
@@ -121,13 +122,15 @@ public class Normal extends IBaseFilter implements Serializable {
 		Map<String, Object> regresar= new HashMap<>();
 		StringBuilder sb            = null;
 		try {
-      if (!Cadena.isVacio(this.attrs.get("idCliente")) && !this.attrs.get("idCliente").toString().equals("-1")) {
+      if (!Cadena.isVacio(this.attrs.get("idCliente")) && !this.attrs.get("idCliente").toString().equals("-1") && !Objects.equals(this.cliente.toLong("idUsuario"), new Long(this.attrs.get("idCliente").toString()))) {
         regresar.put("idUsuario", this.attrs.get("idCliente"));
         this.cliente= (Entity)DaoFactory.getInstance().toEntity("VistaClientesRepresentantesDto", "cliente", regresar);
       } // if
       else 
-        if (!Cadena.isVacio(this.attrs.get("idCliente")) && this.attrs.get("idCliente").toString().equals("-1") && !Objects.equals(this.cliente.toDouble("especial"), -1D))
+        if (!Cadena.isVacio(this.attrs.get("idCliente")) && this.attrs.get("idCliente").toString().equals("-1") && !Objects.equals(this.cliente.toDouble("especial"), -1D)) {
           this.cliente.get("especial").setData(-1D);
+          this.cliente.get("idUsuario").setData(-1L);
+        } // if  
   		regresar.put("porcentaje", this.cliente.toDouble("especial"));
   		regresar.put("codigos", Constantes.SQL_VERDADERO);
 			sb= new StringBuilder("tc_mantic_articulos.id_articulo_tipo=").append(this.attrs.get("idTipoArticulo")).append(" and ");			

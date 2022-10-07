@@ -162,10 +162,10 @@ public class Galeria extends BaseMenu implements Serializable {
         for (Entity item: items) {
           regresar.append("[ <span class=\"ui-panel-title Fs16\"><a onclick=\"busquedaCategoria('").append(categoria).append(Constantes.SEPARADOR).append(item.toString("nombre")).
                    append("');\" class=\"janal-move-element\" style=\"color: orange; cursor:pointer;\">").
-                   append(Cadena.letraCapital(item.toString("nombre"))).append("</a></span>").append(" ]<span class=\"ui-panel-title janal-color-black Fs18\">   »   </span>");
+                   append(Cadena.letraCapital(item.toString("nombre"))).append("</a> ]</span>").append("<span class=\"ui-panel-title janal-color-black Fs18\">   »   </span>");
         } // for
         regresar.delete(regresar.length()- 66, regresar.length());
-        // this.attrs.put("subs", regresar.toString());
+        this.attrs.put("subs", regresar.toString());
       } // if
 		} // try
 	  catch (Exception e) {
