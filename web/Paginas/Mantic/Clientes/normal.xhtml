@@ -63,12 +63,12 @@
                       </h:panelGrid>
                     </f:facet>
                   </p:autoComplete>			
-                  <p:commandButton styleClass="janal-text-white" icon="fa fa-filter" accesskey="b" onstart="return janal.execute(true);" process="@form" actionListener="#{manticClientesNormal.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
+                  <p:commandButton styleClass="janal-text-white" icon="fa fa-filter" accesskey="b" onstart="return janal.execute(true);" process="@form" actionListener="#{manticClientesNormal.doLoad}" oncomplete="janal.desbloquear();" update="idCliente tabla"/>
                 </p:panelGrid>   
                 <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="#{kajoolUtilAplicacion.isMobile? 'janal-fix-13': 'janal-fix-5'}, janal-wid-95" rendered="#{manticClientesGaleria.attrs.isGerente}">
                   <p:outputLabel for="idCliente" value="Cliente:" rendered="#{manticClientesGaleria.attrs.isGerente}"/>
                   <p:selectOneMenu id="idCliente" value="#{manticClientesNormal.attrs.idCliente}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{manticClientesGaleria.attrs.isGerente}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                    <p:ajax event="change" process="@this" update="tabla" listener="#{manticClientesNormal.doLoad}" onstart="return janal.execute(true);" oncomplete="janal.desbloquear();" />
+                    <p:ajax event="change" process="@this" update="tabla" listener="#{manticClientesNormal.doLoad}" onstart="if($('#codigos_input').val().trim().length!= 0) {return #{empty manticClientesNormal.lazyModel or manticClientesNormal.lazyModel eq null? 'false': 'janal.execute(true)'}; }" oncomplete="janal.desbloquear();" />
                     <f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
                     <f:selectItems value="#{manticClientesNormal.attrs.clientes}" var="element" itemValue="#{element}" itemLabel="#{element.nombreCompleto}"/>
                     <p:column headerText="Nombre">
