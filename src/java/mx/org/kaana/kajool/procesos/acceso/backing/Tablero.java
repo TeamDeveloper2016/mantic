@@ -859,7 +859,7 @@ public class Tablero extends Comun implements Serializable {
     return regresar;
   } // cambiarSemestre
 	
-	private String toCondicionSemestre(String nombreFecha, String nombrePivote) throws Exception{
+	private String toCondicionSemestre(String nombreFecha, String nombrePivote) throws Exception {
 		Calendar seleccionada= null;
 		StringBuilder sb     = null;
 		StringBuilder title  = null;
@@ -931,7 +931,7 @@ public class Tablero extends Comun implements Serializable {
     return regresar;
   } // cambiarAnio
 	
-	private String toCondicionAnio(String nombreFecha, String nombrePivote) throws Exception{
+	private String toCondicionAnio(String nombreFecha, String nombrePivote) throws Exception {
 		Calendar seleccionada= null;
 		StringBuilder sb     = null;
 		StringBuilder title  = null;
@@ -1028,12 +1028,10 @@ public class Tablero extends Comun implements Serializable {
   }
   
   public void toLoadCuentasPagar() {
-    List<Columna> columns     = null;    
-    Map<String, Object> params= null;
+    List<Columna> columns     = new ArrayList<>();    
+    Map<String, Object> params= new HashMap<>();
     try {      
-      params = new HashMap<>();      
       params.put("id", 1L);      
-      columns = new ArrayList<>();
       columns.add(new Columna("total", EFormatoDinamicos.MONEDA_CON_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
       params.put("sortOrder", "order by dias desc");
@@ -1074,20 +1072,17 @@ public class Tablero extends Comun implements Serializable {
   }
   
   public void doLoadCuentasVentas() {
-    List<Columna> columns     = null;    
-    Map<String, Object> params= null;
-    StringBuilder sb          = null;
+    List<Columna> columns     = new ArrayList<>();    
+    Map<String, Object> params= new HashMap<>();
+    StringBuilder sb          = new StringBuilder();
     try {      
-      params= new HashMap<>();      
-      sb    = new StringBuilder();		
-      sb.append("tc_mantic_ventas_estatus.id_venta_estatus in (").append(EEstatusVentas.PAGADA.getIdEstatusVenta()).append(",").append(EEstatusVentas.TIMBRADA.getIdEstatusVenta()).append(",").append(EEstatusVentas.TERMINADA.getIdEstatusVenta()).append(") and ");
+      sb.append("tc_mantic_ventas.id_venta_estatus in (").append(EEstatusVentas.PAGADA.getIdEstatusVenta()).append(",").append(EEstatusVentas.TIMBRADA.getIdEstatusVenta()).append(",").append(EEstatusVentas.TERMINADA.getIdEstatusVenta()).append(") and ");
       sb.append("(date_format(tc_mantic_ventas.registro, '%Y%m%d')= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') ");			
       params.put(Constantes.SQL_CONDICION, sb.toString());
       params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
-      columns = new ArrayList<>();
       columns.add(new Columna("nombreEmpresa", EFormatoDinamicos.MAYUSCULAS));      
       columns.add(new Columna("importe", EFormatoDinamicos.MILES_SAT_DECIMALES));      
-      this.lazyModelVentas= new FormatCustomLazy("VistaConsultasDto", "diarias", params, columns);
+      this.lazyModelVentas= new FormatCustomLazy("VistaConsultasDto", "ventas", params, columns);
       UIBackingUtilities.resetDataTable("ventas");
     } // try
     catch (Exception e) {

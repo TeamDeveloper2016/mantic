@@ -133,7 +133,7 @@ public class Diarias extends IBaseTicket implements Serializable {
       columns= new ArrayList<>();      
       columns.add(new Columna("nombreEmpresa", EFormatoDinamicos.MAYUSCULAS));      
       columns.add(new Columna("importe", EFormatoDinamicos.MILES_SAT_DECIMALES));      
-      this.lazyModel = new FormatCustomLazy("VistaConsultasDto", "diarias", params, columns);
+      this.lazyModel = new FormatCustomLazy("VistaConsultasDto", "ventas", params, columns);
 			this.attrs.put("total", DaoFactory.getInstance().toEntity("VistaConsultasDto", "diariasTotales", params));
       UIBackingUtilities.resetDataTable();
 			columns.remove(columns.size()- 1);
@@ -161,16 +161,16 @@ public class Diarias extends IBaseTicket implements Serializable {
 	protected Map<String, Object> toPrepare(EEstatusVentas consulta) {
 	  Map<String, Object> regresar= new HashMap<>();	
 		StringBuilder sb= new StringBuilder();		
-		sb.append("tc_mantic_tipos_documentos.id_tipo_documento=").append(ETipoDocumento.VENTAS_NORMALES.getIdTipoDocumento()).append(" and ");
+		sb.append("tc_mantic_ventas.id_tipo_documento=").append(ETipoDocumento.VENTAS_NORMALES.getIdTipoDocumento()).append(" and ");
 		switch(consulta) {
 			case CREDITO:
-  		  sb.append("tc_mantic_ventas_estatus.id_venta_estatus in (").append(EEstatusVentas.CREDITO.getIdEstatusVenta()).append(") and ");
+  		  sb.append("tc_mantic_ventas.id_venta_estatus in (").append(EEstatusVentas.CREDITO.getIdEstatusVenta()).append(") and ");
 				break;
 			case APARTADOS:
-  		  sb.append("tc_mantic_ventas_estatus.id_venta_estatus in (").append(EEstatusVentas.APARTADOS.getIdEstatusVenta()).append(") and ");
+  		  sb.append("tc_mantic_ventas.id_venta_estatus in (").append(EEstatusVentas.APARTADOS.getIdEstatusVenta()).append(") and ");
 				break;
 			default:
-  		  sb.append("tc_mantic_ventas_estatus.id_venta_estatus in (").append(EEstatusVentas.PAGADA.getIdEstatusVenta()).append(",").append(EEstatusVentas.TIMBRADA.getIdEstatusVenta()).append(",").append(EEstatusVentas.TERMINADA.getIdEstatusVenta()).append(") and ");
+  		  sb.append("tc_mantic_ventas.id_venta_estatus in (").append(EEstatusVentas.PAGADA.getIdEstatusVenta()).append(",").append(EEstatusVentas.TIMBRADA.getIdEstatusVenta()).append(",").append(EEstatusVentas.TERMINADA.getIdEstatusVenta()).append(") and ");
 				break;
 		} // switch
 		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
