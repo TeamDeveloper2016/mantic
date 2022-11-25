@@ -6871,7 +6871,11 @@
 				where 
 				  tc_mantic_articulos.id_articulo_tipo= 1
 				  and tc_mantic_articulos.id_vigente= 1
-				  and (concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre) like '%{codigo}%' or tc_mantic_productos_marcas.nombre like '%{codigo}%')
+				  and (
+            concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre) like '%{codigo}%' 
+            or tc_mantic_productos_marcas.nombre like '%{codigo}%'
+            or tc_mantic_productos_marcas.descripcion like '%{codigo}%'
+          )
 				group by
 				  tc_mantic_productos.id_producto 
 				order by 

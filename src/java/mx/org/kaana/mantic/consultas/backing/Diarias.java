@@ -191,10 +191,9 @@ public class Diarias extends IBaseTicket implements Serializable {
 	} // toPrepare
 	
 	protected void toLoadCatalog() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
         params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
 			else
@@ -225,10 +224,9 @@ public class Diarias extends IBaseTicket implements Serializable {
 	} // toLoadCatalog
 	
 	public void doLoadCajas() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			params.put("idEmpresa", ((UISelectEntity)this.attrs.get("idEmpresa")).getKey());
