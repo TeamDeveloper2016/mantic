@@ -140,6 +140,7 @@ public class Express extends IBaseAttribute implements Serializable {
 			this.registroArticulo.getArticulo().setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			this.registroArticulo.getArticulo().setIdEmpaqueUnidadMedida(1L);
 			this.registroArticulo.getArticulo().setIdRedondear(this.attrs.get("redondearExpress")!= null && (boolean)this.attrs.get("redondearExpress")? 1L: 2L);
+			this.registroArticulo.setRedondear(this.attrs.get("redondearExpress")!= null && (boolean)this.attrs.get("redondearExpress"));
 			this.registroArticulo.getArticulo().setLimiteMayoreo(20D);
 			this.registroArticulo.getArticulo().setLimiteMedioMayoreo(10D);			
 			this.registroArticulo.getArticulo().setIdVigente(1L);		
@@ -220,9 +221,8 @@ public class Express extends IBaseAttribute implements Serializable {
 
   private void loadProveedores() {
     List<UISelectItem> proveedores= null;
-    Map<String, Object> params    = null;
+    Map<String, Object> params    = new HashMap<>();
     try {
-      params = new HashMap<>();
       params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
       proveedores = UISelect.build("TcManticProveedoresDto", "sucursales", params, "razonSocial", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
       this.attrs.put("proveedoresGeneral", proveedores);
@@ -236,10 +236,9 @@ public class Express extends IBaseAttribute implements Serializable {
   } // loadProveedores
 
   private void loadGrupos() {
-    List<UISelectItem> grupos= null;
-    Map<String, Object> params = null;
+    List<UISelectItem> grupos = null;
+    Map<String, Object> params= new HashMap<>();
     try {
-      params = new HashMap<>();
       params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       grupos = UISelect.build("TcManticGruposDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
       this.attrs.put("gruposGeneral", grupos);
@@ -254,9 +253,8 @@ public class Express extends IBaseAttribute implements Serializable {
 
   private void loadTiposVentas() {
     List<UISelectItem> tiposVentas= null;
-    Map<String, Object> params    = null;
+    Map<String, Object> params    = new HashMap<>();
     try {
-      params = new HashMap<>();
       params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       tiposVentas = UISelect.build("TcManticTiposVentasDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
       this.attrs.put("tiposVentasGeneral", tiposVentas);
@@ -272,6 +270,7 @@ public class Express extends IBaseAttribute implements Serializable {
 	public void doActualizaPrecios() {
 		try {
 			this.registroArticulo.getArticulo().setIdRedondear(this.attrs.get("redondearExpress")!= null && (boolean)this.attrs.get("redondearExpress")? 1L: 2L);
+			this.registroArticulo.setRedondear(this.attrs.get("redondearExpress")!= null && (boolean)this.attrs.get("redondearExpress"));
 			if(this.registroArticulo.getArticulo().getPrecio()!= null) {
 				boolean redondear= this.registroArticulo.getArticulo().getIdRedondear().equals(1L);
 				double total= this.registroArticulo.getArticulo().getPrecio()* (1+ (this.registroArticulo.getArticulo().getIva()/ 100));

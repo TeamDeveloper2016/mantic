@@ -135,8 +135,10 @@ public final class Numero {
 				if(dvalue.doubleValue()> 0.5)
 					valor= ivalue.doubleValue()+ 1;
 				else
-					if(dvalue.doubleValue()>= 0.01 && dvalue.doubleValue()< 0.5)
+					if(dvalue.doubleValue()>= 0.35 && dvalue.doubleValue()< 0.5)
 						valor= ivalue.doubleValue()+ 0.5;
+          else
+	  			  valor= ivalue.doubleValue();
 			} // if
 		} // try
 		catch(Exception e) {

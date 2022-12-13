@@ -128,10 +128,9 @@ public class Accion extends IBaseAttribute implements Serializable {
 
   private void loadEmpaques() {
     List<UISelectItem> empaques= null;
-    Map<String, Object> params = null;
+    Map<String, Object> params = new HashMap<>();
     EAccion eaccion = null;
     try {
-      params = new HashMap<>();
       params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       empaques = UISelect.build("TcManticEmpaquesDto", "row", params, "nombre", EFormatoDinamicos.LIBRE, Constantes.SQL_TODOS_REGISTROS);
       this.attrs.put("empaques", empaques);
@@ -262,23 +261,8 @@ public class Accion extends IBaseAttribute implements Serializable {
 			this.attrs.put("mayoreo", (Constantes.PORCENTAJE_MAYOREO- 1D)* 100D);
 			this.attrs.put("especial", (Constantes.PORCENTAJE_ESPECIAL- 1D)* 100D);
 		} // if	
-		else {
-			double calculo= (Double)this.attrs.get("precio")* (1+ (this.registroArticulo.getArticulo().getIva()/ 100));
-			double total  = precio* (1+ (this.registroArticulo.getArticulo().getIva()/ 100));
-      double factor = Numero.toRedondearSat(this.registroArticulo.getArticulo().getMenudeo()/ calculo);
-			this.attrs.put("menudeo", Numero.toRedondearSat((factor- 1)* 100));
-			this.registroArticulo.getArticulo().setMenudeo(Numero.toAjustarDecimales(total* factor, redondear));
-      factor = Numero.toRedondearSat(this.registroArticulo.getArticulo().getMedioMayoreo()/ calculo);
-			this.attrs.put("medioMayoreo", Numero.toRedondearSat((factor- 1)* 100));
-			this.registroArticulo.getArticulo().setMedioMayoreo(Numero.toAjustarDecimales(total* factor, redondear));
-      factor = Numero.toRedondearSat(this.registroArticulo.getArticulo().getMayoreo()/ calculo);
-			this.attrs.put("mayoreo", Numero.toRedondearSat((factor- 1)* 100));
-			this.registroArticulo.getArticulo().setMayoreo(Numero.toAjustarDecimales(total* factor, redondear));
-      factor = Numero.toRedondearSat(this.registroArticulo.getArticulo().getEspecial()/ calculo);
-			this.attrs.put("especial", Numero.toRedondearSat((factor- 1)* 100));
-			this.registroArticulo.getArticulo().setEspecial(Numero.toAjustarDecimales(total* factor, redondear));
-  	  this.attrs.put("precio", precio);
-		} // if	
+		else 
+      this.doUpdatePreciosVenta();
 	}	 // doUpdatePrecio
 	
   public void doUpdatePreciosVenta() {
@@ -287,24 +271,31 @@ public class Accion extends IBaseAttribute implements Serializable {
 		double calculo= (Double)this.attrs.get("precio")* (1+ (this.registroArticulo.getArticulo().getIva()/ 100));
 		double total  = precio* (1+ (this.registroArticulo.getArticulo().getIva()/ 100));
 		double factor = Numero.toRedondearSat(this.registroArticulo.getArticulo().getMenudeo()/ calculo);
-		this.attrs.put("menudeo", Numero.toRedondearSat((factor- 1)* 100));
 		this.registroArticulo.getArticulo().setMenudeo(Numero.toAjustarDecimales(total* factor, redondear));
+    factor = Numero.toRedondearSat(this.registroArticulo.getArticulo().getMenudeo()/ calculo);
+    this.attrs.put("menudeo", Numero.toRedondearSat((factor- 1)* 100));
+    
 		factor = Numero.toRedondearSat(this.registroArticulo.getArticulo().getMedioMayoreo()/ calculo);
-		this.attrs.put("medioMayoreo", Numero.toRedondearSat((factor- 1)* 100));
-		this.registroArticulo.getArticulo().setMedioMayoreo(Numero.toAjustarDecimales(total* factor, redondear));
+	  this.registroArticulo.getArticulo().setMedioMayoreo(Numero.toAjustarDecimales(total* factor, redondear));
+    factor = Numero.toRedondearSat(this.registroArticulo.getArticulo().getMedioMayoreo()/ calculo);
+    this.attrs.put("medioMayoreo", Numero.toRedondearSat((factor- 1)* 100));
+    
 		factor = Numero.toRedondearSat(this.registroArticulo.getArticulo().getMayoreo()/ calculo);
-		this.attrs.put("mayoreo", Numero.toRedondearSat((factor- 1)* 100));
 		this.registroArticulo.getArticulo().setMayoreo(Numero.toAjustarDecimales(total* factor, redondear));
+    factor = Numero.toRedondearSat(this.registroArticulo.getArticulo().getMayoreo()/ calculo);
+    this.attrs.put("mayoreo", Numero.toRedondearSat((factor- 1)* 100));
+    
 		factor = Numero.toRedondearSat(this.registroArticulo.getArticulo().getEspecial()/ calculo);
-		this.attrs.put("especial", Numero.toRedondearSat((factor- 1)* 100));
 		this.registroArticulo.getArticulo().setEspecial(Numero.toAjustarDecimales(total* factor, redondear));
+    factor = Numero.toRedondearSat(this.registroArticulo.getArticulo().getEspecial()/ calculo);
+    this.attrs.put("especial", Numero.toRedondearSat((factor- 1)* 100));
+    
 		this.attrs.put("precio", precio);
 	}
 
 	public void doLookForCodigo(String id, String codigo, Long index) {
-	  Map<String, Object> params=null;
+	  Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			if(!Cadena.isVacio(codigo)) {
 				ArticuloCodigo proveedor= this.registroArticulo.getArticulosCodigos().get(index.intValue());
 				if(proveedor.getIdProveedor()!= null)
