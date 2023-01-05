@@ -761,7 +761,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // catch		
 	} // doEliminarRepresentante
 	
-	private void loadRegimenesFiscales(){
+	private void loadRegimenesFiscales() {
 		List<Columna> columns     = new ArrayList<>();    
     Map<String, Object> params= new HashMap<>();
     try {      

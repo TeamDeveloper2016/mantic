@@ -106,6 +106,7 @@ public class RegistroCliente implements Serializable{
 	public UISelectEntity getIkRegimenFiscal() {
 		return ikRegimenFiscal;
 	}  
+  
 	public List<ClienteDomicilio> getClientesDomicilio() {
 		return clientesDomicilio;
 	}

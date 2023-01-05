@@ -48,11 +48,22 @@ public class Generar extends BaseMenu implements Serializable {
   private static final Log LOG = LogFactory.getLog(Generar.class);
   private static final long serialVersionUID = 5323749709626263801L;
   
+  private UISelectEntity ikRegimenFiscal;
+  
+	public void setIkRegimenFiscal(UISelectEntity ikRegimenFiscal) {
+		this.ikRegimenFiscal=ikRegimenFiscal;
+	}
+
+	public UISelectEntity getIkRegimenFiscal() {
+		return ikRegimenFiscal;
+	}  
+  
   @Override
   @PostConstruct
   protected void init() {
     super.init();
     this.toLoadCfdis();
+    this.doLoadRegimenesFiscales();
   }
   
   @Override
@@ -75,6 +86,11 @@ public class Generar extends BaseMenu implements Serializable {
             if(Objects.equals(Constantes.VENTA_AL_PUBLICO_GENERAL_ID_KEY, venta.getIdCliente()) || Objects.equals(cliente.getIdCliente(), venta.getIdCliente())) {
               if(Objects.equals(venta.getIdFicticiaEstatus(), EEstatusVentas.PAGADA.getIdEstatusVenta()) || Objects.equals(venta.getIdFicticiaEstatus(), EEstatusVentas.ABIERTA.getIdEstatusVenta())) {
                 if(venta.getTotal()>= 50D) {
+                  // ACTUALIZAR EL REGIMEN FISCAL PARA ESTE CLIENTE EN CASO DE QUE NO TENGA O SEA DIFERENTE
+                  if(this.ikRegimenFiscal!= null && !Objects.equals(this.ikRegimenFiscal.getKey(), -1L) && (cliente.getIdRegimenFiscal()== null || !Objects.equals(cliente.getIdRegimenFiscal(), this.ikRegimenFiscal.getKey()))) {
+                    cliente.setIdRegimenFiscal(this.ikRegimenFiscal.getKey());
+                    DaoFactory.getInstance().update(cliente);
+                  } // if  
                   venta.setIdUsoCfdi(((UISelectEntity)this.attrs.get("cfdi")).getKey());
                   venta.setIdCliente(cliente.getIdCliente());
                   Transaccion transaccion = new Transaccion(venta, "ESTA FACTURA SE GENERO EN LINEA");
@@ -134,14 +150,12 @@ public class Generar extends BaseMenu implements Serializable {
  
 	private void toLoadCfdis() {
 		List<UISelectEntity> cfdis= null;
-		List<Columna> columns     = null;
-		Map<String, Object>params = null;
+		List<Columna> columns     = new ArrayList<>();
+		Map<String, Object>params = new HashMap<>();
 		try {
-			params = new HashMap<>();
-			columns= new ArrayList<>();
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			cfdis= UIEntity.build("TcManticUsosCfdiDto", "row", params, columns, Constantes.SQL_TODOS_REGISTROS);
 			this.attrs.put("cfdis", cfdis);
       if(cfdis!= null && !cfdis.isEmpty())
@@ -156,6 +170,44 @@ public class Generar extends BaseMenu implements Serializable {
 		catch (Exception e) {			
 			throw e;
 		} // catch		
-	} // loadCfdis
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally
+	} // toLoadCfdis
+  
+	public void doLoadRegimenesFiscales() {
+		List<Columna> columns     = new ArrayList<>();    
+    Map<String, Object> params= new HashMap<>();
+    List<UISelectEntity> regimenesFiscales= null;
+    try {      
+      if(this.attrs.get("rfc")!= null && !Cadena.isVacio((String)this.attrs.get("rfc")) && ((String)this.attrs.get("rfc")).trim().length()== 13)
+        params.put("idTipoRegimenPersona", "1");      
+      else 
+        if(this.attrs.get("rfc")!= null && !Cadena.isVacio((String)this.attrs.get("rfc")) && ((String)this.attrs.get("rfc")).trim().length()== 12)
+          params.put("idTipoRegimenPersona", "2");      
+        else
+          params.put("idTipoRegimenPersona", "1, 2");                  
+      columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      regimenesFiscales= (List<UISelectEntity>) UIEntity.seleccione("TcManticRegimenesFiscalesDto", "tipo", params, columns, "codigo");
+			this.attrs.put("regimenesFiscales", regimenesFiscales);
+      if(regimenesFiscales!= null && !regimenesFiscales.isEmpty()) {
+        this.setIkRegimenFiscal(regimenesFiscales.get(0));
+        for(Entity item: regimenesFiscales) {
+          Value nombre= item.get("nombre");
+          if(nombre!= null && nombre.getData()!= null && ((String)nombre.getData()).length()> 30) 
+            nombre.setData(((String)nombre.getData()).substring(0, 30).concat(" ..."));
+        } // for
+      } // if      
+    } // try
+    catch (Exception e) {
+			throw e;
+    } // catch	
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally
+	} // toRegimenesFiscales
   
 }

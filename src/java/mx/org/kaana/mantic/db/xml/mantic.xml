@@ -29,7 +29,8 @@
           tc_mantic_regimenes_fiscales.id_regimen_fiscal as id_key,
           tc_mantic_tipos_regimenes_personas.nombre as persona,
           tc_mantic_regimenes_fiscales.codigo,
-          tc_mantic_regimenes_fiscales.nombre
+          tc_mantic_regimenes_fiscales.nombre,
+          tc_mantic_regimenes_fiscales.nombre as completo
         from      
           tc_mantic_regimenes_fiscales
         inner join
@@ -5587,6 +5588,7 @@
       <select id="row">
         select      
 					tc_mantic_usos_cfdi.id_uso_cfdi as id_key,
+          tc_mantic_usos_cfdi.nombre as completo,
           tc_mantic_usos_cfdi.*
         from      
           tc_mantic_usos_cfdi
