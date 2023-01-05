@@ -244,7 +244,7 @@ public class Transaccion extends TransaccionFactura {
 		try {			
 			if(this.eliminarRegistros(sesion)) {
 				this.messageError= "Error al registrar el articulo.\nVerificar que el articulo no se encuentre registrado.";
-				this.articulo.getArticulo().setIdRedondear(this.articulo.isRedondear()? ACTIVO : INACTIVO);
+				this.articulo.getArticulo().setIdRedondear(this.articulo.isRedondear()? ACTIVO: INACTIVO);
 				this.articulo.getArticulo().setIdUsuario(JsfBase.getIdUsuario());
 				this.articulo.getArticulo().setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 				this.articulo.getArticulo().setIdVigente(1L);
@@ -402,9 +402,8 @@ public class Transaccion extends TransaccionFactura {
 		boolean validate               = false;
 		boolean regresar               = false;
 		boolean asignaPrincipal        = false;
-		boolean alterSqlAction         = false;
 		try {
-			for(ArticuloCodigo codigo: this.articulo.getArticulosCodigos()){
+			for(ArticuloCodigo codigo: this.articulo.getArticulosCodigos()) {
 				if(codigo.getIdPrincipal().equals(1L))
 					countPrincipal++;
 			} // if
@@ -414,32 +413,23 @@ public class Transaccion extends TransaccionFactura {
 				codigo.setIdUsuario(JsfBase.getIdUsuario());
 				codigo.setObservaciones(this.articulo.getObservaciones());
 				if(asignaPrincipal){
-					codigo.setIdProveedor(count==0 ? null : codigo.getIdProveedor());
-					codigo.setIdPrincipal(count==0 ? 1L : 2L);
+					codigo.setIdProveedor(count==0? null: codigo.getIdProveedor());
+					codigo.setIdPrincipal(count==0? 1L: 2L);
 				} // if
 				codigo.setOrden(count + 1L);
 				dto= (TcManticArticulosCodigosDto) codigo;
-				alterSqlAction= this.eaccionGeneral.equals(EAccion.COPIAR);
-				sqlAccion= alterSqlAction ? ESql.INSERT : codigo.getSqlAccion();
+				sqlAccion= this.eaccionGeneral.equals(EAccion.COPIAR)? ESql.INSERT: codigo.getSqlAccion();
 				switch(sqlAccion){
 					case INSERT:
 						dto.setIdArticuloCodigo(-1L);
             if(Objects.equals(dto.getIdProveedor(), Constantes.ID_PROVEEDOR_FABRICANTE)) {
               dto.setIdPrincipal(2L);
-              dto.setOrden(0L);
               dto.setMultiplo(1L);
             } // if
-						if(alterSqlAction){
-							if(dto.getIdPrincipal().equals(1L))
-								validate= registrar(sesion, dto);
-							else
-								validate= true;
-						} // if
-						else
-							validate= registrar(sesion, dto);
+						validate= this.registrar(sesion, dto);
 						break;
 					case UPDATE:
-						validate= actualizar(sesion, dto);
+						validate= this.actualizar(sesion, dto);
 						break;
 				} // switch
 				if(validate)
@@ -450,7 +440,7 @@ public class Transaccion extends TransaccionFactura {
 		catch (Exception e) {			
 			throw e;
 		} // catch		
-		finally{
+		finally {
 			this.messageError= "Error al registrar codigo, verifique que no haya duplicados";
 		} // finally
 		return regresar;

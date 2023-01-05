@@ -13,6 +13,7 @@
       Janal.Control.fields = {
         'contenedorGrupos\\:clave': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
         'contenedorGrupos\\:rfc': {validaciones: 'requerido|rfc', mascara: 'fiscal', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:idRegimenFiscal': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:razonSocial': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
         'contenedorGrupos\\:limiteCredito': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:plazo': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
@@ -64,6 +65,19 @@
                 <p:inputText id="clave" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.cliente.clave}"/>                    
                 <p:outputLabel for="rfc" value="RFC:"/>
                 <p:inputText id="rfc" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.cliente.rfc}" />                    
+                <p:outputLabel for="idRegimenFiscal" value="Régimen fiscal:"/>
+                <p:selectOneMenu id="idRegimenFiscal" value="#{manticCatalogosClientesAccion.registroCliente.ikRegimenFiscal}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <f:selectItems value="#{manticCatalogosClientesAccion.attrs.regimenesFiscales}" var="element" itemValue="#{element}" itemLabel="#{element.codigo} #{empty element.nombre or element.nombre eq ''? '': '-'} #{element.nombre}"/>
+                  <p:column headerText="Código">
+                    <h:outputText value="#{item.codigo}"/>
+                  </p:column>   
+                  <p:column headerText="Persona">
+                    <h:outputText value="#{item.persona}"/>
+                  </p:column>   
+                  <p:column headerText="Nombre">
+                    <h:outputText value="#{item.nombre}"/>
+                  </p:column>   
+								</p:selectOneMenu>
                 <p:outputLabel for="razonSocial" value="Razon social:"/>
                 <p:inputText id="razonSocial" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.cliente.razonSocial}"/>                                    
 								<p:outputLabel for="tipoVenta" value="Tipo de venta:" rendered="#{manticCatalogosClientesAccion.attrs.admin}"/>

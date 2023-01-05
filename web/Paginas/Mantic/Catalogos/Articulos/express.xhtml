@@ -9,6 +9,7 @@
 	<script type="text/javascript">
 		fieldsDialogExpressArt = {
 			codigoDialog      : {validaciones: 'requerido', mascara: 'codigo', formatos: 'cambiar-mayusculas'},
+			auxiliarDialog    : {validaciones: 'libre', mascara: 'codigo', formatos: 'cambiar-mayusculas'},
 			satDialog         : {validaciones: 'libre', mascara: 'ocho-digitos', formatos: 'cambiar-mayusculas', individual: true},			
 			nombreDialog      : {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'},
 			descripcionDialog : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},
@@ -50,8 +51,9 @@
 			<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 				<div class="ui-grid-row janal-grid-row">
 					<div class="ui-grid-col-12">
-						<p:panelGrid columns="4" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-wid-10, janal-wid-60, janal-column-center janal-wid-10">
+						<p:panelGrid columns="5" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-15, janal-wid-15, janal-wid-10, janal-wid-50, janal-column-center janal-wid-10">
 							<p:outputLabel for="codigoDialog" value="Código:"/>
+							<p:outputLabel for="auxiliarDialog" value="Auxiliar:"/>
 							<p:outputLabel for="satDialog" value="SAT:"/>
 							<p:outputLabel for="nombreDialog" value="Nombre:"/>
 							<p:outputLabel value="Redondear:"/>
@@ -72,6 +74,7 @@
 									</p:panelGrid>
 								</f:facet>
 							</p:autoComplete>	
+							<p:inputText id="auxiliarDialog" placeholder="ej. CTS12" styleClass="janal-wid-100-txt generales" value="#{manticCatalogosArticulosExpress.attrs.auxiliarExpress}"/>                    
 							<p:inputText id="satDialog" styleClass="janal-wid-100-txt generales" value="#{manticCatalogosArticulosExpress.registroArticulo.articulo.sat}"/>                    
               <p:autoComplete id="nombreDialog" placeholder="ej. BOTE CESPOL 3/4" var="customNombreDialog" itemLabel="#{customNombreDialog.nombre}" inputStyleClass="janal-wid-100-txt key-down-codigos filas" itemValue="#{customNombreDialog}" value="#{manticCatalogosArticulosExpress.attrs.nombreExpress}" completeMethod="#{manticCatalogosArticulosExpress.doCompleteNombre}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt" appendTo="@(body)" panelStyleClass="janal-autocomplete-panel">
 								<p:ajax event="itemSelect" process="@this" update="precioDialog descripcionDialog @(.calculos) @(.express)" listener="#{manticCatalogosArticulosExpress.doAsignaNombre}"/>
@@ -99,7 +102,7 @@
 							<p:inputTextarea id="descripcionDialog" styleClass="janal-wid-100-txt generales" value="#{manticCatalogosArticulosExpress.registroArticulo.articulo.descripcion}"/>                    
 						</p:panelGrid>
 						<p:separator/>
-            <p:panelGrid columns="5" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-wid-20, janal-wid-20, janal-wid-20, janal-wid-20">
+            <p:panelGrid columns="5" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-15, janal-wid-20, janal-wid-25, janal-wid-20, janal-wid-20">
 						  <p:outputLabel for="precioDialog" value="Costo:"/>
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-column-left, janal-column-center">
   							<p:outputLabel for="menudeoDialog" value="% Menudeo:"/>

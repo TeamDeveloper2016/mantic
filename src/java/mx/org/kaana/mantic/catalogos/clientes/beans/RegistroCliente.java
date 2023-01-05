@@ -12,6 +12,7 @@ import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.mantic.catalogos.clientes.reglas.MotorBusqueda;
 import mx.org.kaana.mantic.catalogos.clientes.reglas.Transaccion;
 import mx.org.kaana.mantic.catalogos.personas.beans.PersonaTipoContacto;
@@ -39,6 +40,7 @@ public class RegistroCliente implements Serializable{
 	private ClienteContactoRepresentante personaTipoContacto;	
 	private boolean habilitarCredito;
   private int index;
+  private UISelectEntity ikRegimenFiscal;
 
 	public RegistroCliente() {
 		this(-1L, new TcManticClientesDto(), new ArrayList<ClienteDomicilio>(), new ArrayList<ClienteTipoContacto>(), new ArrayList<ClienteRepresentante>(), new Domicilio(), new ArrayList<ClienteContactoRepresentante>(), new ClienteContactoRepresentante(), new ClienteContactoRepresentante());
@@ -73,6 +75,10 @@ public class RegistroCliente implements Serializable{
 		this.personaTipoContacto   = personaTipoContactoPivote;
 		this.habilitarCredito      = cliente.getIdCredito()!= null && cliente.getIdCredito().equals(1L);
     this.index                 = -1;
+    if(this.cliente!= null && this.cliente.getIdRegimenFiscal()!= null)
+      this.ikRegimenFiscal= new UISelectEntity(this.cliente.getIdRegimenFiscal());
+    else
+      this.ikRegimenFiscal= new UISelectEntity(-1L);
 	}
 	
 	public Long getIdCliente() {
@@ -91,6 +97,15 @@ public class RegistroCliente implements Serializable{
 		this.cliente = cliente;
 	}
 
+	public void setIkRegimenFiscal(UISelectEntity ikRegimenFiscal) {
+		this.ikRegimenFiscal=ikRegimenFiscal;
+		if(this.ikRegimenFiscal!= null && this.cliente!= null)
+		  this.cliente.setIdRegimenFiscal(this.ikRegimenFiscal.getKey());
+	}
+
+	public UISelectEntity getIkRegimenFiscal() {
+		return ikRegimenFiscal;
+	}  
 	public List<ClienteDomicilio> getClientesDomicilio() {
 		return clientesDomicilio;
 	}
@@ -218,6 +233,10 @@ public class RegistroCliente implements Serializable{
 			motorBusqueda= new MotorBusqueda(this.idCliente);
 			this.cliente= motorBusqueda.toCliente();		
 			this.habilitarCredito= this.cliente.getIdCredito().equals(1L);
+      if(this.cliente!= null && this.cliente.getIdRegimenFiscal()!= null)
+        this.setIkRegimenFiscal(new UISelectEntity(this.cliente.getIdRegimenFiscal()));
+      else
+        this.setIkRegimenFiscal(new UISelectEntity(-1L));
 			this.initCollections(motorBusqueda);
 		} // try
 		catch (Exception e) {			

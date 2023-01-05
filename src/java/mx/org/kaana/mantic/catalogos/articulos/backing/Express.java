@@ -59,6 +59,7 @@ public class Express extends IBaseAttribute implements Serializable {
 			this.attrs.put("medioMayoreo", (Constantes.PORCENTAJE_MEDIO_MAYOREO- 1D)* 100D);				
 			this.attrs.put("mayoreo", (Constantes.PORCENTAJE_MAYOREO- 1D)* 100D);				
 			this.attrs.put("especial", (Constantes.PORCENTAJE_ESPECIAL- 1D)* 100D);				
+			this.attrs.put("auxiliarExpress", "");				
       this.doLoad();
       this.loadProveedores();
       this.loadCategorias();
@@ -119,6 +120,7 @@ public class Express extends IBaseAttribute implements Serializable {
 			this.registroArticulo= new RegistroArticulo();
 			this.attrs.put("codigoExpress", null);
 			this.attrs.put("nombreExpress", null);
+			this.attrs.put("auxiliarDialogo", null);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -127,7 +129,8 @@ public class Express extends IBaseAttribute implements Serializable {
   } // doAccion
 
 	private void prepareRegistro() {	
-		ArticuloCodigo codigo= null;
+		ArticuloCodigo codigo  = null;
+		ArticuloCodigo auxiliar= null;
 		try {			
 			codigo= new ArticuloCodigo(-1L, ESql.INSERT, true);
 			codigo.setCodigo((String) JsfBase.getParametro("codigoDialog_input"));
@@ -136,6 +139,15 @@ public class Express extends IBaseAttribute implements Serializable {
 			codigo.setOrden(1L);
 			this.registroArticulo.getArticulosCodigos().clear();
 			this.registroArticulo.getArticulosCodigos().add(codigo);
+      // ESTO ES PARA AGREGAR EL CODIGO AUXILIAR 
+      if(this.attrs.get("auxiliarExpress")!= null) {
+        auxiliar= new ArticuloCodigo(-1L, ESql.INSERT, true);
+        auxiliar.setCodigo((String)this.attrs.get("auxiliarExpress"));
+  			auxiliar.setIdPrincipal(2L);
+	  		auxiliar.setIdUsuario(JsfBase.getIdUsuario());
+		  	auxiliar.setOrden(2L);
+  			this.registroArticulo.getArticulosCodigos().add(auxiliar);
+      } // if  
 			this.registroArticulo.getArticulo().setNombre((String) JsfBase.getParametro("nombreDialog_input"));
 			this.registroArticulo.getArticulo().setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			this.registroArticulo.getArticulo().setIdEmpaqueUnidadMedida(1L);

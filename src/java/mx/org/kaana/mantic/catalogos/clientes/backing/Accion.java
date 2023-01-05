@@ -90,6 +90,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 		loadRepresentantes();
 		loadTiposContactos();
 		loadTiposDomicilios();	
+		loadRegimenesFiscales();
 		loadTiposVentas();
 		loadDomicilios();
 		loadEntidades();
@@ -146,16 +147,19 @@ public class Accion extends IBaseAttribute implements Serializable {
     try {
       if(this.registroCliente.getClienteDomicilioSelecion()!= null)
         this.registroCliente.toUpdateClientePivote(this.registroCliente.getClienteDomicilioSelecion(), Boolean.TRUE);
+      if(this.registroCliente.getCliente().getIdRegimenFiscal()== null || this.registroCliente.getCliente().getIdRegimenFiscal()< 1L)
+        this.registroCliente.getCliente().setIdRegimenFiscal(null);
       transaccion = new Transaccion(this.registroCliente);
       if (transaccion.ejecutar((EAccion) this.attrs.get("accion"))) {
 				JsfBase.setFlashAttribute("puntoVenta", this.attrs.get("puntoVenta"));
     		JsfBase.setFlashAttribute("idClienteProcess", this.registroCliente.getCliente().getIdCliente());
         regresar = "filtro".concat(Constantes.REDIRECIONAR);
-        JsfBase.addMessage("Se registro el cliente de forma correcta.", ETipoMensaje.INFORMACION);
+        JsfBase.addMessage("Se registro el cliente de forma correcta", ETipoMensaje.INFORMACION);
       } // if
-      else {
+      else 
         JsfBase.addMessage("Ocurrió un error al registrar el cliente", ETipoMensaje.ERROR);
-      }
+      if(this.registroCliente.getCliente().getIdRegimenFiscal()== null)
+        this.registroCliente.getCliente().setIdRegimenFiscal(-1L);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -756,6 +760,31 @@ public class Accion extends IBaseAttribute implements Serializable {
       JsfBase.addMessageError(e);
     } // catch		
 	} // doEliminarRepresentante
+	
+	private void loadRegimenesFiscales(){
+		List<Columna> columns     = new ArrayList<>();    
+    Map<String, Object> params= new HashMap<>();
+    try {      
+      if(this.registroCliente!= null && this.registroCliente.getCliente()!= null && !Cadena.isVacio(this.registroCliente.getCliente().getRfc()) && this.registroCliente.getCliente().getRfc().trim().length()== 13)
+        params.put("idTipoRegimenPersona", "1");      
+      else 
+        if(this.registroCliente!= null && this.registroCliente.getCliente()!= null && !Cadena.isVacio(this.registroCliente.getCliente().getRfc()) && this.registroCliente.getCliente().getRfc().trim().length()== 12)
+          params.put("idTipoRegimenPersona", "2");      
+        else
+          params.put("idTipoRegimenPersona", "1, 2");                  
+      columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			this.attrs.put("regimenesFiscales", (List<UISelectEntity>) UIEntity.seleccione("TcManticRegimenesFiscalesDto", "tipo", params, columns, "codigo"));
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally
+	} // loadRegimenesFiscales
 	
 	private void loadTiposVentas(){
 		List<UISelectItem> tiposVentas= null;

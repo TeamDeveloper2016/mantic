@@ -13,7 +13,7 @@
     <h:outputScript library="janal" name="js/jquery.confirm.min-3.3.4.js"/>
     <h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryKardexJs}"/>
 		<script type="text/javascript">
-			Janal.Control.fields = {				 				
+			Janal.Control.fields = {
 				'contenedorGrupos\\:clave' : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:nombre' : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:codigos': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
@@ -24,7 +24,7 @@
 				'contenedorGrupos\\:tabla\\:0\\:limites': {validaciones: 'requerido|flotante|menor-a({"cual":"contenedorGrupos\\\\:tabla\\\\:1\\\\:limites"})', mascara: 'libre', formatos: 'precio', grupo: 'general'},
 				'contenedorGrupos\\:tabla\\:1\\:limites': {validaciones: 'requerido|flotante|mayor-a({"cual":"contenedorGrupos\\\\:tabla\\\\:0\\\\:limites"})', mascara: 'libre', formatos: 'precio', grupo: 'general'},
 				'contenedorGrupos\\:auxiliar': {validaciones: 'requerido', mascara: 'codigo', formatos: 'cambiar-mayusculas', grupo: 'auxiliar'}
-			}
+			};
 			
 			Janal.Control.almacen = {				 				
         'minimo': {validaciones: 'requerido|mayor-igual({"cuanto": 0})|menor-a({"cual":"maximo"})', mascara: 'libre', grupo: 'almacen'},
