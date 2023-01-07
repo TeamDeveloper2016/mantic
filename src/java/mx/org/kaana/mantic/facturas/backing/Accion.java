@@ -157,8 +157,8 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 						this.attrs.put("observaciones", "");									
 					idCliente= ((FacturaFicticia)getAdminOrden().getOrden()).getIdCliente();
 					if(idCliente!= null && !idCliente.equals(-1L)){
-						doAsignaClienteInicial(idCliente);
-						loadDomicilios(idCliente);
+						this.doAsignaClienteInicial(idCliente);
+						this.loadDomicilios(idCliente);
 						idClienteDomicilio= ((FacturaFicticia)getAdminOrden().getOrden()).getIdClienteDomicilio();
 						if(idClienteDomicilio!= null && !idClienteDomicilio.equals(-1L))
 							this.attrs.put("domicilio", new UISelectEntity(idClienteDomicilio));
@@ -385,9 +385,9 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 	private void loadOrdenVenta() throws Exception {
     try {
       // this.getAdminOrden().toCheckTotales();
-      UISelectEntity cliente = (UISelectEntity) this.attrs.get("clienteSeleccion");			
+      UISelectEntity seleccion = (UISelectEntity) this.attrs.get("clienteSeleccion");			
       ((FacturaFicticia)this.getAdminOrden().getOrden()).setIdEmpresa(Long.valueOf(this.attrs.get("idEmpresa").toString()));
-      ((FacturaFicticia)this.getAdminOrden().getOrden()).setIdCliente(cliente.getKey());
+      ((FacturaFicticia)this.getAdminOrden().getOrden()).setIdCliente(seleccion.getKey());
       ((FacturaFicticia)this.getAdminOrden().getOrden()).setIdTipoPago(Long.valueOf(this.attrs.get("tipoPago").toString()));
       ((FacturaFicticia)this.getAdminOrden().getOrden()).setIdTipoMedioPago(Long.valueOf(this.attrs.get("tipoMedioPago").toString()));
       ((FacturaFicticia)this.getAdminOrden().getOrden()).setIdUsoCfdi(Long.valueOf(this.attrs.get("cfdi").toString()));
@@ -404,8 +404,8 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
       if(((FacturaFicticia)this.getAdminOrden().getOrden()).getTipoDeCambio()< 1)
         ((FacturaFicticia)this.getAdminOrden().getOrden()).setTipoDeCambio(1D);
 
-      if(!Objects.equals(cliente.getKey(), Constantes.VENTA_AL_PUBLICO_GENERAL_ID_KEY)) {
-        TcManticClientesDto customer= (TcManticClientesDto)DaoFactory.getInstance().findById(TcManticClientesDto.class, cliente.getKey());
+      if(!Objects.equals(seleccion.getKey(), Constantes.VENTA_AL_PUBLICO_GENERAL_ID_KEY)) {
+        TcManticClientesDto customer= (TcManticClientesDto)DaoFactory.getInstance().findById(TcManticClientesDto.class, seleccion.getKey());
         // ACTUALIZAR EL REGIMEN FISCAL PARA ESTE CLIENTE EN CASO DE QUE NO TENGA O SEA DIFERENTE
         if(this.getIkRegimenFiscal()!= null && !Objects.equals(this.getIkRegimenFiscal().getKey(), -1L) && (customer.getIdRegimenFiscal()== null || !Objects.equals(customer.getIdRegimenFiscal(), this.getIkRegimenFiscal().getKey()))) {
           customer.setIdRegimenFiscal(this.getIkRegimenFiscal().getKey());

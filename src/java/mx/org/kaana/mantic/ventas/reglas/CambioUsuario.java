@@ -101,10 +101,9 @@ public class CambioUsuario extends Acceso implements Serializable{
 	
   public boolean autorizaCancelacion() throws Exception {
     boolean regresar          = false;
-    Map<String, Object> params= null;
+    Map<String, Object> params= new HashMap<>();
 		Persona persona           = null;
     try {      
-      params = new HashMap<>();
       params.put("cuenta", this.getCliente().getCuenta());
       persona = (Persona) DaoFactory.getInstance().toEntity(Persona.class, "VistaTcJanalUsuariosDto", "acceso", params);
       if (persona != null) {
@@ -123,10 +122,9 @@ public class CambioUsuario extends Acceso implements Serializable{
   
 	public boolean validaPrivilegiosDescuentos() throws Exception {
     boolean regresar          = Boolean.FALSE;
-    Map<String, Object> params= null;
+    Map<String, Object> params= new HashMap<>();
 		Persona persona           = null;
     try {      
-      params = new HashMap<>();
       params.put("cuenta", this.getCliente().getCuenta());
       persona = (Persona) DaoFactory.getInstance().toEntity(Persona.class, "VistaTcJanalUsuariosDto", "autoriza", params);
       if (persona != null) {
