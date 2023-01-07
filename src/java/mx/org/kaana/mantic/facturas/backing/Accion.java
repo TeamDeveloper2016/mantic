@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -29,6 +30,7 @@ import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.facturas.reglas.Transaccion;
 import mx.org.kaana.mantic.comun.IBaseStorage;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
+import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.db.dto.TcManticFacturasDto;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import mx.org.kaana.mantic.facturas.beans.FacturaFicticia;
@@ -116,6 +118,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			this.loadTiposMediosPagos();
 			this.loadTiposPagos();
 			this.doLoad();
+      this.toLoadRegimenesFiscales();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -139,7 +142,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 					this.attrs.put("consecutivo", "");		
 					idCliente= Long.valueOf(this.attrs.get("idCliente").toString());
 					if(idCliente!= null && !idCliente.equals(-1L))
-						doAsignaClienteInicial(idCliente);
+						this.doAsignaClienteInicial(idCliente);
           break;
         case MODIFICAR:			
         case CONSULTAR:			
@@ -228,6 +231,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			clientesSeleccion.add(0, new UISelectEntity(motorBusqueda.toClienteDefault()));
 			this.attrs.put("clientesSeleccion", clientesSeleccion);
 			this.attrs.put("clienteSeleccion", seleccion);
+      this.toLoadRegimenesFiscales();      
 			this.setPrecio(Cadena.toBeanNameEspecial(seleccion.toString("tipoVenta")));
 		} // try
 		catch (Exception e) {
@@ -378,26 +382,40 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 		return regresar;
 	} // toDescuentoVigente
 	
-	private void loadOrdenVenta() {
-		// this.getAdminOrden().toCheckTotales();
-		UISelectEntity cliente = (UISelectEntity) this.attrs.get("clienteSeleccion");			
-		((FacturaFicticia)this.getAdminOrden().getOrden()).setIdEmpresa(Long.valueOf(this.attrs.get("idEmpresa").toString()));
-		((FacturaFicticia)this.getAdminOrden().getOrden()).setIdCliente(cliente.getKey());
-		((FacturaFicticia)this.getAdminOrden().getOrden()).setIdTipoPago(Long.valueOf(this.attrs.get("tipoPago").toString()));
-		((FacturaFicticia)this.getAdminOrden().getOrden()).setIdTipoMedioPago(Long.valueOf(this.attrs.get("tipoMedioPago").toString()));
-		((FacturaFicticia)this.getAdminOrden().getOrden()).setIdUsoCfdi(Long.valueOf(this.attrs.get("cfdi").toString()));
-		if(!Long.valueOf(this.attrs.get("tipoMedioPago").toString()).equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago())){
-			((FacturaFicticia)this.getAdminOrden().getOrden()).setIdBanco(Long.valueOf(this.attrs.get("banco").toString()));
-			((FacturaFicticia)this.getAdminOrden().getOrden()).setReferencia(this.attrs.get("referencia").toString());
-		} // if
-		((FacturaFicticia)this.getAdminOrden().getOrden()).setDescuentos(this.getAdminOrden().getTotales().getDescuentos());
-		((FacturaFicticia)this.getAdminOrden().getOrden()).setImpuestos(this.getAdminOrden().getTotales().getIva());
-		((FacturaFicticia)this.getAdminOrden().getOrden()).setSubTotal(this.getAdminOrden().getTotales().getSubTotal());
-		((FacturaFicticia)this.getAdminOrden().getOrden()).setTotal(this.getAdminOrden().getTotales().getTotal());
-		((FacturaFicticia)this.getAdminOrden().getOrden()).setUtilidad(this.getAdminOrden().getTotales().getUtilidad());
-		((FacturaFicticia)this.getAdminOrden().getOrden()).setIdClienteDomicilio(((Entity)this.attrs.get("domicilio")).getKey());		
-		if(((FacturaFicticia)this.getAdminOrden().getOrden()).getTipoDeCambio()< 1)
-			((FacturaFicticia)this.getAdminOrden().getOrden()).setTipoDeCambio(1D);
+	private void loadOrdenVenta() throws Exception {
+    try {
+      // this.getAdminOrden().toCheckTotales();
+      UISelectEntity cliente = (UISelectEntity) this.attrs.get("clienteSeleccion");			
+      ((FacturaFicticia)this.getAdminOrden().getOrden()).setIdEmpresa(Long.valueOf(this.attrs.get("idEmpresa").toString()));
+      ((FacturaFicticia)this.getAdminOrden().getOrden()).setIdCliente(cliente.getKey());
+      ((FacturaFicticia)this.getAdminOrden().getOrden()).setIdTipoPago(Long.valueOf(this.attrs.get("tipoPago").toString()));
+      ((FacturaFicticia)this.getAdminOrden().getOrden()).setIdTipoMedioPago(Long.valueOf(this.attrs.get("tipoMedioPago").toString()));
+      ((FacturaFicticia)this.getAdminOrden().getOrden()).setIdUsoCfdi(Long.valueOf(this.attrs.get("cfdi").toString()));
+      if(!Long.valueOf(this.attrs.get("tipoMedioPago").toString()).equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago())){
+        ((FacturaFicticia)this.getAdminOrden().getOrden()).setIdBanco(Long.valueOf(this.attrs.get("banco").toString()));
+        ((FacturaFicticia)this.getAdminOrden().getOrden()).setReferencia(this.attrs.get("referencia").toString());
+      } // if
+      ((FacturaFicticia)this.getAdminOrden().getOrden()).setDescuentos(this.getAdminOrden().getTotales().getDescuentos());
+      ((FacturaFicticia)this.getAdminOrden().getOrden()).setImpuestos(this.getAdminOrden().getTotales().getIva());
+      ((FacturaFicticia)this.getAdminOrden().getOrden()).setSubTotal(this.getAdminOrden().getTotales().getSubTotal());
+      ((FacturaFicticia)this.getAdminOrden().getOrden()).setTotal(this.getAdminOrden().getTotales().getTotal());
+      ((FacturaFicticia)this.getAdminOrden().getOrden()).setUtilidad(this.getAdminOrden().getTotales().getUtilidad());
+      ((FacturaFicticia)this.getAdminOrden().getOrden()).setIdClienteDomicilio(((Entity)this.attrs.get("domicilio")).getKey());		
+      if(((FacturaFicticia)this.getAdminOrden().getOrden()).getTipoDeCambio()< 1)
+        ((FacturaFicticia)this.getAdminOrden().getOrden()).setTipoDeCambio(1D);
+
+      if(!Objects.equals(cliente.getKey(), Constantes.VENTA_AL_PUBLICO_GENERAL_ID_KEY)) {
+        TcManticClientesDto customer= (TcManticClientesDto)DaoFactory.getInstance().findById(TcManticClientesDto.class, cliente.getKey());
+        // ACTUALIZAR EL REGIMEN FISCAL PARA ESTE CLIENTE EN CASO DE QUE NO TENGA O SEA DIFERENTE
+        if(this.getIkRegimenFiscal()!= null && !Objects.equals(this.getIkRegimenFiscal().getKey(), -1L) && (customer.getIdRegimenFiscal()== null || !Objects.equals(customer.getIdRegimenFiscal(), this.getIkRegimenFiscal().getKey()))) {
+          customer.setIdRegimenFiscal(this.getIkRegimenFiscal().getKey());
+          DaoFactory.getInstance().update(customer);
+        } // if  
+      } // if  
+    } // try
+    catch(Exception e) {
+      throw e;
+    } // catch
 	} // loadOrdenVenta
 	
 	public void doCerrarTicket() {		
@@ -640,8 +658,8 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 	
 	public void doUpdateForEmpresa(){
 		try {
-			loadClienteDefault();
-			doActualizaPrecioCliente();
+			this.loadClienteDefault();
+			this.doActualizaPrecioCliente();
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -661,7 +679,8 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			this.attrs.put("clientesSeleccion", clientesSeleccion);
 			this.attrs.put("clienteSeleccion", seleccion);			
 			this.attrs.put("clienteDefault", seleccion);			
-			loadDomicilios(seleccion.getKey());
+      this.toLoadRegimenesFiscales();      
+			this.loadDomicilios(seleccion.getKey());
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -699,7 +718,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			clientes= (List<UISelectEntity>) this.attrs.get("clientes");
 			seleccion= clientes.get(clientes.indexOf((UISelectEntity)event.getObject()));
 			this.toFindCliente(seleccion);
-			loadDomicilios(seleccion.getKey());
+			this.loadDomicilios(seleccion.getKey());
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -716,7 +735,8 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			motorBusqueda= new MotorBusqueda(-1L);
 			clientesSeleccion.add(0, new UISelectEntity(motorBusqueda.toClienteDefault()));
 			this.attrs.put("clientesSeleccion", clientesSeleccion);
-			this.attrs.put("clienteSeleccion", seleccion);			
+			this.attrs.put("clienteSeleccion", seleccion);
+      this.toLoadRegimenesFiscales();      
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -733,11 +753,9 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 	
 	@Override
 	public void doUpdateClientes() {
-		List<Columna> columns     = null;
-    Map<String, Object> params= null;
+		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
     try {
-			params= new HashMap<>();
-			columns= new ArrayList<>();
       columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
   		//params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getDependencias());
@@ -757,11 +775,21 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
     } // finally
 	}	// doUpdateClientes
 	
-	public void doActualizaPrecioCliente(){		
-		UISelectEntity clienteSeleccion= null;		
+	public void doActualizaPrecioCliente() {	
+    List<UISelectEntity> clientesSeleccion= null;
+		UISelectEntity clienteSeleccion       = null;		
 		try {
-			clienteSeleccion= (UISelectEntity) this.attrs.get("clienteSeleccion");			
-			loadDomicilios(clienteSeleccion.getKey());
+			clienteSeleccion = (UISelectEntity) this.attrs.get("clienteSeleccion");			
+      clientesSeleccion= (List<UISelectEntity>)this.attrs.get("clientesSeleccion");
+      if(clientesSeleccion!= null && !clientesSeleccion.isEmpty()) {
+        int index= clientesSeleccion.indexOf(clienteSeleccion);
+        if(index>= 0) 
+          this.attrs.put("clienteSeleccion", clientesSeleccion.get(index));
+        else 
+          this.attrs.put("clienteSeleccion", clientesSeleccion.get(0));
+        this.toLoadRegimenesFiscales();
+      } // if
+			this.loadDomicilios(clienteSeleccion.getKey());
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -781,7 +809,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 					this.getAdminOrden().toAdjustArticulos();
 					transaccion.ejecutar(EAccion.DESACTIVAR);
 					JsfBase.setFlashAttribute("idFicticia", transaccion.getOrden().getIdFicticia());
-				}
+				} // else
 				else
 					JsfBase.setFlashAttribute("idFicticia", -1L);																											
 				JsfBase.setFlashAttribute("idCliente", ((Entity)this.attrs.get("clienteSeleccion")).getKey().equals(((UISelectEntity)this.attrs.get("clienteDefault")).getKey()) ? -1L : ((Entity)this.attrs.get("clienteSeleccion")).getKey() );					
@@ -924,4 +952,44 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 		  this.toSaveRecord();
     //UIBackingUtilities.execute("alert('ESTO ES UN MENSAJE GLOBAL INVOCADO POR UNA EXCEPCION QUE NO FUE ATRAPADA');");
 	} // doGlobalEvent
+  
+	private void toLoadRegimenesFiscales() {
+		List<Columna> columns     = new ArrayList<>();    
+    Map<String, Object> params= new HashMap<>();
+    List<UISelectEntity> regimenesFiscales= null;
+    String rfc                = null;
+    try {      
+      UISelectEntity cliente= (UISelectEntity)this.attrs.get("clienteSeleccion");
+      if(cliente!= null && cliente.toString("rfc")!= null)
+        rfc= cliente.toString("rfc");
+      if(rfc!= null && !Cadena.isVacio(rfc) && rfc.trim().length()== 13)
+        params.put("idTipoRegimenPersona", "1");      
+      else 
+        if(rfc!= null && !Cadena.isVacio(rfc) && rfc.trim().length()== 12)
+          params.put("idTipoRegimenPersona", "2");      
+        else
+          params.put("idTipoRegimenPersona", "1, 2");                  
+      columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      regimenesFiscales= (List<UISelectEntity>) UIEntity.seleccione("TcManticRegimenesFiscalesDto", "tipo", params, columns, "codigo");
+			this.attrs.put("regimenesFiscales", regimenesFiscales);
+      if(cliente!= null && regimenesFiscales!= null && !regimenesFiscales.isEmpty()) {
+        int index= regimenesFiscales.indexOf(new UISelectEntity(cliente.toLong("idRegimenFiscal")== null? -1L: cliente.toLong("idRegimenFiscal")));
+        if(index< 0)
+          this.setIkRegimenFiscal(regimenesFiscales.get(0));
+        else
+          this.setIkRegimenFiscal(regimenesFiscales.get(index));
+      } // else
+      else
+        this.setIkRegimenFiscal(new UISelectEntity(-1L));
+    } // try
+    catch (Exception e) {
+			throw e;
+    } // catch	
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally
+	} // toLoadRegimenesFiscales  
+  
 }

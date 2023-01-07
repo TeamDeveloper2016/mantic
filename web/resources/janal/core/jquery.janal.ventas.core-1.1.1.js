@@ -1606,7 +1606,6 @@
 			var ok= janal.partial('general');
 			if(ok) {																		
 				PF('dlgCerrarVenta').show();	
-				// setTimeout("$('#dialogoCerrarVenta').focus();", 1000);						
 			} // if				
 			else
 				janal.desbloquear();

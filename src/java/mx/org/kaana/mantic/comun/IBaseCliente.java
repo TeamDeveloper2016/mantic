@@ -35,6 +35,7 @@ public abstract class IBaseCliente extends IBaseArticulos implements Serializabl
 	private static final long serialVersionUID = -3665820954965883158L;
 	private Domicilio domicilio;
 	private UISelectEntity domicilioBusqueda;
+  private UISelectEntity ikRegimenFiscal;  
 
 	public IBaseCliente(String precio) {
 		super(precio);
@@ -56,6 +57,17 @@ public abstract class IBaseCliente extends IBaseArticulos implements Serializabl
 		this.domicilio = domicilio;
 	}
 	
+	public void setIkRegimenFiscal(UISelectEntity ikRegimenFiscal) {
+		this.ikRegimenFiscal=ikRegimenFiscal;
+    TcManticClientesDto cliente= (TcManticClientesDto)this.attrs.get("registroCliente");
+    if(this.ikRegimenFiscal!= null && cliente!= null)
+  	  cliente.setIdRegimenFiscal(this.ikRegimenFiscal.getKey());
+	}
+
+	public UISelectEntity getIkRegimenFiscal() {
+		return ikRegimenFiscal;
+	}  
+  
 	private void loadCollections(){		
 		loadTiposDomicilios();	
 		loadTiposVentas();
@@ -88,6 +100,7 @@ public abstract class IBaseCliente extends IBaseArticulos implements Serializabl
 			registroCliente= new TcManticClientesDto();
 			this.domicilio= new Domicilio();
 			this.attrs.put("registroCliente", registroCliente);
+      this.setIkRegimenFiscal(new UISelectEntity(registroCliente.getIdRegimenFiscal()== null? -1L: registroCliente.getIdRegimenFiscal()));
       this.loadCollections();
     } // try
     catch (Exception e) {
@@ -460,6 +473,7 @@ public abstract class IBaseCliente extends IBaseArticulos implements Serializabl
 			motorBusqueda= new MotorBusqueda(idCliente);
 			registroCliente= motorBusqueda.toCliente();
 			this.attrs.put("registroCliente", registroCliente);
+      this.setIkRegimenFiscal(new UISelectEntity(registroCliente.getIdRegimenFiscal()== null? -1L: registroCliente.getIdRegimenFiscal()));
 			domicilioCliente= motorBusqueda.toDomicilioCliente();
 			domicilios= new ArrayList<>();
 			if(domicilioCliente!= null)

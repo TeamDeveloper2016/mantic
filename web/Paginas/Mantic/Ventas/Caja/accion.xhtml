@@ -87,10 +87,23 @@
 				'descuentoGlobal'    : {validaciones: 'requerido|menor-igual({"cuanto": 10})', mascara: 'libre', grupo: 'descuento', mensaje: 'El descuento maximo es del 10%'}
 			};
 			
+      Janal.Control.credenciales ={
+				cuenta     : {validaciones: 'requerido', mascara: 'libre', grupo: 'credenciales'},			
+				contrasenia: {validaciones: 'requerido', mascara: 'libre', grupo: 'credenciales'}			
+			};
+      
     	$(document).ready(function() {
 				jsArticulos= new Janal.Control.Articulos.Core(#{manticVentasCajaAccion.adminOrden.articulos.size()}, 'contenedorGrupos\\:tabla\\:');
 				janal.readingMode('#{manticVentasCajaAccion.attrs.nombreAccion}');
       });		
+      
+			function autorizacion() {
+        setTimeout("janal.bloquear(); PF('widgetDialogoAutorizacion').show();", 1000);
+      }
+      
+			function focus() {
+				setTimeout("$('#cuenta').focus();", 1000);
+			}
 		// ]]>
 		</script>   
 		<style type="text/css">
@@ -629,17 +642,34 @@
 					<div class="ui-grid-row janal-grid-row">
 						<div class="ui-grid-col-12">          
 							<p:fieldset id="fielGenerales" legend="Generales">
-								<p:panelGrid id="panelGenerales" columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-30, janal-wid-30, janal-wid-40">
-									<p:outputLabel for="clave" value="Clave:"/>
-									<p:outputLabel for="rfc" value="RFC:"/>
-                  <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-column-left, janal-column-right">
-									  <p:outputLabel for="razonSocial" value="Razon social:"/>																											
-                    <p:outputLabel value="Tiene precio especial: [#{empty manticVentasCajaAccion.attrs.registroCliente.especial or manticVentasCajaAccion.attrs.registroCliente.especial eq 0? 'NO': 'SI'}]" styleClass="janal-color-red"/>
-                  </p:panelGrid>
-									<p:inputText id="clave" placeholder="Ej. 00001" styleClass="janal-wid-100-txt cotizar" value="#{manticVentasCajaAccion.attrs.registroCliente.clave}" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado or manticVentasCajaAccion.attrs.disabledFacturar}"/>
-									<p:inputText id="rfc" placeholder="Ej. AAA000000AA0" styleClass="janal-wid-100-txt cotizar" value="#{manticVentasCajaAccion.attrs.registroCliente.rfc}" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado or manticVentasCajaAccion.attrs.disabledFacturar}"/>
-									<p:inputText id="razonSocial" placeholder="Ej. Nombre de la empresa" styleClass="janal-wid-100-txt cotizar" value="#{manticVentasCajaAccion.attrs.registroCliente.razonSocial}" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado or manticVentasCajaAccion.attrs.disabledFacturar}"/>
-								</p:panelGrid>								
+								<p:panelGrid id="panelGenerales" columns="1" layout="grid" styleClass="janal-wid-100">
+                  <p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-30, janal-wid-30, janal-wid-40">
+                    <p:outputLabel for="clave" value="Clave:"/>
+                    <p:outputLabel for="rfc" value="RFC:"/>
+                    <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-column-left, janal-column-right">
+                      <p:outputLabel for="razonSocial" value="Razon social:"/>																											
+                      <p:outputLabel value="Tiene precio especial: [#{empty manticVentasCajaAccion.attrs.registroCliente.especial or manticVentasCajaAccion.attrs.registroCliente.especial eq 0? 'NO': 'SI'}]" styleClass="janal-color-red"/>
+                    </p:panelGrid>
+                    <p:inputText id="clave" placeholder="Ej. 00001" styleClass="janal-wid-100-txt cotizar" value="#{manticVentasCajaAccion.attrs.registroCliente.clave}" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado or manticVentasCajaAccion.attrs.disabledFacturar}"/>
+                    <p:inputText id="rfc" placeholder="Ej. AAA000000AA0" styleClass="janal-wid-100-txt cotizar" value="#{manticVentasCajaAccion.attrs.registroCliente.rfc}" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado or manticVentasCajaAccion.attrs.disabledFacturar}"/>
+                    <p:inputText id="razonSocial" placeholder="Ej. Nombre de la empresa" styleClass="janal-wid-100-txt cotizar" value="#{manticVentasCajaAccion.attrs.registroCliente.razonSocial}" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado or manticVentasCajaAccion.attrs.disabledFacturar}"/>
+                  </p:panelGrid>								
+   								<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                    <p:outputLabel for="idRegimenFiscal" value="Régimen fiscal:"/>
+                    <p:selectOneMenu id="idRegimenFiscal" value="#{manticVentasCajaAccion.attrs.ikRegimenFiscal}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt cotizar" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado or manticVentasCajaAccion.attrs.disabledFacturar}">
+                      <f:selectItems value="#{manticVentasCajaAccion.attrs.regimenesFiscales}" var="element" itemValue="#{element}" itemLabel="#{element.codigo} #{empty element.nombre or element.nombre eq ''? '': '-'} #{element.nombre}"/>
+                      <p:column headerText="Código">
+                        <h:outputText value="#{item.codigo}"/>
+                      </p:column>   
+                      <p:column headerText="Persona">
+                        <h:outputText value="#{item.persona}"/>
+                      </p:column>   
+                      <p:column headerText="Nombre">
+                        <h:outputText value="#{item.nombre}"/>
+                      </p:column>   
+                    </p:selectOneMenu>
+                  </p:panelGrid>  
+                </p:panelGrid>								
 							</p:fieldset>
 							<p:fieldset id="fieldDomicilios" legend="Domicilio">								
 								<p:panelGrid id="panelDetalleDomicilio" columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100, janal-wid-5">
@@ -902,9 +932,6 @@
 		</p:tabView>				
 		<p:dialog id="dialogoCerrarVenta" widgetVar="dlgCerrarVenta" header="Finalizar venta" resizable="false" closable="true" responsive="true" width="40%" styleClass="key-caja-dialogo-finalizar" onShow="jsCaja.aceptarFinalizarFocus();" onHide="janal.desbloquear();" closeOnEscape="true">									
 			<h:panelGrid columns="1" columnClasses="janal-color-red janal-column-center" rendered="#{manticVentasCajaAccion.attrs.mostrarConfirmacionFactura}" style="width: 100% !important">
-				<!--p:selectBooleanCheckbox id="confirmarFactura" value="#{manticVentasCajaAccion.attrs.confirmarFactura}" itemLabel="NO SE HA SELECCIONADO OPCIÓN PARA FACTURAR (MARCAR PARA FACTURAR VENTA)" style="font-size: 16px; font-weight: bold">
-					<p:ajax onstart="PF('dlgCerrarVenta').hide();" oncomplete="janal.desbloquear();PF('widgetSwitchFacturar').check();"/>
-				</p:selectBooleanCheckbox-->
 				<p:outputLabel value="NO SE HA SELECCIONADO OPCIÓN FACTURAR Y/O CREDITO" style="font-weight: bold !important" styleClass="janal-color-red janal-column-center"/>
 			</h:panelGrid>
 			<p:spacer/>
@@ -940,7 +967,7 @@
 			</h:panelGrid>			
 			<hr class="ui-widget-content"/>
 			<div class="janal-line-button">
-				<p:commandButton id="aceptarFinalizar" value="Aceptar" icon="fa fa-check" process="@form" actionListener="#{manticVentasCajaAccion.doAceptar}" onstart="PF('dlgCerrarVenta').hide();" oncomplete="janal.desbloquear(); jsCaja.validateFacturacion(xhr, status, args);" update="contenedorGrupos @(.filas) @(.recalculo) contenedorGrupos:deudorPago contenedorGrupos:deudor" disabled="#{!manticVentasCajaAccion.attrs.cobroVenta}"/>
+				<p:commandButton id="aceptarFinalizar" value="Aceptar" icon="fa fa-check" process="@form" actionListener="#{manticVentasCajaAccion.doAutorizar}" onstart="PF('dlgCerrarVenta').hide();" oncomplete="janal.desbloquear(); jsCaja.validateFacturacion(xhr, status, args);" update="contenedorGrupos @(.filas) @(.recalculo) contenedorGrupos:deudorPago contenedorGrupos:deudor" disabled="#{!manticVentasCajaAccion.attrs.cobroVenta}"/>
 				<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgCerrarVenta').hide();" oncomplete="janal.desbloquear();"/>
 			</div>
 		</p:dialog>
@@ -1576,6 +1603,24 @@
 				</div>
 			</h:form>
 		</p:dialog> 
+		<p:dialog id="dialogoAutorizacion" widgetVar="widgetDialogoAutorizacion" header="Esta venta ocupa autorización" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onShow="janal.change('formAutorizacion', Janal.Control.credenciales); focus();" width="50%" onHide="janal.restore(); janal.desbloquear();">						
+			<h:form id="formAutorizacion" prependId="false">
+				<div class="janal-wid-100-txt janal-column-center">
+				  <p:outputLabel id="invalido" value="La cuenta o contraseña no son validas o no tiene autorización" styleClass="janal-color-orange" style="display: #{manticVentasCajaAccion.attrs.ok? '': 'none'};"/>
+			  </div>
+				<p:panelGrid columns="1" styleClass="janal-wid-100">
+					<p:outputLabel for="cuenta" value="Usuario:"/>
+					<p:inputText id="cuenta" value="#{manticVentasCajaAccion.attrs.cuenta}" styleClass="event-keydown-enter janal-wid-100-txt janal-name-contrasenia"/>
+					<p:outputLabel for="contrasenia" value="Contraseña:"/>
+					<p:password id="contrasenia" value="#{manticVentasCajaAccion.attrs.contrasenia}" styleClass="event-keydown-enter janal-wid-100-txt janal-name-verificar" autocomplete="new-password"/>									
+        </p:panelGrid>
+				<hr class="ui-widget-content"/>
+				<div class="janal-line-button">
+					<p:commandButton id="verificar" widgetVar="lock" icon="fa fa-check" process="@this cuenta contrasenia" update="invalido" value="Aceptar" action="#{manticVentasCajaAccion.doCheckUser}" onstart="PF('lock').disable(); if(janal.execute()){ return true; } else {PF('lock').enable(); return false;}" oncomplete="PF('lock').enable();"/>
+					<p:commandButton icon="fa fa-remove" process="@none" value="Cancelar" onstart="PF('widgetDialogoAutorizacion').hide(); cleanInitPage();"/>
+				</div>	
+			</h:form>
+		</p:dialog>		
 	</ui:define>
 	<ui:param name="componenteBloqueo" value="contenedorGrupos:tablaTicket"/>
 </ui:composition>

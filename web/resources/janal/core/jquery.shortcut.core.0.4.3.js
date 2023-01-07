@@ -436,3 +436,7 @@ shortcut.add("Ctrl+Q", function() {
   } // if        
 });
 
+shortcut.add("f5", function() {
+	janal.console('la tecla se deshabilito para que ya no puedan reingresar');
+});
+

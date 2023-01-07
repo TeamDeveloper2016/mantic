@@ -122,13 +122,13 @@ public class CambioUsuario extends Acceso implements Serializable{
   }
   
 	public boolean validaPrivilegiosDescuentos() throws Exception {
-    boolean regresar          = false;
+    boolean regresar          = Boolean.FALSE;
     Map<String, Object> params= null;
 		Persona persona           = null;
     try {      
       params = new HashMap<>();
       params.put("cuenta", this.getCliente().getCuenta());
-      persona = (Persona) DaoFactory.getInstance().toEntity(Persona.class, "VistaTcJanalUsuariosDto", "acceso", params);
+      persona = (Persona) DaoFactory.getInstance().toEntity(Persona.class, "VistaTcJanalUsuariosDto", "autoriza", params);
       if (persona != null) {
 				this.setIdPersona(persona.getIdPersona());
         regresar= this.verificaPerfil(persona) && this.verificaCredencial(getCliente().getContrasenia(), persona.getContrasenia()); 
@@ -151,10 +151,9 @@ public class CambioUsuario extends Acceso implements Serializable{
 	private boolean verificaPerfil(Persona persona) throws Exception {
 		boolean regresar         = false;
 		List<Entity> perfiles    = null;
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		int count                = 0;
 		try {
-			params= new HashMap<>();
 			params.put("idPersona", persona.getIdPersona());
 			perfiles= DaoFactory.getInstance().toEntitySet("VistaGruposAccesoDto", "perfilesPersona", params);
 			if(!perfiles.isEmpty()){
@@ -163,13 +162,13 @@ public class CambioUsuario extends Acceso implements Serializable{
 					if(item.equals("ADMINISTRADOR DE ENCUESTA") || item.equals("GERENTE") || item.equals("GERENTE DE SERVICIOS ADMIN") || item.equals("CAJERO"))
 						count++;
 				} // for
-				regresar= count > 0;
+				regresar= count> 0;
 			} // if
 		} // try
 		catch (Exception e) {			
 			throw e;
 		} // catch		
-		finally{
+		finally {
 			Methods.clean(params);
 		} // finally
 		return regresar;

@@ -18,7 +18,7 @@ import mx.org.kaana.mantic.catalogos.clientes.reglas.Transaccion;
 import mx.org.kaana.mantic.catalogos.personas.beans.PersonaTipoContacto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 
-public class RegistroCliente implements Serializable{
+public class RegistroCliente implements Serializable {
 	
 	private static final long serialVersionUID = 699751401273986887L;
 	private Long idCliente;

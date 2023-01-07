@@ -90,7 +90,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 		loadRepresentantes();
 		loadTiposContactos();
 		loadTiposDomicilios();	
-		loadRegimenesFiscales();
+		toLoadRegimenesFiscales();
 		loadTiposVentas();
 		loadDomicilios();
 		loadEntidades();
@@ -761,7 +761,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // catch		
 	} // doEliminarRepresentante
 	
-	private void loadRegimenesFiscales() {
+	private void toLoadRegimenesFiscales() {
 		List<Columna> columns     = new ArrayList<>();    
     Map<String, Object> params= new HashMap<>();
     try {      

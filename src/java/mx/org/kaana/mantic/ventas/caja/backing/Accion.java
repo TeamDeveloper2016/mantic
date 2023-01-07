@@ -173,6 +173,7 @@ public class Accion extends IBaseVenta implements Serializable {
       String dns= Configuracion.getInstance().getPropiedadServidor("sistema.dns");
       this.pathImage= dns.substring(0, dns.lastIndexOf("/")+ 1).concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/galeria/");
       this.attrs.put("ticketCotizacion", null);
+      this.attrs.put("ok", Boolean.FALSE);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -365,7 +366,16 @@ public class Accion extends IBaseVenta implements Serializable {
 		UIBackingUtilities.update("deudor");
 	} // toMoveArticulo
 	
-  public void doAceptar() {  
+  public void doAutorizar() {  
+    // AQUI SE DEBE DE LANZAR UN METODO DE JAVASCRIPT CON EL DIALOGO DE SOLICITAR AUTORIZACION SI SE DA EL CASO QUE LOS PRECIOS SEAN DIFERENTES A MENUDEO
+    TcManticClientesDto cliente= (TcManticClientesDto)this.attrs.get("registroCliente");
+    if(cliente!= null && (!Objects.equals(cliente.getEspecial(), 0D) || (cliente.getIdTipoVenta()!= null && !Objects.equals(cliente.getIdTipoVenta(), 1L)) || !Objects.equals(this.getPrecio(), "menudeo")))
+      UIBackingUtilities.execute("autorizacion();");
+    else
+      this.doAceptar();
+  }
+  
+  protected void doAceptar() {  
     Transaccion transaccion               = null;
 		Boolean validarCredito                = true;
 		Boolean creditoVenta                  = null;
@@ -699,6 +709,7 @@ public class Accion extends IBaseVenta implements Serializable {
 					this.attrs.put("tabIndex", 1);
 					this.attrs.put("facturarVenta", facturarVenta);					
 					this.attrs.put("disabledFacturar", !facturarVenta);					
+          // this.checkAutorizacionVenta();
 				} // if
 				else
 					JsfBase.addMessage("no fue posible modificar el cliente a la venta", ETipoMensaje.ERROR);				
@@ -783,6 +794,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.attrs.put("tabIndex", 0);
 			this.setDomicilio(new Domicilio());
 			this.attrs.put("registroCliente", new TcManticClientesDto());
+      this.setIkRegimenFiscal(new UISelectEntity(-1L));
 			columns= new ArrayList<>();
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
@@ -916,6 +928,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			params.put("idVenta", ticketAbierto!= null? ticketAbierto.getKey(): -1L);
 			this.setDomicilio(new Domicilio());
 			this.attrs.put("registroCliente", new TcManticClientesDto());
+      this.setIkRegimenFiscal(new UISelectEntity(-1L));
 			if(ticketAbierto!= null && !ticketAbierto.getKey().equals(-1L)) {				
 				this.unlockVentaExtends(ticketAbierto.getKey(), (Long)this.attrs.get("ticketLock"));									
 				this.attrs.put("ticketLock", ticketAbierto.getKey());
@@ -972,6 +985,7 @@ public class Accion extends IBaseVenta implements Serializable {
 				this.asignaAbonoApartado();
 			this.doActivarCliente();
 			UIBackingUtilities.execute("jsArticulos.initArrayArt(" + String.valueOf(getAdminOrden().getArticulos().size()-1) + ");");
+      // this.checkAutorizacionVenta();
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -1033,7 +1047,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		List<UISelectEntity> clientesSeleccion= null;
 		MotorBusqueda motor                   = null;
 		ClienteTipoContacto telefono          = null;
-		ClienteTipoContacto celular           = null;
+		ClienteTipoContacto movil             = null;
 		try {						
 			this.attrs.put("facturacionSinCorreo", false);
 			this.attrs.put("disabledFacturar", !((Boolean)this.attrs.get("facturarVenta")));						
@@ -1055,31 +1069,33 @@ public class Accion extends IBaseVenta implements Serializable {
 					setDomicilio(new Domicilio());
 					loadDefaultCollections();					
 					this.attrs.put("registroCliente", new TcManticClientesDto());
+          this.setIkRegimenFiscal(new UISelectEntity(-1L));
 					this.clientesTiposContacto= new ArrayList<>();
 					telefono= new ClienteTipoContacto();
 					telefono.setSqlAccion(ESql.INSERT);
 					telefono.setIdTipoContacto(ETiposContactos.TELEFONO.getKey());
 					this.attrs.put("telefono", telefono);
-					celular= new ClienteTipoContacto();
-					celular.setSqlAccion(ESql.INSERT);
-					celular.setIdTipoContacto(ETiposContactos.CELULAR.getKey());
-					this.attrs.put("celular", celular);
+					movil= new ClienteTipoContacto();
+					movil.setSqlAccion(ESql.INSERT);
+					movil.setIdTipoContacto(ETiposContactos.CELULAR.getKey());
+					this.attrs.put("celular", movil);
 					this.attrs.put("clienteRegistrado", ((Boolean)this.attrs.get("facturarVenta")));
 				} // else
 			} // if
-			else{
+      else {
 				setDomicilio(new Domicilio());
 				loadDefaultCollections();					
 				this.attrs.put("registroCliente", new TcManticClientesDto());
+        this.setIkRegimenFiscal(new UISelectEntity(-1L));
 				this.clientesTiposContacto= new ArrayList<>();
 				telefono= new ClienteTipoContacto();
 				telefono.setSqlAccion(ESql.INSERT);
 				telefono.setIdTipoContacto(ETiposContactos.TELEFONO.getKey());
 				this.attrs.put("telefono", telefono);
-				celular= new ClienteTipoContacto();
-				celular.setSqlAccion(ESql.INSERT);
-				celular.setIdTipoContacto(ETiposContactos.CELULAR.getKey());
-				this.attrs.put("celular", celular);
+				movil= new ClienteTipoContacto();
+				movil.setSqlAccion(ESql.INSERT);
+				movil.setIdTipoContacto(ETiposContactos.CELULAR.getKey());
+				this.attrs.put("celular", movil);
 				this.attrs.put("clienteRegistrado", ((Boolean)this.attrs.get("facturarVenta")));
 			} // else				
 		} // try
@@ -1337,7 +1353,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			regresar.setCelular((ClienteTipoContacto) this.attrs.get("celular"));
 			regresar.setTelefono((ClienteTipoContacto) this.attrs.get("telefono"));			
 			regresar.setCliente((TcManticClientesDto) this.attrs.get("registroCliente"));
-			regresar.setDomicilio(getDomicilio());
+			regresar.setDomicilio(this.getDomicilio());
 			regresar.setFacturar(facturarVenta);
 			regresar.setCredito((Boolean) this.attrs.get("creditoVenta"));			
 			regresar.setArticulos(getAdminOrden().getArticulos());
@@ -1436,16 +1452,19 @@ public class Accion extends IBaseVenta implements Serializable {
 		this.pagar= title.equals("Pagar") || title.equals("Apartado");
 		if(title.equals("Cliente") || title.equals("Tickets") || title.equals("Pagar") || title.equals("Apartado")) {
 			((TicketVenta)this.getAdminOrden().getOrden()).setObservaciones(!Cadena.isVacio(this.attrs.get("observaciones")) ? ((String)this.attrs.get("observaciones")).toUpperCase() : "");
+      this.toLoadRegimenesFiscales();  
 		} // if
-		if(title.equals("Tickets")) {
-			this.doLoadTickets();			
-			UIBackingUtilities.update("contenedorGrupos:tablaTicket");
-		} // if
-		if(title.equals("Pagar")) {
-			UIBackingUtilities.execute("jsArticulos.focusCobro();");			
-		} // if
-		if(title.equals("Articulos"))
-			this.attrs.put("observaciones", ((TicketVenta)this.getAdminOrden().getOrden()).getObservaciones());
+    else
+      if(title.equals("Tickets")) {
+        this.doLoadTickets();			
+        UIBackingUtilities.update("contenedorGrupos:tablaTicket");
+      } // if
+      else
+        if(title.equals("Pagar")) 
+          UIBackingUtilities.execute("jsArticulos.focusCobro();");			
+        else
+          if(title.equals("Articulos"))
+            this.attrs.put("observaciones", ((TicketVenta)this.getAdminOrden().getOrden()).getObservaciones());
 		this.attrs.put("titleTab", title);		
 	} // doTabChange
 
@@ -1935,5 +1954,64 @@ public class Accion extends IBaseVenta implements Serializable {
     } // catch
     return regresar;
   } // toUpdateCotizacion
-  
+
+	private void toLoadRegimenesFiscales() {
+		List<Columna> columns     = new ArrayList<>();    
+    Map<String, Object> params= new HashMap<>();
+    List<UISelectEntity> regimenesFiscales= null;
+    String rfc                = null;
+    try {      
+      TcManticClientesDto cliente= (TcManticClientesDto)this.attrs.get("registroCliente");
+      if(cliente!= null && cliente.getRfc()!= null)
+        rfc= cliente.getRfc();
+      if(rfc!= null && !Cadena.isVacio(rfc) && rfc.trim().length()== 13)
+        params.put("idTipoRegimenPersona", "1");      
+      else 
+        if(rfc!= null && !Cadena.isVacio(rfc) && rfc.trim().length()== 12)
+          params.put("idTipoRegimenPersona", "2");      
+        else
+          params.put("idTipoRegimenPersona", "1, 2");                  
+      columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      regimenesFiscales= (List<UISelectEntity>) UIEntity.seleccione("TcManticRegimenesFiscalesDto", "tipo", params, columns, "codigo");
+			this.attrs.put("regimenesFiscales", regimenesFiscales);
+      if(regimenesFiscales!= null && !regimenesFiscales.isEmpty()) 
+        this.setIkRegimenFiscal(regimenesFiscales.get(0));
+    } // try
+    catch (Exception e) {
+			throw e;
+    } // catch	
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally
+	} // toLoadRegimenesFiscales
+
+	public String doCheckUser() {
+		String regresar   = null;
+		String cuenta     = (String)this.attrs.get("cuenta");
+		String contrasenia= (String)this.attrs.get("contrasenia");
+		try {
+			CambioUsuario	usuario= new CambioUsuario(cuenta, contrasenia);			
+			if(usuario.validaPrivilegiosDescuentos()) {
+				this.attrs.put("cuenta", "");
+				this.attrs.put("contrasenia", "");
+				this.attrs.put("ok", Boolean.FALSE);
+				UIBackingUtilities.execute("PF('widgetDialogoAutorizacion').hide();");
+        this.doAceptar();
+			} // if
+			else
+				this.attrs.put("ok", Boolean.TRUE);
+	  } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+		return regresar;
+	}
+
+  private void checkAutorizacionVenta() {
+    
+  }
+
 }
