@@ -107,9 +107,12 @@
 			jsArticulos.refreshCobroValidate();
 			cobrarVenta();
 		}, // validaAccionCaptura
-		validateFacturacion: function(xhr, status, args){
-			if (args.facturacionOk) 
+		validateFacturacion: function(xhr, status, args) {
+      janal.console('jsCaja.validateFacturacion: '+ args.facturacionOk);
+			if (args.facturacionOk) {
+        janal.console('jsCaja.validateFacturacion: '+ args.facturacion);
 				doFacturarPendiente(JSON.stringify(args.facturacion));
+      } // if  
 		} // validateFacturacion						
 	});
 	

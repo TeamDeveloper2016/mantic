@@ -13,7 +13,7 @@
 		<h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryVentasJs}"/>
 		<h:outputScript library="janal" name="barcode/js.barcode.all.min.js"/>		
 		<h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryTicketJs}"/>
-		<h:outputScript library="janal" name="core/jquery.janal.caja.core-0.0.3.js"/>		
+		<h:outputScript library="janal" name="core/jquery.janal.caja.core-0.0.4.js"/>		
 		<script type="text/javascript">		
 		// <![CDATA[	
 			Janal.Control.fields = {				 				
@@ -411,7 +411,7 @@
 							  <p:panelGrid columns="1" styleClass="janal-wid-100-txt">								
   								<p:outputLabel for="clientes" value="Buscar cliente:"/>																							
                   <p:autoComplete id="clientes" placeholder="RFC o nombre del cliente" widgetVar="listadoClientes" var="customCliente" itemLabel="[#{empty customCliente.especial or customCliente.especial eq '0'? '': '*'}] #{customCliente.razonSocial}" inputStyleClass="janal-wid-100-txt key-down-clientes filas" itemValue="#{customCliente}" value="#{manticVentasCajaAccion.attrs.cliente}" completeMethod="#{manticVentasCajaAccion.doCompleteCliente}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">
-                    <p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this idEmpresa contenedorGrupos contenedorGrupos:observacionesFactura" listener="#{manticVentasCajaAccion.doAsignaCliente}" update="cliente contenido @(.cambio-cliente) contenedorGrupos contenedorGrupos:panelSumatoria contenedorGrupos:deudorPago contenedorGrupos:deudor contenedorGrupos:facturacionSinCorreo contenedorGrupos:celularCliente contenedorGrupos:correosCliente" oncomplete="janal.desbloquear();"/>
+                    <p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this idEmpresa contenedorGrupos contenedorGrupos:observacionesFactura" listener="#{manticVentasCajaAccion.doAsignaCliente}" update="cliente contenido @(.cambio-cliente) contenedorGrupos contenedorGrupos:panelSumatoria contenedorGrupos:deudorPago contenedorGrupos:deudor contenedorGrupos:panelGenerales contenedorGrupos:facturacionSinCorreo contenedorGrupos:celularCliente contenedorGrupos:correosCliente" oncomplete="janal.desbloquear();"/>
                     <f:facet name="itemtip">
                       <h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">												
                         <h:outputText value="Clave" />
@@ -471,7 +471,23 @@
 			  					</p:inputSwitch>
                 </p:panelGrid>  
               </p:panelGrid>  
-							<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-30, janal-wid-70" rendered="#{manticVentasCajaAccion.attrs.facturarVenta}">
+							<p:panelGrid layout="grid" columns="3" styleClass="janal-wid-100-txt" columnClasses="janal-wid-20, janal-wid-20, janal-wid-60" rendered="#{manticVentasCajaAccion.attrs.facturarVenta}">
+                <p:panelGrid columns="1" styleClass="janal-wid-100">
+                  <p:outputLabel for="idRegimen" value="Régimen fiscal:" rendered="#{manticVentasCajaAccion.attrs.facturarVenta}"/>
+                  <p:selectOneMenu id="idRegimen" value="#{manticVentasCajaAccion.ikRegimenFiscal}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt cotizar" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" rendered="#{manticVentasCajaAccion.attrs.facturarVenta}">
+                    <p:ajax event="change" process="@this" update="contenedorGrupos:idRegimenFiscal"/>
+                    <f:selectItems value="#{manticVentasCajaAccion.attrs.regimenesFiscales}" var="element" itemValue="#{element}" itemLabel="#{element.codigo}"/>
+                    <p:column headerText="Código">
+                      <h:outputText value="#{item.codigo}"/>
+                    </p:column>   
+                    <p:column headerText="Persona">
+                      <h:outputText value="#{item.persona}"/>
+                    </p:column>   
+                    <p:column headerText="Nombre">
+                      <h:outputText value="#{item.nombre}"/>
+                    </p:column>   
+                  </p:selectOneMenu>
+                </p:panelGrid>  
                 <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                   <p:outputLabel for="cfdi" value="Uso del CFDI:" rendered="#{manticVentasCajaAccion.attrs.facturarVenta}"/>
                   <p:selectOneMenu id="cfdi" value="#{manticVentasCajaAccion.attrs.cfdi}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity" rendered="#{manticVentasCajaAccion.attrs.facturarVenta}">
@@ -656,7 +672,7 @@
                   </p:panelGrid>								
    								<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                     <p:outputLabel for="idRegimenFiscal" value="Régimen fiscal:"/>
-                    <p:selectOneMenu id="idRegimenFiscal" value="#{manticVentasCajaAccion.attrs.ikRegimenFiscal}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt cotizar" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado or manticVentasCajaAccion.attrs.disabledFacturar}">
+                    <p:selectOneMenu id="idRegimenFiscal" value="#{manticVentasCajaAccion.ikRegimenFiscal}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt cotizar" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado or manticVentasCajaAccion.attrs.disabledFacturar}">
                       <f:selectItems value="#{manticVentasCajaAccion.attrs.regimenesFiscales}" var="element" itemValue="#{element}" itemLabel="#{element.codigo} #{empty element.nombre or element.nombre eq ''? '': '-'} #{element.nombre}"/>
                       <p:column headerText="Código">
                         <h:outputText value="#{item.codigo}"/>
@@ -930,7 +946,7 @@
 				</div>
 			</p:tab>
 		</p:tabView>				
-		<p:dialog id="dialogoCerrarVenta" widgetVar="dlgCerrarVenta" header="Finalizar venta" resizable="false" closable="true" responsive="true" width="40%" styleClass="key-caja-dialogo-finalizar" onShow="jsCaja.aceptarFinalizarFocus();" onHide="janal.desbloquear();" closeOnEscape="true">									
+		<p:dialog id="dialogoCerrarVenta" widgetVar="dlgCerrarVenta" header="Finalizar venta" resizable="false" closable="true" responsive="true" width="40%" styleClass="key-caja-dialogo-finalizar" onShow="jsCaja.aceptarFinalizarFocus();" onHide="janal.desbloquear();" closeOnEscape="true">
 			<h:panelGrid columns="1" columnClasses="janal-color-red janal-column-center" rendered="#{manticVentasCajaAccion.attrs.mostrarConfirmacionFactura}" style="width: 100% !important">
 				<p:outputLabel value="NO SE HA SELECCIONADO OPCIÓN FACTURAR Y/O CREDITO" style="font-weight: bold !important" styleClass="janal-color-red janal-column-center"/>
 			</h:panelGrid>
@@ -967,7 +983,7 @@
 			</h:panelGrid>			
 			<hr class="ui-widget-content"/>
 			<div class="janal-line-button">
-				<p:commandButton id="aceptarFinalizar" value="Aceptar" icon="fa fa-check" process="@form" actionListener="#{manticVentasCajaAccion.doAutorizar}" onstart="PF('dlgCerrarVenta').hide();" oncomplete="janal.desbloquear(); jsCaja.validateFacturacion(xhr, status, args);" update="contenedorGrupos @(.filas) @(.recalculo) contenedorGrupos:deudorPago contenedorGrupos:deudor" disabled="#{!manticVentasCajaAccion.attrs.cobroVenta}"/>
+        <p:commandButton id="aceptarFinalizar" value="Aceptar" icon="fa fa-check" process="@form" actionListener="#{manticVentasCajaAccion.doAutorizar}" onstart="PF('dlgCerrarVenta').hide();" oncomplete="janal.desbloquear(); jsCaja.validateFacturacion(xhr, status, args);" disabled="#{!manticVentasCajaAccion.attrs.cobroVenta}"/>        
 				<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgCerrarVenta').hide();" oncomplete="janal.desbloquear();"/>
 			</div>
 		</p:dialog>
@@ -986,7 +1002,7 @@
 				<p:commandButton value="Cerrar" icon="fa fa-close" onstart="PF('dlgLimiteCaja').hide();" oncomplete="janal.desbloquear();"/>
 			</div>
 		</p:dialog>
-		<p:dialog id="dialogoAlmacenes" widgetVar="dlgAlmacenes" header="Articulo en sucursales" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onHide="janal.desbloquear();jsArticulos.restoreCursorAt();" width="60%">						
+		<p:dialog id="dialogoAlmacenes" widgetVar="dlgAlmacenes" header="Articulo en sucursales" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onHide="janal.desbloquear();jsArticulos.restoreCursorAt();" width="60%">
 			<p:dataTable lazy="true" id="almacenes" widgetVar="kajoolTable" var="row" value="#{manticVentasCajaAccion.almacenes}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}"  selectionMode="single" paginator="#{manticVentasCajaAccion.almacenes.rowCount gt manticVentasCajaAccion.almacenes.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">            	
 				<p:column headerText="No" styleClass="janal-wid-10">
 					<h:outputText value="#{index+ 1}.-"/>
@@ -1009,7 +1025,7 @@
 				<p:commandButton icon="fa fa-close" process="@none" value="Cerrar" onstart="PF('dlgAlmacenes').hide();" oncomplete="janal.desbloquear();"/>
 			</div>
 		</p:dialog>
-		<p:dialog id="dialogoDetalleArticulo" widgetVar="dlgDetalleArticulo" header="Articulo [#{manticVentasCajaAccion.attrs.detailArticulo.codigo}]" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="true" onHide="janal.desbloquear(); setTimeout('jsArticulos.goto();', 1000);" width="70%">			
+		<p:dialog id="dialogoDetalleArticulo" widgetVar="dlgDetalleArticulo" header="Articulo [#{manticVentasCajaAccion.attrs.detailArticulo.codigo}]" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="true" onHide="janal.desbloquear(); setTimeout('jsArticulos.goto();', 1000);" width="70%">
 			<p:tabView id="tabDetalleArticulo">
 				<p:tab title="Generales">
 					<h:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">
@@ -1133,7 +1149,7 @@
 				<p:commandButton icon="fa fa-close" process="@none" accesskey="r" value="Cerrar" onstart="PF('dlgDetalleArticulo').hide();" oncomplete="janal.desbloquear();"/>
 			</div>
 		</p:dialog>		
-		<p:dialog id="dialogoCotizaciones" widgetVar="dlgCotizaciones" header="Cotizaciones" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="true" onHide="janal.desbloquear();jsArticulos.restoreCursorAt();" width="70%">			
+		<p:dialog id="dialogoCotizaciones" widgetVar="dlgCotizaciones" header="Cotizaciones" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="true" onHide="janal.desbloquear();jsArticulos.restoreCursorAt();" width="70%">
 			<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
 				<p:outputLabel for="busquedaCotizacion" value="Cuenta de acceso ó nombre del vendedor:"/>
 				<p:inputText id="busquedaCotizacion" styleClass="janal-key-cotizaciones janal-wid-100-txt" value="#{manticVentasCajaAccion.attrs.busquedaCotizacion}">   
@@ -1189,7 +1205,7 @@
 			</div>
 		</p:dialog>			
 		
-		<p:dialog id="dialogoApartados" widgetVar="dlgApartados" header="Apartados" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="true" onHide="janal.desbloquear();jsArticulos.restoreCursorAt();" width="70%">			
+		<p:dialog id="dialogoApartados" widgetVar="dlgApartados" header="Apartados" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="true" onHide="janal.desbloquear();jsArticulos.restoreCursorAt();" width="70%">
 			<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
 				<p:outputLabel for="busquedaApartados" value="Cuenta de acceso ó nombre del vendedor:"/>
 				<p:inputText id="busquedaApartados" styleClass="janal-key-apartados janal-wid-100-txt" value="#{manticVentasCajaAccion.attrs.busquedaApartados}">   
@@ -1281,7 +1297,7 @@
 				<p:commandButton icon="fa fa-remove" process="@none" value="Cancelar" onstart="PF('dlgCuentasBloqueadas').hide();" oncomplete="janal.desbloquear();"/>
 			</div>
     </p:dialog>		
-		<p:dialog id="dialogoOpenTickets" widgetVar="dlgOpenTickets" header="Cuentas abiertas" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="true" onShow="$('#busquedaTicketAbierto').val(''); $('#busquedaTicketAbierto').focus();" onHide="janal.desbloquear();" width="70%">						
+		<p:dialog id="dialogoOpenTickets" widgetVar="dlgOpenTickets" header="Cuentas abiertas" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="true" onShow="$('#busquedaTicketAbierto').val(''); $('#busquedaTicketAbierto').focus();" onHide="janal.desbloquear();" width="70%">
 			<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
 				<p:outputLabel for="busquedaTicketAbierto" value="Cuenta de acceso ó nombre del vendedor:"/>
 				<p:inputText id="busquedaTicketAbierto" styleClass="janal-key-tickets-abiertos janal-wid-100-txt" value="#{manticVentasCajaAccion.attrs.busquedaTicketAbierto}">   
@@ -1603,7 +1619,7 @@
 				</div>
 			</h:form>
 		</p:dialog> 
-		<p:dialog id="dialogoAutorizacion" widgetVar="widgetDialogoAutorizacion" header="Esta venta ocupa autorización" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onShow="janal.change('formAutorizacion', Janal.Control.credenciales); focus();" width="50%" onHide="janal.restore(); janal.desbloquear();">						
+		<p:dialog id="dialogoAutorizacion" widgetVar="widgetDialogoAutorizacion" header="Esta venta ocupa autorización" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onShow="janal.change('formAutorizacion', Janal.Control.credenciales); focus();" width="50%" onHide="janal.restore(); janal.desbloquear();" appendTo="@(body)">
 			<h:form id="formAutorizacion" prependId="false">
 				<div class="janal-wid-100-txt janal-column-center">
 				  <p:outputLabel id="invalido" value="La cuenta o contraseña no son validas o no tiene autorización" styleClass="janal-color-orange" style="display: #{manticVentasCajaAccion.attrs.ok? '': 'none'};"/>
@@ -1616,7 +1632,7 @@
         </p:panelGrid>
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">
-					<p:commandButton id="verificar" widgetVar="lock" icon="fa fa-check" process="@this cuenta contrasenia" update="invalido" value="Aceptar" action="#{manticVentasCajaAccion.doCheckUser}" onstart="PF('lock').disable(); if(janal.execute()){ return true; } else {PF('lock').enable(); return false;}" oncomplete="PF('lock').enable();"/>
+					<p:commandButton id="verificar" widgetVar="lock" icon="fa fa-check" process="@this cuenta contrasenia" update="invalido" value="Aceptar" action="#{manticVentasCajaAccion.doCheckUser}" onstart="PF('lock').disable(); if(janal.execute()){ return true; } else {PF('lock').enable(); return false;}" oncomplete="PF('lock').enable(); jsCaja.validateFacturacion(xhr, status, args);"/>
 					<p:commandButton icon="fa fa-remove" process="@none" value="Cancelar" onstart="PF('widgetDialogoAutorizacion').hide(); cleanInitPage();"/>
 				</div>	
 			</h:form>

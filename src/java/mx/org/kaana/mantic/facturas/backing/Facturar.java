@@ -1100,8 +1100,8 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 		if(this.reporte.getTotal()> 0L){
 			rc.execute("start(" + this.reporte.getTotal() + ")");	
       regresar = true;
-    }
-		else{
+    } // if
+    else {
 			rc.execute("generalHide();");		
 			JsfBase.addMessage("Reporte", "No se encontraron registros para el reporte", ETipoMensaje.ERROR);
       regresar = false;
@@ -1118,8 +1118,8 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 			motor= new MotorBusqueda(-1L, ((UISelectEntity) this.attrs.get("clienteSeleccion")).getKey());
 			contactos= motor.toClientesTipoContacto();
 			LOG.warn("Inicializando listas de correos y seleccionados");
-			getCorreos().clear();
-			getSelectedCorreos().clear();
+			this.getCorreos().clear();
+			this.getSelectedCorreos().clear();
 			LOG.warn("Total de contactos" + contactos.size());
 			for(ClienteTipoContacto contacto: contactos){
 				if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey())){
@@ -1140,6 +1140,7 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 		} // finally
 	} // doLoadEstatus
 	
+  @Override
 	public void doAgregarCorreo() {
 		Transaccion transaccion= null;
 		try {
@@ -1165,9 +1166,9 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
     List<UISelectEntity> regimenesFiscales= null;
     String rfc                = null;
     try {      
-      UISelectEntity cliente= (UISelectEntity)this.attrs.get("clienteSeleccion");
-      if(cliente!= null && cliente.toString("rfc")!= null)
-        rfc= cliente.toString("rfc");
+      UISelectEntity costumer= (UISelectEntity)this.attrs.get("clienteSeleccion");
+      if(costumer!= null && costumer.toString("rfc")!= null)
+        rfc= costumer.toString("rfc");
       if(rfc!= null && !Cadena.isVacio(rfc) && rfc.trim().length()== 13)
         params.put("idTipoRegimenPersona", "1");      
       else 
@@ -1179,8 +1180,8 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       regimenesFiscales= (List<UISelectEntity>) UIEntity.seleccione("TcManticRegimenesFiscalesDto", "tipo", params, columns, "codigo");
 			this.attrs.put("regimenesFiscales", regimenesFiscales);
-      if(cliente!= null && regimenesFiscales!= null && !regimenesFiscales.isEmpty()) {
-        int index= regimenesFiscales.indexOf(new UISelectEntity(cliente.toLong("idRegimenFiscal")== null? -1L: cliente.toLong("idRegimenFiscal")));
+      if(costumer!= null && regimenesFiscales!= null && !regimenesFiscales.isEmpty()) {
+        int index= regimenesFiscales.indexOf(new UISelectEntity(costumer.toLong("idRegimenFiscal")== null? -1L: costumer.toLong("idRegimenFiscal")));
         if(index< 0)
           this.setIkRegimenFiscal(regimenesFiscales.get(0));
         else

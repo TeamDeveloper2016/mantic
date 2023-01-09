@@ -307,7 +307,7 @@
 				</p:tabView >
 			</p:panel>
 		</div>
-    <p:dialog id="dialogoConverter" widgetVar="dialogoConverter" header="Converter" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="false" resizable="false" onHide="janal.desbloquear();">
+    <p:dialog id="dialogoConverter" widgetVar="dialogoConverter" header="Converter" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="false" resizable="false" onHide="janal.desbloquear();" appendTo="@(body)">
 			<p:selectOneMenu id="converter" value="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.attrs.converter}">
 				<p:ajax event="change" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 				<f:selectItem itemValue="Fecha" itemLabel="Fecha [dd/mm/yyyy]"/>

@@ -174,6 +174,7 @@ public class Accion extends IBaseVenta implements Serializable {
       this.pathImage= dns.substring(0, dns.lastIndexOf("/")+ 1).concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/galeria/");
       this.attrs.put("ticketCotizacion", null);
       this.attrs.put("ok", Boolean.FALSE);
+      this.toLoadRegimenesFiscales();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -367,15 +368,33 @@ public class Accion extends IBaseVenta implements Serializable {
 	} // toMoveArticulo
 	
   public void doAutorizar() {  
-    // AQUI SE DEBE DE LANZAR UN METODO DE JAVASCRIPT CON EL DIALOGO DE SOLICITAR AUTORIZACION SI SE DA EL CASO QUE LOS PRECIOS SEAN DIFERENTES A MENUDEO
-    TcManticClientesDto cliente= (TcManticClientesDto)this.attrs.get("registroCliente");
-    if(cliente!= null && (!Objects.equals(cliente.getEspecial(), 0D) || (cliente.getIdTipoVenta()!= null && !Objects.equals(cliente.getIdTipoVenta(), 1L)) || !Objects.equals(this.getPrecio(), "menudeo")))
-      UIBackingUtilities.execute("autorizacion();");
-    else
-      this.doAceptar();
+    try {
+      // AQUI SE DEBE DE LANZAR UN METODO DE JAVASCRIPT CON EL DIALOGO DE SOLICITAR AUTORIZACION SI SE DA EL CASO QUE LOS PRECIOS SEAN DIFERENTES A MENUDEO
+      TcManticClientesDto cliente= (TcManticClientesDto)this.attrs.get("registroCliente");
+      if(cliente!= null && (!Objects.equals(cliente.getEspecial(), 0D) || (cliente.getIdTipoVenta()!= null && !Objects.equals(cliente.getIdTipoVenta(), 1L)) || !Objects.equals(this.getPrecio(), "menudeo"))) {
+        UIBackingUtilities.execute("autorizacion();");
+        if(!Objects.equals(cliente.getKey(), Constantes.VENTA_AL_PUBLICO_GENERAL_ID_KEY)) {
+          // ACTUALIZAR EL REGIMEN FISCAL PARA ESTE CLIENTE EN CASO DE QUE NO TENGA O SEA DIFERENTE
+          TcManticClientesDto customer= (TcManticClientesDto)DaoFactory.getInstance().findById(TcManticClientesDto.class, cliente.getKey());
+          if(this.getIkRegimenFiscal()!= null && !Objects.equals(this.getIkRegimenFiscal().getKey(), -1L) && (customer.getIdRegimenFiscal()== null || !Objects.equals(customer.getIdRegimenFiscal(), this.getIkRegimenFiscal().getKey()))) {
+            customer.setIdRegimenFiscal(this.getIkRegimenFiscal().getKey());
+            DaoFactory.getInstance().update(customer);
+          } // if  
+          TicketVenta ticketVenta= (TicketVenta)this.getAdminOrden().getOrden();
+          if(this.getIkRegimenFiscal()!= null && !Objects.equals(this.getIkRegimenFiscal().getKey(), -1L))
+            ticketVenta.setIdRegimenFiscal(this.getIkRegimenFiscal().getKey());
+        } // if  
+      } // if  
+      else
+        this.doAceptar();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
   }
   
-  protected void doAceptar() {  
+  public void doAceptar() {  
     Transaccion transaccion               = null;
 		Boolean validarCredito                = true;
 		Boolean creditoVenta                  = null;
@@ -409,7 +428,7 @@ public class Accion extends IBaseVenta implements Serializable {
 						ticket= new CreateTicket(((AdminTickets)getAdminOrden()), (Pago) this.attrs.get("pago"), tipoTicket);
 					UIBackingUtilities.execute("jsTicket.imprimirTicket('" + ticket.getPrincipal().getClave()  + "-" + ((TicketVenta)(((AdminTickets)getAdminOrden()).getOrden())).getTicket() + "','" + ticket.toHtml() + "');");
 					UIBackingUtilities.execute("jsTicket.clicTicket();");
-					JsfBase.addMessage("Se finalizo el pago del ticket de venta.", ETipoMensaje.INFORMACION);
+					JsfBase.addMessage("Se finalizo el pago del ticket de venta", ETipoMensaje.INFORMACION);
 					this.setAdminOrden(new AdminTickets(new TicketVenta()));
 					this.attrs.put("pago", new Pago(getAdminOrden().getTotales()));
 					this.attrs.put("clienteSeleccion", null);
@@ -420,6 +439,11 @@ public class Accion extends IBaseVenta implements Serializable {
 			} // if
 			else
 				JsfBase.addMessage(this.attrs.get("mensajeErrorCredito").toString(), ETipoMensaje.ERROR);      			
+      UIBackingUtilities.update("contenedorGrupos");
+      UIBackingUtilities.update("@(.filas)");
+      UIBackingUtilities.update("@(.recalculo)");
+      UIBackingUtilities.update("contenedorGrupos:deudorPago");
+      UIBackingUtilities.update("contenedorGrupos:deudor");
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -928,7 +952,6 @@ public class Accion extends IBaseVenta implements Serializable {
 			params.put("idVenta", ticketAbierto!= null? ticketAbierto.getKey(): -1L);
 			this.setDomicilio(new Domicilio());
 			this.attrs.put("registroCliente", new TcManticClientesDto());
-      this.setIkRegimenFiscal(new UISelectEntity(-1L));
 			if(ticketAbierto!= null && !ticketAbierto.getKey().equals(-1L)) {				
 				this.unlockVentaExtends(ticketAbierto.getKey(), (Long)this.attrs.get("ticketLock"));									
 				this.attrs.put("ticketLock", ticketAbierto.getKey());
@@ -984,6 +1007,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			if(tipo!= null && tipo.equals(EEstatusVentas.APARTADOS.name()))
 				this.asignaAbonoApartado();
 			this.doActivarCliente();
+      this.toLoadRegimenesFiscales();      
 			UIBackingUtilities.execute("jsArticulos.initArrayArt(" + String.valueOf(getAdminOrden().getArticulos().size()-1) + ");");
       // this.checkAutorizacionVenta();
 		} // try
@@ -1303,7 +1327,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		} // catch		
 	} // addDeleteList
 	
-	private VentaFinalizada loadVentaFinalizada() throws Exception{
+	private VentaFinalizada loadVentaFinalizada() throws Exception {
 		VentaFinalizada regresar  = null;
 		TicketVenta ticketVenta   = null;
 		List<UISelectEntity> cfdis= null;
@@ -1450,10 +1474,8 @@ public class Accion extends IBaseVenta implements Serializable {
 	public void doTabChange(TabChangeEvent event) {
 		String title= event.getTab().getTitle();
 		this.pagar= title.equals("Pagar") || title.equals("Apartado");
-		if(title.equals("Cliente") || title.equals("Tickets") || title.equals("Pagar") || title.equals("Apartado")) {
+		if(title.equals("Cliente") || title.equals("Tickets") || title.equals("Pagar") || title.equals("Apartado")) 
 			((TicketVenta)this.getAdminOrden().getOrden()).setObservaciones(!Cadena.isVacio(this.attrs.get("observaciones")) ? ((String)this.attrs.get("observaciones")).toUpperCase() : "");
-      this.toLoadRegimenesFiscales();  
-		} // if
     else
       if(title.equals("Tickets")) {
         this.doLoadTickets();			
@@ -1832,18 +1854,16 @@ public class Accion extends IBaseVenta implements Serializable {
 	} // doMostrarDetalleTicket
 	
 	private void loadDomiciliosFactura(Long idCliente) throws Exception{
-		Map<String, Object>params     = null;
+		Map<String, Object>params     = new HashMap<>();
 		List<UISelectEntity>domicilios= null;
-		List<Columna>campos           = null;
+		List<Columna>columns          = new ArrayList<>();
 		try {
-			params= new HashMap<>();					
 			params.put("idCliente", idCliente);
-			campos= new ArrayList<>();
-			campos.add(new Columna("calle", EFormatoDinamicos.MAYUSCULAS));
-			campos.add(new Columna("asentamiento", EFormatoDinamicos.MAYUSCULAS));
-			campos.add(new Columna("localidad", EFormatoDinamicos.MAYUSCULAS));
-			campos.add(new Columna("municipio", EFormatoDinamicos.MAYUSCULAS));
-			domicilios= UIEntity.build("VistaClientesDto", "domiciliosCliente", params, campos, Constantes.SQL_TODOS_REGISTROS);
+			columns.add(new Columna("calle", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("asentamiento", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("localidad", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("municipio", EFormatoDinamicos.MAYUSCULAS));
+			domicilios= UIEntity.build("VistaClientesDto", "domiciliosCliente", params, columns, Constantes.SQL_TODOS_REGISTROS);
 			this.attrs.put("domiciliosFactura", domicilios);
 			if(!domicilios.isEmpty())
 				this.attrs.put("domicilioFactura", UIBackingUtilities.toFirstKeySelectEntity(domicilios));
@@ -1975,8 +1995,15 @@ public class Accion extends IBaseVenta implements Serializable {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       regimenesFiscales= (List<UISelectEntity>) UIEntity.seleccione("TcManticRegimenesFiscalesDto", "tipo", params, columns, "codigo");
 			this.attrs.put("regimenesFiscales", regimenesFiscales);
-      if(regimenesFiscales!= null && !regimenesFiscales.isEmpty()) 
-        this.setIkRegimenFiscal(regimenesFiscales.get(0));
+      if(cliente!= null && regimenesFiscales!= null && !regimenesFiscales.isEmpty()) {
+        int index= regimenesFiscales.indexOf(new UISelectEntity(cliente.getIdRegimenFiscal()== null? -1L: cliente.getIdRegimenFiscal()));
+        if(index< 0)
+          this.setIkRegimenFiscal(regimenesFiscales.get(0));
+        else
+          this.setIkRegimenFiscal(regimenesFiscales.get(index));
+      } // else
+      else
+        this.setIkRegimenFiscal(new UISelectEntity(-1L));
     } // try
     catch (Exception e) {
 			throw e;

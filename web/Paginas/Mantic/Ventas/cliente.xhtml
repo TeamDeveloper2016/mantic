@@ -66,6 +66,7 @@
               <p:spacer rendered="#{!manticVentasCliente.attrs.admin}"/>
             </p:panelGrid>			
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100-txt">
+              <p:outputLabel for="idRegimenFiscal" value="Régimen fiscal:"/>
               <p:selectOneMenu id="idRegimenFiscal" value="#{manticVentasCliente.ikRegimenFiscal}" var="index" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                 <f:selectItems value="#{manticVentasCliente.attrs.regimenesFiscales}" var="list" itemValue="#{list}" itemLabel="#{list.codigo} #{empty list.nombre or list.nombre eq ''? '': '-'} #{list.nombre}"/>
                 <p:column headerText="Código">
