@@ -7,6 +7,115 @@
   </model>
 
   <dml>
+    <unit id="TcManticTransferenciasMultiplesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_transferencias_multiples
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_transferencias_multiples
+        where      
+          consecutivo = '{consecutivo}'
+      </select>
+      <select id="siguiente">
+        select
+					max(orden)+ 1 as siguiente
+				from 
+					tc_mantic_transferencias_multiples
+				where
+				  ejercicio= {ejercicio} 
+				  and id_empresa= {idEmpresa}			
+				  and orden{operador} 900000	
+			</select>		
+      <select id="detalle">
+        select      
+          *
+        from      
+          tc_mantic_transferencias_multiples
+        where 
+          id_transferencia_multiple= {idTransferenciaMultiple}
+      </select>
+      <select id="todos">
+        select      
+          tc_mantic_transferencias_multiples.id_transferencia_multiple as id_key,
+          tc_mantic_transferencias_multiples.*
+        from      
+          tc_mantic_transferencias_multiples
+        order by
+          tc_mantic_transferencias_multiples.registro
+      </select>
+      <select id="consecutivo">
+        select      
+				  tc_mantic_transferencias_multiples.id_transferencia_multiple as id_key
+        from      
+          tc_mantic_transferencias_multiples
+        where      
+				  id_empresa= {idEmpresa}
+          and consecutivo = '{consecutivo}'
+      </select>      
+    </unit>    
+    <unit id="TcManticTransferenciasMultiplesBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_transferencias_multiples_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_transferencias_multiples_bitacora
+        where      
+          id_transferencia_multiple_bitacora = {idTransferenciaMultipleBitacora}
+      </select>
+    </unit>    
+    <unit id="TcManticTransferenciasMultiplesDetallesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_transferencias_multiples_detalles
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_transferencias_multiples_detalles
+        where      
+          id_transferencia_multiple = {idTransferenciaMultiple} and id_almacen = {idAlmacen} and id_articulo = {idArticulo}
+      </select>
+    </unit>    
+    <unit id="TcManticTransferenciasMultiplesEstatusDto">
+      <select id="row">
+        select      
+          tc_mantic_transferencias_multiples_estatus.id_transferencia_multiple_estatus as id_key,
+          tc_mantic_transferencias_multiples_estatus.*
+        from      
+          tc_mantic_transferencias_multiples_estatus
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_transferencias_multiples_estatus
+        where      
+          id_transferencia_multiple_estatus = {idTransferenciaMultipleEstatus} and nombre = '{nombre}'
+      </select>
+    </unit>    
     <unit id="TcManticRegimenesFiscalesDto">
       <select id="row">
         select      
@@ -6630,7 +6739,8 @@
         from      
           tc_mantic_transferencias_bitacora
         order by
-          tc_mantic_transferencias_bitacora.id_transferencia_bitacora,  tc_mantic_transferencias_bitacora.id_transferencia_estatus
+          tc_mantic_transferencias_bitacora.id_transferencia_bitacora,  
+          tc_mantic_transferencias_bitacora.id_transferencia_estatus
       </select>
 			<delete id="rows">
 				delete from tc_mantic_transferencias_bitacora where id_transferencia= {idTransferencia}
