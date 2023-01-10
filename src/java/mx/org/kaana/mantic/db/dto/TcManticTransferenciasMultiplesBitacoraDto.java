@@ -42,6 +42,8 @@ public class TcManticTransferenciasMultiplesBitacoraDto implements IBaseDto, Ser
   private Long idTransferenciaMultiple;
   @Column (name="id_usuario")
   private Long idUsuario;
+  @Column (name="id_transporto")
+  private Long idTransporto;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 	@Column (name="id_transferencia_multiple_bitacora")
@@ -54,15 +56,16 @@ public class TcManticTransferenciasMultiplesBitacoraDto implements IBaseDto, Ser
   }
 
   public TcManticTransferenciasMultiplesBitacoraDto(Long key) {
-    this(null, null, null, null, new Long(-1L));
+    this(null, null, null, null, null, new Long(-1L));
     setKey(key);
   }
 
-  public TcManticTransferenciasMultiplesBitacoraDto(Long idTransferenciaMultipleEstatus, String justificacion, Long idTransferenciaMultiple, Long idUsuario, Long idTransferenciaMultipleBitacora) {
+  public TcManticTransferenciasMultiplesBitacoraDto(Long idTransferenciaMultipleEstatus, String justificacion, Long idTransferenciaMultiple, Long idUsuario, Long idTransporto, Long idTransferenciaMultipleBitacora) {
     setIdTransferenciaMultipleEstatus(idTransferenciaMultipleEstatus);
     setJustificacion(justificacion);
     setIdTransferenciaMultiple(idTransferenciaMultiple);
     setIdUsuario(idUsuario);
+    setIdTransporto(idTransporto);
     setIdTransferenciaMultipleBitacora(idTransferenciaMultipleBitacora);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
@@ -97,6 +100,14 @@ public class TcManticTransferenciasMultiplesBitacoraDto implements IBaseDto, Ser
 
   public Long getIdUsuario() {
     return idUsuario;
+  }
+
+  public void setIdTransporto(Long idTransporto) {
+    this.idTransporto = idTransporto;
+  }
+
+  public Long getIdTransporto() {
+    return idTransporto;
   }
 
   public void setIdTransferenciaMultipleBitacora(Long idTransferenciaMultipleBitacora) {
@@ -138,6 +149,8 @@ public class TcManticTransferenciasMultiplesBitacoraDto implements IBaseDto, Ser
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuario());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdTransporto());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdTransferenciaMultipleBitacora());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
@@ -152,6 +165,7 @@ public class TcManticTransferenciasMultiplesBitacoraDto implements IBaseDto, Ser
 		regresar.put("justificacion", getJustificacion());
 		regresar.put("idTransferenciaMultiple", getIdTransferenciaMultiple());
 		regresar.put("idUsuario", getIdUsuario());
+		regresar.put("idTransporto", getIdTransporto());
 		regresar.put("idTransferenciaMultipleBitacora", getIdTransferenciaMultipleBitacora());
 		regresar.put("registro", getRegistro());
   	return regresar;
@@ -160,7 +174,7 @@ public class TcManticTransferenciasMultiplesBitacoraDto implements IBaseDto, Ser
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdTransferenciaMultipleEstatus(), getJustificacion(), getIdTransferenciaMultiple(), getIdUsuario(), getIdTransferenciaMultipleBitacora(), getRegistro()
+    getIdTransferenciaMultipleEstatus(), getJustificacion(), getIdTransferenciaMultiple(), getIdUsuario(), getIdTransporto(), getIdTransferenciaMultipleBitacora(), getRegistro()
     };
     return regresar;
   }

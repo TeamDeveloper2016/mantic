@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
@@ -42,6 +44,8 @@ public class TcManticTransferenciasMultiplesDto implements IBaseDto, Serializabl
   private Long idEmpresa;
   @Column (name="orden")
   private Long orden;
+  @Id
+  @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
   @Column (name="id_transferencia_multiple")
   private Long idTransferenciaMultiple;
   @Column (name="ejercicio")
@@ -211,7 +215,7 @@ public class TcManticTransferenciasMultiplesDto implements IBaseDto, Serializabl
 		regresar.put("observaciones", getObservaciones());
 		regresar.put("idEmpresa", getIdEmpresa());
 		regresar.put("orden", getOrden());
-		regresar.put("idTransfereciaMultiple", getIdTransferenciaMultiple());
+		regresar.put("idTransferenciaMultiple", getIdTransferenciaMultiple());
 		regresar.put("ejercicio", getEjercicio());
 		regresar.put("registro", getRegistro());
   	return regresar;

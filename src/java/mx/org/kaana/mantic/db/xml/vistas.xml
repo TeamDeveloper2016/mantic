@@ -4,6 +4,39 @@
 -->
 <process>
 	<dml> 
+		<unit id="VistaTransferenciasMultiplesDto">
+      <select id="lazy">
+        select 
+          tc_mantic_transferencias_multiples.id_transferencia_multiple as id_key,
+          tc_mantic_transferencias_multiples.id_transferencia_multiple,
+				  tc_mantic_transferencias_multiples.consecutivo,
+          tc_mantic_transferencias_multiples.id_almacen,
+          origen.nombre as nombre_origen,
+          origen.clave as clave_origen,
+          tc_mantic_transferencias_multiples.id_solicito,
+          concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as solicito,
+          tc_mantic_transferencias_multiples.id_usuario,
+          tc_mantic_transferencias_multiples.registro,
+          tc_mantic_transferencias_multiples.observaciones,
+          tc_mantic_transferencias_multiples.id_transferencia_multiple_estatus estatus,
+          tc_mantic_transferencias_multiples_estatus.nombre nombre_estatus,
+          tc_mantic_transferencias_multiples_estatus.estatus_asociados
+        from
+          tc_mantic_transferencias_multiples
+        inner join
+          tc_mantic_transferencias_multiples_estatus on tc_mantic_transferencias_multiples.id_transferencia_multiple_estatus = tc_mantic_transferencias_multiples_estatus.id_transferencia_multiple_estatus
+        inner join 
+					tc_mantic_empresas on tc_mantic_transferencias_multiples.id_empresa = tc_mantic_empresas.id_empresa
+        left join 
+          tc_mantic_personas on tc_mantic_transferencias_multiples.id_solicito = tc_mantic_personas.id_persona
+        inner join 
+        	tc_mantic_almacenes origen on tc_mantic_transferencias_multiples.id_almacen = origen.id_almacen
+				where 
+          tc_mantic_empresas.id_empresa in ({idEmpresa}) 
+				  and {condicion}	
+        {sortOrder}
+      </select>  
+    </unit>  
 		<unit id="VistaProductosDto">
       <select id="hijos">
         select      

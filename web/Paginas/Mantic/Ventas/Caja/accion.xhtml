@@ -88,7 +88,7 @@
 			};
 			
       Janal.Control.credenciales ={
-				cuenta     : {validaciones: 'requerido', mascara: 'libre', grupo: 'credenciales'},			
+				usuario    : {validaciones: 'requerido', mascara: 'libre', grupo: 'credenciales'},			
 				contrasenia: {validaciones: 'requerido', mascara: 'libre', grupo: 'credenciales'}			
 			};
       
@@ -1625,14 +1625,14 @@
 				  <p:outputLabel id="invalido" value="La cuenta o contraseña no son validas o no tiene autorización" styleClass="janal-color-orange" style="display: #{manticVentasCajaAccion.attrs.ok? '': 'none'};"/>
 			  </div>
 				<p:panelGrid columns="1" styleClass="janal-wid-100">
-					<p:outputLabel for="cuenta" value="Usuario:"/>
-					<p:inputText id="cuenta" value="#{manticVentasCajaAccion.attrs.cuenta}" styleClass="event-keydown-enter janal-wid-100-txt janal-name-contrasenia"/>
+					<p:outputLabel for="usuario" value="Usuario:"/>
+					<p:inputText id="usuario" value="#{manticVentasCajaAccion.attrs.cuenta}" styleClass="event-keydown-enter janal-wid-100-txt janal-name-contrasenia"/>
 					<p:outputLabel for="contrasenia" value="Contraseña:"/>
 					<p:password id="contrasenia" value="#{manticVentasCajaAccion.attrs.contrasenia}" styleClass="event-keydown-enter janal-wid-100-txt janal-name-verificar" autocomplete="new-password"/>									
         </p:panelGrid>
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">
-					<p:commandButton id="verificar" widgetVar="lock" icon="fa fa-check" process="@this cuenta contrasenia" update="invalido" value="Aceptar" action="#{manticVentasCajaAccion.doCheckUser}" onstart="PF('lock').disable(); if(janal.execute()){ return true; } else {PF('lock').enable(); return false;}" oncomplete="PF('lock').enable(); jsCaja.validateFacturacion(xhr, status, args);"/>
+					<p:commandButton id="verificar" widgetVar="lock" icon="fa fa-check" process="@this usuario contrasenia" update="invalido" value="Aceptar" action="#{manticVentasCajaAccion.doCheckUser}" onstart="PF('lock').disable(); if(janal.execute()){ return true; } else {PF('lock').enable(); return false;}" oncomplete="PF('lock').enable(); jsCaja.validateFacturacion(xhr, status, args);"/>
 					<p:commandButton icon="fa fa-remove" process="@none" value="Cancelar" onstart="PF('widgetDialogoAutorizacion').hide(); cleanInitPage();"/>
 				</div>	
 			</h:form>
