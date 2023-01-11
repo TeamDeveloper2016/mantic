@@ -258,13 +258,12 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 	} // toMoveDataArt
 	
 	public void doUpdateArticulo(String codigo, Integer index) {
-		List<Columna> columns         = null;
+		List<Columna> columns         = new ArrayList<>();
     Map<String, Object> params    = new HashMap<>();
 		List<UISelectEntity> articulos= null;
-		boolean buscaPorCodigo        = false;
+		boolean buscaPorCodigo        = Boolean.FALSE;
     try {
 			codigo= new String(codigo).replaceAll(Constantes.CLEAN_SQL, "").trim();
-			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
@@ -374,11 +373,10 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 	}
 
 	public void doUpdateSolicitado(Long idArticulo) {
-		List<Columna> columns= null;
+		List<Columna> columns= new ArrayList<>();
     try {
 			if(idArticulo!= null)
   			this.attrs.put("idArticulo", idArticulo);
-			columns= new ArrayList<>();
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("moneda", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("costo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
@@ -436,7 +434,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 	}
 	
 	public void doUpdateSugeridos(Long idArticulo) {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
 			if(idArticulo!= null)
@@ -447,7 +445,6 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 				DaoFactory.getInstance().update(sugerido, params);
 				this.attrs.put("sugerido", new UISelectEntity(new Entity(-1L)));
 			} // if	
-			columns= new ArrayList<>();
       columns.add(new Columna("proveedor", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("precio", EFormatoDinamicos.MONEDA_CON_DECIMALES));
       columns.add(new Columna("descuento", EFormatoDinamicos.NUMERO_CON_DECIMALES));
@@ -464,11 +461,10 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 	}
 
 	public void doUpdateArticulos() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
 		int buscarCodigoPor       = 2;
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
@@ -513,11 +509,10 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 	}	
 	
 	public void doUpdateArticulosPrecioCliente() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
 		int buscarCodigoPor       = 2;
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
@@ -563,11 +558,10 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 	} // doUpdateArticulosPrecioCliente	
 	
 	public void doUpdateDialogArticulos(String codigo) {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
-		boolean buscaPorCodigo    = false;
+		boolean buscaPorCodigo    = Boolean.FALSE;
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("original", EFormatoDinamicos.MONEDA_CON_DECIMALES));
@@ -598,10 +592,9 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 	}
  
 	public void doCleanArticulos() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
 		try {
-			columns= new ArrayList<>();
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
   		params.put("idProveedor", this.attrs.get("proveedor")== null? new UISelectEntity(new Entity(-1L)): ((UISelectEntity)this.attrs.get("proveedor")).getKey());
 			params.put("codigo", "WXYZ");
@@ -707,10 +700,9 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 	public void toAddArticulo(UISelectEntity seleccionado) throws Exception {
 		Long idOrdenDetalle= new Long((int)(Math.random()*10000));
   	this.doSearchArticulo(seleccionado.toLong("idArticulo"), 0);
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		Value stock               = null;
 		try {
-			params=new HashMap<>();
 			params.put("idArticulo", seleccionado.toLong("idArticulo"));
 			params.put("idProveedor", this.adminOrden.getIdProveedor());
 			params.put("idAlmacen", this.adminOrden.getIdAlmacen());
@@ -843,32 +835,27 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 	}
 
 	public void doLoadFaltantes() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-//			Long before   = (Long)this.attrs.get("before");
-//			Long idAlmacen= this.getAdminOrden().getIdAlmacen();
-//			if(before== null || idAlmacen== null || !before.equals(idAlmacen) || !Cadena.isVacio(this.attrs.get("lookForFaltantes"))) {
-				params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
-				params.put("idAlmacen", this.getAdminOrden().getIdAlmacen());
-				params.put("idProveedor", this.getAdminOrden().getIdProveedor());
-				if(Cadena.isVacio(this.attrs.get("lookForFaltantes")))
-					params.put("codigoFaltante", "");
-				else {
-					String nombre= ((String)this.attrs.get("lookForFaltantes")).replaceAll(Constantes.CLEAN_SQL, "").trim();
-					params.put("codigoFaltante", nombre.toUpperCase());
-				} // else
-				columns= new ArrayList<>();
-				columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
-				columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-				columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
-				columns.add(new Columna("costo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
-				columns.add(new Columna("stock", EFormatoDinamicos.NUMERO_CON_DECIMALES));
-				columns.add(new Columna("minimo", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
-				columns.add(new Columna("maximo", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
-				this.attrs.put("faltantes", UIEntity.build("VistaOrdenesComprasDto", "faltantes", params, columns, Constantes.SQL_TODOS_REGISTROS));
-			  this.attrs.put("before", this.attrs.get("idAlmacen"));
-//			} // 
+      params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
+      params.put("idAlmacen", this.getAdminOrden().getIdAlmacen());
+      params.put("idProveedor", this.getAdminOrden().getIdProveedor());
+      if(Cadena.isVacio(this.attrs.get("lookForFaltantes")))
+        params.put("codigoFaltante", "");
+      else {
+        String nombre= ((String)this.attrs.get("lookForFaltantes")).replaceAll(Constantes.CLEAN_SQL, "").trim();
+        params.put("codigoFaltante", nombre.toUpperCase());
+      } // else
+      columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("costo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+      columns.add(new Columna("stock", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+      columns.add(new Columna("minimo", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
+      columns.add(new Columna("maximo", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
+      this.attrs.put("faltantes", UIEntity.build("VistaOrdenesComprasDto", "faltantes", params, columns, Constantes.SQL_TODOS_REGISTROS));
+      this.attrs.put("before", this.attrs.get("idAlmacen"));
     } // try
     catch (Exception e) {
 			Error.mensaje(e);
