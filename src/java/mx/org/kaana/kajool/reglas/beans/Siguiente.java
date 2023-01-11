@@ -19,6 +19,7 @@ public final class Siguiente implements Serializable {
 
 	private String consecutivo;
 	private String temporal;
+	private Long ejercicio;
 	private Long orden;
 
 	public Siguiente(Long orden) {
@@ -29,12 +30,14 @@ public final class Siguiente implements Serializable {
 		this.consecutivo= Fecha.getAnioActual()+ consecutivo;
 		this.temporal   = consecutivo;
 		this.orden      = orden;
+    this.ejercicio  = new Long(Fecha.getAnioActual());
 	}
 
 	public Siguiente(String ejercicio, Long consecutivo, Long orden) {
 		this.temporal   = Cadena.rellenar(String.valueOf(consecutivo), Constantes.LENGTH_CONSECUTIVO, '0', true);
 		this.consecutivo= ejercicio+ this.temporal;
 		this.orden      = orden;
+    this.ejercicio  = new Long(ejercicio);
 	}
 
 	public String getConsecutivo() {
@@ -48,6 +51,14 @@ public final class Siguiente implements Serializable {
 	public Long getOrden() {
 		return orden;
 	}
+
+  public Long getEjercicio() {
+    return ejercicio;
+  }
+
+  public void setEjercicio(Long ejercicio) {
+    this.ejercicio = ejercicio;
+  }
 
 	@Override
 	public String toString() {

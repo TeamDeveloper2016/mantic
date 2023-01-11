@@ -82,11 +82,14 @@
     <unit id="TcManticTransferenciasMultiplesDetallesDto">
       <select id="row">
         select      
-          *
+          tc_mantic_transferencias_multiples_detalles.id_transferencia_multiple_detalle as id_key,
+          tc_mantic_transferencias_multiples_detalles.*
         from      
           tc_mantic_transferencias_multiples_detalles
         where 
-          {condicion} 
+          id_transferencia_multiple= {idTransferenciaMultiple}
+        order by
+          id_almacen
       </select>
       <select id="identically">
         select      

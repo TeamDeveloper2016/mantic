@@ -1,10 +1,12 @@
 package mx.org.kaana.mantic.catalogos.almacenes.multiples.reglas;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
@@ -13,7 +15,8 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
-import mx.org.kaana.mantic.db.dto.TcManticFaltantesDto;
+import mx.org.kaana.mantic.db.dto.TcManticTransferenciasDetallesDto;
+import mx.org.kaana.mantic.db.dto.TcManticTransferenciasDto;
 import mx.org.kaana.mantic.db.dto.TcManticTransferenciasMultiplesBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticTransferenciasMultiplesDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticTransferenciasMultiplesDto;
@@ -27,13 +30,7 @@ public class Transaccion extends ComunInventarios {
 	
   private TcManticTransferenciasMultiplesDto dto;
 	private Long idTransferenciaMultiplesEstatus;
-	private Long idFaltante;
 
-	public Transaccion(Long idFaltante) {
-		this(new TcManticTransferenciasMultiplesDto(-1L));
-		this.idFaltante= idFaltante;
-	}
-	
 	public Transaccion(TcManticTransferenciasMultiplesDto dto) {
 		this(dto, 1L);
 	}
@@ -57,25 +54,25 @@ public class Transaccion extends ComunInventarios {
 
   @Override
   protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
-    boolean regresar= false;
+    boolean regresar= Boolean.FALSE;
     try {			
-    	this.messageError    = "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" para transferencia de articulos.");
+    	this.messageError    = "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" para transferencia multiple de articulos.");
   		Siguiente consecutivo= null;
       switch (accion) {
-        case ACTIVAR:
         case AGREGAR:
 					consecutivo= this.toSiguiente(sesion);
 					this.dto.setConsecutivo(consecutivo.getConsecutivo());
+					this.dto.setEjercicio(consecutivo.getEjercicio());
 					this.dto.setOrden(consecutivo.getOrden());
           regresar= DaoFactory.getInstance().insert(sesion, this.dto).intValue()> 0;
-					this.toFillArticulos(sesion, accion);
+					this.toFillArticulos(sesion);
 					this.bitacora= new TcManticTransferenciasMultiplesBitacoraDto(-1L, "", JsfBase.getIdUsuario(), null, this.dto.getIdTransferenciaMultipleEstatus(), this.dto.getIdTransferenciaMultiple());
 					if(regresar)
             regresar= DaoFactory.getInstance().insert(sesion, bitacora).intValue()> 0;
 					break;
         case MODIFICAR:
           this.dto.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
-					this.toFillArticulos(sesion, accion);
+					this.toFillArticulos(sesion);
           regresar= DaoFactory.getInstance().update(sesion, this.dto).intValue()> 0;
           break;
         case ELIMINAR:
@@ -85,18 +82,13 @@ public class Transaccion extends ComunInventarios {
 					if(regresar)
             regresar= DaoFactory.getInstance().insert(sesion, bitacora).intValue()> 0;
           break;
-				case DEPURAR:
-					regresar= DaoFactory.getInstance().delete(sesion, TcManticFaltantesDto.class, this.idFaltante)>= 1L;
-					break;
         case REGISTRAR:
-      		this.articulos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaAlmacenesTransferenciasDto", "detalle", dto.toMap());
 					this.dto.setIdTransferenciaMultipleEstatus(this.idTransferenciaMultiplesEstatus);
-					if(this.idTransferenciaMultiplesEstatus!= 1L)
-					  this.toFillArticulos(sesion, accion);
-					regresar= DaoFactory.getInstance().update(sesion, this.dto).intValue()> 0;
-					if(regresar)
+					if(DaoFactory.getInstance().update(sesion, this.dto).intValue()> 0) {
             regresar= DaoFactory.getInstance().insert(sesion, this.bitacora).intValue()> 0;
-          // throw new RuntimeException("ERROR PROVACADO INTENCIONALMENTE");
+  					if(Objects.equals(this.idTransferenciaMultiplesEstatus, 3L))
+              this.toTransferir(sesion);
+          } // if  
           break;
       } // switch
       if(!regresar) 
@@ -110,9 +102,8 @@ public class Transaccion extends ComunInventarios {
 
 	private Siguiente toSiguiente(Session sesion) throws Exception {
 		Siguiente regresar        = null;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("ejercicio", this.getCurrentYear());
 			params.put("idEmpresa", this.dto.getIdEmpresa());
 			params.put("operador", this.getCurrentSign());
@@ -131,11 +122,13 @@ public class Transaccion extends ComunInventarios {
 		return regresar;
 	}
 
-	private void toFillArticulos(Session sesion, EAccion accion) throws Exception {
+	private void toFillArticulos(Session sesion) throws Exception {
 		List<Articulo> todos=(List<Articulo>) DaoFactory.getInstance().toEntitySet(sesion, Articulo.class, "VistaTransferenciasMultiplesDto", "detalle", this.dto.toMap());
-		for (Articulo item: todos) 
-			if (this.articulos.indexOf(item)< 0) 
+		for (Articulo item: todos) {
+      int index= this.toIndexOf(item);
+			if (index< 0) 
 				DaoFactory.getInstance().delete(sesion, item.toTransferenciaDetalle());
+    } // if  
 		for (Articulo articulo: this.articulos) {
 			TcManticTransferenciasMultiplesDetallesDto item= articulo.toTransferenciaMultipleDetalle();
 			item.setIdTransferenciaMultiple(this.dto.getIdTransferenciaMultiple());
@@ -143,27 +136,110 @@ public class Transaccion extends ComunInventarios {
 				DaoFactory.getInstance().insert(sesion, item);
 			else 
 				DaoFactory.getInstance().update(sesion, item);
-      /*
-			if(EAccion.ACTIVAR.equals(accion)) 
-				this.toMovimientos(sesion, this.dto.getConsecutivo(), this.dto.getIdAlmacen(), this.dto.getIdDestino(), articulo, this.idTransferenciaMultiplesEstatus);
-			else
-  			if(EAccion.REGISTRAR.equals(accion)) {
-					TcManticArticulosDto umbrales= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, articulo.getIdArticulo());
-          articulo.setSolicitados(articulo.getCantidad());
-					switch(this.idTransferenciaMultiplesEstatus.intValue()) {
-						case 3: // TRANSITO
-    					this.toMovimientosAlmacenOrigen(sesion, this.dto.getConsecutivo(), this.dto.getIdAlmacen(), articulo, umbrales, this.idTransferenciaMultiplesEstatus);
-							break;
-						case 4: // CANCELAR
-    					this.toMovimientosAlmacenOrigen(sesion, this.dto.getConsecutivo(), this.dto.getIdAlmacen(), articulo, umbrales, this.idTransferenciaMultiplesEstatus);
-							break;
-						case 5: // RECEPCION
-    					this.toMovimientosAlmacenDestino(sesion, this.dto.getConsecutivo(), this.dto.getIdDestino(), articulo, umbrales, articulo.getCantidad());
-							break;
-					} // switch
-				} // if
-      */   
 		} // for
 	}
-		
+  
+  private int toIndexOf(Articulo articulo) {
+    int regresar= -1;
+    if(articulos!= null && !this.articulos.isEmpty()) {
+      regresar= 0;
+      while (regresar< this.articulos.size()) {
+        if(Objects.equals(this.articulos.get(regresar).getIdArticulo(), articulo.getIdArticulo()) && 
+           Objects.equals(this.articulos.get(regresar).getIdAlmacen(), articulo.getIdAlmacen()))
+          break;
+        regresar++;
+      } // while 
+      regresar= regresar>= articulos.size()? -1: regresar;
+    } // if
+    return regresar;
+  }  
+
+ 	private void toTransferir(Session sesion) throws Exception {
+    Map<String, Object> params                              = new HashMap<>();
+    List<TcManticTransferenciasMultiplesDetallesDto> items  = null;
+    List<TcManticTransferenciasMultiplesDetallesDto> detalle= new ArrayList<>();
+    try {   
+      params.put("idTransferenciaMultiple", this.dto.getIdTransferenciaMultiple());
+      items= (List<TcManticTransferenciasMultiplesDetallesDto>)DaoFactory.getInstance().findViewCriteria(sesion, TcManticTransferenciasMultiplesDetallesDto.class, params);
+      Long idAlmacen= -1L;
+      for (TcManticTransferenciasMultiplesDetallesDto item: items) {
+        if(Objects.equals(idAlmacen, -1L)) {
+          idAlmacen= item.getIdAlmacen();
+          if(!Objects.equals(idAlmacen, item.getIdAlmacen())) 
+            this.toTransferencia(sesion, idAlmacen, detalle);
+          detalle.clear();
+        } // if
+        detalle.add(item);
+      } // for
+      if(!Objects.equals(idAlmacen, -1L)) 
+        this.toTransferencia(sesion, idAlmacen, detalle);
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    finally {
+      Methods.clean(params);
+      Methods.clean(detalle);
+    } // finally
+  }
+
+ 	private void toTransferencia(Session sesion, Long idDestino, List<TcManticTransferenciasMultiplesDetallesDto> detalles) throws Exception {
+    try {      
+      Siguiente consecutivo= this.toContinua(sesion);
+      TcManticTransferenciasDto transferencia= new TcManticTransferenciasDto(
+        this.dto.getIdSolicito(), // Long idSolicito, 
+        1L, // Long idTransferenciaEstatus, 
+        2L, // Long idTransferenciaTipo, 
+        consecutivo.getEjercicio(), // Long ejercicio, 
+        consecutivo.getConsecutivo(), // String consecutivo, 
+        JsfBase.getIdUsuario(), // Long idUsuario,
+        this.dto.getIdAlmacen(), // Long idAlmacen, 
+        this.dto.getObservaciones(), // String observaciones, 
+        idDestino, // Long idDestino, 
+        this.dto.getIdEmpresa(), // Long idEmpresa, 
+        consecutivo.getOrden(), // Long orden, 
+        -1L // Long idTransferencia              
+      );
+      DaoFactory.getInstance().insert(sesion, transferencia);
+      for (TcManticTransferenciasMultiplesDetallesDto item: detalles) {
+        TcManticTransferenciasDetallesDto detalle= new TcManticTransferenciasDetallesDto(
+          item.getCodigo(), // String codigo, 
+          0D, // Double cantidades, 
+          -1L, // Long idTransferenciaDetalle, 
+          item.getCantidad(), // Double cantidad, 
+          item.getIdArticulo(), // Long idArticulo, 
+          transferencia.getIdTransferencia(), // Long idTransferencia, 
+          item.getNombre(), // String nombre, 
+          item.getCaja() // Long caja
+        );
+        DaoFactory.getInstance().insert(sesion, detalle);
+      } // for
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+  }
+
+	private Siguiente toContinua(Session sesion) throws Exception {
+		Siguiente regresar        = null;
+		Map<String, Object> params= new HashMap<>();
+		try {
+			params.put("ejercicio", this.getCurrentYear());
+			params.put("idEmpresa", this.dto.getIdEmpresa());
+			params.put("operador", this.getCurrentSign());
+			Value next= DaoFactory.getInstance().toField(sesion, "TcManticTransferenciasDto", "siguiente", params, "siguiente");
+			if(next.getData()!= null)
+			  regresar= new Siguiente(next.toLong());
+		  else
+			  regresar= new Siguiente(Configuracion.getInstance().isEtapaDesarrollo()? 900001L: 1L);
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	}
+  
 }

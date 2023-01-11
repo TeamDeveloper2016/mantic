@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
@@ -335,10 +336,29 @@ public abstract class IAdminArticulos implements Serializable {
 		} // catch		
 	} // validatePrecioArticulo
 	
+	public void toAdjustArticulosAlmacen() {
+		int count= 0;
+		while(count< this.articulos.size()) {
+			if(!this.articulos.get(count).isValid() || this.articulos.get(count).getCantidad()<= 0)
+				this.articulos.remove(count);
+			else
+				if(count> 0 && 
+           Objects.equals(this.articulos.get(count- 1).getIdArticulo(), this.articulos.get(count).getIdArticulo()) &&     
+           Objects.equals(this.articulos.get(count- 1).getIdAlmacen(), this.articulos.get(count).getIdAlmacen())) {
+					this.articulos.get(count- 1).setCantidad(this.articulos.get(count- 1).getCantidad()+ this.articulos.get(count).getCantidad());
+					this.articulos.remove(count);
+				} // if
+				else
+				  count++;
+		} // while
+    if(!this.articulos.isEmpty())
+		  this.toRefreshCalculate();
+	}
+  
 	@Override
 	protected void finalize() throws Throwable {
 		Methods.clean(this.articulos);
 		Methods.clean(this.filtrados);
-	}	
+  }	
 	
 }

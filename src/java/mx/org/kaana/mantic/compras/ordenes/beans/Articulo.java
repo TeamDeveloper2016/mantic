@@ -750,7 +750,8 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 			this.getIdArticulo(), // Long idArticulo, 
 			this.getIdOrdenDetalle(), // Long idTransferencia, 
 			this.getNombre(), // String nombre
-      this.getIdAlmacen() // Lond idAlmacen
+      this.getIdAlmacen(), // Long idAlmacen
+      this.getCaja() // Long caja
 		);
 	}
 	

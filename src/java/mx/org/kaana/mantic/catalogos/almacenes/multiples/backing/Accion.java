@@ -31,7 +31,6 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.almacenes.multiples.beans.Multiple;
 import mx.org.kaana.mantic.catalogos.almacenes.multiples.reglas.Transaccion;
 import mx.org.kaana.mantic.catalogos.almacenes.multiples.reglas.AdminMultiples;
-import mx.org.kaana.mantic.catalogos.almacenes.transferencias.beans.Transferencia;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.comun.IBaseArticulos;
 import mx.org.kaana.mantic.comun.IBaseStorage;
@@ -48,7 +47,7 @@ import org.primefaces.event.TabChangeEvent;
 public class Accion extends IBaseArticulos implements IBaseStorage, Serializable {
 
 	private static final Log LOG              = LogFactory.getLog(Accion.class);
-  private static final long serialVersionUID= 327393188565639367L;
+  private static final long serialVersionUID= 321393188565639367L;
 	private EAccion accion;
 	
 	public String getAgregar() {
@@ -109,15 +108,15 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
     String regresar        = null;
     try {			
 			transaccion = new Transaccion((TcManticTransferenciasMultiplesDto)this.getAdminOrden().getOrden(), this.getAdminOrden().getArticulos());
-			this.getAdminOrden().toAdjustArticulos();
+			this.getAdminOrden().toAdjustArticulosAlmacen();
 			if (transaccion.ejecutar(this.accion)) {
 				if(this.accion.equals(EAccion.AGREGAR)) {
    			  UIBackingUtilities.execute("janal.back(' gener\\u00F3 la transferencia multiple', '"+ ((Multiple)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
-		  		JsfBase.addMessage("Se registró la transferencia de correcta", ETipoMensaje.INFORMACION);
+		  		JsfBase.addMessage("Se registró la transferencia multiple de forma correcta", ETipoMensaje.INFORMACION);
  				  regresar = ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
 				} // if	
  				if(!this.accion.equals(EAccion.CONSULTAR)) 
-    			JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la transferencia multiple de articulos."), ETipoMensaje.INFORMACION);
+    			JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la transferencia multiple de articulos"), ETipoMensaje.INFORMACION);
   			JsfBase.setFlashAttribute("idTransferenciaMultiple", ((Multiple)this.getAdminOrden().getOrden()).getIdTransferenciaMultiple());
 			} // if
 			else 
@@ -170,8 +169,13 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	  			destinos.remove(index);
 				if(this.accion.equals(EAccion.AGREGAR))
 				  ((Multiple)this.getAdminOrden().getOrden()).setIkDestino(destinos.get(0));
-				else 
-				  ((Multiple)this.getAdminOrden().getOrden()).setIkDestino(destinos.get(destinos.indexOf(((Multiple)this.getAdminOrden().getOrden()).getIkDestino())));
+				else {
+          index= destinos.indexOf(((Multiple)this.getAdminOrden().getOrden()).getIkDestino());
+          if(index>= 0)
+				    ((Multiple)this.getAdminOrden().getOrden()).setIkDestino(destinos.get(index));
+          else
+				    ((Multiple)this.getAdminOrden().getOrden()).setIkDestino(destinos.get(0));
+        } // else  
 			} // if
 			columns.clear();
       columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
@@ -179,8 +183,13 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       columns.add(new Columna("paterno", EFormatoDinamicos.MAYUSCULAS));
       List<UISelectEntity> personas= UIEntity.build("VistaAlmacenesTransferenciasDto", "solicito", params, columns);
       this.attrs.put("personas", personas);
-			if(personas!= null && !this.accion.equals(EAccion.AGREGAR) && ((Multiple)this.getAdminOrden().getOrden()).getIdSolicito()!= null && ((Multiple)this.getAdminOrden().getOrden()).getIdSolicito()> 0L) 
-				((Multiple)this.getAdminOrden().getOrden()).setIkSolicito(personas.get(personas.indexOf(new UISelectEntity(((Multiple)this.getAdminOrden().getOrden()).getIdSolicito()))));
+			if(personas!= null && !this.accion.equals(EAccion.AGREGAR) && ((Multiple)this.getAdminOrden().getOrden()).getIdSolicito()!= null && ((Multiple)this.getAdminOrden().getOrden()).getIdSolicito()> 0L){
+        int index= personas.indexOf(new UISelectEntity(((Multiple)this.getAdminOrden().getOrden()).getIdSolicito()));
+        if(index>= 0)
+				  ((Multiple)this.getAdminOrden().getOrden()).setIkSolicito(personas.get(index));
+        else
+          ((Multiple)this.getAdminOrden().getOrden()).setIkSolicito(personas.get(0));
+      } // if  
 			this.doUpdateAlmacenDestino(true);
     } // try
     catch (Exception e) {
@@ -194,17 +203,23 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	}
 
 	public void doUpdateAlmacen() {
-		List<UISelectEntity> destinos= (List<UISelectEntity>)((ArrayList<UISelectEntity>)this.attrs.get("almacenes")).clone();
-    this.attrs.put("destinos", destinos);
-		int index = destinos.indexOf(((Multiple)this.getAdminOrden().getOrden()).getIkAlmacen());
-		if(index>= 0)
-      destinos.remove(index);
-		if(!destinos.isEmpty())
-      ((Multiple)this.getAdminOrden().getOrden()).setIkDestino(destinos.get(0));
-		this.getAdminOrden().getArticulos().clear();
-		this.getAdminOrden().getArticulos().add(new Articulo(-1L));
-		this.getAdminOrden().toCalculate();
-		this.attrs.put("paginator", this.getAdminOrden().getArticulos().size()> Constantes.REGISTROS_LOTE_TOPE);
+    try {
+      List<UISelectEntity> destinos= (List<UISelectEntity>)((ArrayList<UISelectEntity>)this.attrs.get("almacenes")).clone();
+      this.attrs.put("destinos", destinos);
+      int index = destinos.indexOf(((Multiple)this.getAdminOrden().getOrden()).getIkAlmacen());
+      if(index>= 0)
+        destinos.remove(index);
+      if(!destinos.isEmpty())
+        ((Multiple)this.getAdminOrden().getOrden()).setIkDestino(destinos.get(0));
+      this.getAdminOrden().getArticulos().clear();
+      this.getAdminOrden().getArticulos().add(new Articulo(-1L));
+      this.getAdminOrden().toCalculate();
+      this.attrs.put("paginator", this.getAdminOrden().getArticulos().size()> Constantes.REGISTROS_LOTE_TOPE);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
 	}
 	
 	public void doUpdateAlmacenDestino() {
@@ -333,23 +348,6 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
     } // finally
 	}
 
-	public void doEliminarPerdido() {
-		Transaccion transaccion= null;
-		try {
-			UISelectEntity perdido= (UISelectEntity)this.attrs.get("perdidoRemove");   		
-			transaccion= new Transaccion(perdido.getKey());
-			if(transaccion.ejecutar(EAccion.DEPURAR)){
-				List<UISelectEntity> perdidos= (List<UISelectEntity>)this.attrs.get("perdidos");
-				perdidos.remove(perdidos.indexOf(perdido));
-				this.attrs.put("perdidos", perdidos);
-			} // if
-		} // try
-	  catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);
-    } // catch   
-	}	
-	
   @Override
 	public void doRecoverArticulo(Integer index) {
 		try {

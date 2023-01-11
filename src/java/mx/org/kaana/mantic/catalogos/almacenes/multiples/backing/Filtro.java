@@ -139,7 +139,7 @@ public class Filtro extends Comun implements Serializable {
 	  Map<String, Object> regresar= new HashMap<>();	
 		StringBuilder sb= new StringBuilder();
 		if(!Cadena.isVacio(this.attrs.get("idTransferenciaMultiple")) && !this.attrs.get("idTransferenciaMultiple").toString().equals("-1"))
-  		sb.append("(tc_mantic_transferencias_multiples.id_transferencia=").append(this.attrs.get("idTransferenciaMultiple")).append(") and ");
+  		sb.append("(tc_mantic_transferencias_multiples.id_transferencia_multiple=").append(this.attrs.get("idTransferenciaMultiple")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("consecutivo")))
   		sb.append("(tc_mantic_transferencias_multiples.consecutivo like '%").append(this.attrs.get("consecutivo")).append("%') and ");
 		if(!Cadena.isVacio(this.attrs.get("idAlmacen")) && !this.attrs.get("idAlmacen").toString().equals("-1"))

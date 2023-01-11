@@ -63,7 +63,7 @@
 			</select>		    
       <select id="detalle">
         select      
-				  tc_mantic_transferencias_multiples_detalles.id_transferencia__multiple_detalle as id_comodin,
+				  tc_mantic_transferencias_multiples_detalles.id_transferencia_multiple_detalle as id_comodin,
 				  tc_mantic_transferencias_multiples_detalles.id_transferencia_multiple as id_orden_detalle,
           tc_mantic_transferencias_multiples_detalles.codigo as propio,
           tc_mantic_transferencias_multiples_detalles.*,

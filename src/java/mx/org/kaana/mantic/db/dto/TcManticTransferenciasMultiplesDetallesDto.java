@@ -1,9 +1,6 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -13,9 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -50,6 +44,8 @@ public class TcManticTransferenciasMultiplesDetallesDto implements IBaseDto, Ser
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 	@Column (name="id_transferencia_multiple_detalle")
   private Long idTransferenciaMultipleDetalle;
+  @Column (name="caja")
+  private Long caja;
   @Column (name="registro")
   private Timestamp registro;
 
@@ -58,11 +54,11 @@ public class TcManticTransferenciasMultiplesDetallesDto implements IBaseDto, Ser
   }
 
   public TcManticTransferenciasMultiplesDetallesDto(Long key) {
-    this(null, null, null, null, new Long(-1L), null, null);
+    this(null, null, null, null, new Long(-1L), null, null, null);
     setKey(key);
   }
 
-  public TcManticTransferenciasMultiplesDetallesDto(String codigo, Double cantidad, Long idTransferenciaMultiple, Long idArticulo, Long idTransferenciaMultipleDetalle, String nombre, Long idAlmacen) {
+  public TcManticTransferenciasMultiplesDetallesDto(String codigo, Double cantidad, Long idTransferenciaMultiple, Long idArticulo, Long idTransferenciaMultipleDetalle, String nombre, Long idAlmacen, Long caja) {
     setCodigo(codigo);
     setIdTransferenciaMultiple(idTransferenciaMultiple);
     setIdAlmacen(idAlmacen);
@@ -70,6 +66,7 @@ public class TcManticTransferenciasMultiplesDetallesDto implements IBaseDto, Ser
     setIdArticulo(idArticulo);
     setNombre(nombre);
     setIdTransferenciaMultipleDetalle(idTransferenciaMultipleDetalle);
+    setCaja(caja);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
 	
@@ -137,6 +134,14 @@ public class TcManticTransferenciasMultiplesDetallesDto implements IBaseDto, Ser
     return registro;
   }
 
+  public Long getCaja() {
+    return caja;
+  }
+
+  public void setCaja(Long caja) {
+    this.caja = caja;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -166,6 +171,8 @@ public class TcManticTransferenciasMultiplesDetallesDto implements IBaseDto, Ser
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdTransferenciaMultipleDetalle());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getCaja());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
   	return regresar.toString();
@@ -181,6 +188,7 @@ public class TcManticTransferenciasMultiplesDetallesDto implements IBaseDto, Ser
 		regresar.put("idArticulo", getIdArticulo());
 		regresar.put("nombre", getNombre());
 		regresar.put("idTransferenciaMultipleDetalle", getIdTransferenciaMultipleDetalle());
+		regresar.put("caja", getCaja());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
@@ -188,7 +196,7 @@ public class TcManticTransferenciasMultiplesDetallesDto implements IBaseDto, Ser
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getCodigo(), getIdTransferenciaMultiple(), getIdAlmacen(), getCantidad(), getIdArticulo(), getNombre(), getIdTransferenciaMultipleDetalle(), getRegistro()
+      getCodigo(), getIdTransferenciaMultiple(), getIdAlmacen(), getCantidad(), getIdArticulo(), getNombre(), getIdTransferenciaMultipleDetalle(), getCaja(), getRegistro()
     };
     return regresar;
   }
