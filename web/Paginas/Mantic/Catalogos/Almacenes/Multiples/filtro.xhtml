@@ -165,11 +165,17 @@
 							</f:facet>
 							<h:outputText value="#{row['nombreEstatus']}" title="Observaciones: #{row['observaciones']}"/>
 						</p:column>	
-            <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.tipo}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-5" sortBy="#{row.almacenes}">
 							<f:facet name="header">
-								<h:outputText value="Tipo"/>
+								<h:outputText value="Almacenes"/>
 							</f:facet>
-							<h:outputText value="NORMAL"/>
+							<h:outputText value="#{row['almacenes']}"/>
+						</p:column>	
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-5" sortBy="#{row.articulos}">
+							<f:facet name="header">
+								<h:outputText value="Articulos"/>
+							</f:facet>
+							<h:outputText value="#{row['articulos']}"/>
 						</p:column>	
 						<p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{row.registro}">
 							<f:facet name="header">
@@ -200,21 +206,7 @@
 				<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
 					<p:outputLabel for="estatusDlg" value="Estatus:"/>												
 					<p:selectOneMenu id="estatusDlg" value="#{manticCatalogosAlmacenesMultiplesFiltro.attrs.estatus}" styleClass="janal-wid-100-txt">
-						<p:ajax event="change" process="@this" update="@(.refrescar)" listener="#{manticCatalogosAlmacenesMultiplesFiltro.doTransporta}" oncomplete="#{manticCatalogosAlmacenesMultiplesFiltro.attrs.transito? 'janal.refresh();': ''}"/>
 						<f:selectItems value="#{manticCatalogosAlmacenesMultiplesFiltro.attrs.allEstatusAsigna}"/>					
-					</p:selectOneMenu>
-					<p:outputLabel for="idTransporto" value="Transporta:" style="display: #{manticCatalogosAlmacenesMultiplesFiltro.attrs.transito? '': 'none'}" styleClass="refrescar"/>
-					<p:selectOneMenu id="idTransporto" value="#{manticCatalogosAlmacenesMultiplesFiltro.attrs.idTransporto}" styleClass="janal-wid-100-txt refrescar" converter="janal.convertidor.Entity" style="display: #{manticCatalogosAlmacenesMultiplesFiltro.attrs.transito? '': 'none'}">
-						<f:selectItems value="#{manticCatalogosAlmacenesMultiplesFiltro.attrs.personas}" var="element" itemValue="#{element}" itemLabel="#{element.nombres} #{element.paterno} #{element.materno}"/>					
-						<p:column>
-							<h:outputText value="#{item.nombres}"/>
-						</p:column>                
-						<p:column>
-							<h:outputText value="#{item.paterno}"/>
-						</p:column>                
-						<p:column>
-							<h:outputText value="#{item.materno}"/>
-						</p:column>                
 					</p:selectOneMenu>
 				</h:panelGrid>
 				<p:outputLabel for="justificacion" value="Justificación:"/><br/>

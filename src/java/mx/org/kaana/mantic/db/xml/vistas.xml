@@ -20,11 +20,15 @@
           tc_mantic_transferencias_multiples.observaciones,
           tc_mantic_transferencias_multiples.id_transferencia_multiple_estatus estatus,
           tc_mantic_transferencias_multiples_estatus.nombre nombre_estatus,
-          tc_mantic_transferencias_multiples_estatus.estatus_asociados
+          tc_mantic_transferencias_multiples_estatus.estatus_asociados,
+          count(distinct(tc_mantic_transferencias_multiples_detalles.id_almacen)) as almacenes,
+          count(distinct(tc_mantic_transferencias_multiples_detalles.id_transferencia_multiple_detalle)) as articulos
         from
           tc_mantic_transferencias_multiples
         inner join
           tc_mantic_transferencias_multiples_estatus on tc_mantic_transferencias_multiples.id_transferencia_multiple_estatus = tc_mantic_transferencias_multiples_estatus.id_transferencia_multiple_estatus
+        inner join
+          tc_mantic_transferencias_multiples_detalles on tc_mantic_transferencias_multiples.id_transferencia_multiple = tc_mantic_transferencias_multiples_detalles.id_transferencia_multiple
         inner join 
 					tc_mantic_empresas on tc_mantic_transferencias_multiples.id_empresa = tc_mantic_empresas.id_empresa
         left join 
@@ -34,6 +38,8 @@
 				where 
           tc_mantic_empresas.id_empresa in ({idEmpresa}) 
 				  and {condicion}	
+        group by
+          tc_mantic_transferencias_multiples.id_transferencia_multiple        
         {sortOrder}
       </select>  
 			<select id="movimientos">

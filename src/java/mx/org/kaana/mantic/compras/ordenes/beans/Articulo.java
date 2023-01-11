@@ -746,9 +746,9 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		return new TcManticTransferenciasMultiplesDetallesDto(
 			this.getPropio(), // String propio, 
 			this.getCantidad(), // Double cantidad,
-			this.getIdComodin(), // Long idTransferenciaDetalle, 
+			this.getIdOrdenDetalle(), // Long idTransferenciaMultiple, 
 			this.getIdArticulo(), // Long idArticulo, 
-			this.getIdOrdenDetalle(), // Long idTransferencia, 
+			this.getIdComodin(), // Long idTransferenciaMultipleDetalle, 
 			this.getNombre(), // String nombre
       this.getIdAlmacen(), // Long idAlmacen
       this.getCaja() // Long caja

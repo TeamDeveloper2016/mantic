@@ -262,6 +262,10 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 					// el stock del almacen destino es superior al maximo permitido en el almacen
 					articulo.setUltimo(articulo.getValor()> articulo.getCosto());
 					articulo.setModificado(true);
+          
+			    index= destinos.indexOf(new UISelectEntity(articulo.getIdAlmacen()));
+			    if(index>= 0)
+            articulo.setAlmacen(destinos.get(index).toString("nombre"));
 				} // if	
 			} // for
 		} // try

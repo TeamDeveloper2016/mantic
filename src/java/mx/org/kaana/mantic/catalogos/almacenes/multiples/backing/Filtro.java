@@ -23,7 +23,6 @@ import mx.org.kaana.kajool.procesos.comun.Comun;
 import mx.org.kaana.kajool.procesos.reportes.beans.Modelo;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
-import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.libs.archivo.Xls;
@@ -37,9 +36,10 @@ import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.catalogos.almacenes.transferencias.reglas.Transaccion;
+import mx.org.kaana.mantic.catalogos.almacenes.multiples.reglas.Transaccion;
 import mx.org.kaana.mantic.db.dto.TcManticTransferenciasBitacoraDto;
-import mx.org.kaana.mantic.db.dto.TcManticTransferenciasDto;
+import mx.org.kaana.mantic.db.dto.TcManticTransferenciasMultiplesBitacoraDto;
+import mx.org.kaana.mantic.db.dto.TcManticTransferenciasMultiplesDto;
 import mx.org.kaana.mantic.enums.ETipoMovimiento;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
@@ -100,7 +100,6 @@ public class Filtro extends Comun implements Serializable {
     try {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
       this.attrs.put("idTransferenciaMultiple", JsfBase.getFlashAttribute("idTransferenciaMultiple"));
-      this.attrs.put("transito", false);
 			this.toLoadCatalog();
       if(this.attrs.get("idTransferenciaMultiple")!= null) 
 			  this.doLoad();
@@ -120,7 +119,7 @@ public class Filtro extends Comun implements Serializable {
       columns.add(new Columna("nombreOrigen", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("observaciones", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
       columns.add(new Columna("solicito", EFormatoDinamicos.MAYUSCULAS));
       this.lazyModel = new FormatCustomLazy("VistaTransferenciasMultiplesDto", params, columns);
       UIBackingUtilities.resetDataTable();
@@ -248,7 +247,6 @@ public class Filtro extends Comun implements Serializable {
 			allEstatus= UISelect.build("TcManticTransferenciasMultiplesEstatusDto", params, "nombre", EFormatoDinamicos.MAYUSCULAS);			
 			this.attrs.put("allEstatusAsigna", allEstatus);
 			this.attrs.put("estatusAsigna", allEstatus.get(0));
-			this.attrs.put("transito", allEstatus.get(0).getValue().equals("3"));
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -262,16 +260,10 @@ public class Filtro extends Comun implements Serializable {
 	public void doActualizarEstatus() {
 		Transaccion transaccion= null;
 		Entity seleccionado    = null;
-		Long idTransporto      = null;
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
-			idTransporto  = this.attrs.get("idTransporto")!= null && ((Entity)this.attrs.get("idTransporto")).getKey()> 0L? ((Entity)this.attrs.get("idTransporto")).getKey(): JsfBase.getIdUsuario();
-			TcManticTransferenciasBitacoraDto bitacora= null;
-			if(((String)this.attrs.get("estatus")).equals("3"))
-			  bitacora= new TcManticTransferenciasBitacoraDto(-1L, (String)this.attrs.get("justificacion"), JsfBase.getIdUsuario(), idTransporto, Long.valueOf((String)this.attrs.get("estatus")), seleccionado.getKey());
-			else
-			  bitacora= new TcManticTransferenciasBitacoraDto(-1L, (String)this.attrs.get("justificacion"), JsfBase.getIdUsuario(), null, Long.valueOf((String)this.attrs.get("estatus")), seleccionado.getKey());
-			transaccion = new Transaccion((TcManticTransferenciasDto)DaoFactory.getInstance().findById(TcManticTransferenciasDto.class, seleccionado.getKey()), bitacora);
+			TcManticTransferenciasMultiplesBitacoraDto bitacora= new TcManticTransferenciasMultiplesBitacoraDto(-1L, (String)this.attrs.get("justificacion"), JsfBase.getIdUsuario(), null, Long.valueOf((String)this.attrs.get("estatus")), seleccionado.getKey());
+			transaccion = new Transaccion((TcManticTransferenciasMultiplesDto)DaoFactory.getInstance().findById(TcManticTransferenciasMultiplesDto.class, seleccionado.getKey()), bitacora);
 			if(transaccion.ejecutar(EAccion.REGISTRAR)) 
 				JsfBase.addMessage("Cambio estatus", "Se realizó el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);
 			else
@@ -281,7 +273,7 @@ public class Filtro extends Comun implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch		
-		finally{
+		finally {
 			this.attrs.put("justificacion", "");
 		} // finally
 	}	// doActualizaEstatus
@@ -374,10 +366,6 @@ public class Filtro extends Comun implements Serializable {
     } // finally
 	}
 
-	public void doTransporta() {
-    this.attrs.put("transito", this.attrs.get("estatus")!= null && ((String)this.attrs.get("estatus")).equals("3"));
-	}
-	
 	public String doMovimientos() {
 		JsfBase.setFlashAttribute("tipo", ETipoMovimiento.MULTIPLES);
 		JsfBase.setFlashAttribute(ETipoMovimiento.MULTIPLES.getIdKey(), ((Entity)this.attrs.get("seleccionado")).getKey());
