@@ -190,10 +190,10 @@
           <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
 						<p:menuitem id="modificar" action="#{manticCatalogosAlmacenesMultiplesFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{manticCatalogosAlmacenesMultiplesFiltro.attrs.seleccionado.estatus eq '1' or manticCatalogosAlmacenesMultiplesFiltro.isAutorizar}"/>
             <p:menuitem id="consultar" action="#{manticCatalogosAlmacenesMultiplesFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />
+            <p:separator rendered="#{fn:contains('|1|', manticCatalogosAlmacenesMultiplesFiltro.attrs.seleccionado.estatus)}"/>					
+            <p:menuitem icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosAlmacenesMultiplesFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|', manticCatalogosAlmacenesMultiplesFiltro.attrs.seleccionado.estatus)}"/>
             <p:separator/>					
             <p:menuitem id="movimientos" icon="fa fa-user" value="Bitacora" onstart="return janal.bloquear()" process="@this tabla" action="#{manticCatalogosAlmacenesMultiplesFiltro.doMovimientos}"/>
-            <p:separator rendered="#{fn:contains('|1|2|3|4|', manticCatalogosAlmacenesMultiplesFiltro.attrs.seleccionado.estatus)}"/>					
-            <p:menuitem icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosAlmacenesMultiplesFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|3|4|', manticCatalogosAlmacenesMultiplesFiltro.attrs.seleccionado.estatus)}"/>
 					</p:contextMenu>
         </div>
       </div>

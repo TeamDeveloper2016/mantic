@@ -163,10 +163,10 @@ public class Transaccion extends ComunInventarios {
       items= (List<TcManticTransferenciasMultiplesDetallesDto>)DaoFactory.getInstance().findViewCriteria(sesion, TcManticTransferenciasMultiplesDetallesDto.class, params);
       Long idAlmacen= -1L;
       for (TcManticTransferenciasMultiplesDetallesDto item: items) {
-        if(Objects.equals(idAlmacen, -1L)) {
-          idAlmacen= item.getIdAlmacen();
-          if(!Objects.equals(idAlmacen, item.getIdAlmacen())) 
+        if(!Objects.equals(idAlmacen, item.getIdAlmacen())) {
+          if(!Objects.equals(idAlmacen, -1L) & !Objects.equals(idAlmacen, item.getIdAlmacen())) 
             this.toTransferencia(sesion, idAlmacen, detalle);
+          idAlmacen= item.getIdAlmacen();
           detalle.clear();
         } // if
         detalle.add(item);
@@ -179,6 +179,7 @@ public class Transaccion extends ComunInventarios {
     } // catch	
     finally {
       Methods.clean(params);
+      Methods.clean(items);
       Methods.clean(detalle);
     } // finally
   }
