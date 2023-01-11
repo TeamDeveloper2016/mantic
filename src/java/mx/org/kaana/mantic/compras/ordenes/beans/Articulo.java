@@ -27,6 +27,7 @@ import mx.org.kaana.mantic.db.dto.TcManticPedidosDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticRequisicionesDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticServiciosDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticTransferenciasDetallesDto;
+import mx.org.kaana.mantic.db.dto.TcManticTransferenciasMultiplesDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticVentasDetallesDto;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -67,6 +68,8 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	private long idAutomatico;
 	private long caja;
 	private String imagen;
+	private long idAlmacen;
+	private String almacen;
 
 	public Articulo() {
 		this(-1L);
@@ -114,6 +117,8 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		this.idAutomatico= 1;
 		this.caja        = 1L;
     this.imagen      = "1/sin-foto.png";     
+    this.idAlmacen   = -1L;
+    this.almacen     = "";
 	}
 
 	public UISelectEntity getIdEntity() {
@@ -315,8 +320,24 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
   public void setImagen(String imagen) {
     this.imagen = imagen;
   }
-	
-	public String getImporte$() {
+
+  public long getIdAlmacen() {
+    return idAlmacen;
+  }
+
+  public void setIdAlmacen(long idAlmacen) {
+    this.idAlmacen = idAlmacen;
+  }
+
+  public String getAlmacen() {
+    return almacen;
+  }
+
+  public void setAlmacen(String almacen) {
+    this.almacen = almacen;
+  }
+
+  public String getImporte$() {
 		return Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, this.getImporte());
 	}
 
@@ -716,6 +737,20 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 			this.getIdOrdenDetalle(), // Long idTransferencia, 
 			this.getNombre(), // String nombre
 			this.getCaja() // caja
+		);
+	}
+	
+  public TcManticTransferenciasMultiplesDetallesDto toTransferenciaMultipleDetalle() {
+		if(Cadena.isVacio(this.getPropio()))
+		  LOG.warn("El codigo propio esta vacio ["+ this.getNombre()+ "] corresponde a la transferencia");
+		return new TcManticTransferenciasMultiplesDetallesDto(
+			this.getPropio(), // String propio, 
+			this.getCantidad(), // Double cantidad,
+			this.getIdComodin(), // Long idTransferenciaDetalle, 
+			this.getIdArticulo(), // Long idArticulo, 
+			this.getIdOrdenDetalle(), // Long idTransferencia, 
+			this.getNombre(), // String nombre
+      this.getIdAlmacen() // Lond idAlmacen
 		);
 	}
 	

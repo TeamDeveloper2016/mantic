@@ -1,0 +1,678 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+	<ui:param name="titulo" value="#{manticCatalogosAlmacenesMultiplesAccion.attrs.nombreAccion} una transferencia mutiple de articulos"/>
+  <ui:param name="janalBackingPage" value="#{manticCatalogosAlmacenesMultiplesAccion}"/>
+  <ui:param name="janalEventPage" value="doGlobalEvent"	/>	
+	<ui:define name="librerias">
+    <h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryArticulosJs}"/>
+		<script type="text/javascript">
+	   Janal.Control.fields = {				 				
+				'contenedorGrupos\\:consecutivo'  : {validaciones: 'requerido', mascara: 'libre'},
+				'contenedorGrupos\\:idAlmacen'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:idSolicito'   : {validaciones: 'libre', mascara: 'libre'},
+				'contenedorGrupos\\:articulos'    : {validaciones: 'requerido|mayor({"cuanto": 1})', mascara: 'no-aplica', grupo: 'general'},			
+				'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'cantidades'                      : {multiple: '$', validaciones: 'mayor({"cuanto": 0})', mascara: 'libre', grupo: 'general'},
+				'caja'                            : {multiple: '$', validaciones: 'mayor({"cuanto": 0})', mascara: 'entero', grupo: 'general'}
+			};	
+			
+    	$(document).ready(function() {
+				setTimeout("janal.readingMode('#{manticCatalogosAlmacenesMultiplesAccion.attrs.nombreAccion}')", 500);
+        jsArticulos= new Janal.Control.Articulos.Core(#{manticCatalogosAlmacenesMultiplesAccion.adminOrden.articulos.size()});
+				janal.decimals= 4;
+      });
+			
+			function execute(lock) {
+				var index= jsArticulos.cursor.index;
+				jsArticulos.cursor.index= jsArticulos.cursor.top;
+				$(jsArticulos.amount()).addClass('ignore');
+				$(jsArticulos.price()).addClass('ignore');
+				var ok= janal.execute(lock);
+				if(!ok) {
+					jsArticulos.cursor.index= index;
+  				$(jsArticulos.amount()).removeClass('ignore');
+	  			$(jsArticulos.price()).removeClass('ignore');
+				} // if	
+				return ok;
+			} // execute			
+		</script>   
+	</ui:define>
+	<ui:define name="contenido">
+		<pe:remoteCommand name="locate" process="@this @(.filas)" update="@(.filas) @(.recalculo) @(.informacion)" actionListener="#{manticCatalogosAlmacenesMultiplesAccion.doUpdateArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();">  
+			<pe:methodSignature parameters="java.lang.String, java.lang.Integer"/>  
+			<pe:methodParam name="codigo"/>  
+			<pe:methodParam name="index"/>  
+		</pe:remoteCommand>		
+		<pe:remoteCommand name="suppress" process="@this @(.filas)" update="@(.filas) @(.recalculo)" actionListener="#{manticCatalogosAlmacenesMultiplesAccion.doDeleteArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.move();">  
+			<pe:methodSignature parameters="java.lang.Integer"/>  
+			<pe:methodParam name="index"/>  
+		</pe:remoteCommand>		
+		<pe:remoteCommand name="refresh" process="@this @(.filas)" update="@(.filas) @(.recalculo)" actionListener="#{manticCatalogosAlmacenesMultiplesAccion.doCalculate}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();">  
+			<pe:methodSignature parameters="java.lang.Integer"/>  
+			<pe:methodParam name="index"/>  
+		</pe:remoteCommand>		
+		<pe:remoteCommand name="search" process="@this" update="@(.informacion)" actionListener="#{manticCatalogosAlmacenesMultiplesAccion.doSearchArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();">  
+			<pe:methodSignature parameters="java.lang.Long, java.lang.Integer"/>  
+			<pe:methodParam name="idArticulo"/>  
+			<pe:methodParam name="index"/>  
+		</pe:remoteCommand>		
+		<pe:remoteCommand name="replace" process="@this contenedorGrupos:caja @(.filas)" update="contenedorGrupos:tabla @(.filas) @(.recalculo) @(.informacion)" actionListener="#{manticCatalogosAlmacenesMultiplesAccion.doFindArticulo}" onstart="return janal.bloquear();" oncomplete="jsArticulos.process();">  
+			<pe:methodSignature parameters="java.lang.Integer"/>  
+			<pe:methodParam name="index"/>  
+		</pe:remoteCommand>
+		<pe:remoteCommand name="lookup" actionListener="#{manticCatalogosAlmacenesMultiplesAccion.doUpdateDialogArticulos}" onstart="return PF('dialogo').isVisible();" process="@this codigo" update="buscados localizado">
+			<pe:methodSignature parameters="java.lang.String"/>  
+			<pe:methodParam name="codigo"/>  
+		</pe:remoteCommand>		
+		<p:remoteCommand name="clean" actionListener="#{manticCatalogosAlmacenesMultiplesAccion.doCleanArticulos}" process="@this codigo" update="buscados localizado"/>
+		<pe:remoteCommand name="findout" actionListener="#{manticCatalogosAlmacenesMultiplesAccion.doFindOutArticulos}" onstart="return PF('dialogo').isVisible();" process="@this codigo" update="buscados localizado">
+			<pe:methodSignature parameters="java.lang.String"/>  
+			<pe:methodParam name="codigo"/>  
+		</pe:remoteCommand>		
+		<pe:remoteCommand name="detail" process="@this" update="dialogoDetalleArticulo" actionListener="#{manticCatalogosAlmacenesMultiplesAccion.doDetailArticulo}" onstart="return janal.bloquear();" oncomplete="$('#detail-image').attr('href', $('#tabDetalleArticulo\\:specific-image').attr('src'));PF('dlgDetalleArticulo').show();">
+			<pe:methodSignature parameters="java.lang.Long, java.lang.Integer"/>  
+			<pe:methodParam name="idArticulo"/>  
+			<pe:methodParam name="index"/>  
+		</pe:remoteCommand>				
+		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">
+					<h:outputText id="tabla" value="Solo sirve para la ventana emergente de articulos express" style="display:none"/>
+					<div class="janal-wid-100-txt janal-column-center janal-font-bold">
+						<p:outputLabel value="LA TRANSFERENCIA DE ARTICULOS [#{manticCatalogosAlmacenesMultiplesAccion.adminOrden.orden.consecutivo}] SE AUTOGUARDO A LAS #{manticCatalogosAlmacenesMultiplesAccion.attrs.autoSave} HRS." style="display: #{empty(manticCatalogosAlmacenesMultiplesAccion.attrs.autoSave)? 'none': ''}" styleClass="recalculo janal-color-blue"/>
+					</div>
+					<p:tabView id="contenedorGrupos" dynamic="">
+            <p:ajax event="tabChange" listener="#{manticCatalogosAlmacenesMultiplesAccion.doTabChange}" process="@this idAlmacen idDestino" update="faltantes perdidos paginator" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.move();"/>
+            <p:tab title="General">
+							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-120, janal-wid-100">		
+								<p:outputLabel for="idSucursal" value="Sucursal:" rendered="false"/>
+								<p:selectOneMenu id="idSucursal" value="#{manticCatalogosAlmacenesMultiplesAccion.adminOrden.orden.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="sucursales janal-wid-99" rendered="false" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+									<p:ajax event="change" listener="#{manticCatalogosAlmacenesMultiplesAccion.doLoadAlmacenes}" process="@this" update="idAlmacen"/>
+									<f:selectItems value="#{manticCatalogosAlmacenesMultiplesAccion.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
+									<p:column headerText="Clave">
+										<h:outputText value="#{item.clave}"/>
+									</p:column>   
+									<p:column headerText="Nombre">
+										<h:outputText value="#{item.nombre}"/>
+									</p:column>   
+								</p:selectOneMenu>
+								<p:outputLabel for="consecutivo" value="No. transferencia:" style="display: #{manticCatalogosAlmacenesMultiplesAccion.agregar}" styleClass="recalculo"/>
+								<p:inputText id="consecutivo" styleClass="janal-wid-100-txt recalculo" value="#{manticCatalogosAlmacenesMultiplesAccion.adminOrden.orden.consecutivo}" readonly="true" style="display: #{manticCatalogosAlmacenesMultiplesAccion.agregar}"/>
+								<p:spacer width="1px" style="display: #{manticCatalogosAlmacenesMultiplesAccion.agregar}"/><p:separator style="display: #{manticCatalogosAlmacenesMultiplesAccion.agregar}"/>
+                <p:outputLabel for="idAlmacen" value="Almacen origen:"/>
+								<p:selectOneMenu id="idAlmacen" value="#{manticCatalogosAlmacenesMultiplesAccion.adminOrden.orden.ikAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+									<p:ajax event="change" listener="#{manticCatalogosAlmacenesMultiplesAccion.doUpdateAlmacen}" process="@this" update="tabla @(.total) @(.recalculo)"/>
+									<f:selectItems value="#{manticCatalogosAlmacenesMultiplesAccion.attrs.almacenes}" var="element" itemValue="#{element.key}" itemLabel="#{element.clave} - #{element.nombre}"/>
+									<p:column headerText="Clave">
+										<h:outputText value="#{item.clave}"/>
+									</p:column>   
+									<p:column headerText="Nombre">
+										<h:outputText value="#{item.nombre}"/>
+									</p:column>   
+								</p:selectOneMenu>
+                <p:outputLabel for="idSolicito" value="Solicitó:"/>
+								<p:selectOneMenu id="idSolicito" value="#{manticCatalogosAlmacenesMultiplesAccion.adminOrden.orden.ikSolicito}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+									<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
+									<f:selectItems value="#{manticCatalogosAlmacenesMultiplesAccion.attrs.personas}"  var="element" itemValue="#{element}" itemLabel="#{element.nombres} #{element.paterno} #{element.materno}"/>
+									<p:column headerText="Nombre(s)">
+										<h:outputText value="#{item.nombres}"/>
+									</p:column>   
+									<p:column headerText="Paterno">
+										<h:outputText value="#{item.paterno}"/>
+									</p:column>   
+									<p:column headerText="Materno">
+										<h:outputText value="#{item.materno}"/>
+									</p:column>   
+								</p:selectOneMenu>
+              </p:panelGrid>
+							<p:outputLabel for="observaciones" value="Observaciones:"/><br/>
+							<p:inputTextarea id="observaciones" rows="3" cols="33" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlmacenesMultiplesAccion.adminOrden.orden.observaciones}"/>
+						</p:tab>						            						            																																																
+						<p:tab title="Articulos">
+							<div class="ui-grid ui-grid-responsive" style="rfovelow-y:hidden;">
+								<div class="ui-grid-row janal-grid-row">
+									<div class="ui-grid-col-12">
+										<p:panelGrid columns="1" styleClass="janal-wid-100">
+                      <p:outputLabel for="idDestino" value="Almacen destino:"/>
+                      <p:selectOneMenu id="idDestino" value="#{manticCatalogosAlmacenesMultiplesAccion.adminOrden.orden.ikDestino}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt total" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                        <p:ajax event="change" listener="#{manticCatalogosAlmacenesMultiplesAccion.doUpdateAlmacenDestino}" process="@this" update="tabla @(.total) @(.recalculo)"/>
+                        <f:selectItems value="#{manticCatalogosAlmacenesMultiplesAccion.attrs.destinos}" var="element" itemValue="#{element.key}" itemLabel="#{element.clave} - #{element.nombre}"/>
+                        <p:column headerText="Clave">
+                          <h:outputText value="#{item.clave}"/>
+                        </p:column>   
+                        <p:column headerText="Nombre">
+                          <h:outputText value="#{item.nombre}"/>
+                        </p:column>   
+                      </p:selectOneMenu>
+                    </p:panelGrid>
+										<p:panelGrid columns="4" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-40, janal-wid-100, janal-wid-col-70">
+                      <p:commandButton process="@this" icon="fa fa-sort-alpha-desc" title="Agregar un articulo" update="dialogoArtExpress" onstart="return janal.bloquear();" oncomplete="setTimeout('jsArticulos.erase();', 2000); PF('dlgArtExpress').show();" style="float:left;">
+												<f:setPropertyActionListener target="#{manticCatalogosAlmacenesMultiplesAccion.attrs.seleccionado}" value="#{null}"/>
+											</p:commandButton>
+										  <p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-100, janal-wid-100, janal-wid-col-200" style="margin-top: -8px !important;">
+												<p:outputLabel for="caja" value="Bulto:" styleClass="filas" style="float: right;"/>
+												<p:selectOneMenu id="caja" value="#{manticCatalogosAlmacenesMultiplesAccion.attrs.caja}" styleClass="janal-wid-10 filas" converter="javax.faces.Long" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">  
+													<p:ajax event="change" process="@this"/>
+													<f:selectItem itemLabel="1" itemValue="1"/>
+													<f:selectItem itemLabel="2" itemValue="2"/>
+													<f:selectItem itemLabel="3" itemValue="3"/>
+													<f:selectItem itemLabel="4" itemValue="4"/>
+													<f:selectItem itemLabel="5" itemValue="5"/>
+													<f:selectItem itemLabel="6" itemValue="6"/>
+													<f:selectItem itemLabel="7" itemValue="7"/>
+													<f:selectItem itemLabel="8" itemValue="8"/>
+													<f:selectItem itemLabel="9" itemValue="9"/>
+													<f:selectItem itemLabel="10" itemValue="10"/>
+													<f:selectItem itemLabel="11" itemValue="11"/>
+													<f:selectItem itemLabel="12" itemValue="12"/>
+													<f:selectItem itemLabel="13" itemValue="13"/>
+													<f:selectItem itemLabel="14" itemValue="14"/>
+													<f:selectItem itemLabel="15" itemValue="15"/>
+													<f:selectItem itemLabel="16" itemValue="16"/>
+													<f:selectItem itemLabel="17" itemValue="17"/>
+													<f:selectItem itemLabel="18" itemValue="18"/>
+													<f:selectItem itemLabel="19" itemValue="19"/>
+													<f:selectItem itemLabel="20" itemValue="20"/>
+												</p:selectOneMenu>	
+												<p:outputLabel value="Segmentar partidas:" escape="false" styleClass="filas" style="float: right; display:#{manticCatalogosAlmacenesMultiplesAccion.adminOrden.totales.articulos gt Constantes.REGISTROS_LOTE_TOPE? 'none': ''}"/>
+											</p:panelGrid>	
+										  <p:inputSwitch id="paginator" widgetVar="widgetPaginator" value="#{manticCatalogosAlmacenesMultiplesAccion.attrs.paginator}" onLabel="SI" offLabel="NO" style="display:#{manticCatalogosAlmacenesMultiplesAccion.adminOrden.totales.articulos gt Constantes.REGISTROS_LOTE_TOPE? 'none': ''}" styleClass="filas #{manticCatalogosAlmacenesMultiplesAccion.adminOrden.totales.articulos gt Constantes.REGISTROS_LOTE_TOPE? 'disabled': ''}">
+  											<p:ajax event="change" process="@this" listener="#{manticCatalogosAlmacenesMultiplesAccion.doResetDataTable()}" update="contenedorGrupos:tabla" oncomplete="jsArticulos.skip($(PF('widgetPaginator').input.selector+ ':checked').length=== 1);"/>
+	  									</p:inputSwitch>			
+										</p:panelGrid>	
+									</div>
+								</div>	
+								<div class="ui-grid-row janal-grid-row">
+									<div class="ui-grid-col-12">
+										<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" style="height:348px !important;overflow-y: auto" columnClasses="janal-wid-100" >							
+											<p:dataTable id="tabla" widgetVar="kajoolTable" var="row" value="#{manticCatalogosAlmacenesMultiplesAccion.adminOrden.articulos}" reflow="true" rowKey="#{row.key}" emptyMessage=" " rowIndexVar="index" styleClass="filas" paginator="#{manticCatalogosAlmacenesMultiplesAccion.attrs.paginator}" rows="#{manticCatalogosAlmacenesMultiplesAccion.rows}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_LOTE}">											
+												<p:column class="MarAuto Responsive janal-wid-3">
+													<f:facet name="header">
+														<h:outputText value="No."/>
+													</f:facet>
+													<h:outputText value="#{index+ 1}.-"/>
+												</p:column>													
+												<p:column class="MarAuto Responsive janal-wid-13">
+													<f:facet name="header">
+														<p:selectBooleanCheckbox value="#{manticCatalogosAlmacenesMultiplesAccion.attrs.buscaPorCodigo}" title="Buscar por código" styleClass="filas">
+															<p:ajax event="change" process="@this" update="@this"/>
+														</p:selectBooleanCheckbox>
+														<h:outputText value="Código"/>
+														<span class="janal-help-icon janal-help-9 fa fa-fw fa-question-circle Fright" onclick="countHelp(9);"/>	
+														<pe:tooltip for="@(.janal-help-9)" showEvent="click">
+															<h:outputLabel value="#{kajoolUtilAplicacion.toTextHelp(9)}" styleClass="Fs15" escape="false"/>
+														</pe:tooltip>
+													</f:facet>
+													<div class="ui-grid-row janal-grid-row">
+														<div class="ui-grid-col-12" style="padding-right: 14px;">
+															<p:inputText id="keys" value="#{row['idArticulo']}" style="display:none"/>
+															<p:inputText id="locks" value="0" style="display:none"/>
+															<p:autoComplete id="codigos" widgetVar="listado" var="custom" itemLabel="#{custom.nombre}" inputStyleClass="janal-wid-90 key-down-event filas" itemValue="#{custom}" value="#{manticCatalogosAlmacenesMultiplesAccion.attrs.articulo}" completeMethod="#{manticCatalogosAlmacenesMultiplesAccion.doCompleteArticulo}" converter="janal.convertidor.Entity" minQueryLength="2"  maxResults="10">
+																<p:ajax event="itemSelect" oncomplete="jsArticulos.close();"/>
+																<f:facet name="itemtip">
+																	<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">
+																		<f:facet name="header" class="TexAlCenter">
+																			<p:graphicImage library="janal" name="img/sistema/bonanza.svg" styleClass="janal-log-mini" width="30"/>
+																		</f:facet>
+																		<h:outputText value="Código:" />
+																		<h:outputText value="#{custom.propio}" />
+																		<h:outputText value="Proveedor:" />
+																		<h:outputText value="#{custom.codigo}" />
+																		<h:outputText value="Nombre:" />
+																		<h:outputText value="#{custom.nombre}" />
+																		<h:outputText value="Costo:" />
+																		<h:outputText value="$ #{custom.precio}" />
+																	</h:panelGrid>
+																</f:facet>
+															</p:autoComplete>												
+														</div>	
+														<div style="width: 15px; margin-left: -5px; margin-top: 1px;">
+															<h:outputText value="#{row['stockExcede']}" escape="false" styleClass="filas"/>
+															<h:outputText value="#{row['noTieneConteoOrigen']}" escape="false" styleClass="filas"/>
+															<h:outputText value="#{row['noTieneConteoDestino']}" escape="false" styleClass="filas"/>
+														</div>
+													</div>	
+												</p:column>		
+												<p:column class="caja janal-column-right MarAuto Responsive janal-wid-5">
+													<f:facet name="header">
+														<h:outputText value="Bulto"/>
+													</f:facet>
+													<p:inputText id="caja" value="#{row['caja']}" styleClass="janal-wid-70 janal-column-right filas" onblur="janal.cantidad('#contenedorGrupos\\:tabla\\:#{index}\\:caja', '1');"/>
+												</p:column>		
+												<p:column class="MarAuto Responsive janal-wid-10">
+													<f:facet name="header">
+														<h:outputText value="Almacen"/>
+													</f:facet>
+                          <p:outputLabel id="almacen" value="#{row['almacen']}" styleClass="janal-wid-100-txt janal-color-black filas"/>
+												</p:column>		
+												<p:column class="MarAuto Responsive">
+													<f:facet name="header">
+														<h:outputText value="Articulo"/>
+													</f:facet>
+													<h:outputText id="nombres" value="[#{row['propio']}] #{row['nombre']}" escape="false" styleClass="#{empty(row['propio'])? 'janal-color-red janal-font-bold': ''}"/>
+												</p:column>		
+												<p:column class="cantidades janal-column-right MarAuto Responsive janal-wid-6">
+													<f:facet name="header">
+														<h:outputText value="Cantidad"/>
+													</f:facet>
+													<p:outputLabel value="#{manticCatalogosAlmacenesMultiplesAccion.doNumericoSat(row['cantidad'])}" styleClass="filas"/>
+													<p:inputText id="cantidades" value="#{row['cantidad']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event filas janal-name-La_fila_#{index+ 1}" style="display: none"/>
+												</p:column>		
+												<p:column class="costos janal-column-right MarAuto Responsive janal-wid-8">
+													<f:facet name="header">
+														<h:outputText value="Stock origen"/>
+													</f:facet>
+													<p:outputLabel value="#{row['stock']}" styleClass="filas"/>
+												</p:column>	
+												<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
+													<f:facet name="header">
+														<h:outputText value="Stock destino"/>
+													</f:facet>
+													<p:outputLabel value="#{row['valor']}" styleClass="filas"/>
+												</p:column>	
+												<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
+													<f:facet name="header">
+														<h:outputText value="Máximo destino"/>
+													</f:facet>
+													<p:outputLabel value="#{row['costo']}" styleClass="filas"/>
+												</p:column>		
+											</p:dataTable>
+										</p:panelGrid>	
+										<p:spacer width="5"/>
+										<div class="ui-grid-row janal-grid-row">
+											<div class="ui-grid-col-12 janal-column-right">
+												<p:inputText id="articulos" value="#{manticCatalogosAlmacenesMultiplesAccion.adminOrden.totales.articulos}" styleClass="recalculo" style="display:none"/>
+												<p:outputLabel for="articulos" value="Articulos:"/>
+												<p:spacer width="5px"/>
+												<p:outputLabel styleClass="janal-wid-100-txt recalculo janal-color-green janal-font-bold" value="#{manticCatalogosAlmacenesMultiplesAccion.adminOrden.totales.reales}"/>
+									    </div>	
+										</div>	
+									</div>									
+								</div>
+							</div>
+						</p:tab>
+						<p:tab title="Faltantes almacen">
+							<p:dataTable id="faltantes" var="row" value="#{manticCatalogosAlmacenesMultiplesAccion.attrs.faltantes}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_MAX_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_MAX_CADA_PAGINA}" paginator="true" reflow="true" rowKey="#{row.key}" styleClass="paginated" rowIndexVar="index" paginatorPosition="bottom">
+								<f:facet name="header">
+									<p:inputText id="lookFaltantes" placeholder="Filtrar un articulo: ej. ABRAZADERA ó AA451" value="#{manticCatalogosAlmacenesMultiplesAccion.attrs.lookForFaltantes}" styleClass="janal-wid-95" style="float: left;">
+										<p:ajax event="keyup" listener="#{manticCatalogosAlmacenesMultiplesAccion.doLookForFaltantes}" process="@this" update="faltantes" onstart="return $('#contenedorGrupos\\:faltantes\\:lookFaltantes').val().trim().length> 0;"/>
+									</p:inputText>
+									<p:commandButton title="Refrescar articulos faltantes del almacen destino" icon="fa fa-refresh" process="@this" update="lookFaltantes faltantes" action="#{manticCatalogosAlmacenesMultiplesAccion.doCleanLookForFaltantes()}" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/> 
+                </f:facet>
+								<p:column class="MarAuto Responsive janal-wid-col-20">
+									<f:facet name="header">
+										<h:outputText value="No."/>
+									</f:facet>
+									<h:outputText value="#{index+ 1}.-"/>
+								</p:column>		
+								<p:column class="MarAuto Responsive janal-wid-10">
+									<f:facet name="header">
+										<h:outputText value="Código"/>
+									</f:facet>
+									<h:outputText value="#{row['propio']}"/>
+								</p:column>		
+								<p:column  class="MarAuto Responsive">
+									<f:facet name="header">
+										<h:outputText value="Articulo"/>
+									</f:facet>
+									<h:outputText value="#{row['nombre']}" title="#{row['codigo']}"/>
+								</p:column>		
+								<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
+									<f:facet name="header">
+										<h:outputText value="Stock"/>
+									</f:facet>
+									<h:outputText value="#{row['stock']}"/>	
+								</p:column>		
+								<p:column class="janal-column-right MarAuto Responsive janal-wid-6">
+									<f:facet name="header">
+										<h:outputText value="Minimo"/>
+									</f:facet>
+									<h:outputText value="#{row['minimo']}"/>
+								</p:column>		
+								<p:column class="janal-column-right MarAuto Responsive janal-wid-6">
+									<f:facet name="header">
+										<h:outputText value="Máximo"/>
+									</f:facet>
+									<h:outputText value="#{row['maximo']}"/>
+								</p:column>		
+								<p:column class="janal-column-right MarAuto Responsive janal-wid-6">
+									<f:facet name="header">
+										<h:outputText value="Solicitar"/>
+									</f:facet>
+									<h:outputText value="#{row['cantidad']}"/>	
+								</p:column>		
+								<p:column styleClass="janal-column-icon">
+									<p:commandButton update="faltantes @(.filas) @(.recalculo)" icon="fa fa-plus" title="Agregar" action="#{manticCatalogosAlmacenesMultiplesAccion.doFaltanteArticulo}">
+										<f:setPropertyActionListener value="#{row}" target="#{manticCatalogosAlmacenesMultiplesAccion.attrs.faltante}" />
+										<f:setPropertyActionListener value="#{manticCatalogosAlmacenesMultiplesAccion.adminOrden.orden.ikAlmacen}" target="#{manticCatalogosAlmacenesMultiplesAccion.attrs.idAlmacen}" />
+										<f:setPropertyActionListener value="#{manticCatalogosAlmacenesMultiplesAccion.adminOrden.orden.ikDestino}" target="#{manticCatalogosAlmacenesMultiplesAccion.attrs.ikDestino}" />
+									</p:commandButton>
+								</p:column>					
+								<f:facet name="footer">
+									Total [#{manticCatalogosAlmacenesMultiplesAccion.attrs.faltantes eq null? 0: manticCatalogosAlmacenesMultiplesAccion.attrs.faltantes.size()}] registros
+								</f:facet>
+							</p:dataTable>
+						</p:tab>
+						<p:tab title="Ventas perdidas">
+							<p:dataTable id="perdidos" var="row" value="#{manticCatalogosAlmacenesMultiplesAccion.attrs.perdidos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{manticCatalogosAlmacenesMultiplesAccion.recordCount}" paginator="true" reflow="true" rowKey="#{row.key}" styleClass="paginated" rowIndexVar="index" paginatorPosition="bottom">
+								<f:facet name="header">
+									<p:inputText id="lookPerdidos" placeholder="Filtrar un articulo: ej. ABRAZADERA ó AA451" value="#{manticCatalogosAlmacenesMultiplesAccion.attrs.lookForPerdidos}" styleClass="janal-wid-95" style="float: left;">
+										<p:ajax event="keyup" listener="#{manticCatalogosAlmacenesMultiplesAccion.doLookForPerdidos}" process="@this" update="perdidos" onstart="return $('#contenedorGrupos\\:perdidos\\:lookPerdidos').val().trim().length> 0;"/>
+									</p:inputText>
+									<p:commandButton title="Refrescar articulos de las ventas perdidas del almacen destino" icon="fa fa-refresh" process="@this" update="lookPerdidos perdidos" action="#{manticCatalogosAlmacenesMultiplesAccion.doLoadFaltantesAlmacenDestino()}" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/> 
+                </f:facet>
+								<p:column class="MarAuto Responsive janal-wid-col-20">
+									<f:facet name="header">
+										<h:outputText value="No."/>
+									</f:facet>
+									<h:outputText value="#{index+ 1}.-"/>
+								</p:column>		
+								<p:column class="MarAuto Responsive janal-wid-13">
+									<f:facet name="header">
+										<h:outputText value="Código"/>
+									</f:facet>
+									<h:outputText value="#{row['codigo']}"/>
+								</p:column>		
+								<p:column class="MarAuto Responsive">
+									<f:facet name="header">
+										<h:outputText value="Nombre"/>
+									</f:facet>
+									<h:outputText value="#{row['nombre']}"/>
+								</p:column>		
+								<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+									<f:facet name="header">
+										<h:outputText value="Cantidad"/>
+									</f:facet>
+									<h:outputText value="#{row['cantidad']}"/>
+								</p:column>		
+								<p:column class="MarAuto Responsive">
+									<f:facet name="header">
+										<h:outputText value="Usuario"/>
+									</f:facet>
+									<h:outputText value="#{row['usuario']}"/>
+								</p:column>		
+								<p:column class="janal-column-center MarAuto Responsive janal-wid-15">
+									<f:facet name="header">
+										<h:outputText value="Registro"/>
+									</f:facet>
+									<h:outputText value="#{row['registro']}"/>
+								</p:column>		
+								<p:column styleClass="janal-column-icon">
+									<p:commandButton process="@this" update="perdidos @(.filas) @(.recalculo)" icon="fa fa-plus" title="Agregar el articulo a la transferencia" action="#{manticCatalogosAlmacenesMultiplesAccion.doAgregarPerdido}">
+										<f:setPropertyActionListener value="#{row}" target="#{manticCatalogosAlmacenesMultiplesAccion.attrs.perdido}" />
+									</p:commandButton>
+								</p:column>
+								<p:column styleClass="janal-column-icon">
+									<p:commandButton update="perdidos @(.filas) @(.recalculo)" icon="fa fa-minus" title="Eliminar" action="#{manticCatalogosAlmacenesMultiplesAccion.doEliminarPerdido}">
+										<f:setPropertyActionListener value="#{row}" target="#{manticCatalogosAlmacenesMultiplesAccion.attrs.perdidoRemove}" />										
+									</p:commandButton>
+								</p:column>
+								<f:facet name="footer">
+									<p:outputLabel value="Total [#{manticCatalogosAlmacenesMultiplesAccion.attrs.perdidos.size()}] registros"/>
+								</f:facet>
+							</p:dataTable>
+						</p:tab>
+					</p:tabView>
+				</div>
+			</div>
+		</div>		
+		<p:dialog widgetVar="dialogo" header="Buscar articulo" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="true" onHide="janal.desbloquear(); janal.recover();" onShow="$('#codigo').val('');clean();" width="900px" height="470px" resizable="false" appendTo="@(body)">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12 janal-column-left">
+					<p:outputLabel for="codigo" value="Código o nombre:"/>
+					<span class="janal-help-icon janal-help-8 fa fa-fw fa-question-circle Fright" onclick="countHelp(8);"/>	
+					<pe:tooltip for="@(.janal-help-8)" showEvent="click">
+						<h:outputLabel value="#{kajoolUtilAplicacion.toTextHelp(8)}" styleClass="Fs15" escape="false"/>
+					</pe:tooltip>
+				</div>			
+			</div>	
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12 janal-column-left">
+					<p:inputText id="codigo" value="#{manticCatalogosAlmacenesMultiplesAccion.attrs.codigo}" styleClass="janal-wid-100-txt key-buscados-event" style="text-transform: uppercase"/>
+				</div>			
+			</div>
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12 janal-column-left">
+					<p:outputLabel value="Click sobre la tabla para seleccionar el articulo, por defecto es el primero de la lista"/><br/>
+					<p:dataTable id="buscados" widgetVar="widgetBuscados" lazy="true" styleClass="janal-buscados-articulos janal-wid-100" value="#{manticCatalogosAlmacenesMultiplesAccion.attrs.lazyModel}" selection="#{manticCatalogosAlmacenesMultiplesAccion.attrs.buscado}" var="item" selectionMode="single" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" reflow="true" scrollRows="50" liveScroll="true" liveScrollBuffer="50" scrollable="true" scrollHeight="280" style="margin-bottom:0">
+						<p:ajax event="rowDblselect" listener="#{manticCatalogosAlmacenesMultiplesAccion.doRowDblselect}" process="@this" update="@(.filas) @(.recalculo)" oncomplete="PF('dialogo').hide(); jsArticulos.close();"/>	
+						<p:column headerText="No" styleClass="janal-wid-col-30">
+							<h:outputText value="#{index+ 1}.-"/>
+						</p:column>   
+						<p:column headerText="Propio" styleClass="janal-wid-15">
+							<h:outputText value="#{item.propio}"/>
+						</p:column>   
+						<p:column headerText="Nombre">
+							<h:outputText value="#{item.nombre}"/>
+						</p:column>   
+						<p:column headerText="Costo" styleClass="janal-column-right janal-wid-13">
+							<h:outputText value="#{item.original}"/>
+						</p:column>   
+						<p:column headerText="Stock" styleClass="janal-column-right janal-wid-10">
+							<h:outputText value="#{manticCatalogosAlmacenesMultiplesAccion.doMiles(item.stock)}"/>
+						</p:column>   
+            <f:facet name="footer">
+              <p:outputLabel value="Total [#{manticCatalogosAlmacenesMultiplesAccion.attrs.lazyModel==null? 0: manticCatalogosAlmacenesMultiplesAccion.attrs.lazyModel.rowCount}] registros"/>
+            </f:facet>
+					</p:dataTable>
+				</div>
+			</div>
+			<hr class="ui-widget-content"/>
+			<div class="janal-line-button">
+				<p:commandButton id="localizado" icon="fa fa-check" process="@this buscados" update="@(.filas) @(.recalculo)" value="Aceptar" actionListener="#{manticCatalogosAlmacenesMultiplesAccion.doChangeBuscado}" onstart="return jsArticulos.parche();" oncomplete="PF('dialogo').hide(); jsArticulos.close();" disabled="#{manticCatalogosAlmacenesMultiplesAccion.attrs.lazyModel.rowCount lt 1}"/>
+				<p:commandButton process="@none" icon="fa fa-remove" value="Cancelar" oncomplete="PF('dialogo').hide(); jsArticulos.move();"/>
+			</div>
+		</p:dialog>
+	</ui:define>    
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{manticCatalogosAlmacenesMultiplesAccion.doAceptar}" onstart="return execute(true);" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticCatalogosAlmacenesMultiplesAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticCatalogosAlmacenesMultiplesAccion.doAceptar}" onstart="return execute(true);" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticCatalogosAlmacenesMultiplesAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+	</ui:define>
+	<ui:define name="dialogos">
+		<p:dialog id="dialogoDetalleArticulo" widgetVar="dlgDetalleArticulo" header="Articulo [#{manticCatalogosAlmacenesMultiplesAccion.attrs.detailArticulo.codigo}]" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onHide="janal.desbloquear(); setTimeout('jsArticulos.goto();', 1000);" width="70%">			
+			<p:tabView id="tabDetalleArticulo">
+				<p:tab title="Generales">
+					<h:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">
+						<p:outputLabel value="Nombre:"/>
+						<p:inputText value="#{manticCatalogosAlmacenesMultiplesAccion.attrs.detailArticulo.nombre}" styleClass="janal-wid-100-txt" disabled="true"/>					
+					</h:panelGrid>	
+					<p:separator/>
+					<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-80, janal-wid-20">
+						<h:panelGrid columns="3" styleClass="janal-wid-100" columnClasses="janal-wid-30, janal-wid-40, janal-wid-30">
+							<p:outputLabel value="Menudeo:" />
+							<p:outputLabel value="Medio mayoreo:" />
+							<p:outputLabel value="Mayoreo:" />
+							<p:inputText value="$#{manticCatalogosAlmacenesMultiplesAccion.attrs.detailArticulo.menudeo}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>											
+							<p:inputText value="$#{manticCatalogosAlmacenesMultiplesAccion.attrs.detailArticulo.medioMayoreo}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>					
+							<p:inputText value="$#{manticCatalogosAlmacenesMultiplesAccion.attrs.detailArticulo.mayoreo}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>																							
+							<p:outputLabel value="Limite menudeo:" />
+							<p:outputLabel value="Limite medio mayoreo:" />
+							<p:outputLabel value="Limite mayoreo:" />						
+							<p:inputText value="0 - #{manticCatalogosAlmacenesMultiplesAccion.attrs.detailArticulo.limiteMedioMayoreo}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>											
+							<p:inputText value="#{manticCatalogosAlmacenesMultiplesAccion.attrs.detailArticulo.limiteMedioMayoreo} - #{manticCatalogosAlmacenesMultiplesAccion.attrs.detailArticulo.limiteMayoreo}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>											
+							<p:inputText value="#{manticCatalogosAlmacenesMultiplesAccion.attrs.detailArticulo.limiteMayoreo} - #" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>					
+							<p:separator/><p:separator/><p:separator/>
+							<p:outputLabel value="Unidad de medida:" />
+							<p:outputLabel value="Stock:" />
+							<p:outputLabel value="IVA:" />
+							<p:inputText value="#{manticCatalogosAlmacenesMultiplesAccion.attrs.detailArticulo.unidadMedida}" styleClass="janal-wid-100-txt" disabled="true"/>											
+							<p:inputText value="#{manticCatalogosAlmacenesMultiplesAccion.attrs.detailArticulo.stock}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>																									
+							<p:inputText value="#{manticCatalogosAlmacenesMultiplesAccion.attrs.detailArticulo.iva}%" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>					
+						</h:panelGrid>
+						<p:panel id="panelImage" header="#{manticCatalogosAlmacenesMultiplesAccion.attrs.detailArticulo.codigo}" styleClass="TexAlCenter janal-wid-100-txt" style="height:100%">
+							<a id="detail-image" data-magnify="gallery" data-caption="#{manticCatalogosAlmacenesMultiplesAccion.attrs.detailArticulo.nombre}" data-group="detail-gallery" href="" title="Click para ver más grande la imagen">
+  							<p:graphicImage id="specific-image" value="#{manticCatalogosAlmacenesMultiplesAccion.detailImage}" styleClass="janal-logo-mini" width="140" height="140" stream="false" style="cursor:zoom-in;width:100%;"/>
+							</a>	
+						</p:panel>
+					</h:panelGrid>	
+				</p:tab>
+				<p:tab title="Especificaciones">
+					<p:dataTable lazy="true" id="lazyEspecificaciones" var="row" value="#{manticCatalogosAlmacenesMultiplesAccion.attrs.lazyEspecificaciones}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selectionMode="single" paginator="#{manticCatalogosAlmacenesMultiplesAccion.attrs.lazyEspecificaciones.rowCount gt manticCatalogosAlmacenesMultiplesAccion.attrs.lazyEspecificaciones.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">            
+            <p:column class="MarAuto Responsive">
+              <f:facet name="header">
+                <h:outputText value="Nombre"/>
+              </f:facet>
+              <h:outputText value="#{row['nombre']}"/>
+            </p:column>		
+            <p:column class="MarAuto Responsive">
+              <f:facet name="header">
+                <h:outputText value="Valor"/>
+              </f:facet>
+              <h:outputText value="#{row['valor']}"/>
+            </p:column>		          
+            <f:facet name="footer">
+              <p:outputLabel value="Total [#{manticCatalogosAlmacenesMultiplesAccion.attrs.lazyEspecificaciones==null?0:manticCatalogosAlmacenesMultiplesAccion.attrs.lazyEspecificaciones.rowCount}] registros"/>
+            </f:facet>
+          </p:dataTable>
+				</p:tab>
+				<p:tab title="Descuentos">
+					<p:dataTable lazy="true" id="lazyDescuentos" var="row" value="#{manticCatalogosAlmacenesMultiplesAccion.attrs.lazyDescuentos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}"  selectionMode="single" paginator="#{manticCatalogosAlmacenesMultiplesAccion.attrs.lazyDescuentos.rowCount gt manticCatalogosAlmacenesMultiplesAccion.attrs.lazyDescuentos.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">            
+            <p:column class="MarAuto Responsive janal-column-right janal-wid-20">
+              <f:facet name="header">
+                <h:outputText value="Porcentaje"/>
+              </f:facet>
+              <h:outputText value="#{row['porcentaje']}"/>
+            </p:column>		
+            <p:column class="MarAuto Responsive janal-column-center janal-wid-20">
+              <f:facet name="header">
+                <h:outputText value="Vigencia inicial"/>
+              </f:facet>
+              <h:outputText value="#{row['vigenciaInicial']}"/>
+            </p:column>		          
+            <p:column class="MarAuto Responsive janal-column-center janal-wid-20">
+              <f:facet name="header">
+                <h:outputText value="Vigencia final"/>
+              </f:facet>
+              <h:outputText value="#{row['vigenciaFinal']}"/>
+            </p:column>		          
+            <p:column class="MarAuto Responsive">
+              <f:facet name="header">
+                <h:outputText value="Observaciones"/>
+              </f:facet>
+              <h:outputText value="#{row['observaciones']}"/>
+            </p:column>		          
+            <f:facet name="footer">
+              <p:outputLabel value="Total [#{manticCatalogosAlmacenesMultiplesAccion.attrs.lazyDescuentos==null?0:manticCatalogosAlmacenesMultiplesAccion.attrs.lazyDescuentos.rowCount}] registros"/>
+            </f:facet>
+          </p:dataTable>
+				</p:tab>
+			</p:tabView>			
+			<hr class="ui-widget-content"/>
+			<div class="janal-line-button">				
+				<p:commandButton icon="fa fa-close" process="@none" accesskey="r" value="Cerrar" onstart="PF('dlgDetalleArticulo').hide();" oncomplete="janal.desbloquear();"/>
+			</div>
+		</p:dialog>		
+	</ui:define>
+	<ui:define name="dialogos">
+		<ui:include src="/Paginas/Mantic/Catalogos/Articulos/express.xhtml">
+			<ui:param name="dialogo" value="articulos"/>
+			<ui:param name="seleccionado" value="#{null}"/>
+		</ui:include>
+		<p:dialog id="dialogoDetalleArticulo" widgetVar="dlgDetalleArticulo" header="Articulo [#{manticCatalogosAlmacenesMultiplesAccion.attrs.detailArticulo.codigo}]" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onHide="janal.desbloquear(); setTimeout('jsArticulos.goto();', 1000);" width="70%">			
+			<p:tabView id="tabDetalleArticulo">
+				<p:tab title="Generales">
+					<h:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">
+						<p:outputLabel value="Nombre:"/>
+						<p:inputText value="#{manticCatalogosAlmacenesMultiplesAccion.attrs.detailArticulo.nombre}" styleClass="janal-wid-100-txt" disabled="true"/>					
+					</h:panelGrid>	
+					<p:separator/>
+					<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-80, janal-wid-20">
+						<h:panelGrid columns="3" styleClass="janal-wid-100" columnClasses="janal-wid-30, janal-wid-40, janal-wid-30">
+							<p:outputLabel value="Menudeo:" />
+							<p:outputLabel value="Medio mayoreo:" />
+							<p:outputLabel value="Mayoreo:" />
+							<p:inputText value="$#{manticCatalogosAlmacenesMultiplesAccion.attrs.detailArticulo.menudeo}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>											
+							<p:inputText value="$#{manticCatalogosAlmacenesMultiplesAccion.attrs.detailArticulo.medioMayoreo}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>					
+							<p:inputText value="$#{manticCatalogosAlmacenesMultiplesAccion.attrs.detailArticulo.mayoreo}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>																							
+							<p:outputLabel value="Limite menudeo:" />
+							<p:outputLabel value="Limite medio mayoreo:" />
+							<p:outputLabel value="Limite mayoreo:" />						
+							<p:inputText value="0 - #{manticCatalogosAlmacenesMultiplesAccion.attrs.detailArticulo.limiteMedioMayoreo}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>											
+							<p:inputText value="#{manticCatalogosAlmacenesMultiplesAccion.attrs.detailArticulo.limiteMedioMayoreo} - #{manticCatalogosAlmacenesMultiplesAccion.attrs.detailArticulo.limiteMayoreo}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>											
+							<p:inputText value="#{manticCatalogosAlmacenesMultiplesAccion.attrs.detailArticulo.limiteMayoreo} - #" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>					
+							<p:separator/><p:separator/><p:separator/>
+							<p:outputLabel value="Unidad de medida:" />
+							<p:outputLabel value="Stock:" />
+							<p:outputLabel value="IVA:" />
+							<p:inputText value="#{manticCatalogosAlmacenesMultiplesAccion.attrs.detailArticulo.unidadMedida}" styleClass="janal-wid-100-txt" disabled="true"/>											
+							<p:inputText value="#{manticCatalogosAlmacenesMultiplesAccion.attrs.detailArticulo.stock}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>																									
+							<p:inputText value="#{manticCatalogosAlmacenesMultiplesAccion.attrs.detailArticulo.iva}%" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>					
+						</h:panelGrid>
+						<p:panel id="panelImage" header="#{manticCatalogosAlmacenesMultiplesAccion.attrs.detailArticulo.codigo}" styleClass="TexAlCenter janal-wid-100-txt" style="height:100%">
+							<a id="detail-image" data-magnify="gallery" data-caption="#{manticCatalogosAlmacenesMultiplesAccion.attrs.detailArticulo.nombre}" data-group="detail-gallery" href="" title="Click para ver más grande la imagen">
+  							<p:graphicImage id="specific-image" value="#{manticCatalogosAlmacenesMultiplesAccion.detailImage}" styleClass="janal-logo-mini" width="140" height="140" stream="false" style="cursor:zoom-in;width:100%;"/>
+							</a>	
+						</p:panel>
+					</h:panelGrid>	
+				</p:tab>
+				<p:tab title="Especificaciones">
+					<p:dataTable lazy="true" id="lazyEspecificaciones" var="row" value="#{manticCatalogosAlmacenesMultiplesAccion.attrs.lazyEspecificaciones}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selectionMode="single" paginator="#{manticCatalogosAlmacenesMultiplesAccion.attrs.lazyEspecificaciones.rowCount gt manticCatalogosAlmacenesMultiplesAccion.attrs.lazyEspecificaciones.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">            
+            <p:column class="MarAuto Responsive">
+              <f:facet name="header">
+                <h:outputText value="Nombre"/>
+              </f:facet>
+              <h:outputText value="#{row['nombre']}"/>
+            </p:column>		
+            <p:column class="MarAuto Responsive">
+              <f:facet name="header">
+                <h:outputText value="Valor"/>
+              </f:facet>
+              <h:outputText value="#{row['valor']}"/>
+            </p:column>		          
+            <f:facet name="footer">
+              <p:outputLabel value="Total [#{manticCatalogosAlmacenesMultiplesAccion.attrs.lazyEspecificaciones==null?0:manticCatalogosAlmacenesMultiplesAccion.attrs.lazyEspecificaciones.rowCount}] registros"/>
+            </f:facet>
+          </p:dataTable>
+				</p:tab>
+				<p:tab title="Descuentos">
+					<p:dataTable lazy="true" id="lazyDescuentos" var="row" value="#{manticCatalogosAlmacenesMultiplesAccion.attrs.lazyDescuentos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}"  selectionMode="single" paginator="#{manticCatalogosAlmacenesMultiplesAccion.attrs.lazyDescuentos.rowCount gt manticCatalogosAlmacenesMultiplesAccion.attrs.lazyDescuentos.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">            
+            <p:column class="MarAuto Responsive janal-column-right janal-wid-20">
+              <f:facet name="header">
+                <h:outputText value="Porcentaje"/>
+              </f:facet>
+              <h:outputText value="#{row['porcentaje']}"/>
+            </p:column>		
+            <p:column class="MarAuto Responsive janal-column-center janal-wid-20">
+              <f:facet name="header">
+                <h:outputText value="Vigencia inicial"/>
+              </f:facet>
+              <h:outputText value="#{row['vigenciaInicial']}"/>
+            </p:column>		          
+            <p:column class="MarAuto Responsive janal-column-center janal-wid-20">
+              <f:facet name="header">
+                <h:outputText value="Vigencia final"/>
+              </f:facet>
+              <h:outputText value="#{row['vigenciaFinal']}"/>
+            </p:column>		          
+            <p:column class="MarAuto Responsive">
+              <f:facet name="header">
+                <h:outputText value="Observaciones"/>
+              </f:facet>
+              <h:outputText value="#{row['observaciones']}"/>
+            </p:column>		          
+            <f:facet name="footer">
+              <p:outputLabel value="Total [#{manticCatalogosAlmacenesMultiplesAccion.attrs.lazyDescuentos==null?0:manticCatalogosAlmacenesMultiplesAccion.attrs.lazyDescuentos.rowCount}] registros"/>
+            </f:facet>
+          </p:dataTable>
+				</p:tab>
+			</p:tabView>			
+			<hr class="ui-widget-content"/>
+			<div class="janal-line-button">				
+				<p:commandButton icon="fa fa-close" process="@none" accesskey="r" value="Cerrar" onstart="PF('dlgDetalleArticulo').hide();" oncomplete="janal.desbloquear();"/>
+			</div>		
+		</p:dialog>				
+  </ui:define>	
+</ui:composition>

@@ -223,7 +223,7 @@ public class Filtro extends Comun implements Serializable {
   }
 	
   public String doAccion(String accion) {
-		String regresar= "normal";
+		String regresar= "accion";
     EAccion eaccion= null;
 		try {
 			eaccion= EAccion.valueOf(accion.toUpperCase());
@@ -373,20 +373,6 @@ public class Filtro extends Comun implements Serializable {
       Methods.clean(params);
     } // finally
 	}
-
-	public String doNormal(String accion) {
-    EAccion eaccion= null;
-		try {
-			eaccion= EAccion.valueOf(accion.toUpperCase());
-			JsfBase.setFlashAttribute("accion", eaccion);		
-			JsfBase.setFlashAttribute("idTransferenciaMultiple", (eaccion.equals(EAccion.MODIFICAR)||eaccion.equals(EAccion.CONSULTAR)) ? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);
-		} // try
-		catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);			
-		} // catch
-		return "normal".concat(Constantes.REDIRECIONAR);
-  } 
 
 	public void doTransporta() {
     this.attrs.put("transito", this.attrs.get("estatus")!= null && ((String)this.attrs.get("estatus")).equals("3"));

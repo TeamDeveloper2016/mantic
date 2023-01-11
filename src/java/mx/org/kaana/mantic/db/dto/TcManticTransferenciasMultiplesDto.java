@@ -62,7 +62,7 @@ public class TcManticTransferenciasMultiplesDto implements IBaseDto, Serializabl
     setKey(key);
   }
 
-  public TcManticTransferenciasMultiplesDto(String consecutivo, Long idSolicito, Long idTransferenciaMultipleEstatus, Long idUsuario, Long idAlmacen, String observaciones, Long idEmpresa, Long orden, Long idTransfereciaMultiple, Long ejercicio) {
+  public TcManticTransferenciasMultiplesDto(String consecutivo, Long idSolicito, Long idTransferenciaMultipleEstatus, Long idUsuario, Long idAlmacen, String observaciones, Long idEmpresa, Long orden, Long idTransferenciaMultiple, Long ejercicio) {
     setConsecutivo(consecutivo);
     setIdSolicito(idSolicito);
     setIdTransferenciaMultipleEstatus(idTransferenciaMultipleEstatus);

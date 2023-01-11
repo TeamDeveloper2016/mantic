@@ -18,7 +18,7 @@ public enum ETipoMovimiento {
 	CIERRES_CAJA("cierre(s) de caja", "cierres", "idCierre", "VistaCierresCajasDto"),
 	FACTURAS_FICTICIAS("factura(s)", "ficticias", "idFicticia", "VistaFicticiasDto"),
 	TRANSFERENCIAS("transferencia(s)", "transferencias", "idTransferencia", "VistaAlmacenesTransferenciasDto"),
-	MULTIPLES("transferencia(s)", "transferencias", "idTransferenciaMultiple", "VistaTransferenciasMultiplesDto");
+	MULTIPLES("transferencia(s) multiples", "transferencias_multiples", "idTransferenciaMultiple", "VistaTransferenciasMultiplesDto");
 	 
 	private final String title;
 	private final String table;

@@ -58,11 +58,11 @@ public class TcManticTransferenciasMultiplesDetallesDto implements IBaseDto, Ser
   }
 
   public TcManticTransferenciasMultiplesDetallesDto(Long key) {
-    this(null, null, null, null, null, null, new Long(-1L));
+    this(null, null, null, null, new Long(-1L), null, null);
     setKey(key);
   }
 
-  public TcManticTransferenciasMultiplesDetallesDto(String codigo, Long idTransferenciaMultiple, Long idAlmacen, Double cantidad, Long idArticulo, String nombre, Long idTransferenciaMultipleDetalle) {
+  public TcManticTransferenciasMultiplesDetallesDto(String codigo, Double cantidad, Long idTransferenciaMultiple, Long idArticulo, Long idTransferenciaMultipleDetalle, String nombre, Long idAlmacen) {
     setCodigo(codigo);
     setIdTransferenciaMultiple(idTransferenciaMultiple);
     setIdAlmacen(idAlmacen);

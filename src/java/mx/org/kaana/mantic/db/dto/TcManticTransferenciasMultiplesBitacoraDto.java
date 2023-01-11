@@ -60,7 +60,7 @@ public class TcManticTransferenciasMultiplesBitacoraDto implements IBaseDto, Ser
     setKey(key);
   }
 
-  public TcManticTransferenciasMultiplesBitacoraDto(Long idTransferenciaMultipleEstatus, String justificacion, Long idTransferenciaMultiple, Long idUsuario, Long idTransporto, Long idTransferenciaMultipleBitacora) {
+  public TcManticTransferenciasMultiplesBitacoraDto(Long idTransferenciaMultipleBitacora, String justificacion, Long idUsuario, Long idTransporto, Long idTransferenciaMultipleEstatus, Long idTransferenciaMultiple) {
     setIdTransferenciaMultipleEstatus(idTransferenciaMultipleEstatus);
     setJustificacion(justificacion);
     setIdTransferenciaMultiple(idTransferenciaMultiple);

@@ -36,6 +36,51 @@
 				  and {condicion}	
         {sortOrder}
       </select>  
+			<select id="movimientos">
+				select
+					tc_mantic_transferencias_multiples_bitacora.id_transferencia_multiple_bitacora as id_key,
+					tc_mantic_transferencias_multiples.consecutivo,
+				  0 as importe,
+				  tc_mantic_transferencias_multiples_bitacora.id_transporto,
+					tc_mantic_transferencias_multiples_bitacora.justificacion,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre,
+				  tc_mantic_transferencias_multiples_estatus.nombre as estatus,
+					tc_mantic_transferencias_multiples_bitacora.registro
+				from 
+					tc_mantic_transferencias_multiples_bitacora
+				inner join
+					tc_mantic_transferencias_multiples on tc_mantic_transferencias_multiples_bitacora.id_transferencia_multiple= tc_mantic_transferencias_multiples.id_transferencia_multiple
+				inner join
+					tc_mantic_transferencias_multiples_estatus on tc_mantic_transferencias_multiples_bitacora.id_transferencia_multiple_estatus= tc_mantic_transferencias_multiples_estatus.id_transferencia_multiple_estatus
+				inner join
+					tc_janal_usuarios on tc_mantic_transferencias_multiples_bitacora.id_usuario= tc_janal_usuarios.id_usuario
+				inner join
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+				where
+					tc_mantic_transferencias_multiples_bitacora.id_transferencia_multiple= {idTransferenciaMultiple}
+				order by
+					tc_mantic_transferencias_multiples_bitacora.registro desc				
+			</select>		    
+      <select id="detalle">
+        select      
+				  tc_mantic_transferencias_multiples_detalles.id_transferencia__multiple_detalle as id_comodin,
+				  tc_mantic_transferencias_multiples_detalles.id_transferencia_multiple as id_orden_detalle,
+          tc_mantic_transferencias_multiples_detalles.codigo as propio,
+          tc_mantic_transferencias_multiples_detalles.*,
+          ifnull(tc_mantic_transferencias_multiples_detalles.cantidad, 0) as solicitados,
+          tc_mantic_transferencias_multiples_detalles.cantidad as cuantos,
+          tc_mantic_transferencias_multiples_detalles.cantidad as inicial,
+				  tc_mantic_articulos.precio as valor
+        from      
+          tc_mantic_transferencias_multiples_detalles
+        inner join
+          tc_mantic_articulos on tc_mantic_transferencias_multiples_detalles.id_articulo= tc_mantic_articulos.id_articulo
+        where      
+          tc_mantic_transferencias_multiples_detalles.id_transferencia_multiple= {idTransferenciaMultiple}
+				order by
+				  tc_mantic_transferencias_multiples_detalles.caja, 
+          tc_mantic_transferencias_multiples_detalles.codigo
+      </select>
     </unit>  
 		<unit id="VistaProductosDto">
       <select id="hijos">
