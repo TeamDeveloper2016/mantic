@@ -1474,19 +1474,17 @@ public class Accion extends IBaseVenta implements Serializable {
 	public void doTabChange(TabChangeEvent event) {
 		String title= event.getTab().getTitle();
 		this.pagar= title.equals("Pagar") || title.equals("Apartado");
-		if(title.equals("Cliente") || title.equals("Tickets") || title.equals("Pagar") || title.equals("Apartado")) 
+		if(title.equals("Cliente") || title.equals("Tickets") || title.equals("Pagar") || title.equals("Apartado")) {
 			((TicketVenta)this.getAdminOrden().getOrden()).setObservaciones(!Cadena.isVacio(this.attrs.get("observaciones")) ? ((String)this.attrs.get("observaciones")).toUpperCase() : "");
-    else
-      if(title.equals("Tickets")) {
-        this.doLoadTickets();			
-        UIBackingUtilities.update("contenedorGrupos:tablaTicket");
-      } // if
-      else
-        if(title.equals("Pagar")) 
-          UIBackingUtilities.execute("jsArticulos.focusCobro();");			
-        else
-          if(title.equals("Articulos"))
-            this.attrs.put("observaciones", ((TicketVenta)this.getAdminOrden().getOrden()).getObservaciones());
+    } // if
+    if(title.equals("Tickets")) {
+      this.doLoadTickets();			
+      UIBackingUtilities.update("contenedorGrupos:tablaTicket");
+    } // if
+    if(title.equals("Pagar")) 
+      UIBackingUtilities.execute("jsArticulos.focusCobro();");			
+    if(title.equals("Articulos"))
+      this.attrs.put("observaciones", ((TicketVenta)this.getAdminOrden().getOrden()).getObservaciones());
 		this.attrs.put("titleTab", title);		
 	} // doTabChange
 
@@ -1521,11 +1519,10 @@ public class Accion extends IBaseVenta implements Serializable {
 	} // doAplicarCambioPrecio
 	
 	public void doLoadTickets() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
 		Map<String, Object> params= null;
 		try {
 			params= this.toPrepare();
-      columns = new ArrayList<>();
       columns.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));

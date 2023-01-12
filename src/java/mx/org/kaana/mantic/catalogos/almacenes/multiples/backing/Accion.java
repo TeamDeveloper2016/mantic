@@ -287,7 +287,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			if(event.getTab().getTitle().equals("Faltantes almacen")) 
         this.doLoadFaltantes();
 			else 
-			  if(event.getTab().getTitle().equals("Ventas perdidas")) {
+			  if(event.getTab().getTitle().equals("Ventas perdidas") && this.attrs.get("perdidos")== null) {
           List<UISelectEntity> destinos= (List<UISelectEntity>)((ArrayList<UISelectEntity>)this.attrs.get("almacenes"));
           int index= destinos.indexOf(((Multiple)this.getAdminOrden().getOrden()).getIkDestino());
           if(index>= 0)
