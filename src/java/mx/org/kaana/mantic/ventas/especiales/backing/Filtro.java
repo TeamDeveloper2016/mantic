@@ -104,7 +104,7 @@ public class Filtro extends IBaseTicket implements Serializable {
 	  Map<String, Object> regresar= new HashMap<>();	
 		StringBuilder sb= new StringBuilder();
 		if(!Cadena.isVacio(this.attrs.get("consecutivo")))
-  		sb.append("(tc_mantic_ventas.consecutivo like '%").append(this.attrs.get("consecutivo")).append("%') and ");
+  		sb.append("(tc_mantic_ventas.consecutivo= '").append(this.attrs.get("consecutivo")).append("') and ");
 		if(!Cadena.isVacio(this.attrs.get("montoInicio")))
 		  sb.append("(tc_mantic_ventas.total>= ").append((Double)this.attrs.get("montoInicio")).append(") and ");			
 		if(!Cadena.isVacio(this.attrs.get("montoTermino")))

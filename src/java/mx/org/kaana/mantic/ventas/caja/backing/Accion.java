@@ -369,10 +369,10 @@ public class Accion extends IBaseVenta implements Serializable {
 	
   public void doAutorizar() {  
     try {
+      TicketVenta ticketVenta= (TicketVenta)this.getAdminOrden().getOrden();
       // AQUI SE DEBE DE LANZAR UN METODO DE JAVASCRIPT CON EL DIALOGO DE SOLICITAR AUTORIZACION SI SE DA EL CASO QUE LOS PRECIOS SEAN DIFERENTES A MENUDEO
       TcManticClientesDto cliente= (TcManticClientesDto)this.attrs.get("registroCliente");
       if(cliente!= null && (!Objects.equals(cliente.getEspecial(), 0D) || (cliente.getIdTipoVenta()!= null && !Objects.equals(cliente.getIdTipoVenta(), 1L)) || !Objects.equals(this.getPrecio(), "menudeo"))) {
-        UIBackingUtilities.execute("autorizacion();");
         if(!Objects.equals(cliente.getKey(), Constantes.VENTA_AL_PUBLICO_GENERAL_ID_KEY)) {
           // ACTUALIZAR EL REGIMEN FISCAL PARA ESTE CLIENTE EN CASO DE QUE NO TENGA O SEA DIFERENTE
           TcManticClientesDto customer= (TcManticClientesDto)DaoFactory.getInstance().findById(TcManticClientesDto.class, cliente.getKey());
@@ -380,10 +380,14 @@ public class Accion extends IBaseVenta implements Serializable {
             customer.setIdRegimenFiscal(this.getIkRegimenFiscal().getKey());
             DaoFactory.getInstance().update(customer);
           } // if  
-          TicketVenta ticketVenta= (TicketVenta)this.getAdminOrden().getOrden();
           if(this.getIkRegimenFiscal()!= null && !Objects.equals(this.getIkRegimenFiscal().getKey(), -1L))
             ticketVenta.setIdRegimenFiscal(this.getIkRegimenFiscal().getKey());
         } // if  
+        // ESTE ATRIBUTO SE AGREGO PARA PODER AUTORIZAR VENTAS DESDE EL MÓDULO DE AUTORIZACIONES
+        if(ticketVenta.getIdAcepta()== null)
+          UIBackingUtilities.execute("autorizacion();");
+        else
+          this.doAceptar();
       } // if  
       else
         this.doAceptar();

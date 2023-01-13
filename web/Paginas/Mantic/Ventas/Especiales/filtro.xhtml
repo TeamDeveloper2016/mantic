@@ -110,6 +110,12 @@
               </f:facet>
               <h:outputText value="#{row['consecutivo']}"/>
             </p:column>		
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-6" sortBy="#{row.ticket}">
+              <f:facet name="header">
+                <h:outputText value="Ticket"/>
+              </f:facet>
+              <h:outputText value="#{row['ticket']}"/>
+            </p:column>		
             <p:column class="MarAuto Responsive janal-wid-15" sortBy="#{row.vendedor}">
               <f:facet name="header">
                 <h:outputText value="Vendedor"/>
@@ -147,7 +153,7 @@
               <h:outputText value="#{row['registro']}"/>
             </p:column>		
   					<p:column style="text-align: center" styleClass="janal-wid-col-38">
-              <p:commandButton icon="fa fa-street-view" actionListener="#{manticVentasEspecialesFiltro.doSeleccionar(row)}" process="@this tabla" update="confirmacion" title="Autorizar" onstart="return janal.bloquear();" oncomplete="PF('dialogoConfirmacion').show()">
+              <p:commandButton icon="fa fa-street-view" actionListener="#{manticVentasEspecialesFiltro.doSeleccionar(row)}" process="@this tabla" update="confirmacion" title="Autorizar" onstart="return janal.bloquear();" oncomplete="PF('dialogoConfirmacion').show()" style="display: #{empty row.ticket.toString? '': 'none'}" >
 								<f:setPropertyActionListener value="#{row}" target="#{manticVentasEspecialesFiltro.attrs.seleccionado}" />
 							</p:commandButton>
             </p:column>		
