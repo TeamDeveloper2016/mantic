@@ -5899,17 +5899,6 @@
         where      
           id_venta = '{consecutivo}'
       </select>			
-			<update id="rows">
-				update 
-				  tc_mantic_ventas 
-				inner join
-				  tr_mantic_venta_medio_pago on tc_mantic_ventas.id_venta= tr_mantic_venta_medio_pago.id_venta
-				set 
-				  tc_mantic_ventas.id_venta_estatus= 5 
-				where 
-				  tc_mantic_ventas.id_empresa= {idEmpresa} 
-				  and tr_mantic_venta_medio_pago.id_caja= {idCaja}
-			</update>
 			<select id="total">
 				select
 					truncate(sum(tc_mantic_ventas.total), 1) as total
@@ -5927,6 +5916,26 @@
         where 
           id_factura = {idFactura} 
 			</select>
+			<update id="rows">
+				update 
+				  tc_mantic_ventas 
+				inner join
+				  tr_mantic_venta_medio_pago on tc_mantic_ventas.id_venta= tr_mantic_venta_medio_pago.id_venta
+				set 
+				  tc_mantic_ventas.id_venta_estatus= 5 
+				where 
+				  tc_mantic_ventas.id_empresa= {idEmpresa} 
+				  and tr_mantic_venta_medio_pago.id_caja= {idCaja}
+			</update>
+			<update id="autoriza">
+				update 
+				  tc_mantic_ventas 
+				set 
+				  tc_mantic_ventas.id_acepta= if(tc_mantic_ventas.id_acepta is null, {idAcepta}, null)
+				where 
+				  tc_mantic_ventas.id_venta= {idVenta}
+          and tc_mantic_ventas.ticket is null
+			</update>
     </unit>
     <unit id="TcManticVentasDetallesDto">
       <select id="row">

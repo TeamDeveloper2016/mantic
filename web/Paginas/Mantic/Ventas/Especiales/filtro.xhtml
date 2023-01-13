@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/reporte.xhtml">
+  <ui:param name="titulo" value="Autorizar ventas para clientes especiales"/>
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      Janal.Control.fields = {
+        idEmpresa   : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        consecutivo : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+			 	razonSocial : {validaciones: 'libre',  mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        montoInicio : {validaciones: 'flotante',  mascara: 'libre', grupo: 'general'},
+        montoTermino: {validaciones: 'flotante',  mascara: 'libre', grupo: 'general'},
+        idAcepta    : {validaciones: 'libre', mascara: 'libre', grupo: 'general'}        
+      };
+    </script>		
+		<style>
+			.ui-selectonemenu-panel .ui-selectonemenu-filter-container .ui-inputfield {
+				width:225% !important;
+			}
+	  </style>		
+  </ui:define>
+  <ui:define name="contenido">
+    <div class="janal-align-right xs-pantalla janal-wid-100">
+      <p:commandButton icon="fa fa-search" value="Filtrar" iconPos="right" onstart="janal.togglePanel('panelBusqueda');" styleClass="janal-text-white janal-wid-100"/>
+    </div>			
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+      <div class="ui-grid-row janal-grid-row">
+        <div id="collapse-find" class="ui-grid-col-3">
+          <p:panel id="panelBusqueda" header="Busqueda:" styleClass="lg-pantalla" toggleable="true" toggleOrientation="horizontal">
+						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
+            <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" >
+              <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticVentasEspecialesFiltro.attrs.isMatriz}"/>
+              <p:selectOneMenu id="idEmpresa" value="#{manticVentasEspecialesFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
+                <f:selectItems value="#{manticVentasEspecialesFiltro.attrs.sucursales}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.titulo}"/>
+                <p:column headerText="Clave">
+                  <h:outputText value="#{item.clave}"/>
+                </p:column>   
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombre}"/>
+                </p:column>   
+              </p:selectOneMenu>
+              <p:outputLabel for="consecutivo" value="No. cuenta:"/>
+              <p:inputText id="consecutivo" value="#{manticVentasEspecialesFiltro.attrs.consecutivo}" styleClass="janal-wid-100-txt"/> 
+              <p:outputLabel for="razonSocial" value="Cliente:"/>
+              <p:autoComplete id="razonSocial" placeholder="RFC o nombre" var="customCliente" itemLabel="#{customCliente.razonSocial}" inputStyleClass="janal-wid-100-txt key-down-clientes filas" itemValue="#{customCliente}" value="#{manticVentasEspecialesFiltro.attrs.cliente}" completeMethod="#{manticVentasEspecialesFiltro.doCompleteCliente}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">
+								<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this idEmpresa" listener="#{manticVentasEspecialesFiltro.doAsignaCliente}" oncomplete="janal.desbloquear();"/>
+								<f:facet name="itemtip">
+									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">												
+										<h:outputText value="Clave" />
+										<h:outputText value="#{customCliente.clave}"/>
+										<h:outputText value="RFC:" />
+										<h:outputText value="#{customCliente.rfc}"/>
+										<h:outputText value="Razón social:"/>
+										<h:outputText value="#{customCliente.razonSocial}"/>												
+									</h:panelGrid>
+								</f:facet>
+							</p:autoComplete>	
+							<p:outputLabel for="montoInicio" value="Monto inicio:"/>
+							<p:inputText id="montoInicio" styleClass="janal-wid-100-txt" value="#{manticVentasEspecialesFiltro.attrs.montoInicio}" converter="javax.faces.Double">
+								<p:ajax event="blur" listener="#{manticVentasEspecialesFiltro.doMontoUpdate}" process="@this" update="montoTermino"/>
+							</p:inputText>	
+							<p:outputLabel for="montoTermino" value="Monto termino:"/>
+							<p:inputText id="montoTermino" styleClass="janal-wid-100-txt" value="#{manticVentasEspecialesFiltro.attrs.montoTermino}" converter="javax.faces.Double">							
+								<p:ajax event="blur" listener="#{manticVentasEspecialesFiltro.doMontoUpdate}" process="@this" update="montoInicio"/>
+							</p:inputText>	
+              <p:outputLabel for="idAcepta" value="Autorizadas:"/>
+              <p:selectOneMenu id="idAcepta" value="#{manticVentasEspecialesFiltro.attrs.idAcepta}" var="item" converter="javax.faces.Long" styleClass="janal-wid-96"  effect="fade">
+								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
+								<f:selectItem itemLabel="SI" itemValue="1"/>
+								<f:selectItem itemLabel="NO" itemValue="2"/>
+              </p:selectOneMenu>
+							<p:separator/>
+            </p:panelGrid>
+						<div class="janal-align-right">
+							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{manticVentasEspecialesFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
+							<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{manticVentasEspecialesFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
+						</div>
+          </p:panel>
+        </div>
+				<p:spacer/>
+        <div id="collapse-content" class="ui-grid-col-9">
+          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticVentasEspecialesFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticVentasEspecialesFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticVentasEspecialesFiltro.lazyModel.rowCount gt manticVentasEspecialesFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+            <p:ajax event="rowSelect" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
+            <f:facet name="header" >
+              <div class="lg-pantalla">
+                <p:menuButton value="Opciones">
+                  <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                  <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                </p:menuButton>
+              </div>  
+              <div class="xs-pantalla">              
+                <p:commandButton id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                <p:commandButton id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+              </div>  
+            </f:facet>	            
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-12" sortBy="#{row.empresa}">
+              <f:facet name="header">
+                <h:outputText value="Sucursal"/>
+              </f:facet>
+              <h:outputText value="#{row['empresa']}"/>
+            </p:column>		
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.consecutivo}">
+              <f:facet name="header">
+                <h:outputText value="No. cuenta"/>
+              </f:facet>
+              <h:outputText value="#{row['consecutivo']}"/>
+            </p:column>		
+            <p:column class="MarAuto Responsive janal-wid-15" sortBy="#{row.vendedor}">
+              <f:facet name="header">
+                <h:outputText value="Vendedor"/>
+              </f:facet>
+              <h:outputText value="#{row['vendedor']}"/>
+            </p:column>		
+            <p:column class="MarAuto Responsive" sortBy="#{row.cliente}">
+              <f:facet name="header">
+                <h:outputText value="Cliente"/>
+              </f:facet>
+              <h:outputText value="#{row['cliente']}"/>
+            </p:column>		
+            <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.precio}">
+              <f:facet name="header">
+                <h:outputText value="Precio"/>
+              </f:facet>
+              <h:outputText value="#{row['precio']}"/>
+            </p:column>		
+            <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.autorizo}">
+              <f:facet name="header">
+                <h:outputText value="Autorizó"/>
+              </f:facet>
+              <h:outputText value="#{row['autorizo']}"/>
+            </p:column>		
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.importe}">
+              <f:facet name="header">
+                <h:outputText value="Importe"/>
+              </f:facet>
+              <h:outputText value="#{row['total']}"/>
+            </p:column>		
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-col-130" sortBy="#{row.fecha}">
+              <f:facet name="header">
+                <h:outputText value="Fecha"/>
+              </f:facet>
+              <h:outputText value="#{row['registro']}"/>
+            </p:column>		
+  					<p:column style="text-align: center" styleClass="janal-wid-col-38">
+              <p:commandButton icon="fa fa-street-view" actionListener="#{manticVentasEspecialesFiltro.doSeleccionar(row)}" process="@this tabla" update="confirmacion" title="Autorizar" onstart="return janal.bloquear();" oncomplete="PF('dialogoConfirmacion').show()">
+								<f:setPropertyActionListener value="#{row}" target="#{manticVentasEspecialesFiltro.attrs.seleccionado}" />
+							</p:commandButton>
+            </p:column>		
+            <f:facet name="footer">
+              <p:outputLabel value="Total [#{manticVentasEspecialesFiltro.lazyModel== null? 0: manticVentasEspecialesFiltro.lazyModel.rowCount}] registros"/>
+            </f:facet>
+          </p:dataTable>
+        </div>
+      </div>
+    </div>		    
+  </ui:define>   
+  <ui:param name="componenteBloqueo" value="buscar buscarIcon tabla"/>
+  <ui:param name="tituloConfirmacion" value="¿ Está seguro de (des)autorizar la venta ?"/>
+  <ui:param name="accionConfirmacion" value="#{manticVentasEspecialesFiltro}"/>
+  <ui:param name="updateComponent" value="tabla"/>
+  <ui:param name="eventoConfirmacion" value="doAccion"/>	
+  <ui:param name="renderedConfirmacion" value="true"/>	
+  <ui:define name="detalleConfirmacion">
+    <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-column-right janal-wid-20, janal-wid-80">
+      <p:outputLabel value="Sucursal:"/>
+      <p:outputLabel value="#{manticVentasEspecialesFiltro.attrs.seleccionado.empresa}"/>      
+      <p:outputLabel value="No. cuenta:"/>
+      <p:outputLabel value="#{manticVentasEspecialesFiltro.attrs.seleccionado.consecutivo}" styleClass="janal-color-blue"/>      
+      <p:outputLabel value="Cliente:"/>
+      <p:outputLabel value="#{manticVentasEspecialesFiltro.attrs.seleccionado.cliente}"/>      
+      <p:outputLabel value=""/>
+      <p:outputLabel value=""/>
+      <p:outputLabel value="Importe:"/>
+      <p:outputLabel value="$ #{manticVentasEspecialesFiltro.attrs.seleccionado.total}"  styleClass="janal-color-black"/>      
+    </p:panelGrid>			
+  </ui:define>
+</ui:composition>

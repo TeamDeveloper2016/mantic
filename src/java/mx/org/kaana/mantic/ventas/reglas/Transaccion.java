@@ -154,16 +154,15 @@ public class Transaccion extends TransaccionFactura {
   
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
-		boolean regresar          = false;
-		Map<String, Object> params= null;
+		boolean regresar          = Boolean.FALSE;
+		Map<String, Object> params= new HashMap<>();
 		Long idEstatusVenta       = null;
 		Siguiente consecutivo     = null;
 		try {
 			idEstatusVenta= EEstatusVentas.ELABORADA.getIdEstatusVenta();
-			params= new HashMap<>();
 			if(this.orden!= null)
 				params.put("idVenta", this.orden.getIdVenta());
-			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" el ticket de venta.");
+			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" el ticket de venta");
 			switch(accion) {
 				case GENERAR:
 					idEstatusVenta= EEstatusVentas.COTIZACION.getIdEstatusVenta();
@@ -245,6 +244,11 @@ public class Transaccion extends TransaccionFactura {
 						servicio.setIdVenta(this.orden.getIdVenta());
 						regresar= DaoFactory.getInstance().update(sesion, servicio)>= 1L;
 					} // if
+					break;
+				case DESTRANSFORMACION:
+          params.put("idAcepta", JsfBase.getIdUsuario());
+          params.put("idVenta", this.orden.getIdVenta());
+          regresar= DaoFactory.getInstance().updateAll(sesion, TcManticVentasDto.class, params, "autoriza")>= 1L;
 					break;
 			} // switch
 			if(!regresar)

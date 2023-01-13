@@ -1626,9 +1626,9 @@
 			  </div>
 				<p:panelGrid columns="1" styleClass="janal-wid-100">
 					<p:outputLabel for="usuario" value="Usuario:"/>
-					<p:inputText id="usuario" value="#{manticVentasCajaAccion.attrs.cuenta}" styleClass="event-keydown-enter janal-wid-100-txt janal-name-contrasenia"/>
+          <p:inputText id="usuario" value="#{manticVentasCajaAccion.attrs.cuenta}" styleClass="event-keydown-enter janal-wid-100-txt janal-name-contrasenia" onfocus="$('#invalido').hide();"/>
 					<p:outputLabel for="contrasenia" value="Contraseña:"/>
-					<p:password id="contrasenia" value="#{manticVentasCajaAccion.attrs.contrasenia}" styleClass="event-keydown-enter janal-wid-100-txt janal-name-verificar" autocomplete="new-password"/>									
+					<p:password id="contrasenia" value="#{manticVentasCajaAccion.attrs.contrasenia}" styleClass="event-keydown-enter janal-wid-100-txt janal-name-verificar" autocomplete="new-password" onfocus="$('#invalido').hide();"/>
         </p:panelGrid>
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">

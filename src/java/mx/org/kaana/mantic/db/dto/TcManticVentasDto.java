@@ -118,6 +118,8 @@ public class TcManticVentasDto implements IBaseDto, Cloneable, Serializable {
   private Long idSincronizado;
 	@Column (name="id_regimen_fiscal")
   private Long idRegimenFiscal;
+	@Column (name="id_acepta")
+  private Long idAcepta;
 
   public TcManticVentasDto() {
     this(new Long(-1L));
@@ -184,6 +186,7 @@ public class TcManticVentasDto implements IBaseDto, Cloneable, Serializable {
 		setCandado(candado);
 		this.idSincronizado= 2L;
     this.idRegimenFiscal= null;
+    this.idAcepta= null;
   }
 	
 	public Long getIdManual() {
@@ -530,6 +533,14 @@ public class TcManticVentasDto implements IBaseDto, Cloneable, Serializable {
     this.idRegimenFiscal = idRegimenFiscal;
   }
 
+  public Long getIdAcepta() {
+    return idAcepta;
+  }
+
+  public void setIdAcepta(Long idAcepta) {
+    this.idAcepta = idAcepta;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -630,6 +641,8 @@ public class TcManticVentasDto implements IBaseDto, Cloneable, Serializable {
 		regresar.append(getIdSincronizado());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdRegimenFiscal());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdAcepta());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -680,13 +693,14 @@ public class TcManticVentasDto implements IBaseDto, Cloneable, Serializable {
 		regresar.put("candado", getCandado());
 		regresar.put("idSincronizado", getIdSincronizado());
 		regresar.put("idRegimenFiscal", getIdRegimenFiscal());
+		regresar.put("idAcepta", getIdAcepta());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
-    Object[] regresar = new Object[]{
-			getDescuentos(), getIdFactura(), getIdCredito(), getExtras(), getGlobal(), getUtilidad(), getTotal(), getIdAlmacen(), getTipoDeCambio(), getOrden(), getIdAutorizar(), getIdCliente(), getDescuento(), getEjercicio(), getRegistro(), getConsecutivo(), getIdUsuario(), getImpuestos(), getIdUsoCfdi(), getIdSinIva(), getSubTotal(), getObservaciones(), getIdEmpresa(), getIdVenta(), getDia(), getIdVentaEstatus(), getTicket(), getCotizacion(), getTicket(), getCcotizacion(), getVigencia(), getIdManual(), getIdFacturar(), getCobro(), getIdClienteDomicilio(), getIdTipoMedioPago(), getIdTipoPago(), getIdBanco(), getReferencia(), getIdTipoDocumento(), getCandado(), getIdSincronizado(), getIdRegimenFiscal()
+    Object[] regresar = new Object[] {
+			getDescuentos(), getIdFactura(), getIdCredito(), getExtras(), getGlobal(), getUtilidad(), getTotal(), getIdAlmacen(), getTipoDeCambio(), getOrden(), getIdAutorizar(), getIdCliente(), getDescuento(), getEjercicio(), getRegistro(), getConsecutivo(), getIdUsuario(), getImpuestos(), getIdUsoCfdi(), getIdSinIva(), getSubTotal(), getObservaciones(), getIdEmpresa(), getIdVenta(), getDia(), getIdVentaEstatus(), getTicket(), getCotizacion(), getTicket(), getCcotizacion(), getVigencia(), getIdManual(), getIdFacturar(), getCobro(), getIdClienteDomicilio(), getIdTipoMedioPago(), getIdTipoPago(), getIdBanco(), getReferencia(), getIdTipoDocumento(), getCandado(), getIdSincronizado(), getIdRegimenFiscal(), getIdAcepta()
     };
     return regresar;
   }

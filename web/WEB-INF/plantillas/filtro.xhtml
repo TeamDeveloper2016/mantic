@@ -43,13 +43,15 @@
                   <h:commandLink id="dataXls">
                     <pe:exporter type="xlsx" skipComponents="javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="tabla" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/> 
                   </h:commandLink>			
-                <p:dialog id="confirmacion" widgetVar="dialogoConfirmacion" header="#{empty tituloConfirmacion? 'Confirmación': tituloConfirmacion}" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="false"  onHide="#{empty onHideDlg? 'janal.desbloquear();': onHideDlg}" width="60%">
-                  <h:outputText value="#{textoConfirmacion}" escape="false"/>
+                <p:dialog id="confirmacion" widgetVar="dialogoConfirmacion" dynamic="true" header="#{empty tituloConfirmacion? 'Confirmación': tituloConfirmacion}" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="false"  onHide="#{empty onHideDlg? 'janal.desbloquear();': onHideDlg}" width="60%">
+                  <div class="janal-column-center">
+                    <h:outputText value="#{textoConfirmacion}" escape="false"/>
+                  </div>
                   <ui:insert name="detalleConfirmacion" />
                   <hr class="ui-widget-content"/>
                   <div class="janal-line-button">
                     <p:commandButton id="confirmar" process="@form" update="#{empty updateComponent? 'temporal': updateComponent}"  value="Aceptar" action="#{accionConfirmacion[eventoConfirmacion]}" oncomplete="PF('dialogoConfirmacion').hide();janal.desbloquear();" rendered="#{empty renderedConfirmacion? false: renderedConfirmacion}" icon="fa fa-check"/>
-                    <p:commandButton process="@none"  value="#{renderedConfirmacion?'Cancelar':'Regresar'}" oncomplete="PF('dialogoConfirmacion').hide();" icon="fa fa-close"/>
+                    <p:commandButton process="@none" value="#{renderedConfirmacion?'Cancelar':'Regresar'}" oncomplete="PF('dialogoConfirmacion').hide();" icon="fa fa-close"/>
                   </div>
                 </p:dialog> 								
               </p:panel>						

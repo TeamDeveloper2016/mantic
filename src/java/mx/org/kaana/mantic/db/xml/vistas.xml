@@ -3428,6 +3428,47 @@
 			</select>
 		</unit>
 		<unit id="VistaVentasDto">
+			<select id="autorizar">
+        select
+					tc_mantic_ventas.id_venta as id_key,
+					tc_mantic_ventas.id_venta,
+					tc_mantic_ventas.id_empresa,
+					tc_mantic_empresas.nombre as empresa,
+					tc_mantic_clientes.id_cliente,
+					tc_mantic_clientes.razon_social as cliente,
+					tc_mantic_ventas.consecutivo,
+					tc_mantic_ventas.ticket,
+					tc_mantic_ventas.total,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as vendedor,
+					tc_mantic_tipos_ventas.nombre as precio,
+					tc_mantic_ventas.id_acepta,
+					tt_mantic_personas.cuenta as autorizo,
+					tc_mantic_ventas.registro
+        from
+           tc_mantic_ventas           
+        inner join
+          tc_mantic_empresas on tc_mantic_ventas.id_empresa= tc_mantic_empresas.id_empresa     
+        inner join
+          tc_janal_usuarios on tc_mantic_ventas.id_usuario = tc_janal_usuarios.id_usuario     
+        inner join
+          tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_persona        
+        inner join
+          tc_mantic_clientes on tc_mantic_ventas.id_cliente= tc_mantic_clientes.id_cliente     
+        inner join
+          tc_mantic_tipos_ventas on tc_mantic_clientes.id_tipo_venta= tc_mantic_tipos_ventas.id_tipo_venta     
+        left join
+          tc_janal_usuarios as tt_janal_usuarios on tc_mantic_ventas.id_acepta= tt_janal_usuarios.id_usuario
+        left join
+          tc_mantic_personas as tt_mantic_personas on tt_mantic_personas.id_persona = tt_janal_usuarios.id_persona        
+        where
+          tc_mantic_ventas.id_empresa in ({idEmpresa})
+          and (tc_mantic_ventas.ticket is null or tc_mantic_ventas.id_acepta is not null)
+          and tc_mantic_clientes.id_tipo_venta!= 1
+          and {condicion}
+        group by
+          tc_mantic_ventas.id_venta
+        {sortOrder}
+      </select>  
 			<select id="pagosVenta">
 				select 					
 					tc_mantic_tipos_medios_pagos.id_tipo_medio_pago as id_key,
