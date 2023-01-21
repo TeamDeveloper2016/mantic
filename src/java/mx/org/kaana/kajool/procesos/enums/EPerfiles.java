@@ -14,7 +14,7 @@ import java.util.Map;
 
 public enum EPerfiles {
   
-  ADMINISTRADOR_ENCUESTA ("Administrador de encuesta", "VistaIndicadoresPerfilesDto", "avanceCapturistas", "Porcentaje de avance", "nacional", "nacional"),
+  ADMINISTRADOR_ENCUESTA ("Super usuario", "VistaIndicadoresPerfilesDto", "avanceCapturistas", "Porcentaje de avance", "nacional", "nacional"),
   ADMINISTRADOR          ("Administrador", "VistaIndicadoresPerfilesDto", "avanceCapturistas", "Porcentaje de avance", "nacional", "nacional"),
   RESPONSABLE_ESTATAL    ("Responsable estatal", "VistaIndicadoresPerfilesDto", "avanceCapturistas", "Porcentaje de avance", "estatal", "entidad"),
   CAPTURISTA             ("Capturista", "VistaIndicadoresPerfilesDto", "foliosSinCaptura", "Folios sin captura", "estatal", "usuario"), 

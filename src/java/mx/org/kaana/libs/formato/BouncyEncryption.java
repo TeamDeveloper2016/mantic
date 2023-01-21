@@ -74,7 +74,7 @@ public final class BouncyEncryption extends Properties {
       String encryptedString = encrypt(originalString);
       System.out.println("Original String: " + originalString);
       System.out.println("Encrypted String: " + encryptedString);
-      String decryptedString = decrypt(encryptedString);
+      String decryptedString = decrypt("vjtRYzGHEaCB5gZg5UH4Gw==");
       System.out.println("Decrypted String: " + decryptedString);
     } catch (Exception e) {
       e.printStackTrace();

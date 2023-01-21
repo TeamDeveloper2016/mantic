@@ -8,7 +8,7 @@ package mx.org.kaana.kajool.enums;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 public enum EPerfiles {
-	ADMINISTRADOR_ENCUESTA         ("ADMINISTRADOR DE ENCUESTA", 1L),
+	ADMINISTRADOR_ENCUESTA         ("SUPER USUARIO", 1L),
 	ADMINISTRADOR                  ("ADMINISTRADOR", 2L),
   RESPONSABLE_ESTATAL            ("RESPONSABLE ESTATAL", 3L),
   CAPTURISTA                     ("CAPTURISTA", 4L),

@@ -1034,12 +1034,19 @@
 			janal.console('jsVentas.get: '+ this.name()+ ' ->'+ $(this.name()).val());
 			return $(this.name())? $(this.name()).val(): '';
 		},
+		visible: function(index) {
+			var id= '#'+ this.joker+ index+ this.codes;
+			return $(id).length> 0;
+		},
 		up: function(jump) {
 			janal.console("jsVentas.up: "+ this.cursor.index);
-			if(this.cursor.index> 0)
-				this.cursor.index--;
+			if(this.cursor.index> 0) {
+				if(this.visible(this.cursor.index- 1))
+				  this.cursor.index--;
+			} // if	
 			else
-				this.cursor.index= this.cursor.top;
+				if(this.visible(this.cursor.top))
+  				this.cursor.index= this.cursor.top;
 			if(jump)
 			  this.move();
 			return false;
@@ -1047,9 +1054,11 @@
 		down: function(jump) {
 			janal.console("jsVentas.down: "+ this.cursor.index);
 			if(this.cursor.index< this.cursor.top)
-				this.cursor.index++;
+				if(this.visible(this.cursor.index+ 1))
+  				this.cursor.index++;
 			else
-				this.cursor.index= 0;
+				if(this.visible(0))
+  				this.cursor.index= 0;
 			if(jump)
   			this.move();
 			return false;
@@ -1599,7 +1608,7 @@
 		},
 		lastCursorAt: function() {
 			janal.console('jsArticulos.lastCursorAt: '+ $("input[id$="+ this.codes+ "]").last().attr('id'));
-			setTimeout('$("input[id$="+ jsArticulos.codes+ "]").last().focus();', 1000);
+			setTimeout('$("input[id$="+ jsArticulos.codes+ "]").last().focus();', 500);
 		},
 		ventaFinished: function() {
 			// janal.refresh();

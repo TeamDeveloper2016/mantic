@@ -373,9 +373,8 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 	} // toCondicion	
 	
 	public void doAsignaTicketAbierto() {
-		Map<String, Object>params = null;
+		Map<String, Object>params = new HashMap<>();
 		try {
-			params= new HashMap<>();			
 			params.put("idVenta", ((Entity)this.attrs.get("selectedCuentaAbierta")).get("idVenta"));
 			this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params)));
     	this.unlockVentaExtends(Long.valueOf(params.get("idVenta").toString()), (Long)this.attrs.get("ticketLock"));
@@ -384,6 +383,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 			this.attrs.put("consecutivo", ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo());
 			this.toLoadCatalog();
 			this.doAsignaClienteTicketAbierto();
+			this.doResetDataTable();      
 			UIBackingUtilities.execute("jsArticulos.initArrayArt(" + String.valueOf(getAdminOrden().getArticulos().size()-1) + ");");
 		} // try
 		catch (Exception e) {
@@ -396,10 +396,9 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 	} // doAsignaTicketAbierto
 	
 	public void doAsignaCotizacion(){
-		Map<String, Object>params = null;
+		Map<String, Object>params = new HashMap<>();
 		Date actual               = null;
 		try {
-			params= new HashMap<>();
 			params.put("idVenta", ((Entity)this.attrs.get("cotizacion")).toLong("idVenta"));
 			this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params)));
 			this.unlockVentaExtends((Long)params.get("idVenta"), (Long)this.attrs.get("ticketLock"));
@@ -421,10 +420,9 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 	} // doAsignaTicketAbierto	
 	
 	public void doAsignaApartado() {
-		Map<String, Object>params = null;
+		Map<String, Object>params = new HashMap<>();
 		Date actual               = null;
 		try {
-			params= new HashMap<>();
 			params.put("idVenta", this.attrs.get("apartados"));
 			this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params)));
 			unlockVentaExtends(Long.valueOf(params.get("idVenta").toString()), (Long)this.attrs.get("ticketLock"));
@@ -496,7 +494,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
     } // finally
 	}
 	
-	private void doAsignaClienteTicketAbierto() throws Exception {		
+	protected void doAsignaClienteTicketAbierto() throws Exception {		
 		MotorBusqueda motorBusqueda           = null;
 		UISelectEntity seleccion              = null;
 		List<UISelectEntity> clientesSeleccion= null;
@@ -1086,7 +1084,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 		UISelectEntity seleccion     = null;
 		List<UISelectEntity> clientes= null;
 		try {
-			clientes= (List<UISelectEntity>) this.attrs.get("clientes");
+			clientes = (List<UISelectEntity>) this.attrs.get("clientes");
 			seleccion= clientes.get(clientes.indexOf((UISelectEntity)event.getObject()));
 			this.toFindCliente(seleccion);
 		} // try

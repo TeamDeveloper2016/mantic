@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -19,6 +20,7 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Cifrar;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.JsfUtilities;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
@@ -30,6 +32,7 @@ import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.ventas.beans.TicketVenta;
 import mx.org.kaana.mantic.ventas.reglas.Transaccion;
 import mx.org.kaana.mantic.compras.ordenes.enums.EOrdenes;
+import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.enums.ETipoVenta;
 import mx.org.kaana.mantic.ventas.reglas.AdminTickets;
@@ -37,7 +40,9 @@ import mx.org.kaana.mantic.ventas.beans.SaldoCliente;
 import mx.org.kaana.mantic.ventas.comun.IBaseVenta;
 import mx.org.kaana.mantic.ventas.reglas.CambioUsuario;
 import org.apache.log4j.Logger;
+import org.primefaces.component.datatable.DataTable;
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.SelectEvent;
 import org.primefaces.model.StreamedContent;
 
 @Named(value= "manticVentasAccion")
@@ -106,6 +111,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.doLoad();
       String dns= Configuracion.getInstance().getPropiedadServidor("sistema.dns");
       this.pathImage= dns.substring(0, dns.lastIndexOf("/")+ 1).concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/galeria/");
+      this.toLoadRegimenesFiscales();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -153,6 +159,8 @@ public class Accion extends IBaseVenta implements Serializable {
           break;
       } // switch
 			this.attrs.put("consecutivo", "");
+      this.attrs.put("paginator", Boolean.FALSE);
+			this.doResetDataTable();      
 			this.toLoadCatalogos();
     } // try
     catch (Exception e) {
@@ -276,12 +284,14 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.attrs.put("mostrarCorreos", clienteSeleccion== null ||clienteSeleccion.getKey().equals(-1L) || clienteSeleccion.getKey().equals(((UISelectEntity)this.attrs.get("clienteDefault")).getKey()));			
 			if(precioVigente) {
 				clientesSeleccion= (List<UISelectEntity>) this.attrs.get("clientesSeleccion");
-				clienteSeleccion= clientesSeleccion.get(clientesSeleccion.indexOf(clienteSeleccion));
+				clienteSeleccion = clientesSeleccion.get(clientesSeleccion.indexOf(clienteSeleccion));
+        this.attrs.put("clienteSeleccion", clienteSeleccion);
 				setPrecio(Cadena.toBeanNameEspecial(clienteSeleccion.toString("tipoVenta")));				
 			} // if
 			else
 				this.setPrecio("menudeo");
 			this.doReCalculatePreciosArticulos(precioVigente, clienteSeleccion.getKey());
+      this.toLoadRegimenesFiscales();
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -325,6 +335,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			else
 				LOG.warn("VERIFICAR PORQUE RAZON NO SE TIENE EL ID_ARTICULO "+ articulo);
 			UIBackingUtilities.update("deudor");
+			this.doResetDataTable(index);      
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -386,14 +397,34 @@ public class Accion extends IBaseVenta implements Serializable {
 	
 	private void loadOrdenVenta() {		
 		// this.getAdminOrden().toCheckTotales();
-		UISelectEntity cliente = (UISelectEntity) this.attrs.get("clienteSeleccion");			
-		((TicketVenta)this.getAdminOrden().getOrden()).setIdEmpresa(Long.valueOf(this.attrs.get("idEmpresa").toString()));
-		((TicketVenta)this.getAdminOrden().getOrden()).setIdCliente(cliente.getKey());
-		((TicketVenta)this.getAdminOrden().getOrden()).setDescuentos(this.getAdminOrden().getTotales().getDescuentos());
-		((TicketVenta)this.getAdminOrden().getOrden()).setImpuestos(this.getAdminOrden().getTotales().getIva());
-		((TicketVenta)this.getAdminOrden().getOrden()).setSubTotal(this.getAdminOrden().getTotales().getSubTotal());
-		((TicketVenta)this.getAdminOrden().getOrden()).setTotal(this.getAdminOrden().getTotales().getTotal());
-		((TicketVenta)this.getAdminOrden().getOrden()).setObservaciones((String)this.attrs.get("observaciones"));
+    try {
+      UISelectEntity cliente = (UISelectEntity) this.attrs.get("clienteSeleccion");			
+      // AQUI SE DEBE DE LANZAR UN METODO DE JAVASCRIPT CON EL DIALOGO DE SOLICITAR AUTORIZACION SI SE DA EL CASO QUE LOS PRECIOS SEAN DIFERENTES A MENUDEO
+      if(cliente!= null) {
+        if(!Objects.equals(cliente.getKey(), Constantes.VENTA_AL_PUBLICO_GENERAL_ID_KEY)) {
+          TicketVenta ticketVenta= (TicketVenta)this.getAdminOrden().getOrden();
+          // ACTUALIZAR EL REGIMEN FISCAL PARA ESTE CLIENTE EN CASO DE QUE NO TENGA O SEA DIFERENTE
+          TcManticClientesDto customer= (TcManticClientesDto)DaoFactory.getInstance().findById(TcManticClientesDto.class, cliente.getKey());
+          if(this.getIkRegimenFiscal()!= null && !Objects.equals(this.getIkRegimenFiscal().getKey(), -1L) && (customer.getIdRegimenFiscal()== null || !Objects.equals(customer.getIdRegimenFiscal(), this.getIkRegimenFiscal().getKey()))) {
+            customer.setIdRegimenFiscal(this.getIkRegimenFiscal().getKey());
+            DaoFactory.getInstance().update(customer);
+          } // if  
+          if(this.getIkRegimenFiscal()!= null && !Objects.equals(this.getIkRegimenFiscal().getKey(), -1L))
+            ticketVenta.setIdRegimenFiscal(this.getIkRegimenFiscal().getKey());
+        } // if  
+        ((TicketVenta)this.getAdminOrden().getOrden()).setIdEmpresa(Long.valueOf(this.attrs.get("idEmpresa").toString()));
+        ((TicketVenta)this.getAdminOrden().getOrden()).setIdCliente(cliente.getKey());
+        ((TicketVenta)this.getAdminOrden().getOrden()).setDescuentos(this.getAdminOrden().getTotales().getDescuentos());
+        ((TicketVenta)this.getAdminOrden().getOrden()).setImpuestos(this.getAdminOrden().getTotales().getIva());
+        ((TicketVenta)this.getAdminOrden().getOrden()).setSubTotal(this.getAdminOrden().getTotales().getSubTotal());
+        ((TicketVenta)this.getAdminOrden().getOrden()).setTotal(this.getAdminOrden().getTotales().getTotal());
+        ((TicketVenta)this.getAdminOrden().getOrden()).setObservaciones((String)this.attrs.get("observaciones"));
+      } // if  
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
 	} // loadOrdenVenta
 	
 	public void doCerrarTicket() {		
@@ -424,9 +455,9 @@ public class Accion extends IBaseVenta implements Serializable {
 	
 	public void doLogin() {		
 		CambioUsuario cambioUsuario= null;		
-		String cuenta    = null;
-		String password  = null;
-		RequestContext rc= null;
+		String cuenta              = null;
+		String password            = null;
+		RequestContext rc          = null;
     try {					
 			cuenta  = this.attrs.get("cuenta").toString();
 			password= this.attrs.get("password").toString();						
@@ -618,4 +649,92 @@ public class Accion extends IBaseVenta implements Serializable {
 		super.doSearchArticulo(idArticulo, index);
 	}
 
+  public void doResetDataTable(int index) {
+    this.doResetDataTable();
+    DataTable dataTable= (DataTable)JsfUtilities.findComponent("tabla");
+    if(dataTable!= null && Objects.equals(((index+ 1)% Constantes.REGISTROS_PARTIDAS), 0))
+      dataTable.setFirst(index+ 1);
+  }
+  
+  @Override
+	public void doResetDataTable() {
+    DataTable dataTable= (DataTable)JsfUtilities.findComponent("tabla");
+    if (dataTable!= null)
+      if(!((boolean)this.attrs.get("paginator")) && this.getAdminOrden().getTotales().getArticulos()> Constantes.REGISTROS_PARTIDAS) {
+			  dataTable.reset();
+        dataTable.setFirst(Constantes.REGISTROS_PARTIDAS);		
+        dataTable.setRows(Constantes.REGISTROS_PARTIDAS);		
+        this.attrs.put("paginator", Boolean.TRUE);
+		  }	// if
+      else
+        if((boolean)this.attrs.get("paginator") && this.getAdminOrden().getTotales().getArticulos()<= Constantes.REGISTROS_PARTIDAS) {
+          dataTable.reset();
+          dataTable.setFirst(0);		
+          dataTable.setRows(10000);		
+          this.attrs.put("paginator", Boolean.FALSE);
+        } // if
+	}
+  
+  @Override  
+  public void doDeleteArticulo(Integer index, Boolean isCantidad) {  
+    Boolean temporal= (boolean)this.attrs.get("paginator");
+    super.doDeleteArticulo(index, isCantidad);
+    this.attrs.put("paginator", temporal);
+    this.doResetDataTable();
+  }
+ 
+	private void toLoadRegimenesFiscales() {
+		List<Columna> columns     = new ArrayList<>();    
+    Map<String, Object> params= new HashMap<>();
+    List<UISelectEntity> regimenesFiscales= null;
+    String rfc                = null;
+    try {      
+      UISelectEntity cliente= (UISelectEntity)this.attrs.get("clienteSeleccion");
+      if(cliente!= null && cliente.toString("rfc")!= null)
+        rfc= cliente.toString("rfc");
+      if(rfc!= null && !Cadena.isVacio(rfc) && rfc.trim().length()== 13)
+        params.put("idTipoRegimenPersona", "1");      
+      else 
+        if(rfc!= null && !Cadena.isVacio(rfc) && rfc.trim().length()== 12)
+          params.put("idTipoRegimenPersona", "2");      
+        else
+          params.put("idTipoRegimenPersona", "1, 2");                  
+      columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      regimenesFiscales= (List<UISelectEntity>) UIEntity.seleccione("TcManticRegimenesFiscalesDto", "tipo", params, columns, "codigo");
+			this.attrs.put("regimenesFiscales", regimenesFiscales);
+      if(cliente!= null && regimenesFiscales!= null && !regimenesFiscales.isEmpty()) {
+        int index= regimenesFiscales.indexOf(new UISelectEntity(cliente.toLong("idRegimenFiscal")== null? -1L: cliente.toLong("idRegimenFiscal")));
+        if(index< 0)
+          this.setIkRegimenFiscal(regimenesFiscales.get(0));
+        else
+          this.setIkRegimenFiscal(regimenesFiscales.get(index));
+      } // else
+      else
+        this.setIkRegimenFiscal(new UISelectEntity(-1L));
+      
+      if(cliente!= null&& !Objects.equals(cliente.getKey(), -1L) && !Objects.equals(cliente.getKey(), Constantes.VENTA_AL_PUBLICO_GENERAL_ID_KEY) && this.getIkRegimenFiscal()!= null && Objects.equals(this.getIkRegimenFiscal().getKey(), -1L)) 
+        UIBackingUtilities.execute("janal.alert('¡ Por favor solicite el Regimen Fiscal al cliente !\\n\\n Y capture la información donde corresponde ...');");
+    } // try
+    catch (Exception e) {
+			throw e;
+    } // catch	
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally
+	} // toLoadRegimenesFiscales
+ 
+  @Override
+	public void doAsignaTicketAbierto() {  
+    super.doAsignaTicketAbierto();
+    this.toLoadRegimenesFiscales();
+  }
+  
+  @Override
+  public void doAsignaCliente(SelectEvent event) {
+    super.doAsignaCliente(event);
+    this.toLoadRegimenesFiscales();
+  }
+    
 }

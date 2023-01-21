@@ -737,7 +737,6 @@ public class Accion extends IBaseVenta implements Serializable {
 					this.attrs.put("tabIndex", 1);
 					this.attrs.put("facturarVenta", facturarVenta);					
 					this.attrs.put("disabledFacturar", !facturarVenta);					
-          // this.checkAutorizacionVenta();
 				} // if
 				else
 					JsfBase.addMessage("no fue posible modificar el cliente a la venta", ETipoMensaje.ERROR);				
@@ -1013,7 +1012,6 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.doActivarCliente();
       this.toLoadRegimenesFiscales();      
 			UIBackingUtilities.execute("jsArticulos.initArrayArt(" + String.valueOf(getAdminOrden().getArticulos().size()-1) + ");");
-      // this.checkAutorizacionVenta();
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -1024,7 +1022,8 @@ public class Accion extends IBaseVenta implements Serializable {
 		} // finally
 	} // doAsignaTicketAbiertoGeneral
 	
-	private void doAsignaClienteTicketAbierto() throws Exception { 		
+  @Override
+	protected void doAsignaClienteTicketAbierto() throws Exception { 		
 		MotorBusqueda motorBusqueda           = null;
 		UISelectEntity seleccion              = null;
 		List<UISelectEntity> clientesSeleccion= null;
@@ -1052,11 +1051,9 @@ public class Accion extends IBaseVenta implements Serializable {
 	
 	private void loadCajas() {
 		List<UISelectEntity> cajas= null;
-		Map<String, Object>params = null;
-		List<Columna> columns     = null;
+		Map<String, Object>params = new HashMap<>();
+		List<Columna> columns     = new ArrayList<>();
 		try {
-			columns= new ArrayList<>();
-			params= new HashMap<>();
 			params.put("idEmpresa", this.attrs.get("idEmpresa"));
 			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
@@ -1078,24 +1075,27 @@ public class Accion extends IBaseVenta implements Serializable {
 		ClienteTipoContacto movil             = null;
 		try {						
 			this.attrs.put("facturacionSinCorreo", false);
-			this.attrs.put("disabledFacturar", !((Boolean)this.attrs.get("facturarVenta")));						
+			this.attrs.put("disabledFacturar", !(Boolean)this.attrs.get("facturarVenta"));						
 			cliente= (UISelectEntity) this.attrs.get("clienteSeleccion");	
 			if(cliente!= null) {
 				clientesSeleccion= (List<UISelectEntity>) this.attrs.get("clientesSeleccion");
 				seleccionado= clientesSeleccion.get(clientesSeleccion.indexOf(cliente));
 				if(!seleccionado.toString("clave").equals(CLAVE_VENTA_GRAL)) {
+          UISelectEntity temporal= this.getIkRegimenFiscal();
 					this.doAsignaDomicilioClienteInicial(seleccionado.getKey());
+          if(!Objects.equals(temporal.getKey(), this.getIkRegimenFiscal().getKey()))
+            this.setIkRegimenFiscal(temporal);
 					motor= new MotorBusqueda(-1L, seleccionado.getKey());
 					this.clientesTiposContacto= motor.toCorreosCliente();
 					this.attrs.put("telefono", motor.toTelefonoCliente());
 					this.attrs.put("celular", motor.toCelularCliente());					
 					this.attrs.put("clienteRegistrado", true);
-					loadDomiciliosFactura(seleccionado.getKey());
+					this.loadDomiciliosFactura(seleccionado.getKey());
 					this.attrs.put("facturacionSinCorreo", !this.clientesTiposContacto.isEmpty());
 				} // if
-				else{
-					setDomicilio(new Domicilio());
-					loadDefaultCollections();					
+        else {
+					this.setDomicilio(new Domicilio());
+					this.loadDefaultCollections();					
 					this.attrs.put("registroCliente", new TcManticClientesDto());
           this.setIkRegimenFiscal(new UISelectEntity(-1L));
 					this.clientesTiposContacto= new ArrayList<>();
@@ -1111,8 +1111,8 @@ public class Accion extends IBaseVenta implements Serializable {
 				} // else
 			} // if
       else {
-				setDomicilio(new Domicilio());
-				loadDefaultCollections();					
+				this.setDomicilio(new Domicilio());
+				this.loadDefaultCollections();					
 				this.attrs.put("registroCliente", new TcManticClientesDto());
         this.setIkRegimenFiscal(new UISelectEntity(-1L));
 				this.clientesTiposContacto= new ArrayList<>();
@@ -1126,6 +1126,8 @@ public class Accion extends IBaseVenta implements Serializable {
 				this.attrs.put("celular", movil);
 				this.attrs.put("clienteRegistrado", ((Boolean)this.attrs.get("facturarVenta")));
 			} // else				
+      if(cliente!= null && !Objects.equals(cliente.getKey(), -1L) && !Objects.equals(cliente.getKey(), Constantes.VENTA_AL_PUBLICO_GENERAL_ID_KEY) && this.getIkRegimenFiscal()!= null && Objects.equals(this.getIkRegimenFiscal().getKey(), -1L)) 
+        UIBackingUtilities.execute("janal.alert('¡ Por favor solicite el Regimen Fiscal al cliente !\\n\\n Y capture la información donde corresponde ...');");
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -1140,8 +1142,8 @@ public class Accion extends IBaseVenta implements Serializable {
 		MotorBusqueda motor            = null;
 		try {
 			clienteSeleccion= (UISelectEntity) this.attrs.get("clienteSeleccion");
-			motor= new MotorBusqueda(-1L);
-			cliente= motor.toClienteDefault();
+			motor   = new MotorBusqueda(-1L);
+			cliente = motor.toClienteDefault();
 			apartado= (boolean) this.attrs.get("apartado");	
 			if(apartado) {
 				this.attrs.put("facturarVenta", !apartado);
@@ -2005,6 +2007,9 @@ public class Accion extends IBaseVenta implements Serializable {
       } // else
       else
         this.setIkRegimenFiscal(new UISelectEntity(-1L));
+      
+//      if(cliente!= null && !Objects.equals(cliente.getKey(), -1L) && !Objects.equals(cliente.getKey(), Constantes.VENTA_AL_PUBLICO_GENERAL_ID_KEY) && this.getIkRegimenFiscal()!= null && Objects.equals(this.getIkRegimenFiscal().getKey(), -1L)) 
+//        UIBackingUtilities.execute("janal.alert('¡ Por favor solicite el Regimen Fiscal al cliente !\\n\\n Y capture la información donde corresponde ...');");
     } // try
     catch (Exception e) {
 			throw e;
@@ -2037,9 +2042,5 @@ public class Accion extends IBaseVenta implements Serializable {
     } // catch
 		return regresar;
 	}
-
-  private void checkAutorizacionVenta() {
-    
-  }
 
 }

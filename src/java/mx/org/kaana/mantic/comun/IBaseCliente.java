@@ -468,9 +468,9 @@ public abstract class IBaseCliente extends IBaseArticulos implements Serializabl
 		Entity domicilioCliente            = null;
 		List<UISelectEntity> domicilios    = null;
 		try {
-			loadTiposDomicilios();
-			loadTiposVentas();
-			motorBusqueda= new MotorBusqueda(idCliente);
+			this.loadTiposDomicilios();
+			this.loadTiposVentas();
+			motorBusqueda  = new MotorBusqueda(idCliente);
 			registroCliente= motorBusqueda.toCliente();
 			this.attrs.put("registroCliente", registroCliente);
       this.setIkRegimenFiscal(new UISelectEntity(registroCliente.getIdRegimenFiscal()== null? -1L: registroCliente.getIdRegimenFiscal()));
@@ -480,19 +480,19 @@ public abstract class IBaseCliente extends IBaseArticulos implements Serializabl
 				domicilios.add(new UISelectEntity(domicilioCliente));
 			this.attrs.put("domicilios", domicilios);			
 			this.domicilio= new Domicilio();
-			if(domicilioCliente!= null){
+			if(domicilioCliente!= null) {
 				this.domicilio.setDomicilio(domicilioCliente);
 				this.domicilio.setIdDomicilio(domicilioCliente.getKey());
 			} // if
-			loadEntidades();
-			toAsignaEntidad();
-			loadMunicipios();
-			toAsignaMunicipio();
-			loadLocalidades();
-			toAsignaLocalidad();
-			loadCodigosPostales();      
-			toAsignaCodigoPostal();
-			loadAtributosComplemento();			
+			this.loadEntidades();
+			this.toAsignaEntidad();
+			this.loadMunicipios();
+			this.toAsignaMunicipio();
+			this.loadLocalidades();
+			this.toAsignaLocalidad();
+			this.loadCodigosPostales();      
+			this.toAsignaCodigoPostal();
+			this.loadAtributosComplemento();			
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

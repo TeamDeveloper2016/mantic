@@ -157,7 +157,7 @@ public class CambioUsuario extends Acceso implements Serializable{
 			if(!perfiles.isEmpty()){
 				for(Entity perfil: perfiles) {
           String item= perfil.toString("descripcion").toUpperCase();        
-					if(item.equals("ADMINISTRADOR DE ENCUESTA") || item.equals("GERENTE") || item.equals("GERENTE DE SERVICIOS ADMIN") || item.equals("CAJERO"))
+					if(item.equals("SUPER USUARIO") || item.equals("GERENTE") || item.equals("GERENTE DE SERVICIOS ADMIN") || item.equals("CAJERO"))
 						count++;
 				} // for
 				regresar= count> 0;

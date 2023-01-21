@@ -872,7 +872,8 @@ public class Accion extends IBaseVenta implements Serializable {
 		} // catch		
 	} // loadMediosPago
 	
-	private void doAsignaClienteTicketAbierto() throws Exception{		
+  @Override
+	protected void doAsignaClienteTicketAbierto() throws Exception {		
 		MotorBusqueda motorBusqueda           = null;
 		UISelectEntity seleccion              = null;
 		List<UISelectEntity> clientesSeleccion= null;
