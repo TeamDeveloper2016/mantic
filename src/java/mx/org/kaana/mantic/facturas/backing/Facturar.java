@@ -1169,12 +1169,12 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
       UISelectEntity costumer= (UISelectEntity)this.attrs.get("clienteSeleccion");
       if(costumer!= null && costumer.toString("rfc")!= null)
         rfc= costumer.toString("rfc");
-      if(rfc!= null && !Cadena.isVacio(rfc) && rfc.trim().length()== 13)
-        params.put("idTipoRegimenPersona", "1");      
-      else 
-        if(rfc!= null && !Cadena.isVacio(rfc) && rfc.trim().length()== 12)
-          params.put("idTipoRegimenPersona", "2");      
-        else
+//      if(rfc!= null && !Cadena.isVacio(rfc) && rfc.trim().length()== 13)
+//        params.put("idTipoRegimenPersona", "1");      
+//      else 
+//        if(rfc!= null && !Cadena.isVacio(rfc) && rfc.trim().length()== 12)
+//          params.put("idTipoRegimenPersona", "2");      
+//        else
           params.put("idTipoRegimenPersona", "1, 2");                  
       columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));

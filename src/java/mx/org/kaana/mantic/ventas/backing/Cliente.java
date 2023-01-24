@@ -841,12 +841,12 @@ public class Cliente extends IBaseAttribute implements Serializable {
       TcManticClientesDto cliente= (TcManticClientesDto)this.attrs.get("registroCliente");
       if(cliente!= null && cliente.getRfc()!= null)
         rfc= cliente.getRfc();
-      if(rfc!= null && !Cadena.isVacio(rfc) && rfc.trim().length()== 13)
-        params.put("idTipoRegimenPersona", "1");      
-      else 
-        if(rfc!= null && !Cadena.isVacio(rfc) && rfc.trim().length()== 12)
-          params.put("idTipoRegimenPersona", "2");      
-        else
+//      if(rfc!= null && !Cadena.isVacio(rfc) && rfc.trim().length()== 13)
+//        params.put("idTipoRegimenPersona", "1");      
+//      else 
+//        if(rfc!= null && !Cadena.isVacio(rfc) && rfc.trim().length()== 12)
+//          params.put("idTipoRegimenPersona", "2");      
+//        else
           params.put("idTipoRegimenPersona", "1, 2");                  
       columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));

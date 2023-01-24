@@ -181,12 +181,12 @@ public class Generar extends BaseMenu implements Serializable {
     Map<String, Object> params= new HashMap<>();
     List<UISelectEntity> regimenesFiscales= null;
     try {      
-      if(this.attrs.get("rfc")!= null && !Cadena.isVacio((String)this.attrs.get("rfc")) && ((String)this.attrs.get("rfc")).trim().length()== 13)
-        params.put("idTipoRegimenPersona", "1");      
-      else 
-        if(this.attrs.get("rfc")!= null && !Cadena.isVacio((String)this.attrs.get("rfc")) && ((String)this.attrs.get("rfc")).trim().length()== 12)
-          params.put("idTipoRegimenPersona", "2");      
-        else
+//      if(this.attrs.get("rfc")!= null && !Cadena.isVacio((String)this.attrs.get("rfc")) && ((String)this.attrs.get("rfc")).trim().length()== 13)
+//        params.put("idTipoRegimenPersona", "1");      
+//      else 
+//        if(this.attrs.get("rfc")!= null && !Cadena.isVacio((String)this.attrs.get("rfc")) && ((String)this.attrs.get("rfc")).trim().length()== 12)
+//          params.put("idTipoRegimenPersona", "2");      
+//        else
           params.put("idTipoRegimenPersona", "1, 2");                  
       columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));

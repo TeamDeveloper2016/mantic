@@ -765,12 +765,12 @@ public class Accion extends IBaseAttribute implements Serializable {
 		List<Columna> columns     = new ArrayList<>();    
     Map<String, Object> params= new HashMap<>();
     try {      
-      if(this.registroCliente!= null && this.registroCliente.getCliente()!= null && !Cadena.isVacio(this.registroCliente.getCliente().getRfc()) && this.registroCliente.getCliente().getRfc().trim().length()== 13)
-        params.put("idTipoRegimenPersona", "1");      
-      else 
-        if(this.registroCliente!= null && this.registroCliente.getCliente()!= null && !Cadena.isVacio(this.registroCliente.getCliente().getRfc()) && this.registroCliente.getCliente().getRfc().trim().length()== 12)
-          params.put("idTipoRegimenPersona", "2");      
-        else
+//      if(this.registroCliente!= null && this.registroCliente.getCliente()!= null && !Cadena.isVacio(this.registroCliente.getCliente().getRfc()) && this.registroCliente.getCliente().getRfc().trim().length()== 13)
+//        params.put("idTipoRegimenPersona", "1");      
+//      else 
+//        if(this.registroCliente!= null && this.registroCliente.getCliente()!= null && !Cadena.isVacio(this.registroCliente.getCliente().getRfc()) && this.registroCliente.getCliente().getRfc().trim().length()== 12)
+//          params.put("idTipoRegimenPersona", "2");      
+//        else
           params.put("idTipoRegimenPersona", "1, 2");                  
       columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
