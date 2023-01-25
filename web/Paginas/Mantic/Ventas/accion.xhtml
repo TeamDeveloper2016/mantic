@@ -120,77 +120,79 @@
 			</div>
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">					
-					<p:panelGrid id="panelCliente" columns="6" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-10, janal-wid-20, janal-wid-5, janal-wid-5, janal-wid-20, janal-wid-40">
-						<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
-							<p:outputLabel for="noTicket" value="No. cuenta:"/>
-							<p:inputText id="noTicket" styleClass="janal-wid-100-txt janal-column-right key-press-enter" value="#{manticVentasAccion.attrs.consecutivo}" disabled="true"/>								
-						</p:panelGrid>																
-						<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
-							<p:outputLabel for="clientes" value="Buscar cliente:"/>							
-							<p:autoComplete id="clientes" placeholder="RFC o nombre" widgetVar="listadoClientes" var="customCliente" itemLabel="[#{empty customCliente.especial or customCliente.especial eq '0'? '': '*'}] #{customCliente.razonSocial}" inputStyleClass="janal-wid-100-txt key-down-clientes filas" itemValue="#{customCliente}" value="#{manticVentasAccion.attrs.cliente}" completeMethod="#{manticVentasAccion.doCompleteCliente}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">
-								<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this idEmpresa" listener="#{manticVentasAccion.doAsignaCliente}" update="cliente idRegimenFiscal contenido correosCliente spacerCorreos panelPrincipalCorreos panelCliente" oncomplete="janal.desbloquear();"/>
-								<f:facet name="itemtip">
-									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">												
-										<h:outputText value="Clave" />
-										<h:outputText value="#{customCliente.clave}"/>
-										<h:outputText value="RFC:" />
-										<h:outputText value="#{customCliente.rfc}"/>
-										<h:outputText value="Razón social:"/>
-										<h:outputText value="#{customCliente.razonSocial}"/>												
-										<h:outputText value="Especial:"/>
-										<h:outputText value="#{customCliente.especial eq '0'? '': '*'}"/>
-									</h:panelGrid>
-								</f:facet>
-							</p:autoComplete>	
-						</p:panelGrid>	
-						<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100" columnClasses="janal-column-center">
-              <p:spacer/><p:spacer/>
-							<p:commandButton id="catalogoCliente" title="Catalogo de clientes" icon="fa fa-users" process="@this" action="#{manticVentasAccion.doClientes}" ajax="false" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
-							<p:commandButton id="cuentaBloqueadas" title="Desbloquear cuentas" icon="fa fa-lock" process="@this" update="dialogoCuentasBloqueadas" action="#{manticVentasAccion.doLoadUnLockCuenta}" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="PF('dlgCuentasBloqueadas').show();"/>						
-						</p:panelGrid>
-						<p:panelGrid id="panelPrincipalCorreos" layout="grid" columns="2" styleClass="janal-wid-100" columnClasses="janal-column-center" rendered="#{!manticVentasAccion.attrs.mostrarCorreos}">
-              <p:spacer/><p:spacer/>
-							<p:commandButton id="celularCliente" title="Celular del cliente" icon="fa fa-whatsapp" update="dialogoCelular" process="@this" actionListener="#{manticVentasAccion.doLoadCelular}" styleClass="janal-text-white janal-column-center" onstart="return janal.bloquear()" oncomplete="PF('dlgCelular').show();" disabled="#{manticVentasAccion.attrs.mostrarCorreos}"/>														
-							<p:commandButton id="correosCliente" title="Correos del cliente" icon="fa fa-at" update="dialogoCorreos" process="@this" actionListener="#{manticVentasAccion.doLoadCorreos}" styleClass="janal-text-white janal-column-center" onstart="return janal.bloquear()" oncomplete="PF('dlgCorreos').show();"  disabled="#{manticVentasAccion.attrs.mostrarCorreos}"/>						
-						</p:panelGrid>
-						<p:spacer id="spacerCorreos" rendered="#{manticVentasAccion.attrs.mostrarCorreos}"/>
-						<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
+          <p:panelGrid id="panelCliente" columns="1" layout="grid" styleClass="janal-wid-100-txt">
+            <p:panelGrid columns="5" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-10, janal-wid-20, janal-wid-10, janal-wid-10, janal-wid-50">
+              <p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
+                <p:outputLabel for="noTicket" value="No. cuenta:"/>
+                <p:inputText id="noTicket" styleClass="janal-wid-100-txt janal-column-right key-press-enter" value="#{manticVentasAccion.attrs.consecutivo}" disabled="true"/>								
+              </p:panelGrid>																
+              <p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
+                <p:outputLabel for="clientes" value="Buscar cliente:"/>							
+                <p:autoComplete id="clientes" placeholder="RFC o nombre" widgetVar="listadoClientes" var="customCliente" itemLabel="[#{empty customCliente.especial or customCliente.especial eq '0'? '': '*'}] #{customCliente.razonSocial}" inputStyleClass="janal-wid-100-txt key-down-clientes filas" itemValue="#{customCliente}" value="#{manticVentasAccion.attrs.cliente}" completeMethod="#{manticVentasAccion.doCompleteCliente}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">
+                  <p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this idEmpresa" listener="#{manticVentasAccion.doAsignaCliente}" update="cliente idRegimenFiscal contenido correosCliente spacerCorreos panelPrincipalCorreos panelCliente" oncomplete="janal.desbloquear();"/>
+                  <f:facet name="itemtip">
+                    <h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">												
+                      <h:outputText value="Clave" />
+                      <h:outputText value="#{customCliente.clave}"/>
+                      <h:outputText value="RFC:" />
+                      <h:outputText value="#{customCliente.rfc}"/>
+                      <h:outputText value="Razón social:"/>
+                      <h:outputText value="#{customCliente.razonSocial}"/>												
+                      <h:outputText value="Especial:"/>
+                      <h:outputText value="#{customCliente.especial eq '0'? '': '*'}"/>
+                    </h:panelGrid>
+                  </f:facet>
+                </p:autoComplete>	
+              </p:panelGrid>	
+              <p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100" columnClasses="janal-column-center">
+                <p:spacer/><p:spacer/>
+                <p:commandButton id="catalogoCliente" title="Catalogo de clientes" icon="fa fa-users" process="@this" action="#{manticVentasAccion.doClientes}" ajax="false" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
+                <p:commandButton id="cuentaBloqueadas" title="Desbloquear cuentas" icon="fa fa-lock" process="@this" update="dialogoCuentasBloqueadas" action="#{manticVentasAccion.doLoadUnLockCuenta}" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="PF('dlgCuentasBloqueadas').show();"/>						
+              </p:panelGrid>
+              <p:panelGrid id="panelPrincipalCorreos" layout="grid" columns="2" styleClass="janal-wid-100" columnClasses="janal-column-center" rendered="#{!manticVentasAccion.attrs.mostrarCorreos}">
+                <p:spacer/><p:spacer/>
+                <p:commandButton id="celularCliente" title="Celular del cliente" icon="fa fa-whatsapp" update="dialogoCelular" process="@this" actionListener="#{manticVentasAccion.doLoadCelular}" styleClass="janal-text-white janal-column-center" onstart="return janal.bloquear()" oncomplete="PF('dlgCelular').show();" disabled="#{manticVentasAccion.attrs.mostrarCorreos}"/>														
+                <p:commandButton id="correosCliente" title="Correos del cliente" icon="fa fa-at" update="dialogoCorreos" process="@this" actionListener="#{manticVentasAccion.doLoadCorreos}" styleClass="janal-text-white janal-column-center" onstart="return janal.bloquear()" oncomplete="PF('dlgCorreos').show();"  disabled="#{manticVentasAccion.attrs.mostrarCorreos}"/>						
+              </p:panelGrid>
+              <p:spacer id="spacerCorreos" rendered="#{manticVentasAccion.attrs.mostrarCorreos}"/>
+              <p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100 janal-wid-100-txt" columnClasses="janal-wid-100-txt">
+                <p:panelGrid columns="2" styleClass="janal-wid-100-txt">
+                  <p:outputLabel for="cliente" value="Cliente:"/>							
+                  <p:outputLabel value="[F4] Mostrar cotizaciones" styleClass="janal-color-blue" style="float: right;"/>
+                </p:panelGrid>
+                <p:selectOneMenu id="cliente" value="#{manticVentasAccion.attrs.clienteSeleccion}" var="item" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity">								
+                  <p:ajax event="change" process="@this idEmpresa" onstart="return janal.bloquear();" listener="#{manticVentasAccion.doActualizaPrecioCliente}" oncomplete="janal.desbloquear();" update="tabla clientes correosCliente spacerCorreos panelPrincipalCorreos panelCliente"/>
+                  <f:selectItems value="#{manticVentasAccion.attrs.clientesSeleccion}" var="element" itemValue="#{element}" itemLabel="[#{element.especial eq '0'? '': '*'}] #{element.clave} - #{element.razonSocial}"/>
+                  <p:column headerText="Clave">
+                    <h:outputText value="#{item.clave}"/>
+                  </p:column>   
+                  <p:column headerText="RFC">
+                    <h:outputText value="#{item.rfc}"/>
+                  </p:column>   
+                  <p:column headerText="Razón social">
+                    <h:outputText value="#{item.razonSocial}"/>
+                  </p:column>   
+                  <p:column headerText="Especial">
+                    <h:outputText value="#{item.especial eq '0'? '': '*'}"/>
+                  </p:column>   
+                </p:selectOneMenu>
+              </p:panelGrid>
+            </p:panelGrid>	
+            <p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-col-100, janal-wid-100-txt" rendered="#{!manticVentasAccion.attrs.mostrarCorreos}">
               <p:outputLabel for="idRegimenFiscal" value="Régimen fiscal:" styleClass="janal-color-blue"/>
-              <p:selectOneMenu id="idRegimenFiscal" value="#{manticVentasAccion.ikRegimenFiscal}" var="item" converter="janal.convertidor.Entity" panelStyleClass="janal-color-blue" styleClass="janal-wid-100-txt janal-color-blue cotizar" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+              <p:selectOneMenu id="idRegimenFiscal" value="#{manticVentasAccion.ikRegimenFiscal}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt cotizar" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                 <p:ajax event="change" process="@this" update="idRegimenFiscal"/>
-                <f:selectItems value="#{manticVentasAccion.attrs.regimenesFiscales}" var="element" itemValue="#{element}" itemLabel="#{element.codigo}"/>
+                <f:selectItems value="#{manticVentasAccion.attrs.regimenesFiscales}" var="element" itemValue="#{element}" itemLabel="#{element.codigo}#{empty element.nombre or element.nombre eq ''? '': '|'}#{element.nombre}"/>
                 <p:column headerText="Código">
-                  <h:outputText value="#{item.codigo}" styleClass="janal-color-blue"/>
+                  <h:outputText value="#{item.codigo}"/>
                 </p:column>   
                 <p:column headerText="Persona">
                   <h:outputText value="#{item.persona}"/>
-                </p:column>   
+                </p:column>                
                 <p:column headerText="Nombre">
                   <h:outputText value="#{item.nombre}"/>
                 </p:column>   
               </p:selectOneMenu>
-						</p:panelGrid>
-						<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100 janal-wid-100-txt" columnClasses="janal-wid-100-txt">
-  						<p:panelGrid columns="2" styleClass="janal-wid-100-txt">
-	 						  <p:outputLabel for="cliente" value="Cliente:"/>							
-								<p:outputLabel value="[F4] Mostrar cotizaciones" styleClass="janal-color-blue" style="float: right;"/>
-	  					</p:panelGrid>
-							<p:selectOneMenu id="cliente" value="#{manticVentasAccion.attrs.clienteSeleccion}" var="item" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity">								
-								<p:ajax event="change" process="@this idEmpresa" onstart="return janal.bloquear();" listener="#{manticVentasAccion.doActualizaPrecioCliente}" oncomplete="janal.desbloquear();" update="tabla clientes correosCliente spacerCorreos panelPrincipalCorreos panelCliente"/>
-								<f:selectItems value="#{manticVentasAccion.attrs.clientesSeleccion}" var="element" itemValue="#{element}" itemLabel="[#{element.especial eq '0'? '': '*'}] #{element.clave} - #{element.razonSocial}"/>
-								<p:column headerText="Clave">
-									<h:outputText value="#{item.clave}"/>
-								</p:column>   
-								<p:column headerText="RFC">
-									<h:outputText value="#{item.rfc}"/>
-								</p:column>   
-								<p:column headerText="Razón social">
-									<h:outputText value="#{item.razonSocial}"/>
-								</p:column>   
-								<p:column headerText="Especial">
-									<h:outputText value="#{item.especial eq '0'? '': '*'}"/>
-								</p:column>   
-							</p:selectOneMenu>
 						</p:panelGrid>
 					</p:panelGrid>	
 					<p:separator/>			

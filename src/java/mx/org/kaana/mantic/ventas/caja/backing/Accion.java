@@ -1083,7 +1083,7 @@ public class Accion extends IBaseVenta implements Serializable {
 				if(!seleccionado.toString("clave").equals(CLAVE_VENTA_GRAL)) {
           UISelectEntity temporal= this.getIkRegimenFiscal();
 					this.doAsignaDomicilioClienteInicial(seleccionado.getKey());
-          if(!Objects.equals(temporal.getKey(), this.getIkRegimenFiscal().getKey()))
+          if(!Objects.equals(temporal.getKey(), this.getIkRegimenFiscal().getKey()) && !Objects.equals(temporal.getKey(), -1L))
             this.setIkRegimenFiscal(temporal);
 					motor= new MotorBusqueda(-1L, seleccionado.getKey());
 					this.clientesTiposContacto= motor.toCorreosCliente();

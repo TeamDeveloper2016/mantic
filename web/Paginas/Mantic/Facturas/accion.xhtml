@@ -209,7 +209,7 @@
             <p:panelGrid columns="1" styleClass="janal-wid-100">
               <p:outputLabel for="idRegimenFiscal" value="Régimen fiscal:"/>
               <p:selectOneMenu id="idRegimenFiscal" value="#{manticFacturasAccion.ikRegimenFiscal}" var="index" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                <f:selectItems value="#{manticFacturasAccion.attrs.regimenesFiscales}" var="list" itemValue="#{list}" itemLabel="#{list.codigo} #{empty list.nombre or list.nombre eq ''? '': '-'} #{list.nombre}"/>
+                <f:selectItems value="#{manticFacturasAccion.attrs.regimenesFiscales}" var="list" itemValue="#{list}" itemLabel="#{list.codigo} #{empty list.nombre or list.nombre eq ''? '': '|'} #{list.nombre}"/>
                 <p:column headerText="Código">
                   <h:outputText value="#{index.codigo}"/>
                 </p:column>   

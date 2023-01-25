@@ -67,7 +67,7 @@
                 <p:inputText id="rfc" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.cliente.rfc}" />                    
                 <p:outputLabel for="idRegimenFiscal" value="Régimen fiscal:"/>
                 <p:selectOneMenu id="idRegimenFiscal" value="#{manticCatalogosClientesAccion.registroCliente.ikRegimenFiscal}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                  <f:selectItems value="#{manticCatalogosClientesAccion.attrs.regimenesFiscales}" var="element" itemValue="#{element}" itemLabel="#{element.codigo} #{empty element.nombre or element.nombre eq ''? '': '-'} #{element.nombre}"/>
+                  <f:selectItems value="#{manticCatalogosClientesAccion.attrs.regimenesFiscales}" var="element" itemValue="#{element}" itemLabel="#{element.codigo} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
                   <p:column headerText="Código">
                     <h:outputText value="#{item.codigo}"/>
                   </p:column>   
