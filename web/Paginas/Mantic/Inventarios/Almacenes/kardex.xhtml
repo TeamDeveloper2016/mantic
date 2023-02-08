@@ -258,7 +258,18 @@
 							</p:dataTable>	
 						</p:tab>
 						<p:tab title="Códigos">
- 						  <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-110, janal-wid-100">		
+ 						  <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-120, janal-wid-100">		
+                <p:outputLabel for="idArticuloImpuesto" value="Código impuesto:"/>
+                <p:selectOneMenu id="idArticuloImpuesto" value="#{manticInventariosAlmacenesKardex.ikArticuloImpuesto}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt filas" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="#{empty manticInventariosAlmacenesKardex.attrs.articulo.propio}">
+                  <p:ajax event="change" listener="#{manticInventariosAlmacenesKardex.doUpdateImpuesto()}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                  <f:selectItems value="#{manticInventariosAlmacenesKardex.attrs.articulosImpuestos}" var="element" itemValue="#{element}" itemLabel="#{element.codigo} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+                  <p:column headerText="Código">
+                    <h:outputText value="#{item.codigo}"/>
+                  </p:column>   
+                  <p:column headerText="Nombre">
+                    <h:outputText value="#{item.nombre}"/>
+                  </p:column>   
+                </p:selectOneMenu>
 								<p:outputLabel for="auxiliar" value="Agregar código:"/>
 								<p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-30, janal-wid-70, janal-wid-col-38">	
                   <p:inputText id="auxiliar" placeholder="ejemplo: CT12" value="#{manticInventariosAlmacenesKardex.attrs.auxiliar}" styleClass="janal-wid-95 filas" disabled="#{empty manticInventariosAlmacenesKardex.attrs.articulo.propio}" onblur="lookForCodigo($(this).attr('id'), $(this).val(), 0);"/>

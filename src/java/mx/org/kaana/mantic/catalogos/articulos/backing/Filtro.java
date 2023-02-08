@@ -28,8 +28,6 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.procesos.comun.Comun;
-import mx.org.kaana.kajool.procesos.enums.EExportarDatos;
-import mx.org.kaana.kajool.procesos.reportes.beans.Exportar;
 import mx.org.kaana.kajool.procesos.reportes.beans.ExportarXls;
 import mx.org.kaana.kajool.procesos.reportes.beans.Modelo;
 import mx.org.kaana.kajool.reglas.comun.Columna;
@@ -71,6 +69,11 @@ public class Filtro extends Comun implements Serializable {
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());      
 			this.attrs.put("isGerente", JsfBase.isAdminEncuestaOrAdmin());
 			this.toLoadCatalog();
+      if(JsfBase.getFlashAttribute("idArticuloProcess")!= null) {
+        this.attrs.put("idArticuloProcess", JsfBase.getFlashAttribute("idArticuloProcess"));
+        this.doLoad();
+        this.attrs.put("idArticuloProcess", null);
+      } // if
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -80,10 +83,9 @@ public class Filtro extends Comun implements Serializable {
 
   @Override
   public void doLoad() {
-    List<Columna> columns     = null;
+    List<Columna> columns     = new ArrayList<>();
 		Map<String, Object> params= this.toPrepare();
     try {
-      columns = new ArrayList<>();
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       params.put("sortOrder", "order by tc_mantic_articulos.nombre, tc_mantic_articulos.actualizado");
       this.lazyModel = new FormatCustomLazy("VistaArticulosDto", "row", params, columns);
@@ -130,6 +132,8 @@ public class Filtro extends Comun implements Serializable {
 		StringBuilder sb            = null;
 		try {
 			sb= new StringBuilder("tc_mantic_articulos.id_articulo_tipo=").append(this.attrs.get("idTipoArticulo")).append(" and ");			
+      if(!Cadena.isVacio(this.attrs.get("idArticuloProcess")) && !this.attrs.get("idArticuloProcess").toString().equals("-1")) 
+        sb.append("tc_mantic_articulos.id_articulo=").append(this.attrs.get("idArticuloProcess")).append(" and ");
 			if(!Cadena.isVacio(JsfBase.getParametro("codigo_input")))
 				sb.append("upper(tc_mantic_articulos_codigos.codigo) like upper('%").append(JsfBase.getParametro("codigo_input")).append("%') and ");						
 			if(this.attrs.get("nombre")!= null && ((UISelectEntity)this.attrs.get("nombre")).getKey()> 0L) 
@@ -139,7 +143,8 @@ public class Filtro extends Comun implements Serializable {
 					String nombre= JsfBase.getParametro("nombre_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
 		  		sb.append("(tc_mantic_articulos.nombre regexp '.*").append(nombre).append(".*' or tc_mantic_articulos.descripcion regexp '.*").append(nombre).append(".*') and ");				
 				} // if	
-		  sb.append("tc_mantic_articulos.id_vigente=").append(this.attrs.get("idVigente")).append(" and ");
+    	if(!Cadena.isVacio(this.attrs.get("idVigente")) && !this.attrs.get("idVigente").toString().equals("-1"))
+		    sb.append("tc_mantic_articulos.id_vigente=").append(this.attrs.get("idVigente")).append(" and ");
 			if(!Cadena.isVacio(this.attrs.get("idImagen")) && !this.attrs.get("idImagen").toString().equals("-1"))
   			if(this.attrs.get("idImagen").toString().equals("1"))
     		  sb.append("tc_mantic_articulos.id_imagen is not null and ");

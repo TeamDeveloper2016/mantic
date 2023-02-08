@@ -159,9 +159,19 @@
               </p:panelGrid>
 						</p:tab>						
             <p:tab id="tabCodigos" title="Códigos">	
-              <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-120, janal-wid-100-txt" rendered="false">
-								<p:outputLabel for="fabricante" value="Código fabricante:"/>
-								<p:inputText id="fabricante" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.fabricante}" />                    
+              <p:outputLabel for="fabricante" value="Código fabricante:" rendered="false"/>
+              <p:inputText id="fabricante" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.fabricante}" rendered="false"/>
+              <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-120, janal-wid-100-txt">
+								<p:outputLabel for="idArticuloImpuesto" value="Código impuesto:"/>
+                <p:selectOneMenu id="idArticuloImpuesto" value="#{manticCatalogosArticulosAccion.registroArticulo.ikArticuloImpuesto}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <f:selectItems value="#{manticCatalogosArticulosAccion.attrs.articulosImpuestos}" var="element" itemValue="#{element}" itemLabel="#{element.codigo} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+                  <p:column headerText="Código">
+                    <h:outputText value="#{item.codigo}"/>
+                  </p:column>   
+                  <p:column headerText="Nombre">
+                    <h:outputText value="#{item.nombre}"/>
+                  </p:column>   
+								</p:selectOneMenu>
               </p:panelGrid>
 							<p:panelGrid id="panelTablaCodigos" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
 								<p:dataTable id="tablaCodigos" rowIndexVar="index" var="codigo" value="#{manticCatalogosArticulosAccion.registroArticulo.articulosCodigos}" rows="15" paginator="false" reflow="true" rowKey="#{codigo.key}" emptyMessage=" " styleClass="paginated"  rowStyleClass="#{manticCatalogosArticulosAccion.toColor(codigo)}">

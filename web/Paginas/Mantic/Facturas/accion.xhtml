@@ -20,7 +20,7 @@
 				'descuento' : {validaciones: 'libre', mascara: 'libre', formatos: 'descuentos'},
 				'observaciones' : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
 				'cfdi'      : {validaciones: 'requerido', mascara: 'libre', mensaje:'Tipo de CFDI obligatorio.'},
-        'idRegimenFiscal': {validaciones: 'libre', mascara: 'libre'},
+        'idRegimenFiscal': {validaciones: 'requerido', mascara: 'libre'},
 				'referencia': {validaciones: 'requerido', mascara: 'libre'},
 				'tipoPago'  : {validaciones: 'requerido', mascara: 'libre'},
 				'nombres'   : {multiple: '$', validaciones: 'requerido|libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
@@ -147,7 +147,7 @@
 			</div>	
 			<div class="ui-grid-row janal-grid-row">
 				<div id="janal-contenedor-datos" class="ui-grid-col-12" style="display: none">					
-					<p:panelGrid id="panelEmpresa" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-90">						
+					<p:panelGrid id="panelEmpresa" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-120, janal-wid-100-txt">						
 						<p:outputLabel for="noTicket" value="No. factura:"/>
 						<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticFacturasAccion.attrs.isMatriz}"/>
 						<p:inputText id="noTicket" styleClass="janal-wid-100-txt janal-column-right key-press-enter" value="#{manticFacturasAccion.attrs.consecutivo}" readonly="true"/>								

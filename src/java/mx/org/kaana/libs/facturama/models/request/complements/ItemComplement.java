@@ -23,4 +23,5 @@ public class ItemComplement {
 	public void setThirdPartyAccount(ThirdPartyAccount ThirdPartyAccount) {
 		this.ThirdPartyAccount = ThirdPartyAccount;
 	}
+  
 }

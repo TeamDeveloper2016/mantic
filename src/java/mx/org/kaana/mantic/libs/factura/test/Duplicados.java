@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
@@ -16,6 +17,7 @@ import mx.org.kaana.libs.facturama.models.response.CfdiSearchResult;
 import mx.org.kaana.libs.facturama.models.response.Complement;
 import mx.org.kaana.libs.facturama.reglas.CFDIFactory;
 import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reportes.FileSearch;
 import mx.org.kaana.mantic.db.dto.TcManticFacturasDto;
 import mx.org.kaana.mantic.libs.factura.beans.ComprobanteFiscal;
@@ -2457,8 +2459,9 @@ facturas.add(new Folio(10940,"no","ZEPR7004154C3",71.5D));
 	private String toCadenaOriginal(String xml) {
 		String regresar= null;
 		try {
+      System.out.println("Generando cadena original: ".concat(Objects.equals(Configuracion.getInstance().getPropiedad("sistema.nivel.facturacion"), "4.0")? "cadenaoriginal_4_0.xslt": "cadenaoriginal_3_3.xslt"));
 			StreamSource source       = new StreamSource(new File(xml));
-			StreamSource stylesource  = new StreamSource(this.getClass().getResourceAsStream("/mx/org/kaana/mantic/libs/factura/cadenaoriginal_3_3.xslt"));
+			StreamSource stylesource  = new StreamSource(this.getClass().getResourceAsStream("/mx/org/kaana/mantic/libs/factura/".concat(Objects.equals(Configuracion.getInstance().getPropiedad("sistema.nivel.facturacion"), "4.0")? "cadenaoriginal_4_0.xslt": "cadenaoriginal_3_3.xslt")));
 			TransformerFactory factory= TransformerFactory.newInstance();
 			Transformer transformer   = factory.newTransformer(stylesource);
 			StreamResult result       = new StreamResult(new StringWriter());
@@ -2651,7 +2654,7 @@ facturas.add(new Folio(10940,"no","ZEPR7004154C3",71.5D));
 		//duplicados.folios("TAA121024V48");
 		duplicados.procesar();
 		// duplicados.eliminar(10358);
-		System.out.println("ok");
+ 		System.out.println("ok");
 	}
 	
 }

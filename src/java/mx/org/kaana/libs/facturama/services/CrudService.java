@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mx.org.kaana.libs.facturama.services;
 
 import mx.org.kaana.libs.facturama.models.exception.FacturamaException;
@@ -18,28 +13,36 @@ import java.util.List;
  */
 public class CrudService<TI, TO> extends HttpService<TI, TO> {
 
-	public CrudService(OkHttpClient client, String url) {
-		super(client, url);
-	}
+  public CrudService(OkHttpClient client, String url) {
+    super(client, url);
+  }
 
-	public TO Retrieve(String id) throws IOException, FacturamaException, Exception {
-		return super.Get(id);
-	}
+  public TO Retrieve(String id) throws IOException, FacturamaException, Exception {
+    return super.Get(id);
+  }
 
-	public List<TO> List() throws IOException, FacturamaException, Exception {
-		return super.GetList();
-	}
+  public List<TO> List() throws IOException, FacturamaException, Exception {
+    return super.GetList();
+  }
 
-	public TO Create(TI obj) throws IOException, FacturamaException, Exception {
-		return super.Post(obj);
-	}
+  public TO Create(TI obj) throws IOException, FacturamaException, Exception {
+    return super.Post(obj);
+  }
 
-	public TO Remove(String id) throws IOException, FacturamaException, Exception {
-		return super.Delete(id);
-	}
+  public TO Create3(TI obj) throws IOException, FacturamaException, Exception {
+    return super.Post(obj);
+  }
 
-	public TO Update(TI model, String id) throws IOException, FacturamaException, Exception {
-		return super.Put(model, id);
-	}
+  public TO Remove(String id) throws IOException, FacturamaException, Exception {
+    return super.Delete(id);
+  }
+
+  public TO RemoveRet(String id) throws IOException, FacturamaException, Exception {
+    return super.Delete(id);
+  }
+
+  public TO Update(TI model, String id) throws IOException, FacturamaException, Exception {
+    return super.Put(model, id);
+  }
 
 }

@@ -112,6 +112,8 @@ public class TcManticArticulosDto implements IBaseDto, Serializable {
   private Long idVerificado;
   @Column (name="especial")
   private Double especial;
+  @Column (name="id_articulo_impuesto")
+  private Long idArticuloImpuesto;
 
   public TcManticArticulosDto() {
     this(new Long(-1L));
@@ -164,6 +166,7 @@ public class TcManticArticulosDto implements IBaseDto, Serializable {
     this.fabricante  = fabricante;
     this.idVerificado= idVerificado;
     this.especial    = especial;
+    this.idArticuloImpuesto= 2L;
   }
 	
   public void setDescripcion(String descripcion) {
@@ -493,6 +496,14 @@ public class TcManticArticulosDto implements IBaseDto, Serializable {
   public void setEspecial(Double especial) {
     this.especial = especial;
   }
+
+  public Long getIdArticuloImpuesto() {
+    return idArticuloImpuesto;
+  }
+
+  public void setIdArticuloImpuesto(Long idArticuloImpuesto) {
+    this.idArticuloImpuesto = idArticuloImpuesto;
+  }
 	
   @Transient
   @Override
@@ -590,6 +601,8 @@ public class TcManticArticulosDto implements IBaseDto, Serializable {
 		regresar.append(getIdVerificado());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getEspecial());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdArticuloImpuesto());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -638,13 +651,14 @@ public class TcManticArticulosDto implements IBaseDto, Serializable {
 		regresar.put("fabricante", getFabricante());
 		regresar.put("idVerificado", getIdVerificado());
 		regresar.put("especial", getEspecial());
+		regresar.put("idArticuloImpuesto", getIdArticuloImpuesto());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
-    Object[] regresar = new Object[]{
-      getDescripcion(), getDescuentos(), getIdImagen(), getIdCategoria(), getExtras(), getMetaTag(), getNombre(), getPrecio(), getIva(), getMayoreo(), getDesperdicio(), getMetaTagDescipcion(), getIdVigente(), getIdArticulo(), getStock(), getMedioMayoreo(), getPesoEstimado(), getIdEmpaqueUnidadMedida(), getIdRedondear(), getMenudeo(), getMetaTagTeclado(), getRegistro(), getFecha(), getIdUsuario(), getIdEmpresa(), getCantidad(), getMinimo(), getMaximo(), getLimiteMedioMayoreo(), getLimiteMayoreo(), getSat(), getIdArticuloTipo(), getIdBarras(), getDescuento(), getExtras(), getIdFacturama(), getActualizado(), getIdDescontinuado(), getFabricante(), getIdVerificado(), getEspecial()
+    Object[] regresar = new Object[] {
+      getDescripcion(), getDescuentos(), getIdImagen(), getIdCategoria(), getExtras(), getMetaTag(), getNombre(), getPrecio(), getIva(), getMayoreo(), getDesperdicio(), getMetaTagDescipcion(), getIdVigente(), getIdArticulo(), getStock(), getMedioMayoreo(), getPesoEstimado(), getIdEmpaqueUnidadMedida(), getIdRedondear(), getMenudeo(), getMetaTagTeclado(), getRegistro(), getFecha(), getIdUsuario(), getIdEmpresa(), getCantidad(), getMinimo(), getMaximo(), getLimiteMedioMayoreo(), getLimiteMayoreo(), getSat(), getIdArticuloTipo(), getIdBarras(), getDescuento(), getExtras(), getIdFacturama(), getActualizado(), getIdDescontinuado(), getFabricante(), getIdVerificado(), getEspecial(), getIdArticuloImpuesto()
     };
     return regresar;
   }

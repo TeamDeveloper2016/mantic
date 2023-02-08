@@ -5,174 +5,192 @@ import java.util.*;
 
 public class Cfdi {
 
-	private String NameId;
-	private String Date;
-	private String Serie;
-	private String PaymentAccountNumber;
-	private Double CurrencyExchageRate;
-	private String Currency;
-	private String ExpeditionPlace;
-	private String PaymentConditions;
-	private CfdiRelation Relations;
-	private String CfdiType;
-	private String PaymentForm;
-	private String PaymentMethod;
-	private Receiver Receiver;
-	private List<Item> Items;
-	private String Observations;
-	private String OrderNumber;
-	private String PaymentBankName;
-	private Complements Complements;
+  private String NameId;
+  private String Date;
+  private String Serie;
+  private String PaymentAccountNumber;
+  private Double CurrencyExchageRate;
+  private String Currency;
+  private String ExpeditionPlace;
+  private String PaymentConditions;
+  private CfdiRelation Relations;
+  private String CfdiType;
+  private String Exportation;
+  private String PaymentForm;
+  private String PaymentMethod;
+  private GlobalInformation GlobalInformation;
+  private Receiver Receiver;
+  private List<Item> Items;
+  private String Observations;
+  private String OrderNumber;
+  private String PaymentBankName;
+  private Complements Complemento;
 
-	public String getNameId() {
-		return NameId;
-	}
+  public String getNameId() {
+    return NameId;
+  }
 
-	/**
-	 * Establece el identificador del nombre para el PDF
-	 */
-	public void setNameId(String NameId) {
-		this.NameId = NameId;
-	}
+  /*
+    * Establece el identificador del nombre para el PDF
+   */
+  public void setNameId(String NameId) {
+    this.NameId = NameId;
+  }
 
-	/*public void setUnitCode(Integer NameId)
+  /*public void setUnitCode(Integer NameId)
    {
       this.NameId = NameId;
    }*/
-	public String getDate() {
-		return Date;
-	}
+  public String getDate() {
+    return Date;
+  }
 
-	public void setDate(String Date) {
-		this.Date = Date;
-	}
+  public void setDate(String Date) {
+    this.Date = Date;
+  }
 
-	public String getSerie() {
-		return Serie;
-	}
+  public String getSerie() {
+    return Serie;
+  }
 
-	public void setSerie(String Serie) {
-		this.Serie = Serie;
-	}
+  public void setSerie(String Serie) {
+    this.Serie = Serie;
+  }
 
-	public String getPaymentAccountNumber() {
-		return PaymentAccountNumber;
-	}
+  public String getPaymentAccountNumber() {
+    return PaymentAccountNumber;
+  }
 
-	public void setPaymentAccountNumber(String PaymentAccountNumber) {
-		this.PaymentAccountNumber = PaymentAccountNumber;
-	}
+  public void setPaymentAccountNumber(String PaymentAccountNumber) {
+    this.PaymentAccountNumber = PaymentAccountNumber;
+  }
 
-	public Double getCurrencyExchageRate() {
-		return CurrencyExchageRate;
-	}
+  public Double getCurrencyExchageRate() {
+    return CurrencyExchageRate;
+  }
 
-	public void setCurrencyExchageRate(Double CurrencyExchageRate) {
-		this.CurrencyExchageRate = CurrencyExchageRate;
-	}
+  public void setCurrencyExchageRate(Double CurrencyExchageRate) {
+    this.CurrencyExchageRate = CurrencyExchageRate;
+  }
 
-	public String getCurrency() {
-		return Currency;
-	}
+  public String getCurrency() {
+    return Currency;
+  }
 
-	public void setCurrency(String Currency) {
-		this.Currency = Currency;
-	}
+  public void setCurrency(String Currency) {
+    this.Currency = Currency;
+  }
 
-	public String getExpeditionPlace() {
-		return ExpeditionPlace;
-	}
+  public String getExpeditionPlace() {
+    return ExpeditionPlace;
+  }
 
-	public void setExpeditionPlace(String ExpeditionPlace) {
-		this.ExpeditionPlace = ExpeditionPlace;
-	}
+  public void setExpeditionPlace(String ExpeditionPlace) {
+    this.ExpeditionPlace = ExpeditionPlace;
+  }
 
-	public String getPaymentConditions() {
-		return PaymentConditions;
-	}
+  public String getPaymentConditions() {
+    return PaymentConditions;
+  }
 
-	public void setPaymentConditions(String PaymentConditions) {
-		this.PaymentConditions = PaymentConditions;
-	}
+  public void setPaymentConditions(String PaymentConditions) {
+    this.PaymentConditions = PaymentConditions;
+  }
 
-	public CfdiRelation getRelations() {
-		return Relations;
-	}
+  public CfdiRelation getRelations() {
+    return Relations;
+  }
 
-	public void setRelations(CfdiRelation Relations) {
-		this.Relations = Relations;
-	}
+  public void setRelations(CfdiRelation Relations) {
+    this.Relations = Relations;
+  }
 
-	public String getCfdiType() {
-		return CfdiType;
-	}
+  public String getCfdiType() {
+    return CfdiType;
+  }
 
-	public void setCfdiType(String CfdiType) {
-		this.CfdiType = CfdiType;
-	}
+  public void setCfdiType(String CfdiType) {
+    this.CfdiType = CfdiType;
+  }
 
-	public String getPaymentForm() {
-		return PaymentForm;
-	}
+  public String getExportation() {
+    return Exportation;
+  }
 
-	public void setPaymentForm(String PaymentForm) {
-		this.PaymentForm = PaymentForm;
-	}
+  public void setExportation(String Exportation) {
+    this.Exportation = Exportation;
+  }
 
-	public String getPaymentMethod() {
-		return PaymentMethod;
-	}
+  public String getPaymentForm() {
+    return PaymentForm;
+  }
 
-	public void setPaymentMethod(String PaymentMethod) {
-		this.PaymentMethod = PaymentMethod;
-	}
+  public void setPaymentForm(String PaymentForm) {
+    this.PaymentForm = PaymentForm;
+  }
 
-	public Receiver getReceiver() {
-		return Receiver;
-	}
+  public String getPaymentMethod() {
+    return PaymentMethod;
+  }
 
-	public void setReceiver(Receiver Receiver) {
-		this.Receiver = Receiver;
-	}
+  public void setPaymentMethod(String PaymentMethod) {
+    this.PaymentMethod = PaymentMethod;
+  }
 
-	public List<Item> getItems() {
-		return Items;
-	}
+  public Receiver getReceiver() {
+    return Receiver;
+  }
 
-	public void setItems(List<Item> Items) {
-		this.Items = Items;
-	}
+  public void setReceiver(Receiver Receiver) {
+    this.Receiver = Receiver;
+  }
 
-	public String getObservations() {
-		return Observations;
-	}
+  public List<Item> getItems() {
+    return Items;
+  }
 
-	public void setObservations(String Observations) {
-		this.Observations = Observations;
-	}
+  public void setItems(List<Item> Items) {
+    this.Items = Items;
+  }
 
-	public String getOrderNumber() {
-		return OrderNumber;
-	}
+  public String getObservations() {
+    return Observations;
+  }
 
-	public void setOrderNumber(String OrderNumber) {
-		this.OrderNumber = OrderNumber;
-	}
+  public void setObservations(String Observations) {
+    this.Observations = Observations;
+  }
 
-	public String getPaymentBankName() {
-		return PaymentBankName;
-	}
+  public String getOrderNumber() {
+    return OrderNumber;
+  }
 
-	public void setPaymentBankName(String PaymentBankName) {
-		this.PaymentBankName = PaymentBankName;
-	}
+  public void setOrderNumber(String OrderNumber) {
+    this.OrderNumber = OrderNumber;
+  }
 
-	public Complements getComplements() {
-		return Complements;
-	}
+  public String getPaymentBankName() {
+    return PaymentBankName;
+  }
 
-	public void setComplements(Complements Complements) {
-		this.Complements = Complements;
-	}
+  public void setPaymentBankName(String PaymentBankName) {
+    this.PaymentBankName = PaymentBankName;
+  }
+
+  public Complements getComplements() {
+    return Complemento;
+  }
+
+  public void setComplements(Complements Complements) {
+    this.Complemento = Complements;
+  }
+
+  public GlobalInformation getGlobalInformation() {
+    return GlobalInformation;
+  }
+
+  public void setGlobalInformation(GlobalInformation GlobalInformation) {
+    this.GlobalInformation = GlobalInformation;
+  }
 
 }

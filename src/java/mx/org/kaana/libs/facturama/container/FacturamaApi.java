@@ -1,6 +1,10 @@
 package mx.org.kaana.libs.facturama.container;
 
-import mx.org.kaana.libs.facturama.services.*;
+import mx.org.kaana.libs.facturama.services.ProductService;
+import mx.org.kaana.libs.facturama.services.BranchOfficeService;
+import mx.org.kaana.libs.facturama.services.ClientService;
+import mx.org.kaana.libs.facturama.services.CatalogService;
+import mx.org.kaana.libs.facturama.services.CfdiService;
 import com.squareup.okhttp.OkHttpClient;
 
 public class FacturamaApi {
@@ -13,12 +17,9 @@ public class FacturamaApi {
 
 	/**
 	 *
-	 * @param user Nickname en la cuenta de Facturama (la mísma con la que puede
-	 * ingresar a la WEB)
-	 * @param password Contraseña de la cuenta de Facturama (la mísma con la que
-	 * puede ingresar a la WEB)
-	 * @param isDevelopment Bandera de modo de Pruebas o Producción (True = Modo
-	 * de pruebas)
+   * @param user Nickname en la cuenta de Facturama (la mísma con la que puede ingresar a la WEB)
+   * @param password Contraseña de la cuenta de Facturama (la mísma con la que puede ingresar a la WEB)
+   * @param isDevelopment Bandera de modo de Pruebas o Producción (True = Modo de pruebas)
 	 */
 	public FacturamaApi(String user, String password, boolean isDevelopment) {
 		String host = isDevelopment ? "apisandbox.facturama.mx" : "api.facturama.mx";

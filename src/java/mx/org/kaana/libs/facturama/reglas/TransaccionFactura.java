@@ -363,7 +363,7 @@ public class TransaccionFactura extends IBaseTnx {
 			} // if
       else {
 				this.registrarBitacora(sesion, this.cliente.getIdFactura(), cfdi.getId(), REGISTRO_CFDI);
-				actualizarFacturaAutomatico(sesion, this.cliente.getIdFactura(), idUsuario);
+				this.actualizarFacturaAutomatico(sesion, this.cliente.getIdFactura(), idUsuario);
 			} // else
 		} // try
 		catch (Exception e) {						
@@ -417,8 +417,9 @@ public class TransaccionFactura extends IBaseTnx {
 	private String toCadenaOriginal(String xml) {
 		String regresar= null;
 		try {
+      LOG.warn("Generando cadena original: ".concat(Objects.equals(Configuracion.getInstance().getPropiedad("sistema.nivel.facturacion"), "4.0")? "cadenaoriginal_4_0.xslt": "cadenaoriginal_3_3.xslt"));
 			StreamSource source       = new StreamSource(new File(xml));
-			StreamSource stylesource  = new StreamSource(this.getClass().getResourceAsStream("/mx/org/kaana/mantic/libs/factura/cadenaoriginal_3_3.xslt"));
+			StreamSource stylesource  = new StreamSource(this.getClass().getResourceAsStream("/mx/org/kaana/mantic/libs/factura/".concat(Objects.equals(Configuracion.getInstance().getPropiedad("sistema.nivel.facturacion"), "4.0")? "cadenaoriginal_4_0.xslt": "cadenaoriginal_3_3.xslt")));
 			TransformerFactory factory= TransformerFactory.newInstance();
 			Transformer transformer   = factory.newTransformer(stylesource);
 			StreamResult result       = new StreamResult(new StringWriter());
@@ -432,7 +433,8 @@ public class TransaccionFactura extends IBaseTnx {
 	} // toCadenaOriginal
 	
 	public void insertFiles(Session sesion, Calendar calendar, Cfdi cfdi, String path, String rfc, Long idFactura, Long idUsuario) throws Exception {
-	TcManticFacturasArchivosDto xml= new TcManticFacturasArchivosDto(
+    LOG.warn("Insertando XML: ".concat(rfc.concat("-").concat(cfdi.getFolio()).concat(".").concat(EFormatos.XML.name().toLowerCase())));
+  	TcManticFacturasArchivosDto xml= new TcManticFacturasArchivosDto(
 			idFactura, 
 			path, 
 			null, 

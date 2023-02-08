@@ -14,7 +14,6 @@ public class SerieService extends HttpService<Serie, Serie> {
 
 	public List<Serie> List(String idBranchOffice) throws IOException, FacturamaException, Exception {
 		return GetList(idBranchOffice);
-
 	}
 
 	public Serie Retrive(String idBranchOffice, String SerieName) throws IOException, FacturamaException, Exception {
@@ -28,4 +27,5 @@ public class SerieService extends HttpService<Serie, Serie> {
 	public Serie Remove(String idBranchOffice, String SerieName) throws IOException, Exception {
 		return Delete("" + idBranchOffice + "/" + SerieName);
 	}
+  
 }

@@ -9,10 +9,8 @@ public class BranchOfficeService extends CrudService<BranchOffice, BranchOffice>
 
 	public BranchOfficeService(OkHttpClient client) {
 		super(client, "BranchOffice");
-
-		singleType = BranchOffice.class;
-		multiType = new TypeToken<List<BranchOffice>>() {
-		}.getType();
-
+		singleType= BranchOffice.class;
+		multiType = new TypeToken<List<BranchOffice>>() {}.getType();
 	}
+  
 }

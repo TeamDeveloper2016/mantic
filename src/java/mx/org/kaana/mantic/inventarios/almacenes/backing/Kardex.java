@@ -68,6 +68,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
 	private Integer tabPage;
 	private TreeNode ubicaciones;
 	protected String pathImage;
+  private UISelectEntity ikArticuloImpuesto;
 
 	public AdminKardex getAdminKardex() {
 		return adminKardex;
@@ -89,6 +90,14 @@ public class Kardex extends IBaseAttribute implements Serializable {
 		return pathImage;
 	}
 	
+  public UISelectEntity getIkArticuloImpuesto() {
+    return ikArticuloImpuesto;
+  }
+
+  public void setIkArticuloImpuesto(UISelectEntity ikArticuloImpuesto) {
+    this.ikArticuloImpuesto = ikArticuloImpuesto;
+  }
+  
 	@Override
 	@PostConstruct
 	protected void init() {
@@ -104,6 +113,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
   	this.attrs.put("idArticuloTipo", 1L);
 		this.adminKardex= new AdminKardex(-1L, false);
 		this.toLoadCatalog();
+    this.toloadArticulosImpuestos();
 		if(JsfBase.getFlashAttribute("xcodigo")!= null) {
 			this.doCompleteArticulo((String)JsfBase.getFlashAttribute("xcodigo"));
 			List<UISelectEntity> articulos= (List<UISelectEntity>)this.attrs.get("articulos");
@@ -118,11 +128,9 @@ public class Kardex extends IBaseAttribute implements Serializable {
 	
 	private void toLoadCatalog() {
     List<UISelectEntity> almacenes= null;
-		List<Columna> columns         = null;
+		List<Columna> columns         = new ArrayList<>();
     Map<String, Object> params    = new HashMap<>();
     try {
-			columns= new ArrayList<>();
-			params = new HashMap<>();
 			if(JsfBase.isCajero())
 				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			else
@@ -142,13 +150,31 @@ public class Kardex extends IBaseAttribute implements Serializable {
     finally {
       Methods.clean(columns);
       Methods.clean(params);
-    }// finally
+    } // finally
 	}
 	
+	private void toloadArticulosImpuestos() {
+		List<Columna> columns     = new ArrayList<>();    
+    Map<String, Object> params= new HashMap<>();
+    try {      
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			this.attrs.put("articulosImpuestos", (List<UISelectEntity>) UIEntity.seleccione("TcManticArticulosImpuestosDto", "row", params, columns, "codigo"));
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally
+	} // toLoadArticulosImpuestos
+  
 	private void updateArticulo(UISelectEntity articulo) throws Exception {
-		List<Columna> columns= null;
+		List<Columna> columns= new ArrayList<>();
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("empaque", EFormatoDinamicos.MAYUSCULAS));
@@ -197,6 +223,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
 						solicitado.toLong("especial")
 					);
 					this.toUpdatePrecioVenta(false);
+          this.setIkArticuloImpuesto(new UISelectEntity(solicitado.toLong("idArticuloImpuesto")));
 				} // if	
 			} // if
 			else {
@@ -217,7 +244,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
 		} // try
 		finally {
       Methods.clean(columns);
-    }// finally
+    } // finally
 	}
 	
 	public String doMoneyValueFormat(Double value) {
@@ -253,12 +280,11 @@ public class Kardex extends IBaseAttribute implements Serializable {
 	}	
 
 	public void doUpdateArticulos() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
 		List<UISelectEntity> articulos= null;
-		boolean buscaPorCodigo    = false;
+		boolean buscaPorCodigo    = Boolean.FALSE;
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
@@ -289,7 +315,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
     finally {
       Methods.clean(columns);
       Methods.clean(params);
-    }// finally
+    } // finally
 	}	
 
 	public List<UISelectEntity> doCompleteArticulo(String query) {
@@ -306,12 +332,12 @@ public class Kardex extends IBaseAttribute implements Serializable {
 			Entity articulo= (Entity)this.attrs.get("articulo");
 			transaccion = new Transaccion((Long)this.attrs.get("idArticulo"), (Double)this.attrs.get("precio"), articulo.toString("descuento"), articulo.toString("extra"), this.adminKardex.getTiposVentas(), (String)this.attrs.get("sat"));
 			if (transaccion.ejecutar(eaccion)) {
-				JsfBase.addMessage("Se modificaron los precios de tipos de ventas del articulo.", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Se modificaron los precios de tipos de ventas del articulo", ETipoMensaje.INFORMACION);
    			UIBackingUtilities.execute("jsKardex.callback('"+ this.adminKardex.getTiposVentas()+ "');");
 				this.attrs.put("ultimo", Global.format(EFormatoDinamicos.DIA_FECHA_HORA_CORTA, new Timestamp(Calendar.getInstance().getTimeInMillis())));
 			}	// if
 			else 
-				JsfBase.addMessage("Ocurrió un error al registrar los precios de los tipos de ventas del articulo.", ETipoMensaje.ERROR);      			
+				JsfBase.addMessage("Ocurrió un error al registrar los precios de los tipos de ventas del articulo", ETipoMensaje.ERROR);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -366,9 +392,8 @@ public class Kardex extends IBaseAttribute implements Serializable {
 	}
 	
 	private void toInventario() {
-		List<Columna> columns= null;
+		List<Columna> columns= new ArrayList<>();
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("inicial", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
       columns.add(new Columna("entradas", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
       columns.add(new Columna("salidas", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
@@ -384,13 +409,12 @@ public class Kardex extends IBaseAttribute implements Serializable {
     } // catch   
 		finally {
       Methods.clean(columns);
-    }// finally
+    } // finally
 	}
 	
 	private void toLoadCodigos() {
-		List<Columna> columns= null;
+		List<Columna> columns= new ArrayList<>();
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("prefijo", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
@@ -403,18 +427,16 @@ public class Kardex extends IBaseAttribute implements Serializable {
     } // catch   
 		finally {
       Methods.clean(columns);
-    }// finally
+    } // finally
 	}
 	
 	private void toLoadAlmacenes() {
-		List<Columna> columns     = null;
-    Map<String, Object> params= null;
+		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
     try {      
-      params = new HashMap<>();      
       params.put("idArticulo", this.attrs.get("idArticulo"));      
       params.put("idAlmacen", 0L);      
 			this.tabPage= 1;
-			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("stock", EFormatoDinamicos.NUMERO_CON_DECIMALES));
@@ -430,14 +452,13 @@ public class Kardex extends IBaseAttribute implements Serializable {
 		finally {
       Methods.clean(columns);
       Methods.clean(params);
-    }// finally
+    } // finally
 	}
 
 	private void toLoadHistorial() {
-		List<Columna> columns= null;
+		List<Columna> columns= new ArrayList<>();
     try {
 			this.tabPage= 2;
-			columns= new ArrayList<>();
       columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
@@ -459,14 +480,13 @@ public class Kardex extends IBaseAttribute implements Serializable {
     } // catch   
 		finally {
       Methods.clean(columns);
-    }// finally
+    } // finally
 	}
 
 	private void toLoadMovimientos() {
-		List<Columna> columns= null;
+		List<Columna> columns= new ArrayList<>();
     try {
 			this.tabPage= 3;
-			columns= new ArrayList<>();
       columns.add(new Columna("almacen", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombreEmpresa", EFormatoDinamicos.MAYUSCULAS));
@@ -487,7 +507,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
     } // catch   
 		finally {
       Methods.clean(columns);
-    }// finally
+    } // finally
 	}
 
 	public void doUpdateUtilidad(Integer index, Double value) {
@@ -538,10 +558,9 @@ public class Kardex extends IBaseAttribute implements Serializable {
 	}
 
 	public void doCleanArticulos() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
 		try {
-			columns= new ArrayList<>();
 			params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
   		params.put("idProveedor", this.attrs.get("proveedor")== null? new UISelectEntity(new Entity(-1L)): ((UISelectEntity)this.attrs.get("proveedor")).getKey());
@@ -555,7 +574,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
     finally {
       Methods.clean(columns);
       Methods.clean(params);
-    }// finally
+    } // finally
 	}
 	
 	public void doChangeBuscado() {
@@ -578,11 +597,10 @@ public class Kardex extends IBaseAttribute implements Serializable {
 	}
 	
   public void doUpdateDialogArticulos(String codigo) {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
 		boolean buscaPorCodigo    = false;
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("original", EFormatoDinamicos.MONEDA_CON_DECIMALES));
@@ -609,7 +627,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
     finally {
       Methods.clean(columns);
       Methods.clean(params);
-    }// finally
+    } // finally
 	}
 
   public void doRowDblselect(SelectEvent event) {
@@ -682,10 +700,9 @@ public class Kardex extends IBaseAttribute implements Serializable {
 	
 	private Long toFindIdKey(String consecutivo, String proceso, String idXml) {
 		Long regresar             = -1L;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
 			this.toLoadItemAlmacen();
-			params=new HashMap<>();
 			params.put("consecutivo", consecutivo);
 			params.put("idEmpresa", ((UISelectEntity)this.attrs.get("idAlmacen")).toLong("idEmpresa"));
 			Entity entity= (Entity)DaoFactory.getInstance().toEntity(proceso, idXml, params);
@@ -704,11 +721,10 @@ public class Kardex extends IBaseAttribute implements Serializable {
 		
 	public String doMoveSection() {
 		UISelectEntity consecutivo= (UISelectEntity)this.attrs.get("consecutivo");
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
 		List<UISelectEntity> documento= null;
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_CON_DECIMALES));
@@ -832,10 +848,9 @@ public class Kardex extends IBaseAttribute implements Serializable {
 	}
 	
   public void toLoadUbicaciones() {
-		List<Columna> columns= null;
+		List<Columna> columns= new ArrayList<>();
     try {
 			this.tabPage= 4;
-			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("almacen", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("piso", EFormatoDinamicos.MAYUSCULAS));
@@ -856,7 +871,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
     } // catch   
 		finally {
       Methods.clean(columns);
-    }// finally		 
+    } // finally		 
 	}	
 	
 	public void doAssignUbicacion() {
@@ -894,9 +909,8 @@ public class Kardex extends IBaseAttribute implements Serializable {
 	}
 	
 	private void toLoadPosicion() {
-		List<Columna> columns= null;
+		List<Columna> columns= new ArrayList<>();
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("stock", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
@@ -913,7 +927,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
     } // catch   
 		finally {
       Methods.clean(columns);
-    }// finally
+    } // finally
 	}
 
 	private void toUpdatePrecioVenta(boolean keep) {
@@ -1005,10 +1019,9 @@ public class Kardex extends IBaseAttribute implements Serializable {
 	}
 
 	public void doLookForCodigo(String id, String codigo, Long index) {
-	  Map<String, Object> params= null;
+	  Map<String, Object> params= new HashMap<>();
 		int count                 = 0;
 		try {
-			params=new HashMap<>();
 			if(!Cadena.isVacio(codigo)) {
 			  params.put("codigo", codigo.toUpperCase());
 				params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
@@ -1108,11 +1121,10 @@ public class Kardex extends IBaseAttribute implements Serializable {
 	}
 
 	public List<UISelectEntity> doCompleteProveedor(String codigo) {
- 		List<Columna> columns     = null;
+ 		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
-		boolean buscaPorCodigo    = false;
+		boolean buscaPorCodigo    = Boolean.FALSE;
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
@@ -1140,7 +1152,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
     finally {
       Methods.clean(columns);
       Methods.clean(params);
-    }// finally
+    } // finally
 		return (List<UISelectEntity>)this.attrs.get("proveedores");
 	}	
 
@@ -1184,4 +1196,20 @@ public class Kardex extends IBaseAttribute implements Serializable {
     } // finally
     return regresar;
   }
+
+  public void doUpdateImpuesto() {
+    Transaccion transaccion= null;
+    try {			
+			transaccion = new Transaccion((Long)this.attrs.get("idArticulo"), this.getIkArticuloImpuesto().getKey());
+			if (transaccion.ejecutar(EAccion.JUSTIFICAR)) 
+				JsfBase.addMessage("Se modificó el tipo de impuesto del articulo", ETipoMensaje.INFORMACION);
+			else 
+				JsfBase.addMessage("Ocurrió un error al modificar el impuesto del articulo", ETipoMensaje.ERROR);      			
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+  } 
+  
 }

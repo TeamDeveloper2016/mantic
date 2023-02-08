@@ -20,6 +20,7 @@
 				'descuento' : {validaciones: 'libre', mascara: 'libre', formatos: 'descuentos'},
 				'observaciones' : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
 				'cfdi'      : {validaciones: 'requerido', mascara: 'libre', mensaje:'Tipo de CFDI obligatorio.'},
+        'idRegimenFiscal': {validaciones: 'requerido', mascara: 'libre'},
 				'referencia': {validaciones: 'requerido', mascara: 'libre'},
 				'tipoPago'  : {validaciones: 'requerido', mascara: 'libre'},
 				'nombres'   : {multiple: '$', validaciones: 'requerido|libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
@@ -218,31 +219,48 @@
 					</p:panelGrid>	
 					
 					<p:panelGrid id="panelDomicilio" columns="1" layout="grid" styleClass="janal-wid-100">
-						<p:outputLabel for="domicilio" value="Domicilio:"/>
-						<p:selectOneMenu id="domicilio" value="#{manticVentasFacturasAccion.attrs.domicilio}" var="item" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity">															
-							<f:selectItems value="#{manticVentasFacturasAccion.attrs.domicilios}" var="element" itemValue="#{element}" itemLabel="#{element.calle}, #{element.numeroExterior} - #{element.numeroInterior}, #{element.asentamiento}, #{element.codigoPostal}, #{element.localidad}, #{element.municipio}"/>
-							<p:column headerText="Calle">
-								<h:outputText value="#{item.calle}"/>
-							</p:column>   
-							<p:column headerText="Ext.">
-								<h:outputText value="#{item.numeroExterior}"/>
-							</p:column>   
-							<p:column headerText="Int.">
-								<h:outputText value="#{item.numeroInterior}"/>
-							</p:column>   
-							<p:column headerText="Colonia/Fraccionamiento">
-								<h:outputText value="#{item.asentamiento}"/>
-							</p:column>   
-							<p:column headerText="C.P.">
-								<h:outputText value="#{item.codigoPostal}"/>
-							</p:column>   
-							<p:column headerText="Localidad">
-								<h:outputText value="#{item.localidad}"/>
-							</p:column>   
-							<p:column headerText="Municipio">
-								<h:outputText value="#{item.municipio}"/>
-							</p:column>   
-						</p:selectOneMenu>
+            <p:panelGrid columns="1" styleClass="janal-wid-100">
+              <p:outputLabel for="idRegimenFiscal" value="Régimen fiscal:"/>
+              <p:selectOneMenu id="idRegimenFiscal" value="#{manticVentasFacturasAccion.ikRegimenFiscal}" var="index" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains"  disabled="#{manticVentasFacturasAccion.attrs.mostrarCorreos}">
+                <f:selectItems value="#{manticVentasFacturasAccion.attrs.regimenesFiscales}" var="list" itemValue="#{list}" itemLabel="#{list.codigo} #{empty list.nombre or list.nombre eq ''? '': '|'} #{list.nombre}"/>
+                <p:column headerText="Código">
+                  <h:outputText value="#{index.codigo}"/>
+                </p:column>   
+                <p:column headerText="Persona">
+                  <h:outputText value="#{index.persona}"/>
+                </p:column>   
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{index.nombre}"/>
+                </p:column>   
+              </p:selectOneMenu>
+            </p:panelGrid>  
+            <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+              <p:outputLabel for="domicilio" value="Domicilio:"/>
+              <p:selectOneMenu id="domicilio" value="#{manticVentasFacturasAccion.attrs.domicilio}" var="item" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity">															
+                <f:selectItems value="#{manticVentasFacturasAccion.attrs.domicilios}" var="element" itemValue="#{element}" itemLabel="#{element.calle}, #{element.numeroExterior} - #{element.numeroInterior}, #{element.asentamiento}, #{element.codigoPostal}, #{element.localidad}, #{element.municipio}"/>
+                <p:column headerText="Calle">
+                  <h:outputText value="#{item.calle}"/>
+                </p:column>   
+                <p:column headerText="Ext.">
+                  <h:outputText value="#{item.numeroExterior}"/>
+                </p:column>   
+                <p:column headerText="Int.">
+                  <h:outputText value="#{item.numeroInterior}"/>
+                </p:column>   
+                <p:column headerText="Colonia/Fraccionamiento">
+                  <h:outputText value="#{item.asentamiento}"/>
+                </p:column>   
+                <p:column headerText="C.P.">
+                  <h:outputText value="#{item.codigoPostal}"/>
+                </p:column>   
+                <p:column headerText="Localidad">
+                  <h:outputText value="#{item.localidad}"/>
+                </p:column>   
+                <p:column headerText="Municipio">
+                  <h:outputText value="#{item.municipio}"/>
+                </p:column>   
+              </p:selectOneMenu>
+  					</p:panelGrid>
 					</p:panelGrid>
 					
 					<h:panelGrid id="panelTiposPagos" columns="5" style="width: 100%">																								

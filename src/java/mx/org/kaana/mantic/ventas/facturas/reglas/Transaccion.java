@@ -253,7 +253,7 @@ public class Transaccion extends TransaccionFactura {
 		TransaccionFactura factura= null;
 		CFDIGestor gestor         = null;
 		try {
-			actualizarClienteFacturama(sesion);
+			this.actualizarClienteFacturama(sesion);
 			sesion.flush();
 			gestor= new CFDIGestor(idVenta);			
 			factura= new TransaccionFactura();

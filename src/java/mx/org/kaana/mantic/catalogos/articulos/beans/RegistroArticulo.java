@@ -15,6 +15,7 @@ import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.mantic.catalogos.articulos.reglas.MotorBusqueda;
 import mx.org.kaana.mantic.db.dto.TcManticArchivosDto;
@@ -57,6 +58,7 @@ public class RegistroArticulo implements Serializable {
 	private Boolean idDescontinuado;
   private List<ArticuloImagen> imagenes;
 	private Boolean imagen;
+  private UISelectEntity ikArticuloImpuesto;
 
 	public RegistroArticulo() {
 		this(-1L, 
@@ -104,6 +106,10 @@ public class RegistroArticulo implements Serializable {
 		this.idVigente           = idVigente;
 		this.idDescontinuado     = idDescontinuado;
     this.imagenes            = new ArrayList<>();
+    if(this.articulo!= null && this.articulo.getIdArticuloImpuesto()!= null)
+      this.ikArticuloImpuesto= new UISelectEntity(this.articulo.getIdArticuloImpuesto());
+    else
+      this.ikArticuloImpuesto= new UISelectEntity(-1L);
 	}
 
 	public Long getIdArticulo() {
@@ -296,6 +302,16 @@ public class RegistroArticulo implements Serializable {
     this.imagen = imagen;
   }
 	
+  public UISelectEntity getIkArticuloImpuesto() {
+    return ikArticuloImpuesto;
+  }
+
+  public void setIkArticuloImpuesto(UISelectEntity ikArticuloImpuesto) {
+    this.ikArticuloImpuesto = ikArticuloImpuesto;
+		if(this.ikArticuloImpuesto!= null && this.articulo!= null)
+		  this.articulo.setIdArticuloImpuesto(this.ikArticuloImpuesto.getKey());
+  }
+  
 	private void init() {
 		MotorBusqueda motorBusqueda                = null;
 		TrManticEmpaqueUnidadMedidaDto unidadMedida= null;
@@ -306,7 +322,10 @@ public class RegistroArticulo implements Serializable {
 				this.idBarras = this.articulo.getIdBarras().equals(1L);
 			  this.redondear= this.articulo.getIdRedondear()== 1L;
 			  this.idVigente= this.articulo.getIdVigente()== 1L;
+        this.setIkArticuloImpuesto(new UISelectEntity(this.articulo.getIdArticuloImpuesto()));
 			} // if	
+      else
+        this.setIkArticuloImpuesto(new UISelectEntity(-1L));
 			unidadMedida= motorBusqueda.toEmpaqueUnidadMedida(this.articulo.getIdEmpaqueUnidadMedida());
 			this.idEmpaque= unidadMedida.getIdEmpaque();
 			this.initCollections(motorBusqueda);

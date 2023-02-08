@@ -20,4 +20,5 @@ public class Catalog {
 	public void setValue(String Value) {
 		this.Value = Value;
 	}
+  
 }

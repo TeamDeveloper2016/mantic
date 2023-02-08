@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -28,6 +29,7 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.libs.wassenger.Bonanza;
@@ -183,7 +185,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 					this.attrs.put("consecutivo", "");		
 					idCliente= Long.valueOf(this.attrs.get("idCliente").toString());
 					if(idCliente!= null && !idCliente.equals(-1L))
-						doAsignaClienteInicial(idCliente);
+						this.doAsignaClienteInicial(idCliente);
           break;
         case MODIFICAR:			
         case CONSULTAR:			
@@ -265,6 +267,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			clientesSeleccion.add(0, new UISelectEntity(clienteDefault));
 			this.attrs.put("clientesSeleccion", clientesSeleccion);
 			this.attrs.put("clienteSeleccion", seleccion);
+      this.toLoadRegimenesFiscales();  
 			this.setPrecio(Cadena.toBeanNameEspecial(seleccion.toString("tipoVenta")));
 		} // try
 		catch (Exception e) {
@@ -807,8 +810,8 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 	
 	public void doUpdateForEmpresa() {
 		try {
-			loadClienteDefault();
-			doActualizaPrecioCliente();
+			this.loadClienteDefault();
+			this.doActualizaPrecioCliente();
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -828,7 +831,8 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			this.attrs.put("clientesSeleccion", clientesSeleccion);
 			this.attrs.put("clienteSeleccion", seleccion);			
 			this.attrs.put("clienteDefault", seleccion);			
-			loadDomicilios(seleccion.getKey());
+      this.toLoadRegimenesFiscales();      
+			this.loadDomicilios(seleccion.getKey());
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -888,6 +892,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			clientesSeleccion.add(0, new UISelectEntity(motorBusqueda.toClienteDefault()));
 			this.attrs.put("clientesSeleccion", clientesSeleccion);
 			this.attrs.put("clienteSeleccion", seleccion);			
+      this.toLoadRegimenesFiscales();      
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -929,10 +934,20 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 	}	// doUpdateClientes
 	
 	public void doActualizaPrecioCliente() {		
-		UISelectEntity clienteSeleccion= null;		
+    List<UISelectEntity> clientesSeleccion= null;
+		UISelectEntity clienteSeleccion       = null;		
 		try {
-			clienteSeleccion= (UISelectEntity) this.attrs.get("clienteSeleccion");			
-			loadDomicilios(clienteSeleccion.getKey());
+			clienteSeleccion = (UISelectEntity) this.attrs.get("clienteSeleccion");			
+      clientesSeleccion= (List<UISelectEntity>)this.attrs.get("clientesSeleccion");
+      if(clientesSeleccion!= null && !clientesSeleccion.isEmpty()) {
+        int index= clientesSeleccion.indexOf(clienteSeleccion);
+        if(index>= 0) 
+          this.attrs.put("clienteSeleccion", clientesSeleccion.get(index));
+        else 
+          this.attrs.put("clienteSeleccion", clientesSeleccion.get(0));
+        this.toLoadRegimenesFiscales();
+      } // if
+			this.loadDomicilios(clienteSeleccion.getKey());
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -988,15 +1003,13 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 	
 	private void loadCfdis() {
 		List<UISelectEntity> cfdis= null;
-		List<Columna> campos      = null;
-		Map<String, Object>params = null;
+		List<Columna> columns     = new ArrayList<>();
+		Map<String, Object>params = new HashMap<>();
 		try {
-			params= new HashMap<>();
-			campos= new ArrayList<>();
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-			campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-			campos.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
-			cfdis= UIEntity.build("TcManticUsosCfdiDto", "row", params, campos, Constantes.SQL_TODOS_REGISTROS);
+			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+			cfdis= UIEntity.build("TcManticUsosCfdiDto", Objects.equals(Configuracion.getInstance().getPropiedad("sistema.nivel.facturacion"), "4.0")? "rows": "row", params, columns, Constantes.SQL_TODOS_REGISTROS);
 			this.attrs.put("cfdis", cfdis);
 			this.attrs.put("cfdi", new UISelectEntity("-1"));
 			for(Entity record: cfdis) {
@@ -1200,5 +1213,35 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
       Methods.clean(params);
     } // finally
   }
-  
+
+  private void toLoadRegimenesFiscales() {
+		List<Columna> columns     = new ArrayList<>();    
+    Map<String, Object> params= new HashMap<>();
+    List<UISelectEntity> regimenesFiscales= null;
+    try {      
+      UISelectEntity cliente= (UISelectEntity)this.attrs.get("clienteSeleccion");
+      params.put("idTipoRegimenPersona", "1, 2");                  
+      columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      regimenesFiscales= (List<UISelectEntity>) UIEntity.seleccione("TcManticRegimenesFiscalesDto", "tipo", params, columns, "codigo");
+			this.attrs.put("regimenesFiscales", regimenesFiscales);
+      if(cliente!= null && regimenesFiscales!= null && !regimenesFiscales.isEmpty()) {
+        int index= regimenesFiscales.indexOf(new UISelectEntity(cliente.toLong("idRegimenFiscal")== null? -1L: cliente.toLong("idRegimenFiscal")));
+        if(index< 0)
+          this.setIkRegimenFiscal(regimenesFiscales.get(0));
+        else
+          this.setIkRegimenFiscal(regimenesFiscales.get(index));
+      } // else
+      else
+        this.setIkRegimenFiscal(new UISelectEntity(-1L));
+    } // try
+    catch (Exception e) {
+			throw e;
+    } // catch	
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally
+	} // toLoadRegimenesFiscales  
+    
 }

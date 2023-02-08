@@ -786,7 +786,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // finally
 	} // loadRegimenesFiscales
 	
-	private void loadTiposVentas(){
+	private void loadTiposVentas() {
 		List<UISelectItem> tiposVentas= null;
 		try {
 			tiposVentas= new ArrayList<>();

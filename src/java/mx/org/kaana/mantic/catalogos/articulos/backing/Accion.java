@@ -1,6 +1,7 @@
 package mx.org.kaana.mantic.catalogos.articulos.backing;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,13 +15,16 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
+import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
+import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelect;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
@@ -63,6 +67,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.doLoadUnidadesMedidas();
       this.loadGrupos();
       this.loadTiposVentas();
+      this.toloadArticulosImpuestos();
       String dns= Configuracion.getInstance().getPropiedadServidor("sistema.dns");
       this.path = dns.substring(0, dns.lastIndexOf("/")+ 1).concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/galeria/1/");
     } // try
@@ -114,6 +119,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       } // if
       else 
         JsfBase.addMessage("Ocurrió un error al registrar el articulo", ETipoMensaje.ERROR);      
+      JsfBase.setFlashAttribute("idArticuloProcess", this.registroArticulo.getArticulo().getIdArticulo());
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -123,13 +129,14 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // doAccion
 
   public String doCancelar() {
+    JsfBase.setFlashAttribute("idArticuloProcess", this.registroArticulo.getArticulo().getIdArticulo());
     return "filtro".concat(Constantes.REDIRECIONAR);
   } // doCancelar
 
   private void loadEmpaques() {
     List<UISelectItem> empaques= null;
     Map<String, Object> params = new HashMap<>();
-    EAccion eaccion = null;
+    EAccion eaccion            = null;
     try {
       params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       empaques = UISelect.build("TcManticEmpaquesDto", "row", params, "nombre", EFormatoDinamicos.LIBRE, Constantes.SQL_TODOS_REGISTROS);
@@ -148,10 +155,9 @@ public class Accion extends IBaseAttribute implements Serializable {
 
   public void doLoadUnidadesMedidas() {
     List<UISelectItem> unidadesMedidas= null;
-    Map<String, Object> params        = null;
+    Map<String, Object> params        = new HashMap<>();
     EAccion eaccion                   = null;
     try {
-      params = new HashMap<>();
       params.put("idEmpaque", this.registroArticulo.getIdEmpaque());
       eaccion = (EAccion) this.attrs.get("accion");
       unidadesMedidas = UISelect.build("VistaEmpaqueUnidadMedidaDto", "empaqueUnidadMedida", params, "nombre", EFormatoDinamicos.LIBRE, Constantes.SQL_TODOS_REGISTROS);
@@ -169,10 +175,9 @@ public class Accion extends IBaseAttribute implements Serializable {
 
   private void loadCategorias() {
     List<UISelectItem> categorias= null;
-    Map<String, Object> params   = null;
+    Map<String, Object> params   = new HashMap<>();
     EAccion eaccion              = null;
     try {
-      params = new HashMap<>();
       params.put(Constantes.SQL_CONDICION, "id_empresa=" + JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       categorias = UISelect.build("TcManticCategoriasDto", "row", params, "traza", EFormatoDinamicos.LIBRE, Constantes.SQL_TODOS_REGISTROS);
       this.attrs.put("categorias", categorias);
@@ -190,9 +195,8 @@ public class Accion extends IBaseAttribute implements Serializable {
 
   private void loadProveedores() {
     List<UISelectItem> proveedores= null;
-    Map<String, Object> params    = null;
+    Map<String, Object> params    = new HashMap<>();
     try {
-      params = new HashMap<>();
       params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
       proveedores = UISelect.build("TcManticProveedoresDto", "sucursales", params, "razonSocial", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
       this.attrs.put("proveedoresGeneral", proveedores);
@@ -206,10 +210,9 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // loadProveedores
 
   private void loadGrupos() {
-    List<UISelectItem> grupos= null;
-    Map<String, Object> params = null;
+    List<UISelectItem> grupos = null;
+    Map<String, Object> params= new HashMap<>();
     try {
-      params = new HashMap<>();
       params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       grupos = UISelect.build("TcManticGruposDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
       this.attrs.put("gruposGeneral", grupos);
@@ -224,9 +227,8 @@ public class Accion extends IBaseAttribute implements Serializable {
 
   private void loadTiposVentas() {
     List<UISelectItem> tiposVentas= null;
-    Map<String, Object> params    = null;
+    Map<String, Object> params    = new HashMap<>();
     try {
-      params = new HashMap<>();
       params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       tiposVentas = UISelect.build("TcManticTiposVentasDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
       this.attrs.put("tiposVentasGeneral", tiposVentas);
@@ -239,6 +241,25 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // finally
   } // loadClientes	
 	
+	private void toloadArticulosImpuestos() {
+		List<Columna> columns     = new ArrayList<>();    
+    Map<String, Object> params= new HashMap<>();
+    try {      
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			this.attrs.put("articulosImpuestos", (List<UISelectEntity>) UIEntity.seleccione("TcManticArticulosImpuestosDto", "row", params, columns, "codigo"));
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally
+	} // loadArticulosImpuestos
+  
 	public String doKardex() {
 		JsfBase.setFlashAttribute("idArticulo", this.attrs.get("idArticulo"));
 		if(!this.registroArticulo.getArticulosCodigos().isEmpty())

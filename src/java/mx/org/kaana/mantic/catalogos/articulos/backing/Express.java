@@ -156,6 +156,7 @@ public class Express extends IBaseAttribute implements Serializable {
 			this.registroArticulo.getArticulo().setLimiteMayoreo(20D);
 			this.registroArticulo.getArticulo().setLimiteMedioMayoreo(10D);			
 			this.registroArticulo.getArticulo().setIdVigente(1L);		
+      this.registroArticulo.getArticulo().setIdArticuloImpuesto(2L);
       if(Cadena.isVacio(this.registroArticulo.getArticulo().getSat()))
         this.registroArticulo.getArticulo().setSat(Constantes.CODIGO_SAT);
 		} // try

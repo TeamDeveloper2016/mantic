@@ -1,9 +1,5 @@
 package mx.org.kaana.libs.facturama.models.request;
 
-import static java.lang.reflect.Array.get;
-import java.math.BigDecimal;
-import java.util.*;
-
 public class ProductTax {
 
 	private String Name;

@@ -1406,12 +1406,12 @@ public class Accion extends IBaseVenta implements Serializable {
 	
 	private void loadCfdis() throws Exception {
 		UISelectEntity cfdiSeleccion= null;
-		Map<String, Object>params= new HashMap<>();
-		List<Columna> campos     = new ArrayList<>();
+		Map<String, Object>params   = new HashMap<>();
+		List<Columna> campos        = new ArrayList<>();
 		params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 		campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 		campos.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
-		List<UISelectEntity> cfdis= UIEntity.build("TcManticUsosCfdiDto", "row", params, campos, Constantes.SQL_TODOS_REGISTROS);
+		List<UISelectEntity> cfdis= UIEntity.build("TcManticUsosCfdiDto", Objects.equals(Configuracion.getInstance().getPropiedad("sistema.nivel.facturacion"), "4.0")? "rows": "row", params, campos, Constantes.SQL_TODOS_REGISTROS);
 		this.attrs.put("cfdis", cfdis);
 		for(UISelectEntity record: cfdis) {
 			if(record.toString("clave").equals(GASTOS_GENERAL_CLAVE))

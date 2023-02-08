@@ -116,14 +116,13 @@ public class Transaccion extends TransaccionFactura {
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
 		boolean regresar             = false;
-		Map<String, Object> params   = null;
+		Map<String, Object> params   = new HashMap<>();
 		Long idEstatusFactura        = null;
 		TcManticFacturasDto factura  = null;
 		TcManticFicticiasDto ficticia= null;
 		try {
 			this.totalDetalle= 0D;
 			idEstatusFactura= EEstatusFicticias.ABIERTA.getIdEstatusFicticia();
-			params= new HashMap<>();
 			if(this.orden!= null)
 				params.put("idFicticia", this.orden.getIdFicticia());
 			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" la factura.");
@@ -135,10 +134,10 @@ public class Transaccion extends TransaccionFactura {
 				case REGISTRAR:	
 				case DESACTIVAR:
 					idEstatusFactura= accion.equals(EAccion.AGREGAR) ? EEstatusFicticias.ABIERTA.getIdEstatusFicticia() : (accion.equals(EAccion.DESACTIVAR) ? this.orden.getIdFicticiaEstatus() : idEstatusFactura);
-					regresar= this.orden.getIdFicticia()!= null && !this.orden.getIdFicticia().equals(-1L) ? actualizarFicticia(sesion, idEstatusFactura) : registrarFicticia(sesion, idEstatusFactura);					
+					regresar= this.orden.getIdFicticia()!= null && !this.orden.getIdFicticia().equals(-1L) ? this.actualizarFicticia(sesion, idEstatusFactura) : this.registrarFicticia(sesion, idEstatusFactura);					
 					break;
 				case MODIFICAR:
-					regresar= actualizarFicticia(sesion, EEstatusFicticias.ABIERTA.getIdEstatusFicticia());					
+					regresar= this.actualizarFicticia(sesion, EEstatusFicticias.ABIERTA.getIdEstatusFicticia());					
 					break;				
 				case ELIMINAR:
 					idEstatusFactura= EEstatusFicticias.CANCELADA.getIdEstatusFicticia();
@@ -189,7 +188,7 @@ public class Transaccion extends TransaccionFactura {
 					} // if					
 					break;
 				case COMPLEMENTAR: 
-					regresar= agregarContacto(sesion);
+					regresar= this.agregarContacto(sesion);
 					break;
 				case DEPURAR:
 					this.messageError= "Ocurrio un error al cancelar la factura.";
@@ -272,7 +271,7 @@ public class Transaccion extends TransaccionFactura {
 		boolean regresar         = false;
 		Siguiente consecutivo    = null;
 		Siguiente cuenta         = null;
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		try {									
 			TcManticFacturasDto factura= this.registrarFactura(sesion);										
 			if(factura!= null && factura.getIdFactura()>= 1L) {
@@ -286,11 +285,10 @@ public class Transaccion extends TransaccionFactura {
 				this.orden.setEjercicio(new Long(Fecha.getAnioActual()));						
 				this.orden.setIdFactura(factura.getIdFactura());
 				if(DaoFactory.getInstance().insert(sesion, this.orden)>= 1L) {
-					params= new HashMap<>();
 					// Este campo ya no se va a utilizar porque toda va a caer en venta, las facturas ficticias tienden a desaparecer
 					params.put("idVenta", this.orden.getIdVenta());
 					if(DaoFactory.getInstance().update(sesion, TcManticFacturasDto.class, factura.getIdFactura(), params)>= 1L){					
-						regresar= registraBitacora(sesion, this.orden.getIdFicticia(), idEstatusFicticia, "");
+						regresar= this.registraBitacora(sesion, this.orden.getIdFicticia(), idEstatusFicticia, "");
 						this.toFillArticulos(sesion);
 						this.validarCabecera(sesion);
 					} // if					
@@ -300,34 +298,35 @@ public class Transaccion extends TransaccionFactura {
 		catch (Exception e) {			
 			throw e;
 		} // catch				
+		finally {
+			Methods.clean(params);
+		} // finally			
 		return regresar;
 	} // registrarFicticia
 	
 	private boolean actualizarFicticia(Session sesion, Long idEstatusFicticia) throws Exception{
 		boolean regresar           = false;
-		Map<String, Object>params  = null;
+		Map<String, Object>params  = new HashMap<>();
 		TcManticFacturasDto factura= null;
 		try {						
 			this.orden.setIdFicticiaEstatus(idEstatusFicticia);						
 			regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
-			params= new HashMap<>();
 			params.put("idVenta", this.orden.getIdVenta());
 			factura= (TcManticFacturasDto) DaoFactory.getInstance().toEntity(sesion, TcManticFacturasDto.class, "VistaFicticiasDto", "factura", params);
 			factura.setObservaciones(this.justificacion);
 			if(DaoFactory.getInstance().update(sesion, factura)>= 1L){
 				if(registraBitacora(sesion, this.orden.getIdFicticia(), idEstatusFicticia, "")) {
-					params= new HashMap<>();
 					params.put("idFicticia", this.orden.getIdFicticia());
 					regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticFicticiasDetallesDto.class, params)>= 0;
-					toFillArticulos(sesion);
-					validarCabecera(sesion);
+					this.toFillArticulos(sesion);
+					this.validarCabecera(sesion);
 				} // if
 			} // if
 		} // try
 		catch (Exception e) {			
 			throw e;
 		} // catch		
-		finally{
+		finally {
 			Methods.clean(params);
 		} // finally			
 		return regresar;

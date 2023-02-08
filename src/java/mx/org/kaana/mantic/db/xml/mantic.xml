@@ -7,6 +7,27 @@
   </model>
 
   <dml>
+    <unit id="TcManticArticulosImpuestosDto">
+      <select id="row">
+        select      
+          tc_mantic_articulos_impuestos.id_articulo_impuesto as id_key,
+          tc_mantic_articulos_impuestos.*
+        from      
+          tc_mantic_articulos_impuestos
+        where 
+          {condicion} 
+        order by
+          orden
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_articulos_impuestos
+        where      
+          codigo = '{codigo}'
+      </select>
+    </unit>    
     <unit id="TcManticTransferenciasMultiplesDto">
       <select id="row">
         select      
@@ -5706,6 +5727,18 @@
           tc_mantic_usos_cfdi
         where 
           {condicion} 
+      </select>
+      <select id="rows">
+        select      
+					tc_mantic_usos_cfdi.id_uso_cfdi as id_key,
+          tc_mantic_usos_cfdi.nombre as completo,
+          tc_mantic_usos_cfdi.*
+        from      
+          tc_mantic_usos_cfdi
+        where 
+          id_activo= 1
+        order by
+         clave 
       </select>
       <select id="identically">
         select      

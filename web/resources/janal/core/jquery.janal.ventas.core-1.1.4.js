@@ -1053,10 +1053,11 @@
 		},
 		down: function(jump) {
 			janal.console("jsVentas.down: "+ this.cursor.index);
-			if(this.cursor.index< this.cursor.top)
+			if(this.cursor.index< this.cursor.top) {
 				if(this.visible(this.cursor.index+ 1))
   				this.cursor.index++;
-			else
+      } // if
+			else 
 				if(this.visible(0))
   				this.cursor.index= 0;
 			if(jump)

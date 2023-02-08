@@ -76,7 +76,6 @@ public class Issuer {
 
 	public void setIssuedIn(Address IssuedIn) {
 		this.IssuedIn = IssuedIn;
-
 	}
 
 	public String getUrlLogo() {

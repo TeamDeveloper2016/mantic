@@ -4014,6 +4014,7 @@
 					tc_mantic_articulos.id_vigente,
 					tc_mantic_articulos.id_descontinuado,
 					tc_mantic_articulos.actualizado,
+          tc_mantic_articulos.id_articulo_impuesto,
 					tc_mantic_articulos.registro
 				from
 					tc_mantic_articulos
@@ -4900,17 +4901,20 @@
 					tc_mantic_unidades_medidas.clave codigo,
 					tc_mantic_ventas_detalles.nombre,
 					tc_mantic_articulos.descripcion,
-					tc_mantic_ventas_detalles.sat codigo_hacienda,
+					tc_mantic_ventas_detalles.sat as codigo_hacienda,
 					round(tc_mantic_ventas_detalles.unitario_sin_iva, 2) as precio,    
 				  round(tc_mantic_ventas_detalles.cantidad, 2) as cantidad,
 				  round(tc_mantic_ventas_detalles.sub_total, 2) as subtotal,
 				  round(tc_mantic_ventas_detalles.importe, 2) as total,
 					tc_mantic_ventas_detalles.iva,
-					round(tc_mantic_ventas_detalles.impuestos, 2) as impuestos											
+					round(tc_mantic_ventas_detalles.impuestos, 2) as impuestos,
+          tc_mantic_articulos_impuestos.codigo as codigo_impuesto
 				from 
 					tc_mantic_ventas_detalles
 				inner join
 					tc_mantic_articulos on tc_mantic_ventas_detalles.id_articulo = tc_mantic_articulos.id_articulo
+				inner join
+					tc_mantic_articulos_impuestos on tc_mantic_articulos.id_articulo_impuesto= tc_mantic_articulos_impuestos.id_articulo_impuesto
 				inner join
 					tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo = tc_mantic_articulos_codigos.id_articulo
 				inner join
@@ -4950,19 +4954,22 @@
 				  round(tc_mantic_ventas_detalles.sub_total, 2) as subtotal,
 				  round(tc_mantic_ventas_detalles.importe, 2) as total,
 					tc_mantic_ventas_detalles.iva,
-				  round(tc_mantic_ventas_detalles.impuestos, 2) as impuestos
+				  round(tc_mantic_ventas_detalles.impuestos, 2) as impuestos,
+          tc_mantic_articulos_impuestos.codigo as codigo_impuesto
 				from 
 					tc_mantic_ventas_detalles
 				inner join
-					tc_mantic_articulos on tc_mantic_ventas_detalles.id_articulo = tc_mantic_articulos.id_articulo
+					tc_mantic_articulos on tc_mantic_ventas_detalles.id_articulo= tc_mantic_articulos.id_articulo
 				inner join
-					tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo = tc_mantic_articulos_codigos.id_articulo
+					tc_mantic_articulos_impuestos on tc_mantic_articulos.id_articulo_impuesto= tc_mantic_articulos_impuestos.id_articulo_impuesto
 				inner join
-					tr_mantic_empaque_unidad_medida on tc_mantic_articulos.id_empaque_unidad_medida = tr_mantic_empaque_unidad_medida.id_empaque_unidad_medida
+					tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo= tc_mantic_articulos_codigos.id_articulo
+				inner join
+					tr_mantic_empaque_unidad_medida on tc_mantic_articulos.id_empaque_unidad_medida= tr_mantic_empaque_unidad_medida.id_empaque_unidad_medida
 				inner join 
-					tc_mantic_empaques on tr_mantic_empaque_unidad_medida.id_empaque = tc_mantic_empaques.id_empaque
+					tc_mantic_empaques on tr_mantic_empaque_unidad_medida.id_empaque= tc_mantic_empaques.id_empaque
 				inner join 
-					tc_mantic_unidades_medidas on tr_mantic_empaque_unidad_medida.id_unidad_medida = tc_mantic_unidades_medidas.id_unidad_medida
+					tc_mantic_unidades_medidas on tr_mantic_empaque_unidad_medida.id_unidad_medida= tc_mantic_unidades_medidas.id_unidad_medida
 				where 
 					{condicion}
 				group by 
@@ -5753,9 +5760,12 @@
 					tc_janal_paises.descripcion as pais,
 					tr_mantic_cliente_tipo_contacto.valor as correo,
 					tc_mantic_usos_cfdi.clave as tipo_cfdi,
-          tc_mantic_clientes.id_regimen_fiscal
+          tc_mantic_clientes.id_regimen_fiscal,
+          tc_mantic_regimenes_fiscales.codigo as regimen_fiscal
 				from
 					tc_mantic_clientes 
+				left join
+          tc_mantic_regimenes_fiscales on tc_mantic_clientes.id_regimen_fiscal= tc_mantic_regimenes_fiscales.id_regimen_fiscal
 				left join
 					tr_mantic_cliente_domicilio on tr_mantic_cliente_domicilio.id_cliente=tc_mantic_clientes.id_cliente and tr_mantic_cliente_domicilio.id_principal=1
 				left join
@@ -5791,7 +5801,9 @@
 					tc_janal_entidades.descripcion estado,
 					tc_janal_paises.descripcion pais,
 					tr_mantic_cliente_tipo_contacto.valor correo,
-					tc_mantic_usos_cfdi.clave tipo_cfdi
+					tc_mantic_usos_cfdi.clave tipo_cfdi,
+          tc_mantic_clientes.id_regimen_fiscal,
+          tc_mantic_regimenes_fiscales.codigo as regimen_fiscal
 				from
 					tc_mantic_ventas
 				inner join
@@ -5812,6 +5824,8 @@
 					tr_mantic_cliente_tipo_contacto on tc_mantic_clientes.id_cliente = tr_mantic_cliente_tipo_contacto.id_cliente and tr_mantic_cliente_tipo_contacto.id_tipo_contacto=9 and tr_mantic_cliente_tipo_contacto.orden=1
 				left join 
 					tc_mantic_usos_cfdi on tc_mantic_clientes.id_uso_cfdi = tc_mantic_usos_cfdi.id_uso_cfdi
+				left join
+          tc_mantic_regimenes_fiscales on tc_mantic_clientes.id_regimen_fiscal= tc_mantic_regimenes_fiscales.id_regimen_fiscal
 				where   
 					{condicion}
 			</select>
@@ -5831,9 +5845,13 @@
 					tc_janal_entidades.descripcion as estado,
 					tc_janal_paises.descripcion as pais,
 					tr_mantic_cliente_tipo_contacto.valor as correo,
-					tc_mantic_usos_cfdi.clave as tipo_cfdi
+					tc_mantic_usos_cfdi.clave as tipo_cfdi,
+          tc_mantic_clientes.id_regimen_fiscal,
+          tc_mantic_regimenes_fiscales.codigo as regimen_fiscal        
 				from					
 					tc_mantic_clientes
+				left join
+          tc_mantic_regimenes_fiscales on tc_mantic_clientes.id_regimen_fiscal= tc_mantic_regimenes_fiscales.id_regimen_fiscal
 				inner join
 					tr_mantic_cliente_domicilio on tr_mantic_cliente_domicilio.id_cliente = tc_mantic_clientes.id_cliente
 				inner join
@@ -5857,7 +5875,9 @@
 				select 
 					tc_mantic_clientes.id_cliente as id,
 					tc_mantic_clientes.rfc,
-					tc_mantic_clientes.razon_social as nombre,       					
+					tc_mantic_clientes.razon_social as nombre,    
+          tc_mantic_clientes.id_regimen_fiscal,
+          tc_mantic_regimenes_fiscales.codigo as regimen_fiscal,
 					tc_mantic_usos_cfdi.clave as uso_cfdi,				
 					tc_mantic_clientes.id_facturama,
 					tc_mantic_facturas.id_factura as folio,
@@ -5883,6 +5903,8 @@
 					tr_mantic_empresa_domicilio on tr_mantic_empresa_domicilio.id_empresa = tc_mantic_empresas.id_empresa_depende
 				left join
 					tc_mantic_domicilios on tc_mantic_domicilios.id_domicilio = tr_mantic_empresa_domicilio.id_domicilio and tr_mantic_empresa_domicilio.id_principal=1
+				left join
+          tc_mantic_regimenes_fiscales on tc_mantic_clientes.id_regimen_fiscal= tc_mantic_regimenes_fiscales.id_regimen_fiscal
 				where   
 					{condicion}
 			</select>
@@ -5898,7 +5920,9 @@
 					tc_mantic_facturas.observaciones,
 					tc_mantic_tipos_medios_pagos.clave medio_pago,
 					tc_mantic_domicilios.codigo_postal,
-					tc_mantic_tipos_pagos.clave metodo_pago
+					tc_mantic_tipos_pagos.clave metodo_pago,
+          tc_mantic_clientes.id_regimen_fiscal,
+          tc_mantic_regimenes_fiscales.codigo as regimen_fiscal
 				from
 					tc_mantic_ventas
 				inner join
@@ -5917,6 +5941,8 @@
 					tr_mantic_empresa_domicilio on tr_mantic_empresa_domicilio.id_empresa = tc_mantic_empresas.id_empresa_depende
 				left join
 					tc_mantic_domicilios on tc_mantic_domicilios.id_domicilio = tr_mantic_empresa_domicilio.id_domicilio and tr_mantic_empresa_domicilio.id_principal=1
+				left join
+          tc_mantic_regimenes_fiscales on tc_mantic_clientes.id_regimen_fiscal= tc_mantic_regimenes_fiscales.id_regimen_fiscal
 				where   
 					{condicion}
 			</select>
@@ -9816,11 +9842,12 @@
 					tc_mantic_clientes.id_cliente,
         	tc_mantic_clientes.clave,
           tc_mantic_clientes.razon_social,
-        tc_mantic_clientes.rfc,
+          tc_mantic_clientes.rfc,
 					domicilio_cliente.numero_interior,
 					concat(domicilio_cliente.calle, case  when domicilio_cliente.numero_exterior is null then ' ' else concat(' # ',domicilio_cliente.numero_exterior) end, case  when domicilio_cliente.numero_interior is null then ' ' else concat(' INT. ',domicilio_cliente.numero_interior) end) as cliente_direccion,	
           domicilio_cliente.codigo_postal,
 					domicilio_cliente.asentamiento as colonia,
+          concat(tc_mantic_regimenes_fiscales.codigo, ' - ', tc_mantic_regimenes_fiscales.nombre) as regimen_fiscal,        
 				  (select 
 					  group_concat(tr_mantic_cliente_tipo_contacto.valor separator ' , ') tels 
 					 from 
@@ -9868,6 +9895,8 @@
 					tr_mantic_persona_tipo_contacto telefono on responsable_cliente.id_persona = telefono.id_persona and telefono.id_tipo_contacto=1
 				left join 
 					tr_mantic_persona_tipo_contacto correo on telefono.id_persona = correo.id_persona and correo.id_tipo_contacto=9
+				left join
+          tc_mantic_regimenes_fiscales on tc_mantic_clientes.id_regimen_fiscal= tc_mantic_regimenes_fiscales.id_regimen_fiscal
         where
           tc_mantic_clientes.id_cliente in ({idCliente})
       </select>

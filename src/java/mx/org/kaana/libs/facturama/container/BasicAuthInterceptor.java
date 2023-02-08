@@ -25,4 +25,5 @@ public class BasicAuthInterceptor implements Authenticator {
 	public Request authenticateProxy(Proxy proxy, Response response) throws IOException {
 		return null;
 	}
+  
 }

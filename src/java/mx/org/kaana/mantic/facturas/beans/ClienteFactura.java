@@ -8,13 +8,14 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 public class ClienteFactura implements Serializable, IBaseDto {
 
 	private static final long serialVersionUID = -6145604204242433218L;
-	//Cliente
+	// Cliente
 	private Long id;	
 	private String idFacturama;
 	private String correo;
 	private String rfc;
 	private String nombre;
 	private String tipoCfdi;
+	private String regimenFiscal;
 	// Cfdi
 	private Long idFactura;
 	private String observaciones;
@@ -22,7 +23,7 @@ public class ClienteFactura implements Serializable, IBaseDto {
 	private String medioPago;
 	private String metodoPago;
 	private String usoCfdi;
-	//Direccion
+	// Direccion
 	private String calle;
 	private String numeroExterior;
 	private String numeroInterior;
@@ -46,6 +47,10 @@ public class ClienteFactura implements Serializable, IBaseDto {
 	}
 	
 	public ClienteFactura(Long id, String idFacturama, String correo, String rfc, String nombre, String tipoCfdi, String calle, String numeroExterior, String numeroInterior, String colonia, String codigoPostal, String localidad, String municipio, String estado, String pais, Long idFactura, String observaciones, String abreviaturaCfdi, String medioPago, String metodoPago, String usoCfdi) {
+    this(id, idFacturama, correo, rfc, nombre, tipoCfdi, calle, numeroExterior, numeroInterior, colonia, codigoPostal, localidad, municipio, estado, pais, idFactura, observaciones, abreviaturaCfdi, medioPago, metodoPago, usoCfdi, null);
+  }
+  
+	public ClienteFactura(Long id, String idFacturama, String correo, String rfc, String nombre, String tipoCfdi, String calle, String numeroExterior, String numeroInterior, String colonia, String codigoPostal, String localidad, String municipio, String estado, String pais, Long idFactura, String observaciones, String abreviaturaCfdi, String medioPago, String metodoPago, String usoCfdi, String regimenFiscal) {
 		this.id             = id;
 		this.idFacturama    = idFacturama;
 		this.correo         = correo;
@@ -67,6 +72,7 @@ public class ClienteFactura implements Serializable, IBaseDto {
 		this.medioPago      = medioPago;
 		this.metodoPago     = metodoPago;
 		this.usoCfdi        = usoCfdi;
+    this.regimenFiscal  = regimenFiscal;
 	}
 
 	public Long getId() {
@@ -236,6 +242,14 @@ public class ClienteFactura implements Serializable, IBaseDto {
 	public void setUsoCfdi(String usoCfdi) {
 		this.usoCfdi = usoCfdi;
 	}	
+  
+  public String getRegimenFiscal() {
+    return regimenFiscal;
+  }
+
+  public void setRegimenFiscal(String regimenFiscal) {
+    this.regimenFiscal = regimenFiscal;
+  }
 	
 	@Override
 	public int hashCode() {
@@ -310,9 +324,9 @@ public class ClienteFactura implements Serializable, IBaseDto {
 		return ClienteFactura.class;
 	}
 
-	@Override
-	public String toString() {
-		return "ClienteFactura{"+"id="+id+", idFacturama="+idFacturama+", correo="+correo+", rfc="+rfc+", nombre="+nombre+", tipoCfdi="+tipoCfdi+", idFactura="+idFactura+", observaciones="+observaciones+", abreviaturaCfdi="+abreviaturaCfdi+", medioPago="+medioPago+", metodoPago="+metodoPago+", usoCfdi="+usoCfdi+", calle="+calle+", numeroExterior="+numeroExterior+", numeroInterior="+numeroInterior+", colonia="+colonia+", codigoPostal="+codigoPostal+", localidad="+localidad+", municipio="+municipio+", estado="+estado+", pais="+pais+'}';
-	}
+  @Override
+  public String toString() {
+    return "ClienteFactura{" + "id=" + id + ", idFacturama=" + idFacturama + ", correo=" + correo + ", rfc=" + rfc + ", nombre=" + nombre + ", tipoCfdi=" + tipoCfdi + ", regimenFiscal=" + regimenFiscal + ", idFactura=" + idFactura + ", observaciones=" + observaciones + ", abreviaturaCfdi=" + abreviaturaCfdi + ", medioPago=" + medioPago + ", metodoPago=" + metodoPago + ", usoCfdi=" + usoCfdi + ", calle=" + calle + ", numeroExterior=" + numeroExterior + ", numeroInterior=" + numeroInterior + ", colonia=" + colonia + ", codigoPostal=" + codigoPostal + ", localidad=" + localidad + ", municipio=" + municipio + ", estado=" + estado + ", pais=" + pais + '}';
+  }
 	
 }

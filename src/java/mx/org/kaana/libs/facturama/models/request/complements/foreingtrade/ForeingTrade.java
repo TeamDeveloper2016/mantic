@@ -1,7 +1,7 @@
 package mx.org.kaana.libs.facturama.models.request.complements.foreingtrade;
 
-import mx.org.kaana.libs.facturama.models.request.Issuer;
 import java.util.List;
+import mx.org.kaana.libs.facturama.models.response.Issuer; // verificar por cambio de paquete request a response
 
 public class ForeingTrade {
 

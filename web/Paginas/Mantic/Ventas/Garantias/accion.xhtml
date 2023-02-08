@@ -30,6 +30,7 @@
 			
 			$(document).ready(function() {
 				jsArticulos= new Janal.Control.Articulos.Core(#{manticVentasGarantiasAccion.adminOrden.articulos.size()}, 'contenedorGrupos\\:tabla\\:');				
+				jsArticulos.codes= '\\:cantidades';				
 				readingModeLocal('#{manticVentasGarantiasAccion.attrs.nombreAccion}');
       });
 			

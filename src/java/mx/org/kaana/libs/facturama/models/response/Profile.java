@@ -1,7 +1,6 @@
 package mx.org.kaana.libs.facturama.models.response;
 
 import mx.org.kaana.libs.facturama.models.Address;
-import mx.org.kaana.libs.facturama.models.Csd;
 
 public class Profile {
 

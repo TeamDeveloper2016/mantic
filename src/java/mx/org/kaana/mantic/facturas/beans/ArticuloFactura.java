@@ -11,6 +11,7 @@ public class ArticuloFactura implements Serializable, IBaseDto {
 	private Long id;
 	private String idFacturama;
 	private String codigo;
+	private String codigoImpuesto;
 	private String codigoHacienda;
 	private String unidad;
 	private String identificador;
@@ -37,6 +38,10 @@ public class ArticuloFactura implements Serializable, IBaseDto {
 	}
 	
 	public ArticuloFactura(Long id, String idFacturama, String codigo, String unidad, String identificador, String nombre, String descripcion, double precio, String codigoHacienda, double iva, double cantidad,	double subtotal, double total, double base) {
+    this(id, idFacturama, codigo, unidad, identificador, nombre, descripcion, 0, codigoHacienda, 0, 0, 0, 0, 0, "04");
+  }
+  
+	public ArticuloFactura(Long id, String idFacturama, String codigo, String unidad, String identificador, String nombre, String descripcion, double precio, String codigoHacienda, double iva, double cantidad,	double subtotal, double total, double base, String codigoImpuesto) {
 		this.id            = id;
 		this.idFacturama   = idFacturama;
 		this.codigo        = codigo;
@@ -52,6 +57,7 @@ public class ArticuloFactura implements Serializable, IBaseDto {
 		this.total         = total;
 		this.base          = base;
 		this.impuestos     = 0D;
+    this.codigoImpuesto= codigoImpuesto;
 	}
 
 	public Long getId() {
@@ -77,6 +83,14 @@ public class ArticuloFactura implements Serializable, IBaseDto {
 	public void setCodigo(String codigo) {
 		this.codigo = codigo;
 	}
+
+  public String getCodigoImpuesto() {
+    return codigoImpuesto;
+  }
+
+  public void setCodigoImpuesto(String codigoImpuesto) {
+    this.codigoImpuesto = codigoImpuesto;
+  }
 
 	public String getUnidad() {
 		return unidad;
@@ -246,4 +260,5 @@ public class ArticuloFactura implements Serializable, IBaseDto {
 	public Class toHbmClass() {
 		return ArticuloFactura.class;
 	}
+  
 }

@@ -1,4 +1,3 @@
-//preguntar a diego
 package mx.org.kaana.libs.facturama.services;
 
 import java.util.Date;
@@ -8,13 +7,14 @@ import com.beust.jcommander.converters.BaseConverter;
 
 public class ISODateTimeConverter extends BaseConverter<Date> {
 
-	private DateTimeFormatter isoDateTimeFormat = ISODateTimeFormat.basicDateTime();
+  private DateTimeFormatter isoDateTimeFormat = ISODateTimeFormat.basicDateTime();
 
-	public ISODateTimeConverter(String string) {
-		super(string);
-	}
+  public ISODateTimeConverter(String string) {
+    super(string);
+  }
 
-	public Date convert(String format) {
-		return isoDateTimeFormat.parseDateTime(format).toDate();
-	}
+  public Date convert(String format) {
+    return isoDateTimeFormat.parseDateTime(format).toDate();
+  }
+  
 }

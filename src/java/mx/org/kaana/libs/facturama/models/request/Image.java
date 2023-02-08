@@ -20,4 +20,5 @@ public class Image {
 	public void setType(String Type) {
 		this.Type = Type;
 	}
+  
 }

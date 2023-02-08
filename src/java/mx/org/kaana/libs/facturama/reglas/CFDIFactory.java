@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.libs.facturama.container.FacturamaApi;
 import mx.org.kaana.libs.facturama.models.Address;
@@ -17,6 +18,7 @@ import mx.org.kaana.libs.facturama.models.request.Item;
 import mx.org.kaana.libs.facturama.models.request.Receiver;
 import mx.org.kaana.libs.facturama.models.request.Tax;
 import mx.org.kaana.libs.facturama.models.response.CfdiSearchResult;
+import mx.org.kaana.libs.facturama.models.response.CancelationStatus;
 import mx.org.kaana.libs.facturama.services.CfdiService;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Numero;
@@ -107,7 +109,8 @@ public class CFDIFactory implements Serializable {
 			null, // idBranch
 			null, // serie
 			CfdiService.CfdiStatus.Active, // status
-			CfdiService.InvoiceType.Issued // type
+			CfdiService.InvoiceType.Issued, // type
+      null // orderNumber
 		);
 	}
 	
@@ -122,7 +125,8 @@ public class CFDIFactory implements Serializable {
 			null, // idBranch
 			null, // serie
 			CfdiService.CfdiStatus.Active, // status
-			CfdiService.InvoiceType.Issued // type
+			CfdiService.InvoiceType.Issued, // type
+      null // orderNumber
 		);
 	}
 	
@@ -154,11 +158,23 @@ public class CFDIFactory implements Serializable {
 		this.facturama.Cfdis().SavePdf(path.concat(name).concat(".").concat(EFormatos.PDF.name().toLowerCase()), id);
 	}	
 
-	public mx.org.kaana.libs.facturama.models.response.Cfdi cfdiRemove(String id) throws Exception {
-		mx.org.kaana.libs.facturama.models.response.Cfdi regresar= null;
+//	public mx.org.kaana.libs.facturama.models.response.Cfdi cfdiRemove(String id) throws Exception {
+//		mx.org.kaana.libs.facturama.models.response.Cfdi regresar= null;
+//		try {
+//			if(Configuracion.getInstance().isEtapaProduccion() || Configuracion.getInstance().isEtapaPruebas())
+//			  regresar= this.facturama.Cfdis().Remove(id);
+//		} // try
+//		catch (Exception e) {			
+//			throw e;
+//		} // catch		
+//		return regresar;
+//	} // cfdiRemove
+  
+	public CancelationStatus cfdiRemove(String id) throws Exception {
+		CancelationStatus regresar= null;
 		try {
 			if(Configuracion.getInstance().isEtapaProduccion() || Configuracion.getInstance().isEtapaPruebas())
-			  regresar= this.facturama.Cfdis().Remove(id);
+			  regresar= this.facturama.Cfdis().Remove(id, CfdiType.Ingreso.getValue(), "*AUN NO SE*", "AUN NO SE");
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -171,8 +187,8 @@ public class CFDIFactory implements Serializable {
 		Cfdi cfdi      = null;
 		try {
 			if(Configuracion.getInstance().isEtapaProduccion() || Configuracion.getInstance().isEtapaPruebas() || Configuracion.getInstance().isEtapaDesarrollo()) {
-			  cfdi= loadCfdi(encabezado, detalle);
-			  regresar= createCfdi(cfdi).getId();
+			  cfdi= this.loadCfdi(encabezado, detalle);
+			  regresar= this.createCfdi(cfdi).getId();
 			} // if	
 		} // try
 		catch (Exception e) {			
@@ -199,7 +215,10 @@ public class CFDIFactory implements Serializable {
 		mx.org.kaana.libs.facturama.models.response.Cfdi regresar= null;
 		try {
 			if(Configuracion.getInstance().isEtapaProduccion() || Configuracion.getInstance().isEtapaPruebas() || Configuracion.getInstance().isEtapaDesarrollo())
-			  regresar= this.facturama.Cfdis().Create(cfdi);
+        if(Objects.equals(Configuracion.getInstance().getPropiedad("sistema.nivel.facturacion"), "4.0"))  
+			    regresar= this.facturama.Cfdis().Create3(cfdi);
+        else 
+			    regresar= this.facturama.Cfdis().Create(cfdi);
 		} // try
 		catch (Exception e) {			
       LOG.error("Factura para: "+ cfdi.getReceiver().getName()+ " ["+ cfdi.getReceiver().getRfc()+ "]");
@@ -209,7 +228,7 @@ public class CFDIFactory implements Serializable {
 		return regresar;
 	} // createCfdi
 	
-	private Cfdi loadCfdi(ClienteFactura encabezado, List<ArticuloFactura> detalle){		
+	private Cfdi loadCfdi(ClienteFactura encabezado, List<ArticuloFactura> detalle) {		
 		Cfdi regresar= null;
 		try {
 			regresar= new Cfdi();
@@ -219,8 +238,8 @@ public class CFDIFactory implements Serializable {
 			regresar.setCfdiType(CfdiType.Ingreso.getValue());
 			regresar.setPaymentForm(encabezado.getMedioPago());
 			regresar.setPaymentMethod(encabezado.getMetodoPago());
-			regresar.setReceiver(toReceiver(encabezado));
-			regresar.setItems(detalleFactura(detalle));
+			regresar.setReceiver(this.toReceiver(encabezado));
+			regresar.setItems(this.detalleFactura(detalle));
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -228,14 +247,17 @@ public class CFDIFactory implements Serializable {
 		return regresar;
 	} // loadCfdi
 	
-	private Receiver toReceiver(ClienteFactura encabezado){
+	private Receiver toReceiver(ClienteFactura encabezado) {
 		Receiver regresar= null;
 		try {
 			regresar= new Receiver();
 			regresar.setRfc(encabezado.getRfc());
 			regresar.setName(encabezado.getNombre());
 			regresar.setCfdiUse(encabezado.getUsoCfdi().substring(0, 3));
-		//regresar.setCfdiUse("G03");
+      if(Objects.equals(Configuracion.getInstance().getPropiedad("sistema.nivel.facturacion"), "4.0")) {
+		    regresar.setFiscalRegime(encabezado.getRegimenFiscal());
+        regresar.setTaxZipCode(encabezado.getCodigoPostal());
+      } // if  
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -243,7 +265,7 @@ public class CFDIFactory implements Serializable {
 		return regresar;
 	} // toReceiver
 	
-	private List<Item> detalleFactura(List<ArticuloFactura> articulos){
+	private List<Item> detalleFactura(List<ArticuloFactura> articulos) {
 		List<Item> regresar= null;
 		Item articulo      = null;
 		try {
@@ -267,7 +289,9 @@ public class CFDIFactory implements Serializable {
 				articulo.setQuantity(record.getCantidad());
 				articulo.setSubtotal(record.getSubtotal());
 				articulo.setTotal(record.getTotal());				
-				articulo.setTaxes(toTaxArticulo(record));
+				articulo.setTaxes(this.toTaxArticulo(record));
+        if(Objects.equals(Configuracion.getInstance().getPropiedad("sistema.nivel.facturacion"), "4.0"))
+          articulo.setTaxObject(record.getCodigoImpuesto());
 				regresar.add(articulo);
 			} // for
 		} // try
@@ -277,7 +301,7 @@ public class CFDIFactory implements Serializable {
 		return regresar;		
 	} // detalleFactura
 	
-	private List<Tax> toTaxArticulo(ArticuloFactura articulo){
+	private List<Tax> toTaxArticulo(ArticuloFactura articulo) {
 		List<Tax> regresar= null;
 		Tax taxArticulo   = null;
 		try {
@@ -300,9 +324,9 @@ public class CFDIFactory implements Serializable {
 		String regresar= null;
 		Client cliente = null;
 		try {
-		  cliente= loadCliente(detalleCliente);
+		  cliente= this.loadCliente(detalleCliente);
 			if(Configuracion.getInstance().isEtapaProduccion() || Configuracion.getInstance().isEtapaPruebas() || Configuracion.getInstance().isEtapaDesarrollo())
-			  regresar= createClient(cliente).getId();
+			  regresar= this.createClient(cliente).getId();
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -352,6 +376,8 @@ public class CFDIFactory implements Serializable {
 			pivote.setEmail(cliente.getEmail());
 			pivote.setName(cliente.getName());
 			pivote.setRfc(cliente.getRfc());
+      pivote.setFiscalRegime(cliente.getFiscalRegime()); // CFDI 4.0
+      pivote.setTaxZipCode(cliente.getTaxZipCode()); // CFDI 4.0
 			if(Configuracion.getInstance().isEtapaProduccion() || Configuracion.getInstance().isEtapaPruebas() || Configuracion.getInstance().isEtapaDesarrollo())
 			  regresar= this.facturama.Clients().Update(pivote, pivote.getId());
 		} // try
@@ -397,6 +423,10 @@ public class CFDIFactory implements Serializable {
 			regresar.setEmail(cliente.getCorreo());
 			regresar.setName(cliente.getNombre());
 			regresar.setRfc(cliente.getRfc());
+      if(!Cadena.isVacio(cliente.getRegimenFiscal()))
+        regresar.setFiscalRegime(cliente.getRegimenFiscal()); // CFDI 4.0
+      if(!Cadena.isVacio(cliente.getCodigoPostal()))
+        regresar.setTaxZipCode(cliente.getCodigoPostal()); // CFDI 4.0
 		} // try
 		catch (Exception e) {
 			throw e;

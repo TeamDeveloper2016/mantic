@@ -7,11 +7,11 @@ import java.util.List;
 
 public class ClientService extends CrudService<Client, Client> {
 
-	public ClientService(OkHttpClient client) {
-		super(client, "client");
+  public ClientService(OkHttpClient client) {
+    super(client, "client");
 
-		singleType = Client.class;
-		multiType = new TypeToken<List<Client>>() {
-		}.getType();
-	}
+    singleType = Client.class;
+    multiType = new TypeToken<List<Client>>() {}.getType();
+  }
+  
 }

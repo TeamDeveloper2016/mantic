@@ -127,5 +127,4 @@ public class Product {
 		return "Product{"+"Id="+Id+", UnitCode="+UnitCode+", Unit="+Unit+", IdentificationNumber="+IdentificationNumber+", Name="+Name+", Description="+Description+", Price="+Price+", CodeProdServ="+CodeProdServ+", CuentaPredial="+CuentaPredial+", Taxes="+Taxes+'}';
 	}
 	
-	
 }

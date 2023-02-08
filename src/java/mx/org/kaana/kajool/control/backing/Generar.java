@@ -27,6 +27,7 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.db.dto.TcManticFacturasDto;
@@ -156,7 +157,7 @@ public class Generar extends BaseMenu implements Serializable {
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
 			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-			cfdis= UIEntity.build("TcManticUsosCfdiDto", "row", params, columns, Constantes.SQL_TODOS_REGISTROS);
+			cfdis= UIEntity.build("TcManticUsosCfdiDto", Objects.equals(Configuracion.getInstance().getPropiedad("sistema.nivel.facturacion"), "4.0")? "rows": "row", params, columns, Constantes.SQL_TODOS_REGISTROS);
 			this.attrs.put("cfdis", cfdis);
       if(cfdis!= null && !cfdis.isEmpty())
         for(Entity item: cfdis) {

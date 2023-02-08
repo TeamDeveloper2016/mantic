@@ -79,6 +79,11 @@ public class Transaccion extends IBaseTnx {
     this.idProveedor= idProveedor;
 	}
 	
+	public Transaccion(Long idArticulo, Long idProveedor) {
+		this.idArticulo=idArticulo;
+    this.idProveedor= idProveedor;
+	}
+	
 	public Transaccion(Long idArticulo, Double precio, String descuento, String extra, List<TiposVentas> articulos, String sat) {
 		this.idArticulo= idArticulo;
 		this.precio    = precio;
@@ -106,7 +111,7 @@ public class Transaccion extends IBaseTnx {
 			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" el precio del tipo de venta del articulo.");
 			switch(accion) {
 				case MODIFICAR:
-					articulo= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, this.idArticulo);
+					articulo= (TcManticArticulosDto)DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, this.idArticulo);
 					articulo.setPrecio(this.precio);
 					articulo.setDescuento(this.descuento);
 					articulo.setExtra(this.extra);
@@ -136,25 +141,25 @@ public class Transaccion extends IBaseTnx {
 					} // if
 					break;
 				case PROCESAR:
-					articulo= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, this.idArticulo);
+					articulo= (TcManticArticulosDto)DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, this.idArticulo);
 					articulo.setIdRedondear(this.idRedondear);
 					articulo.setActualizado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 					regresar= DaoFactory.getInstance().update(sesion, articulo)>= 1L;
 					break;
 				case CALCULAR:
-					articulo= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, this.idArticulo);
+					articulo= (TcManticArticulosDto)DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, this.idArticulo);
 					articulo.setIdVigente(this.idVigente);
 					articulo.setActualizado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 					regresar= DaoFactory.getInstance().update(sesion, articulo)>= 1L;
 					break;
 				case LISTAR:
-					articulo= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, this.idArticulo);
+					articulo= (TcManticArticulosDto)DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, this.idArticulo);
 					articulo.setIdDescontinuado(this.idDescontinuado);
 					articulo.setActualizado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 					regresar= DaoFactory.getInstance().update(sesion, articulo)>= 1L;
 					break;
 				case COMPLEMENTAR:
-					articulo= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, this.idArticulo);
+					articulo= (TcManticArticulosDto)DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, this.idArticulo);
 					articulo.setSat(this.sat);
 					articulo.setActualizado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 					regresar= DaoFactory.getInstance().update(sesion, articulo)>= 1L;
@@ -185,13 +190,21 @@ public class Transaccion extends IBaseTnx {
 					regresar= DaoFactory.getInstance().delete(sesion, TcManticArticulosCodigosDto.class, this.idArticulo)>= 1L;
 					break;
 				case MOVIMIENTOS:
-					TcManticAlmacenesArticulosDto almacenArticulo= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().findById(TcManticAlmacenesArticulosDto.class, this.almacen.getKey());
+					TcManticAlmacenesArticulosDto almacenArticulo= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().findById(sesion, TcManticAlmacenesArticulosDto.class, this.almacen.getKey());
 					if(almacenArticulo!= null) {
 						almacenArticulo.setMinimo(this.almacen.toDouble("min"));
 						almacenArticulo.setMaximo(this.almacen.toDouble("max"));
 						regresar= DaoFactory.getInstance().update(sesion, almacenArticulo)> 0;
 					} // if
 					break;
+        case JUSTIFICAR:
+    			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" impuesto del articulo.");
+          articulo= (TcManticArticulosDto)DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, this.idArticulo);
+          if(articulo!= null) {
+            articulo.setIdArticuloImpuesto(this.idProveedor);
+            regresar= DaoFactory.getInstance().update(sesion, articulo)> 0L;     
+          } // if
+          break;
 			} // switch
 			if(!regresar)
         throw new Exception("");

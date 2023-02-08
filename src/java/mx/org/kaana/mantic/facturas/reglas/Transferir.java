@@ -8,6 +8,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
@@ -494,8 +495,9 @@ public class Transferir extends IBaseTnx {
 	} // exists
 
   private String toCadenaOriginal(String xml) throws Exception {
+    LOG.warn("Generando cadena original: ".concat(Objects.equals(Configuracion.getInstance().getPropiedad("sistema.nivel.facturacion"), "4.0")? "cadenaoriginal_4_0.xslt": "cadenaoriginal_3_3.xslt"));
 		StreamSource source       = new StreamSource(new File(xml));
-		StreamSource stylesource  = new StreamSource(this.getClass().getResourceAsStream("/mx/org/kaana/mantic/libs/factura/cadenaoriginal_3_3.xslt"));
+		StreamSource stylesource  = new StreamSource(this.getClass().getResourceAsStream("/mx/org/kaana/mantic/libs/factura/".concat(Objects.equals(Configuracion.getInstance().getPropiedad("sistema.nivel.facturacion"), "4.0")? "cadenaoriginal_4_0.xslt": "cadenaoriginal_3_3.xslt")));
 		TransformerFactory factory= TransformerFactory.newInstance();
 		Transformer transformer   = factory.newTransformer(stylesource);
 		StreamResult result       = new StreamResult(new StringWriter());
@@ -556,6 +558,7 @@ public class Transferir extends IBaseTnx {
 	
 	private void toSaveFiles(Session sesion, CfdiSearchResult cfdi, Cfdi detail, Long idFactura, Calendar calendar, String path) throws Exception {
 		if(!this.files(sesion, idFactura)) { 
+      LOG.warn("Insertando XML: ".concat(cfdi.getRfc().concat("-").concat(cfdi.getFolio()).concat(".").concat(EFormatos.XML.name().toLowerCase())));
 			TcManticFacturasArchivosDto xml= new TcManticFacturasArchivosDto(
 				idFactura, 
 				path, 

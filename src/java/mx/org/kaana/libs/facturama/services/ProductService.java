@@ -7,11 +7,11 @@ import java.util.List;
 
 public class ProductService extends CrudService<Product, Product> {
 
-	public ProductService(OkHttpClient client) {
-		super(client, "product");
+  public ProductService(OkHttpClient client) {
+    super(client, "product");
 
-		singleType = Product.class;
-		multiType = new TypeToken<List<Product>>() {
-		}.getType();
-	}
+    singleType = Product.class;
+    multiType = new TypeToken<List<Product>>() {}.getType();
+  }
+  
 }

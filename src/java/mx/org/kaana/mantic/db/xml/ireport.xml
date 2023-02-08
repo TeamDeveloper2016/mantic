@@ -953,7 +953,10 @@
 				  tc_mantic_facturas.certificado_digital,
 				  tc_mantic_facturas.folio_fiscal,
 				  tc_mantic_facturas.certificacion,
-					concat(tc_mantic_tipos_pagos.clave, '-', tc_mantic_tipos_pagos.nombre) metodo_pago
+					concat(tc_mantic_tipos_pagos.clave, '-', tc_mantic_tipos_pagos.nombre) metodo_pago,
+          tc_mantic_regimenes_fiscales.nombre as regimen_fiscal,
+          tc_mantic_articulos_impuestos.codigo as codigo_impuesto,
+          tc_mantic_articulos_impuestos.nombre as nombre_impuesto
 				from 
 					tc_mantic_ventas
 				inner join
@@ -968,6 +971,10 @@
 					tc_mantic_usos_cfdi on tc_mantic_ventas.id_uso_cfdi = tc_mantic_usos_cfdi.id_uso_cfdi
 				left join
 					tc_mantic_articulos on tc_mantic_ventas_detalles.id_articulo = tc_mantic_articulos.id_articulo
+				left join
+					tc_mantic_articulos_impuestos on tc_mantic_articulos.id_articulo_impuesto= tc_mantic_articulos_impuestos.id_articulo_impuesto
+				left join
+					tc_mantic_regimenes_fiscales on tc_mantic_ventas.id_regimen_fiscal= tc_mantic_regimenes_fiscales.id_regimen_fiscal
 				where  
 					tc_mantic_ventas.id_venta = {idFicticia}
 				order by

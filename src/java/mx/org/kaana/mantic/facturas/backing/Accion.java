@@ -23,6 +23,7 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.ventas.reglas.MotorBusqueda;
@@ -118,7 +119,6 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			this.loadTiposMediosPagos();
 			this.loadTiposPagos();
 			this.doLoad();
-      this.toLoadRegimenesFiscales();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -163,7 +163,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 						if(idClienteDomicilio!= null && !idClienteDomicilio.equals(-1L))
 							this.attrs.put("domicilio", new UISelectEntity(idClienteDomicilio));
 					} // if
-					loadCatalogs();					
+					this.loadCatalogs();					
           break;
       } // switch			
     } // try
@@ -403,7 +403,9 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
       ((FacturaFicticia)this.getAdminOrden().getOrden()).setIdClienteDomicilio(((Entity)this.attrs.get("domicilio")).getKey());		
       if(((FacturaFicticia)this.getAdminOrden().getOrden()).getTipoDeCambio()< 1)
         ((FacturaFicticia)this.getAdminOrden().getOrden()).setTipoDeCambio(1D);
-
+      // ESTO ES PARA LA FACTURACION 4.0
+      if(this.getIkRegimenFiscal()!= null && !Objects.equals(this.getIkRegimenFiscal().getKey(), -1L)) 
+        ((FacturaFicticia)this.getAdminOrden().getOrden()).setIdRegimenFiscal(this.getIkRegimenFiscal().getKey());
       if(!Objects.equals(seleccion.getKey(), Constantes.VENTA_AL_PUBLICO_GENERAL_ID_KEY)) {
         TcManticClientesDto customer= (TcManticClientesDto)DaoFactory.getInstance().findById(TcManticClientesDto.class, seleccion.getKey());
         // ACTUALIZAR EL REGIMEN FISCAL PARA ESTE CLIENTE EN CASO DE QUE NO TENGA O SEA DIFERENTE
@@ -667,7 +669,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 		} // catch		
 	} // doUpdateForEmpresa	
 	
-	private void loadClienteDefault(){
+	private void loadClienteDefault() {
 		UISelectEntity seleccion              = null;
 		List<UISelectEntity> clientesSeleccion= null;
 		MotorBusqueda motorBusqueda           = null;
@@ -855,15 +857,13 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 	
 	private void loadCfdis(){
 		List<UISelectEntity> cfdis= null;
-		List<Columna> campos      = null;
-		Map<String, Object>params = null;
+		List<Columna> columns     = new ArrayList<>();
+		Map<String, Object>params = new HashMap<>();
 		try {
-			params= new HashMap<>();
-			campos= new ArrayList<>();
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-			campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-			campos.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
-			cfdis= UIEntity.build("TcManticUsosCfdiDto", "row", params, campos, Constantes.SQL_TODOS_REGISTROS);
+			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+			cfdis= UIEntity.build("TcManticUsosCfdiDto", Objects.equals(Configuracion.getInstance().getPropiedad("sistema.nivel.facturacion"), "4.0")? "rows": "row", params, columns, Constantes.SQL_TODOS_REGISTROS);
 			this.attrs.put("cfdis", cfdis);
 			this.attrs.put("cfdi", new UISelectEntity("-1"));
 			for(Entity record: cfdis){
@@ -957,18 +957,9 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 		List<Columna> columns     = new ArrayList<>();    
     Map<String, Object> params= new HashMap<>();
     List<UISelectEntity> regimenesFiscales= null;
-    String rfc                = null;
     try {      
       UISelectEntity cliente= (UISelectEntity)this.attrs.get("clienteSeleccion");
-      if(cliente!= null && cliente.toString("rfc")!= null)
-        rfc= cliente.toString("rfc");
-//      if(rfc!= null && !Cadena.isVacio(rfc) && rfc.trim().length()== 13)
-//        params.put("idTipoRegimenPersona", "1");      
-//      else 
-//        if(rfc!= null && !Cadena.isVacio(rfc) && rfc.trim().length()== 12)
-//          params.put("idTipoRegimenPersona", "2");      
-//        else
-          params.put("idTipoRegimenPersona", "1, 2");                  
+      params.put("idTipoRegimenPersona", "1, 2");                  
       columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       regimenesFiscales= (List<UISelectEntity>) UIEntity.seleccione("TcManticRegimenesFiscalesDto", "tipo", params, columns, "codigo");

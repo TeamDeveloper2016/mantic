@@ -251,6 +251,7 @@ public class Transaccion extends TransaccionFactura {
 				this.articulo.getArticulo().setStock(0D);
 				this.articulo.getArticulo().setCantidad(1D);
 				this.articulo.getArticulo().setIdArticuloTipo(this.articulo.getIdTipoArticulo());
+				this.articulo.getArticulo().setIdArticuloImpuesto(this.articulo.getArticulo().getIdArticuloImpuesto());
 				// ESTO ES UN PARCHE, POR DEFECTO SE LE VA AGREGAR COMO UNIDAD DE MEDIDA LA PIEZA
 				this.articulo.getArticulo().setIdEmpaqueUnidadMedida(this.toFindUnidadMedida(sesion, "PIEZA"));
 				idCategoria= this.articulo.getArticulo().getIdCategoria()!= null && this.articulo.getArticulo().getIdCategoria() < 1L ? null : this.articulo.getArticulo().getIdCategoria();

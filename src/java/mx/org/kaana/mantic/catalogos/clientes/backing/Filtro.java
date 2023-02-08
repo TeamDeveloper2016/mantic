@@ -78,18 +78,16 @@ public class Filtro extends IBaseFilter implements Serializable {
 	
   @Override
   public void doLoad() {
-    List<Columna> campos     = null;		
-		Map<String, Object>params= null;
+    List<Columna> columns    = new ArrayList<>();		
+		Map<String, Object>params= new HashMap<>();
     try {
-			params= new HashMap<>();
-      campos= new ArrayList<>();
-      campos.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));      
-      campos.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));    
+      columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));      
+      columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));    
 			params.put(Constantes.SQL_CONDICION, toCondicion());
 			params.put("idPrincipal", 1L);
 			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getDependencias());			
 			params.put("credito", this.attrs.get("credito"));			
-      this.lazyModel = new FormatCustomLazy("VistaClientesDto", "row", params, campos);
+      this.lazyModel = new FormatCustomLazy("VistaClientesDto", "row", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
@@ -97,7 +95,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       JsfBase.addMessageError(e);
     } // catch
     finally {
-      Methods.clean(campos);
+      Methods.clean(columns);
     } // finally		
   } // doLoad
 
@@ -178,11 +176,10 @@ public class Filtro extends IBaseFilter implements Serializable {
 	}
 	
 	public List<UISelectEntity> doCompleteCliente(String codigo) {
- 		List<Columna> columns     = null;
+ 		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
 		boolean buscaPorCodigo    = false;
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
