@@ -162,7 +162,7 @@
               <p:outputLabel for="fabricante" value="Código fabricante:" rendered="false"/>
               <p:inputText id="fabricante" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.fabricante}" rendered="false"/>
               <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-120, janal-wid-100-txt">
-								<p:outputLabel for="idArticuloImpuesto" value="Código impuesto:"/>
+								<p:outputLabel for="idArticuloImpuesto" value="Objeto impuesto:"/>
                 <p:selectOneMenu id="idArticuloImpuesto" value="#{manticCatalogosArticulosAccion.registroArticulo.ikArticuloImpuesto}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                   <f:selectItems value="#{manticCatalogosArticulosAccion.attrs.articulosImpuestos}" var="element" itemValue="#{element}" itemLabel="#{element.codigo} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
                   <p:column headerText="Código">
