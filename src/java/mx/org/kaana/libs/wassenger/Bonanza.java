@@ -170,7 +170,7 @@ public final class Bonanza implements Serializable {
         else
           value= (Value)DaoFactory.getInstance().toField("TcManticMensajesDto", "existe", params, "idKey");
         if(value== null) {
-          if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.PRODUCCION))
+          if(!Configuracion.getInstance().isEtapaProduccion())
             LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_MESSAGE, params, true)+ "}");
           else {  
             HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
@@ -232,7 +232,7 @@ public final class Bonanza implements Serializable {
         else
           value= (Value)DaoFactory.getInstance().toField("TcManticMensajesDto", "existe", params, "idKey");
         if(value== null) {
-          if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.PRODUCCION))
+          if(!Configuracion.getInstance().isEtapaProduccion())
             LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_PROVEEDOR, params, true)+ "}");
           else {  
             HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
@@ -289,7 +289,7 @@ public final class Bonanza implements Serializable {
       params.put("ticket", this.ticket);
       params.put("fecha", this.fecha);
       params.put("saludo", this.toSaludo());
-      if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.PRODUCCION))
+      if(!Configuracion.getInstance().isEtapaProduccion())
         LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_OPEN_NOMINA, params, true)+ "}");
       else {  
         HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
@@ -340,7 +340,7 @@ public final class Bonanza implements Serializable {
       params.put("ticket", this.ticket);
       params.put("fecha", this.fecha);
       params.put("saludo", this.toSaludo());
-      if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.PRODUCCION))
+      if(!Configuracion.getInstance().isEtapaProduccion())
         LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_CLOSE_NOMINA, params, true)+ "}");
       else {  
         HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
@@ -404,7 +404,7 @@ public final class Bonanza implements Serializable {
         params.put("ticket", this.ticket);
         params.put("fecha", this.fecha);
         params.put("saludo", this.toSaludo());
-        if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.PRODUCCION))
+        if(!Configuracion.getInstance().isEtapaProduccion())
           LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_FACTURA, params, true)+ "}");
         else {  
           HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
@@ -465,7 +465,7 @@ public final class Bonanza implements Serializable {
         params.put("ticket", this.ticket);
         params.put("fecha", this.fecha);
         params.put("saludo", this.toSaludo());
-        if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.PRODUCCION))
+        if(!Configuracion.getInstance().isEtapaProduccion())
           LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_TICKET, params, true)+ "}");
         else {  
           HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
@@ -522,7 +522,7 @@ public final class Bonanza implements Serializable {
         params.put("ticket", this.ticket);
         params.put("fecha", this.fecha);
         params.put("saludo", this.toSaludo());
-        if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.PRODUCCION))
+        if(!Configuracion.getInstance().isEtapaProduccion())
           LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_DEVOLUCION, params, true)+ "}");
         else {  
           HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
@@ -579,7 +579,7 @@ public final class Bonanza implements Serializable {
         params.put("ticket", this.ticket);
         params.put("fecha", this.fecha);
         params.put("saludo", this.toSaludo());
-        if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.PRODUCCION))
+        if(!Configuracion.getInstance().isEtapaProduccion())
           LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_PAGO_CUENTA, params, true)+ "}");
         else {  
           HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
@@ -640,7 +640,7 @@ public final class Bonanza implements Serializable {
         params.put("ticket", this.ticket);
         params.put("fecha", this.fecha);
         params.put("saludo", this.toSaludo());
-        if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.PRODUCCION))
+        if(!Configuracion.getInstance().isEtapaProduccion())
           LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_ORDEN_COMPRA, params, true)+ "}");
         else {  
           HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
@@ -697,7 +697,7 @@ public final class Bonanza implements Serializable {
         params.put("ticket", this.ticket);
         params.put("fecha", this.fecha);
         params.put("saludo", this.toSaludo());
-        if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.PRODUCCION))
+        if(!Configuracion.getInstance().isEtapaProduccion())
           LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_RESIDENTE, params, true)+ "}");
         else {  
           HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
@@ -754,7 +754,7 @@ public final class Bonanza implements Serializable {
         params.put("ticket", this.ticket);
         params.put("fecha", this.fecha);
         params.put("saludo", this.toSaludo());
-        if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.PRODUCCION))
+        if(!Configuracion.getInstance().isEtapaProduccion())
           LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_GASTO_CHICA, params, true)+ "}");
         else {  
           HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
@@ -811,7 +811,7 @@ public final class Bonanza implements Serializable {
         params.put("ticket", this.ticket);
         params.put("fecha", this.fecha);
         params.put("saludo", this.toSaludo());
-        if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.PRODUCCION))
+        if(!Configuracion.getInstance().isEtapaProduccion())
           LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_CAJA_CHICA, params, true)+ "}");
         else {  
           HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
@@ -872,7 +872,7 @@ public final class Bonanza implements Serializable {
         params.put("ticket", this.ticket);
         params.put("fecha", this.fecha);
         params.put("saludo", this.toSaludo());
-        if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.PRODUCCION))
+        if(!Configuracion.getInstance().isEtapaProduccion())
           LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_CHECK_CORREO, params, true)+ "}");
         else {  
           HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
@@ -933,7 +933,7 @@ public final class Bonanza implements Serializable {
         params.put("ticket", this.ticket);
         params.put("fecha", this.fecha);
         params.put("saludo", this.toSaludo());
-        if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.PRODUCCION))
+        if(!Configuracion.getInstance().isEtapaProduccion())
           LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_CHECK_RFC, params, true)+ "}");
         else {  
           HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")

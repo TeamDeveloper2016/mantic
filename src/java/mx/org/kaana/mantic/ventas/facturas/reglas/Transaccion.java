@@ -31,6 +31,7 @@ import mx.org.kaana.mantic.enums.ETipoPago;
 import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.facturas.beans.ClienteFactura;
 import mx.org.kaana.mantic.facturas.beans.Correo;
+import mx.org.kaana.mantic.facturas.enums.EMotivoCancelacion;
 import mx.org.kaana.mantic.ventas.beans.TicketVenta;
 import org.apache.log4j.Logger;
 
@@ -126,12 +127,12 @@ public class Transaccion extends TransaccionFactura {
 					} // if
 					else if(this.idEstatusFactura.equals(EEstatusFicticias.CANCELADA.getIdEstatusFicticia())) {
 						idEstatus= EEstatusFacturas.CANCELADA.getIdEstatusFactura();
-						this.messageError= "Ocurrio un error al cancelar la factura.";
+						this.messageError= "Ocurrio un error al cancelar la factura";
 						params= new HashMap<>();
 						params.put("idFactura", this.orden.getIdFactura());
 						factura= (TcManticFacturasDto) DaoFactory.getInstance().toEntity(sesion, TcManticFacturasDto.class, "TcManticFacturasDto", "detalle", params);
 						if(factura!= null && factura.getIdFacturama()!= null) {
-							CFDIFactory.getInstance().cfdiRemove(factura.getIdFacturama());
+							CFDIFactory.getInstance().cfdiRemove(factura.getIdFacturama(), EMotivoCancelacion.CFDI_NO_SE_LLEVO_ACABO.getIdMotivoCancelacion());
 							factura.setCancelada(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 							factura.setIdFacturaEstatus(idEstatus);
 							regresar= DaoFactory.getInstance().update(sesion, factura)>= 0;

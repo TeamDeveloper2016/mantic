@@ -4,6 +4,15 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ *@company KAANA
+ *@project KAJOOL (Control system polls)
+ *@date 21/02/2018
+ *@time 08:10:23 AM 
+ *@author Team Developer 2016 <team.developer@kaana.org.mx>
+ */
+
+
 public enum EEstatusFicticias {
   
   ABIERTA   (11L),
@@ -30,4 +39,5 @@ public enum EEstatusFicticias {
 	public static EEstatusFicticias fromIdFicticia(Long idEstatusFicticia) {
     return lookup.get(idEstatusFicticia);
   } 
+  
 }

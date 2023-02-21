@@ -74,7 +74,7 @@ public class IBaseAttachment extends IBaseMail implements Serializable {
 		String html= input.lines().collect(Collectors.joining());
 		StringBuilder content= new StringBuilder(Cadena.replaceHtml(html, this.params));
 		LOG.info("----------------------------------------------------------------------------------------");
-    if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.PRODUCCION))
+    if(!Configuracion.getInstance().isEtapaProduccion())
       LOG.warn(this.getTo()+ " : "+ content.toString());
     else
       this.send(content.toString());

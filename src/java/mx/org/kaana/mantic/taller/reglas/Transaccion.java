@@ -543,7 +543,7 @@ public class Transaccion extends TransaccionFactura {
             );
             DaoFactory.getInstance().insert(sesion, articulo);
             // FALTA NOTIFICAR EN FACTURA QUE SE INSERTO ESTE ARTICULO
-            if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.DESARROLLO))
+            if(!Configuracion.getInstance().isEtapaDesarrollo())
               this.toArticuloFacturama(sesion, articulo, item.getCodigo());
             // INSERTAR EL CODIGO DE LA REFACCION 
             TcManticArticulosCodigosDto codigos= new TcManticArticulosCodigosDto(

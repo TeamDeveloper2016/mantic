@@ -25,6 +25,7 @@ import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.mantic.facturas.beans.ArticuloFactura;
 import mx.org.kaana.mantic.facturas.beans.ClienteFactura;
+import mx.org.kaana.mantic.facturas.enums.EMotivoCancelacion;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -154,7 +155,8 @@ public class CFDIFactory implements Serializable {
 		File result= new File(path);		
 		if (!result.exists())
 			result.mkdirs();
-		result= new File(path.concat(name).concat(".").concat(EFormatos.PDF.name().toLowerCase()));
+    //if(!Objects.equals(path, null))
+		//  result= new File(path.concat(name).concat(".").concat(EFormatos.PDF.name().toLowerCase()));
 		this.facturama.Cfdis().SavePdf(path.concat(name).concat(".").concat(EFormatos.PDF.name().toLowerCase()), id);
 	}	
 
@@ -170,16 +172,24 @@ public class CFDIFactory implements Serializable {
 //		return regresar;
 //	} // cfdiRemove
   
-	public CancelationStatus cfdiRemove(String id) throws Exception {
+	public CancelationStatus cfdiRemove(String id, String motivo, String idNuevo) throws Exception {
 		CancelationStatus regresar= null;
 		try {
 			if(Configuracion.getInstance().isEtapaProduccion() || Configuracion.getInstance().isEtapaPruebas())
-			  regresar= this.facturama.Cfdis().Remove(id, CfdiType.Ingreso.getValue(), "*AUN NO SE*", "AUN NO SE");
+			  regresar= this.facturama.Cfdis().Remove(id, "Emitida", motivo, idNuevo);
 		} // try
 		catch (Exception e) {			
 			throw e;
 		} // catch		
 		return regresar;
+	} // cfdiRemove
+	
+	public CancelationStatus cfdiRemove(String id, String motivo) throws Exception {
+		return cfdiRemove(id, motivo, "");
+	} // cfdiRemove
+	
+	public CancelationStatus cfdiRemove(String id) throws Exception {
+		return cfdiRemove(id, EMotivoCancelacion.CFDI_NO_SE_LLEVO_ACABO.getIdMotivoCancelacion());
 	} // cfdiRemove
 	
 	public String createCfdiId(ClienteFactura encabezado, List<ArticuloFactura> detalle) throws Exception {

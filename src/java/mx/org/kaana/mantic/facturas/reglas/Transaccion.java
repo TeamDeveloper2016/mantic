@@ -38,6 +38,7 @@ import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.facturas.beans.ClienteFactura;
 import mx.org.kaana.mantic.facturas.beans.Correo;
+import mx.org.kaana.mantic.facturas.enums.EMotivoCancelacion;
 import org.apache.log4j.Logger;
 
 /**
@@ -168,7 +169,7 @@ public class Transaccion extends TransaccionFactura {
 								params.put("idVenta", this.orden.getIdVenta());
 								factura= (TcManticFacturasDto) DaoFactory.getInstance().toEntity(sesion, TcManticFacturasDto.class, "VistaFicticiasDto", "factura", params);
 								if(factura!= null && factura.getIdFacturama()!= null) {
-									CFDIFactory.getInstance().cfdiRemove(factura.getIdFacturama());
+									CFDIFactory.getInstance().cfdiRemove(factura.getIdFacturama(), EMotivoCancelacion.CFDI_NO_SE_LLEVO_ACABO.getIdMotivoCancelacion());
 									factura.setCancelada(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 									regresar= DaoFactory.getInstance().update(sesion, factura)>= 0;
 								} // if
@@ -191,16 +192,16 @@ public class Transaccion extends TransaccionFactura {
 					regresar= this.agregarContacto(sesion);
 					break;
 				case DEPURAR:
-					this.messageError= "Ocurrio un error al cancelar la factura.";
+					this.messageError= "Ocurrio un error al cancelar la factura";
 					params= new HashMap<>();
 					params.put("idFactura", this.orden.getIdFactura());
 					factura= (TcManticFacturasDto) DaoFactory.getInstance().toEntity(sesion, TcManticFacturasDto.class, "TcManticFacturasDto", "detalle", params);
 					if(factura!= null && factura.getIdFacturama()!= null) {
-						CFDIFactory.getInstance().cfdiRemove(factura.getIdFacturama());
+						CFDIFactory.getInstance().cfdiRemove(factura.getIdFacturama(), EMotivoCancelacion.CFDI_NO_SE_LLEVO_ACABO.getIdMotivoCancelacion());
 						factura.setCancelada(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 						factura.setIdFacturaEstatus(EEstatusFacturas.CANCELADA.getIdEstatusFactura());
 						regresar= DaoFactory.getInstance().update(sesion, factura)>= 0;
-						registrarBitacoraFactura(sesion, factura.getIdFactura(), EEstatusFacturas.CANCELADA.getIdEstatusFactura(), "CANCELACIÓN DE FACTURA, ".concat(this.justificacion));
+						this.registrarBitacoraFactura(sesion, factura.getIdFactura(), EEstatusFacturas.CANCELADA.getIdEstatusFactura(), "CANCELACIÓN DE FACTURA, ".concat(this.justificacion));
 					} // if
 					else
 						throw new Exception("No fue posible cancelar la factura, por favor vuelva a intentarlo !");															
@@ -210,10 +211,10 @@ public class Transaccion extends TransaccionFactura {
 					if(ficticia!= null) {
 						ficticia.setIdTipoDocumento(1L);
 						ficticia.setIdFicticiaEstatus(EEstatusFicticias.ABIERTA.getIdEstatusFicticia());
-						if(DaoFactory.getInstance().update(sesion, ficticia)> 0){
+						if(DaoFactory.getInstance().update(sesion, ficticia)> 0) {
 							factura= this.registrarFactura(sesion);
 							ficticia.setIdFactura(factura.getIdFactura());
-							if(DaoFactory.getInstance().update(sesion, ficticia)> 0){
+							if(DaoFactory.getInstance().update(sesion, ficticia)> 0) {
 								TcManticFicticiasBitacoraDto bitFicticia= new TcManticFicticiasBitacoraDto(ficticia.getTicket(), "Se cambio la cotización especial para timbrarse", EEstatusFicticias.ABIERTA.getIdEstatusFicticia(), JsfBase.getIdUsuario(), factura.getIdFactura(), -1L, ficticia.getTotal());
 								regresar= DaoFactory.getInstance().insert(sesion, bitFicticia)>= 1L;
 							} // if
@@ -222,10 +223,10 @@ public class Transaccion extends TransaccionFactura {
 					break;
 				case PROCESAR:
 					ficticia= (TcManticFicticiasDto)DaoFactory.getInstance().findById(sesion, TcManticFicticiasDto.class, this.idFicticia);
-					if(ficticia!= null && ficticia.isValid()){
-						if(ficticia.getIdFactura()!= null && ficticia.getIdFactura()>= 1L){
+					if(ficticia!= null && ficticia.isValid()) {
+						if(ficticia.getIdFactura()!= null && ficticia.getIdFactura()>= 1L) {
 							factura= (TcManticFacturasDto) DaoFactory.getInstance().findById(sesion, TcManticFacturasDto.class, ficticia.getIdFactura());
-							if(factura.getIdFacturaEstatus().equals(EEstatusFacturas.REGISTRADA.getIdEstatusFactura())){
+							if(factura.getIdFacturaEstatus().equals(EEstatusFacturas.REGISTRADA.getIdEstatusFactura())) {
 								factura.setIdFacturaEstatus(EEstatusFacturas.AUTOMATICO.getIdEstatusFactura());
 								regresar= DaoFactory.getInstance().update(sesion, factura)>= 1L;
 							} // if

@@ -67,6 +67,7 @@ import mx.org.kaana.mantic.enums.ETipoPago;
 import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.enums.ETiposDomicilios;
 import mx.org.kaana.mantic.facturas.beans.ClienteFactura;
+import mx.org.kaana.mantic.facturas.enums.EMotivoCancelacion;
 import mx.org.kaana.mantic.ventas.beans.ClienteVenta;
 import mx.org.kaana.mantic.ventas.beans.TicketVenta;
 import mx.org.kaana.mantic.ventas.caja.beans.Facturacion;
@@ -811,14 +812,14 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
           for(ClienteTipoContacto correo: this.ventaFinalizada.getCorreosContacto())
             correos.append(correo.getValor()).append(", ");
         } // if						
-  			this.correosFactura= correos.length()> 0 ? correos.substring(0, correos.length()-2) : correos.toString();			
+  			this.correosFactura= correos.length()> 0? correos.substring(0, correos.length()-2): correos.toString();			
       } // if  
 			documento.setCorreos(this.correosFactura);
 			documento.setObservaciones(this.ventaFinalizada.getObservaciones());
 			documento.setIdFacturaEstatus(EEstatusFacturas.REGISTRADA.getIdEstatusFactura());
 			if(DaoFactory.getInstance().insert(sesion, documento)>= 1L) {	
-				registrarBitacoraFactura(sesion, documento.getIdFactura(), EEstatusFacturas.REGISTRADA.getIdEstatusFactura(), this.ventaFinalizada.getObservaciones());
-				getOrden().setIdFactura(documento.getIdFactura());
+				this.registrarBitacoraFactura(sesion, documento.getIdFactura(), EEstatusFacturas.REGISTRADA.getIdEstatusFactura(), this.ventaFinalizada.getObservaciones());
+				this.getOrden().setIdFactura(documento.getIdFactura());
 				regresar= DaoFactory.getInstance().update(sesion, getOrden())>= 1L;				
 			} // if
 			this.idFactura= documento.getIdFactura();
@@ -1402,15 +1403,14 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
   
   public boolean procesarCancela(Session sesion) throws Exception {
     boolean regresar          = false;
-    Map<String, Object> params= null;
+    Map<String, Object> params= new HashMap<>();
 		List<TrManticVentaMedioPagoDto> pagos= null;
 		try {									
-      params = new HashMap<>();      
       TcManticVentasDto venta= (TcManticVentasDto)DaoFactory.getInstance().findById(sesion, TcManticVentasDto.class, this.idVenta);
         // CANCELAR LA FACTURA ACTUAL PARA GENERAR LA NUEVA FACTURA
       if(this.factura.isValid()) {
-        if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.DESARROLLO)) 
-          CFDIFactory.getInstance().cfdiRemove(this.factura.getIdFacturama());
+        if(!Configuracion.getInstance().isEtapaDesarrollo()) 
+          CFDIFactory.getInstance().cfdiRemove(this.factura.getIdFacturama(), EMotivoCancelacion.CFDI_NO_SE_LLEVO_ACABO.getIdMotivoCancelacion());
         this.factura.setCancelada(new Timestamp(Calendar.getInstance().getTimeInMillis()));
         this.factura.setIdFacturaEstatus(EEstatusFacturas.CANCELADA.getIdEstatusFactura());
         DaoFactory.getInstance().update(sesion, factura);
@@ -1454,9 +1454,8 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
     Siguiente consecutivo= null;
     Siguiente cuenta     = null;
 		List<TrManticVentaMedioPagoDto> pagos= null;
-    Map<String, Object> params           = null;
+    Map<String, Object> params           = new HashMap<>();
 		try {									
-      params = new HashMap<>();      
       TcManticVentasDto venta= (TcManticVentasDto)DaoFactory.getInstance().findById(sesion, TcManticVentasDto.class, this.idVenta);
       cuenta= super.toSiguienteVenta(sesion);			
       this.getOrden().setConsecutivo(cuenta.getOrden());			
@@ -1467,8 +1466,8 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 			this.getOrden().setTicket(consecutivo.getConsecutivo());
       if(DaoFactory.getInstance().insert(sesion, this.getOrden())> 0L) {
         // CANCELAR LA FACTURA ACTUAL PARA GENERAR LA NUEVA FACTURA
-        if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.DESARROLLO))
-          CFDIFactory.getInstance().cfdiRemove(this.factura.getIdFacturama());
+        if(Configuracion.getInstance().isEtapaProduccion() || Configuracion.getInstance().isEtapaPruebas() || Configuracion.getInstance().isEtapaDesarrollo())
+          CFDIFactory.getInstance().cfdiRemove(this.factura.getIdFacturama(), EMotivoCancelacion.CFDI_NO_SE_LLEVO_ACABO.getIdMotivoCancelacion());
         this.factura.setCancelada(new Timestamp(Calendar.getInstance().getTimeInMillis()));
         this.factura.setIdFacturaEstatus(EEstatusFacturas.CANCELADA.getIdEstatusFactura());
         DaoFactory.getInstance().update(sesion, factura);

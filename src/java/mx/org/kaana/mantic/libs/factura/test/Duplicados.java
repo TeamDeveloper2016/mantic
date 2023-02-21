@@ -20,6 +20,7 @@ import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reportes.FileSearch;
 import mx.org.kaana.mantic.db.dto.TcManticFacturasDto;
+import mx.org.kaana.mantic.facturas.enums.EMotivoCancelacion;
 import mx.org.kaana.mantic.libs.factura.beans.ComprobanteFiscal;
 import mx.org.kaana.mantic.libs.factura.reglas.Reader;
 
@@ -2592,7 +2593,7 @@ facturas.add(new Folio(10940,"no","ZEPR7004154C3",71.5D));
 				Cfdi detail= CFDIFactory.getInstance().toCfdiDetail(item.getId());
   			System.out.println("SE CANCELO FOLIO [[[[[[[[[["+ numero+ "]]]]]]]]]] id_facturama:"+ detail.getId());
 				if(!cancelado(String.valueOf(numero))) {
-					CFDIFactory.getInstance().cfdiRemove(detail.getId());
+					CFDIFactory.getInstance().cfdiRemove(detail.getId(), EMotivoCancelacion.CFDI_NO_SE_LLEVO_ACABO.getIdMotivoCancelacion());
 				} // if
 				else
 					System.out.println(">>>>>>>>>> ESTE FOLIO YA ESTABA CANCELADO <<<<<<<<<");	
