@@ -3934,6 +3934,7 @@
 					tc_mantic_ventas.id_venta,
           tc_mantic_ventas.ticket,
 					tc_mantic_clientes.id_cliente,
+          tc_mantic_clientes.id_regimen_fiscal,
 					tc_mantic_clientes.razon_social,									  					
 					tc_mantic_ventas.id_tipo_pago,
 					tc_mantic_facturas.id_factura,

@@ -83,6 +83,8 @@ public class Timbrado extends IBaseJob {
 						} // if
 					}
 					catch (Exception ex) {
+            // DESPUES ACTUALIZAR AQUÍ EL ESTATUS DE LA FACTURA CON VALOR DE ID_FACTURA_ESTATUS= 1 VERICANDO LA FECHA E INCREMENTAR LOS INTENTOS DE ESTA FACTURA
+            this.updateFactura(factura);  
 						LOG.error("Ocurrio un error al realizar la facturación "+ ex);
 					} // catch
 				} // for
@@ -94,6 +96,29 @@ public class Timbrado extends IBaseJob {
 		} // catch	
 	} // execute
 
+  private void updateFactura(Facturacion factura) {
+    try {      
+      TcManticFacturasDto documento= (TcManticFacturasDto)DaoFactory.getInstance().findById(TcManticFacturasDto.class, factura.getIdFactura());
+      if(documento!=null) {
+  			LOG.error("ENTRO A ACTUALIZAR LOS INTENTOS ["+ documento.getIntentos()+ "] Y EL ESTATUS ["+ documento.getIdFacturaEstatus()+ "] DE LA FACTURA: "+ factura.getIdFactura());
+        documento.setIntentos(4L);
+        documento.setIdFacturaEstatus(1L);
+        DaoFactory.getInstance().update(documento);
+        TcManticFacturasBitacoraDto bitacora= new TcManticFacturasBitacoraDto(
+          documento.getIdFacturaEstatus(), // Long idFacturaEstatus, 
+          documento.getIdFactura(), // Long idFactura, 
+          "[JOB] ESTA FACTURA MARCO UNA EXCEPCIÓN POR FACTURAMA", // String justificacion, 
+          2l, // Long idUsuario, 
+          -1L // Long idFacturaBitacora
+        );
+        DaoFactory.getInstance().insert(bitacora);
+      } // if
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+    } // catch	
+  }
+  
 	private boolean validateHora() {
 		boolean regresar   = true;
 		Calendar calendario= Calendar.getInstance();
@@ -108,9 +133,8 @@ public class Timbrado extends IBaseJob {
 
 	private List<Facturacion> toFacturasPendientes() throws Exception {
 		List<Facturacion> regresar= null;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put("idEstatus", EEstatusFacturas.AUTOMATICO.getIdEstatusFactura());
 			regresar= DaoFactory.getInstance().toEntitySet(Facturacion.class, "VistaVentasDto", "facturacion", params, Constantes.SQL_TODOS_REGISTROS);
 		} // try
@@ -150,13 +174,12 @@ public class Timbrado extends IBaseJob {
 	} // toCorreosCliente
 
 	public void doSendMail(Facturacion facturacion) {
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		List<Attachment> files    = null;
 		String[] emails           = null;
 		Entity factura            = null;
 		try {
 			this.reporte=new Reporte();
-			params=new HashMap<>();
 			params.put("header", "...");
 			params.put("footer", "...");
 			params.put("empresa", facturacion.getNombreEmpresa());
@@ -204,11 +227,10 @@ public class Timbrado extends IBaseJob {
 	} // doSendMail	
 
 	protected Entity toXml(Long idFactura) throws Exception {
-		Entity regresar             = null;
+		Entity regresar           = null;
 		List<Entity> facturas     = null;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("idFactura", idFactura);
 			facturas= DaoFactory.getInstance().toEntitySet("VistaFicticiasDto", "importados", params);
 			for (Entity factura: facturas) {
@@ -229,7 +251,7 @@ public class Timbrado extends IBaseJob {
 
 	protected void doReporte(String nombre, Facturacion facturacion) throws Exception {
 		Parametros comunes            = null;
-		Map<String, Object> params    = null;
+		Map<String, Object> params    = new HashMap<>();
 		Map<String, Object> parametros= null;
 		EReportes reporteSeleccion    = null;
 		String path                   = null;
@@ -248,7 +270,6 @@ public class Timbrado extends IBaseJob {
 					transferir= null;
 				} // finally
 			} // if      
-			params=new HashMap<>();
 			params.put("sortOrder", "order by tc_mantic_ventas.id_empresa, tc_mantic_clientes.id_cliente, tc_mantic_ventas.ejercicio, tc_mantic_ventas.orden");
 			params.put("idFicticia", facturacion.getIdVenta());
 			comunes=new Parametros(facturacion.getIdEmpresa(), -1L, -1L, facturacion.getIdCliente());
@@ -269,9 +290,8 @@ public class Timbrado extends IBaseJob {
 	} // doReporte	
 
   private void toWhatsup(Facturacion facturacion, Entity factura) {
-    Map<String, Object> params = null;
+    Map<String, Object> params = new HashMap<>();
     try {      
-      params = new HashMap<>();      
       List<Entity> celulares= null;
       params.put("idCliente", facturacion.getIdCliente());
       celulares= (List<Entity>)DaoFactory.getInstance().toEntitySet("TrManticClienteTipoContactoDto", "contacto", params);

@@ -2,9 +2,8 @@ package mx.org.kaana.mantic.ventas.caja.beans;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.Calendar;
 
-public class Facturacion implements Serializable{
+public class Facturacion implements Serializable {
 	
 	private static final long serialVersionUID = 2652025374897469982L;
 	private Long idVenta;
