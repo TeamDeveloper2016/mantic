@@ -274,9 +274,9 @@ public class Transaccion extends TransaccionFactura {
 	private void actualizarClienteFacturama(Session sesion) throws Exception{		
 		CFDIGestor gestor= new CFDIGestor(this.orden.getIdCliente());
 		ClienteFactura cliente= gestor.toClienteFacturaUpdateVenta(sesion, this.orden.getIdClienteDomicilio());
-		setCliente(cliente);
+		super.setCliente(cliente);
 		if(cliente.getIdFacturama()!= null)
-			updateCliente(sesion);
+			super.updateCliente(sesion);
 		else
 			super.procesarCliente(sesion);		
 	} // actualizarArticuloFacturama

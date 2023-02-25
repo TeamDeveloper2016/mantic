@@ -99,7 +99,7 @@ public class Timbrado extends IBaseJob {
   private void updateFactura(Facturacion factura) {
     try {      
       TcManticFacturasDto documento= (TcManticFacturasDto)DaoFactory.getInstance().findById(TcManticFacturasDto.class, factura.getIdFactura());
-      if(documento!=null) {
+      if(documento!= null) {
   			LOG.error("ENTRO A ACTUALIZAR LOS INTENTOS ["+ documento.getIntentos()+ "] Y EL ESTATUS ["+ documento.getIdFacturaEstatus()+ "] DE LA FACTURA: "+ factura.getIdFactura());
         documento.setIntentos(4L);
         documento.setIdFacturaEstatus(1L);

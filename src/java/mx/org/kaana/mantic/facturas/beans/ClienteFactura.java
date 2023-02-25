@@ -33,6 +33,7 @@ public class ClienteFactura implements Serializable, IBaseDto {
 	private String municipio;
 	private String estado;
 	private String pais;
+	private String codigoPostalCliente;
 
 	public ClienteFactura() {
 		this(null);
@@ -73,6 +74,7 @@ public class ClienteFactura implements Serializable, IBaseDto {
 		this.metodoPago     = metodoPago;
 		this.usoCfdi        = usoCfdi;
     this.regimenFiscal  = regimenFiscal;
+    this.codigoPostalCliente= codigoPostal;
 	}
 
 	public Long getId() {
@@ -250,7 +252,15 @@ public class ClienteFactura implements Serializable, IBaseDto {
   public void setRegimenFiscal(String regimenFiscal) {
     this.regimenFiscal = regimenFiscal;
   }
-	
+
+  public String getCodigoPostalCliente() {
+    return codigoPostalCliente;
+  }
+
+  public void setCodigoPostalCliente(String codigoPostalCliente) {
+    this.codigoPostalCliente = codigoPostalCliente;
+  }
+  
 	@Override
 	public int hashCode() {
 		int hash=5;

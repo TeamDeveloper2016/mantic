@@ -223,7 +223,7 @@ public class CFDIFactory implements Serializable {
 	
 	public mx.org.kaana.libs.facturama.models.response.Cfdi createCfdi(Cfdi cfdi) throws Exception {
 		mx.org.kaana.libs.facturama.models.response.Cfdi regresar= null;
-		try {
+		try { 
 			if(Configuracion.getInstance().isEtapaProduccion() || Configuracion.getInstance().isEtapaPruebas() || Configuracion.getInstance().isEtapaDesarrollo())
         if(Objects.equals(Configuracion.getInstance().getPropiedad("sistema.nivel.facturacion"), "4.0"))  
 			    regresar= this.facturama.Cfdis().Create3(cfdi);
@@ -231,7 +231,7 @@ public class CFDIFactory implements Serializable {
 			    regresar= this.facturama.Cfdis().Create(cfdi);
 		} // try
 		catch (Exception e) {			
-      LOG.error("Factura para: "+ cfdi.getReceiver().getName()+ " ["+ cfdi.getReceiver().getRfc()+ "]");
+      LOG.error("Factura para: "+ cfdi.getReceiver().getName()+ " ["+ cfdi.getReceiver().getRfc()+ "] ["+ cfdi.getReceiver().getFiscalRegime()+ "] ["+ cfdi.getReceiver().getTaxZipCode()+ "]");
       LOG.error("Items: "+ cfdi.getItems());
 			throw e;
 		} // catch	
@@ -266,7 +266,7 @@ public class CFDIFactory implements Serializable {
 			regresar.setCfdiUse(encabezado.getUsoCfdi().substring(0, 3));
       if(Objects.equals(Configuracion.getInstance().getPropiedad("sistema.nivel.facturacion"), "4.0")) {
 		    regresar.setFiscalRegime(encabezado.getRegimenFiscal());
-        regresar.setTaxZipCode(encabezado.getCodigoPostal());
+        regresar.setTaxZipCode(encabezado.getCodigoPostalCliente());
       } // if  
 		} // try
 		catch (Exception e) {			
