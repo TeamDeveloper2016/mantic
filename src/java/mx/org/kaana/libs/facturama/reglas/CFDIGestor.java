@@ -11,7 +11,7 @@ import mx.org.kaana.mantic.facturas.beans.ArticuloFactura;
 import mx.org.kaana.mantic.facturas.beans.ClienteFactura;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Session;
+import org.hibernate.Session; 
 
 public class CFDIGestor implements Serializable {
 	

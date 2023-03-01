@@ -144,7 +144,7 @@ public class Configuracion {
     return regresar;
   } // getPropiedadSistemaServidor
 
-  public String getPropiedadServidor(String id) {
+  public String getPropiedadServidor(String id) { 
     try {
       String servidor= getEtapaServidor().toLowerCase();
       id= id.concat(".").concat(servidor);

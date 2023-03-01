@@ -176,7 +176,7 @@ public class CFDIFactory implements Serializable {
 		CancelationStatus regresar= null;
 		try {
 			if(Configuracion.getInstance().isEtapaProduccion() || Configuracion.getInstance().isEtapaPruebas())
-			  regresar= this.facturama.Cfdis().Remove(id, "Emitida", motivo, idNuevo);
+			  regresar= this.facturama.Cfdis().Remove(id, "issued", motivo, idNuevo);
 		} // try
 		catch (Exception e) {			
 			throw e;

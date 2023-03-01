@@ -243,7 +243,7 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 			this.getAdminOrden().toAdjustArticulos();
 			if (transaccion.ejecutar(EAccion.REGISTRAR)) {					
 				clienteSeleccion= ((List<UISelectEntity>) this.attrs.get("clientesSeleccion")).get(((List<UISelectEntity>) this.attrs.get("clientesSeleccion")).indexOf((UISelectEntity) this.attrs.get("clienteSeleccion")));			
-				doSendMail(transaccion.getOrden().getIdFactura(), transaccion.getOrden().getIdFicticia(), transaccion.getOrden().getIdCliente(), clienteSeleccion.toString("razonSocial"));
+				this.doSendMail(transaccion.getOrden().getIdFactura(), transaccion.getOrden().getIdFicticia(), transaccion.getOrden().getIdCliente(), clienteSeleccion.toString("razonSocial"));
     		UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 la factura ', '"+ ((FacturaFicticia)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");					
 				regresar = this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR) : null;
   			JsfBase.setFlashAttribute("idFicticia", ((FacturaFicticia)this.getAdminOrden().getOrden()).getIdFicticia());				
@@ -437,14 +437,12 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 	
 	@Override
 	public void doAlmacenesArticulo(Long idArticulo, Integer index) {
-		Map<String, Object>params= null;
-		List<Columna>columns     = null;
+		Map<String, Object>params= new HashMap<>();
+		List<Columna>columns     = new ArrayList<>();
 		try {
 			if(idArticulo!= null){
-				params= new HashMap<>();
 				params.put("idArticulo", idArticulo);
 				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getDependencias());
-				columns= new ArrayList<>();
 				columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
 				columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 				columns.add(new Columna("stock", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
@@ -467,17 +465,15 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 	
 	public void doLoadUsers(){
 		List<UISelectEntity> vendedores= null;
-		Map<String, Object>params      = null;
-		List<Columna> campos           = null;
+		Map<String, Object>params      = new HashMap<>();
+		List<Columna> columns          = new ArrayList<>();
 		RequestContext rc              = null;
 		try {
-			campos= new ArrayList<>();
-			params= new HashMap<>();
 			params.put("idGrupo", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			params.put("perfil", VENDEDOR_PERFIL);
 			params.put("idUsuario", JsfBase.getIdUsuario());
-			campos.add(new Columna("nombreCompleto", EFormatoDinamicos.MAYUSCULAS));
-			vendedores= UIEntity.build("VistaTcJanalUsuariosDto", "cambioUsuario", params, campos, Constantes.SQL_TODOS_REGISTROS);
+			columns.add(new Columna("nombreCompleto", EFormatoDinamicos.MAYUSCULAS));
+			vendedores= UIEntity.build("VistaTcJanalUsuariosDto", "cambioUsuario", params, columns, Constantes.SQL_TODOS_REGISTROS);
 			rc= UIBackingUtilities.getCurrentInstance();
 			if(!vendedores.isEmpty()) {
 				this.attrs.put("vendedores", vendedores);
@@ -495,7 +491,7 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 		} // catch
 		finally {
 			Methods.clean(params);
-			Methods.clean(campos);
+			Methods.clean(columns);
 		} // finally
 	} // doLoadUsers
 	
@@ -522,14 +518,12 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 	
 	@Override
 	public void doUpdateArticulos() {
-		List<Columna> columns     = null;
-    Map<String, Object> params= null;
+		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
 		boolean buscaPorCodigo    = false;
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-			params= new HashMap<>();
 			params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
   		params.put("idProveedor", this.attrs.get("proveedor")== null? new UISelectEntity(new Entity(-1L)): ((UISelectEntity)this.attrs.get("proveedor")).getKey());
@@ -561,11 +555,9 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 	@Override
 	protected void loadSucursales(){
 		List<UISelectEntity> sucursales= null;
-		Map<String, Object>params      = null;
-		List<Columna> columns          = null;
+		Map<String, Object>params      = new HashMap<>();
+		List<Columna> columns          = new ArrayList<>();
 		try {
-			columns= new ArrayList<>();
-			params= new HashMap<>();
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
@@ -695,18 +687,16 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 	} // loadClienteDefault	
 	
 	private void loadDomicilios(Long idCliente) throws Exception{
-		Map<String, Object>params     = null;
+		Map<String, Object>params     = new HashMap<>();
 		List<UISelectEntity>domicilios= null;
-		List<Columna>campos           = null;
+		List<Columna>columns          = new ArrayList<>();
 		try {
-			params= new HashMap<>();					
 			params.put("idCliente", idCliente);
-			campos= new ArrayList<>();
-			campos.add(new Columna("calle", EFormatoDinamicos.MAYUSCULAS));
-			campos.add(new Columna("asentamiento", EFormatoDinamicos.MAYUSCULAS));
-			campos.add(new Columna("localidad", EFormatoDinamicos.MAYUSCULAS));
-			campos.add(new Columna("municipio", EFormatoDinamicos.MAYUSCULAS));
-			domicilios= UIEntity.build("VistaClientesDto", "domiciliosCliente", params, campos, Constantes.SQL_TODOS_REGISTROS);
+			columns.add(new Columna("calle", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("asentamiento", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("localidad", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("municipio", EFormatoDinamicos.MAYUSCULAS));
+			domicilios= UIEntity.build("VistaClientesDto", "domiciliosCliente", params, columns, Constantes.SQL_TODOS_REGISTROS);
 			this.attrs.put("domicilios", domicilios);
 			if(!domicilios.isEmpty())
 				this.attrs.put("domicilio", UIBackingUtilities.toFirstKeySelectEntity(domicilios));
@@ -761,11 +751,9 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 	
 	@Override
 	public void doUpdateClientes() {
-		List<Columna> columns     = null;
-    Map<String, Object> params= null;
+		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
     try {
-			params= new HashMap<>();
-			columns= new ArrayList<>();
       columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
   		// params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getDependencias());
@@ -850,15 +838,13 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 	
 	private void loadBancos(){
 		List<UISelectEntity> bancos= null;
-		Map<String, Object> params = null;
-		List<Columna> campos       = null;
+		Map<String, Object> params = new HashMap<>();
+		List<Columna> columns      = new ArrayList<>();
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-			campos= new ArrayList<>();
-			campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-			campos.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
-			bancos= UIEntity.build("TcManticBancosDto", "row", params, campos, Constantes.SQL_TODOS_REGISTROS);
+			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+			bancos= UIEntity.build("TcManticBancosDto", "row", params, columns, Constantes.SQL_TODOS_REGISTROS);
 			this.attrs.put("bancos", bancos);
 		} // try
 		catch (Exception e) {
@@ -893,9 +879,8 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 	
 	private void loadTiposMediosPagos(){
 		List<UISelectEntity> tiposPagos= null;
-		Map<String, Object>params      = null;
+		Map<String, Object>params      = new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_cobro_caja=1");
 			tiposPagos= UIEntity.build("TcManticTiposMediosPagosDto", "row", params);
 			this.attrs.put("tiposMedioPagos", tiposPagos);
@@ -911,9 +896,8 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 	
 	private void loadTiposPagos() {
 		List<UISelectEntity> tiposPagos= null;
-		Map<String, Object>params      = null;
+		Map<String, Object>params      = new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			tiposPagos= UIEntity.build("TcManticTiposPagosDto", "row", params);
 			this.attrs.put("tiposPagos", tiposPagos);
@@ -969,7 +953,6 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 	} // doGlobalEvent
 
 	private void doSendMail(Long idFactura, Long idFicticia, Long idCliente, String cliente) {
-		File factura= null;
 		StringBuilder sb= new StringBuilder("");
 		if(this.selectedCorreos!= null && !this.selectedCorreos.isEmpty()) {
 			for(Correo mail: this.selectedCorreos) {
@@ -989,7 +972,7 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 			params.put("razonSocial", cliente);
 			params.put("correo", ECorreos.FACTURACION.getEmail());			
 			params.put("url", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));			
-			factura= toXml(idFactura);
+			File factura= toXml(idFactura);
 			this.doReporte(idFactura, idFicticia, idCliente);
 			Attachment attachments= new Attachment(this.reporte.getNombre(), Boolean.FALSE);
 			files.add(attachments);
@@ -1029,9 +1012,8 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 	protected File toXml(Long idFactura) throws Exception{
 		File regresar            = null;
 		List<Entity> facturas    = null;
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put("idFactura", idFactura);
 			facturas= DaoFactory.getInstance().toEntitySet("VistaFicticiasDto", "importados", params);
 			for(Entity factura: facturas){
@@ -1052,7 +1034,7 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 	
 	public void doReporte(Long idFactura, Long idFicticia, Long idCliente) throws Exception{
 		Parametros comunes           = null;
-		Map<String, Object>params    = null;
+		Map<String, Object>params    = new HashMap<>();
 		Map<String, Object>parametros= null;
 		EReportes reporteSeleccion   = null;    
 		TcManticFacturasDto factura  = null;
@@ -1073,7 +1055,6 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 				} // finally
 			} // if
       //es importante este orden para los grupos en el reporte	
-			params= new HashMap<>();
       params.put("sortOrder", "order by tc_mantic_ventas.id_empresa, tc_mantic_clientes.id_cliente, tc_mantic_ventas.ejercicio, tc_mantic_ventas.orden");
       reporteSeleccion= EReportes.valueOf("FACTURAS_FICTICIAS_DETALLE");      
       params.put("idFicticia", idFicticia);
@@ -1108,7 +1089,6 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 	} // doVerificarReporte	
 	
 	public void doLoadEstatus() {		
-		Map<String, Object>params         = null;		
 		MotorBusquedaCatalogos motor      = null; 
 		List<ClienteTipoContacto>contactos= null;
 		Correo correoAdd                  = null;
@@ -1118,9 +1098,9 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 			LOG.warn("Inicializando listas de correos y seleccionados");
 			this.getCorreos().clear();
 			this.getSelectedCorreos().clear();
-			LOG.warn("Total de contactos" + contactos.size());
+			LOG.warn("Total de contactos: " + contactos.size());
 			for(ClienteTipoContacto contacto: contactos){
-				if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey())){
+				if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey())) {
 					correoAdd= new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor().toUpperCase(), contacto.getIdPreferido());
 					getCorreos().add(correoAdd);		
 					getSelectedCorreos().add(correoAdd);
@@ -1133,9 +1113,6 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch
-		finally {
-			Methods.clean(params);
-		} // finally
 	} // doLoadEstatus
 	
   @Override

@@ -1,8 +1,7 @@
-
 package mx.org.kaana.libs.facturama.services;
 
-import mx.org.kaana.libs.facturama.models.response.CfdiSearchResult;
 import mx.org.kaana.libs.facturama.models.exception.FacturamaException;
+import mx.org.kaana.libs.facturama.models.response.*;
 import com.squareup.okhttp.OkHttpClient;
 import java.io.IOException;
 import com.google.gson.reflect.TypeToken;
@@ -10,17 +9,16 @@ import java.util.List;
 import java.net.URLEncoder;
 import mx.org.kaana.libs.facturama.models.response.InovoiceFile;
 import mx.org.kaana.libs.facturama.models.response.CfdiSendEmail;
-import mx.org.kaana.libs.facturama.models.response.CancelationStatus;
 import com.google.gson.Gson;
 import com.squareup.okhttp.HttpUrl;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
-import org.primefaces.util.Base64;
+import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import java.io.FileOutputStream;
 
-public class CfdiService  extends HttpService { //<mx.org.kaana.libs.facturama.Models.Request.Cfdi,mx.org.kaana.libs.facturama.Models.Response.Cfdi>{
+public class CfdiService extends HttpService { //<mx.org.kaana.libs.facturama.models.Request.Cfdi,mx.org.kaana.libs.facturama.models.Response.Cfdi>{
 
   public enum FileFormat {
     Xml, Pdf, Html
@@ -37,34 +35,40 @@ public class CfdiService  extends HttpService { //<mx.org.kaana.libs.facturama.M
   public CfdiService(OkHttpClient client) {
     super(client, "");
     singleType = mx.org.kaana.libs.facturama.models.response.Cfdi.class;
-    multiType = new TypeToken<List<mx.org.kaana.libs.facturama.models.response.Cfdi>>() {}.getType();
-    cancelationStatus = CancelationStatus.class;
+    multiType = new TypeToken<List<mx.org.kaana.libs.facturama.models.response.Cfdi>>() { }.getType();
+    cancelationStatus = mx.org.kaana.libs.facturama.models.response.CancelationStatus.class;
   }
 
   public mx.org.kaana.libs.facturama.models.response.Cfdi Create(mx.org.kaana.libs.facturama.models.request.Cfdi model) throws IOException, FacturamaException, Exception {
     return (mx.org.kaana.libs.facturama.models.response.Cfdi) Post(model, "2/cfdis");
   }
 
-  //metodo de pruebas para CFDI 4.0, vigente hasta el 30/06/2022
   public mx.org.kaana.libs.facturama.models.response.Cfdi Create3(mx.org.kaana.libs.facturama.models.request.Cfdi model) throws IOException, FacturamaException, Exception {
     return (mx.org.kaana.libs.facturama.models.response.Cfdi) Post(model, "3/cfdis");
   }
 
-  public CancelationStatus Remove(String id, String type, String motive, String uuidReplacement)
+  public mx.org.kaana.libs.facturama.models.response.CancelationStatus Remove(String id, String type, String motive, String uuidReplacement)
           throws IOException, FacturamaException, Exception {
-    String R_uuidReplacement = uuidReplacement.isEmpty() ? null : uuidReplacement;
+    uuidReplacement = uuidReplacement == null ? null : uuidReplacement.isEmpty() ? null : uuidReplacement;
+    motive = motive.isEmpty() ? "02" : motive;
     if (id != null && !id.isEmpty()) {
-      return (CancelationStatus) Delete("cfdi/" + id + "?type=" + type + "&motive=" + motive + "&uuidReplacement=" + R_uuidReplacement);
+      if (uuidReplacement == null || uuidReplacement == "null") {
+        return (mx.org.kaana.libs.facturama.models.response.CancelationStatus) Delete("cfdi/" + id + "?type=" + type + "&motive=" + motive);
+      } else {
+        return (mx.org.kaana.libs.facturama.models.response.CancelationStatus) Delete("cfdi/" + id + "?type=" + type + "&motive=" + motive + "&uuidReplacement=" + uuidReplacement);
+      }
+
     } else {
       throw new NullPointerException(singleType.getTypeName());
     }
   }
 
-  public CancelationStatus RemoveRet(String id, String motive) throws IOException, FacturamaException, Exception {
+  public mx.org.kaana.libs.facturama.models.response.CancelationStatus RemoveRet(String id, String motive)
+          throws IOException, FacturamaException, Exception {
+
     if (id != null && !id.isEmpty()) {
-      return (CancelationStatus) Delete("retenciones/" + id + "?motive=" + motive);
-    } 
-    else {
+      return (mx.org.kaana.libs.facturama.models.response.CancelationStatus) Delete("retenciones/" + id + "?motive=" + motive);
+    } else {
       throw new NullPointerException(singleType.getTypeName());
     }
   }
@@ -78,19 +82,17 @@ public class CfdiService  extends HttpService { //<mx.org.kaana.libs.facturama.M
   }
 
   public boolean SendEmail(String email, InvoiceType type, String cfdiId) throws FacturamaException, Exception {
-    HttpUrl.Builder urlBuilder= HttpUrl.parse(baseUrl + "/Cfdi?cfdiType=" + type + "&cfdiId=" + cfdiId + "&email=" + email).newBuilder();
+    HttpUrl.Builder urlBuilder
+            = HttpUrl.parse(baseUrl + "/Cfdi?cfdiType=" + type + "&cfdiId=" + cfdiId + "&email=" + email).newBuilder();
     String jsonObj = new Gson().toString();
     String url = urlBuilder.build().toString();
     RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), jsonObj);
-
     Request request = new Request.Builder()
             .url(url)
             .post(body)
             .build();
-
     Response response = Execute(request);
     String jsonData = response.body().string();
-
     CfdiSendEmail object = new Gson().fromJson(jsonData, CfdiSendEmail.class);
     return object.getsuccess();
   }
@@ -109,8 +111,11 @@ public class CfdiService  extends HttpService { //<mx.org.kaana.libs.facturama.M
 
   public List<CfdiSearchResult> List(String keyword, CfdiStatus status, InvoiceType type) throws IOException, FacturamaException, Exception {
     keyword = URLEncoder.encode(keyword);
+
     String resource = "cfdi?type=" + type + "&keyword=" + keyword + "&status=" + status;
-    return GetList(resource, new TypeToken<List<mx.org.kaana.libs.facturama.models.response.CfdiSearchResult>>() {}.getType());
+
+    return GetList(resource, new TypeToken<List<mx.org.kaana.libs.facturama.models.response.CfdiSearchResult>>() {
+    }.getType());
   }
 
   public List<CfdiSearchResult> ListFilterByRfc(String rfc) throws IOException, FacturamaException, Exception {
@@ -121,36 +126,52 @@ public class CfdiService  extends HttpService { //<mx.org.kaana.libs.facturama.M
     return this.List(-1, -1, null, null, null, null, null, null, CfdiStatus.active, InvoiceType.issued, OrderNumber);
   }
 
-  public List<CfdiSearchResult> List(int folioStart, int folioEnd, String rfc, String taxEntityName, String dateStart, String dateEnd, String idBranch, String serie, CfdiStatus status, InvoiceType type, String OrderNumber) throws IOException, FacturamaException, Exception {
+  public List<CfdiSearchResult> List(int folioStart, int folioEnd,
+          String rfc, String taxEntityName,
+          String dateStart, String dateEnd,
+          String idBranch, String serie,
+          CfdiStatus status, InvoiceType type, String OrderNumber) throws IOException, FacturamaException, Exception {
+
     String resource = "cfdi?type=" + type + "&status=" + status;
+
     if (folioStart > -1) {
       resource += "&folioStart=" + folioStart;
     }
+
     if (folioEnd > -1) {
       resource += "&folioEnd=" + folioEnd;
     }
+
     if (rfc != null) {
       resource += "&rfc=" + rfc;
     }
+
     if (taxEntityName != null) {
       resource += "&taxEntityName=" + taxEntityName;
     }
+
     if (dateStart != null) {
       resource += "&dateStart=" + dateStart;
     }
+
     if (dateEnd != null) {
       resource += "&dateEnd=" + dateEnd;
     }
+
     if (idBranch != null) {
       resource += "&idBranch=" + idBranch;
     }
+
     if (serie != null) {
       resource += "&serie=" + serie;
     }
+
     if (OrderNumber != null) {
       resource += "&orderNumber=" + OrderNumber;
     }
-    return GetList(resource, new TypeToken<List<CfdiSearchResult>>() {}.getType());
+
+    return GetList(resource, new TypeToken<List<CfdiSearchResult>>() {
+    }.getType());
   }
 
   /*
@@ -196,6 +217,7 @@ public class CfdiService  extends HttpService { //<mx.org.kaana.libs.facturama.M
    */
   public void SavePdf(String filePath, String id, InvoiceType type) throws Exception {
     InovoiceFile file = GetFile(id, FileFormat.Pdf, type);
+
     FileOutputStream fos = new FileOutputStream(filePath);
     fos.write(Base64.decode(file.getContent()));
     fos.close();
@@ -250,5 +272,5 @@ public class CfdiService  extends HttpService { //<mx.org.kaana.libs.facturama.M
     fos.write(Base64.decode(file.getContent()));
     fos.close();
   }
-        
+
 }

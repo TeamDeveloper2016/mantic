@@ -18,9 +18,10 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 import java.io.FileOutputStream;
+import java.util.Objects;
 import org.primefaces.util.Base64;
 
-public class CfdiService extends HttpService { //<com.Facturama.sdk_java.Models.Request.Cfdi,com.Facturama.sdk_java.Models.Response.Cfdi>{
+public class CfdiService extends HttpService { //<mx.org.kaana.libs.facturama.models.request.Cfdi,mx.org.kaana.libs.facturama.models.response.Cfdi>{
 
   public enum FileFormat {
     Xml, Pdf, Html
@@ -51,11 +52,10 @@ public class CfdiService extends HttpService { //<com.Facturama.sdk_java.Models.
   }
 
   public mx.org.kaana.libs.facturama.models.response.CancelationStatus Remove(String id, String motive, String uuidReplacement) throws IOException, FacturamaException, Exception {
-    uuidReplacement = uuidReplacement.isEmpty() ? null : uuidReplacement;
+    uuidReplacement = uuidReplacement == null ? null : uuidReplacement.isEmpty() ? null : uuidReplacement;
     motive = motive.isEmpty() ? "02" : motive;
-
     if (id != null && !id.isEmpty()) {
-      if (uuidReplacement == null || uuidReplacement == "null") {
+      if (uuidReplacement == null || Objects.equals(uuidReplacement, "null")) {
         return (mx.org.kaana.libs.facturama.models.response.CancelationStatus) Delete("api-lite/cfdis/" + id + "?motive=" + motive);
       } 
       else {
@@ -103,27 +103,15 @@ public class CfdiService extends HttpService { //<com.Facturama.sdk_java.Models.
   }
 
   public List<CfdiSearchResult> List() throws IOException, FacturamaException, Exception {
-    return this.List(-1, -1,
-            null, null,
-            "", "",
-            "", "",
-            CfdiStatus.Active, InvoiceType.Issued);
+    return this.List(-1, -1, null, null, "", "", "", "", CfdiStatus.Active, InvoiceType.Issued);
   }
 
   public List<CfdiSearchResult> ListFilterByRfc(String rfc) throws IOException, FacturamaException, Exception {
-    return this.List(-1, -1,
-            rfc, null,
-            null, null,
-            null, null,
-            CfdiStatus.Active, InvoiceType.Issued);
+    return this.List(-1, -1, rfc, null, null, null, null, null, CfdiStatus.Active, InvoiceType.Issued);
   }
 
-  public List<CfdiSearchResult> List(int folioStart, int folioEnd,
-          String rfc, String taxEntityName,
-          String dateStart, String dateEnd,
-          String idBranch, String serie,
+  public List<CfdiSearchResult> List(int folioStart, int folioEnd, String rfc, String taxEntityName, String dateStart, String dateEnd, String idBranch, String serie,
           CfdiStatus status, InvoiceType type) throws IOException, FacturamaException, Exception {
-
     String resource = "cfdi?type=" + type + "Lite&status=" + status;
 
     if (folioStart > -1) {
@@ -244,8 +232,7 @@ public class CfdiService extends HttpService { //<com.Facturama.sdk_java.Models.
             = HttpUrl.parse(baseUrl + "/Cfdi?cfdiType=" + type + "&cfdiId=" + cfdiId + "&email=" + email).newBuilder();
     String jsonObj = new Gson().toString();
     String url = urlBuilder.build().toString();
-    RequestBody body = RequestBody.create(
-            MediaType.parse("application/json; charset=utf-8"), jsonObj);
+    RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), jsonObj);
 
     Request request = new Request.Builder()
             .url(url)

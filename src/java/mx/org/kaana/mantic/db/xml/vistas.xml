@@ -5896,9 +5896,9 @@
 				inner join
 					tc_mantic_clientes on tc_mantic_ventas.id_cliente = tc_mantic_clientes.id_cliente								
 				inner join
-					tr_mantic_cliente_domicilio on tc_mantic_clientes.id_cliente= tr_mantic_cliente_domicilio.id_cliente
+					tr_mantic_cliente_domicilio as tt_mantic_cliente_domicilio on tc_mantic_clientes.id_cliente= tt_mantic_cliente_domicilio.id_cliente
 				inner join
-					tc_mantic_domicilios as tt_mantic_domicilios on tt_mantic_domicilios.id_domicilio= tr_mantic_cliente_domicilio.id_domicilio
+					tc_mantic_domicilios as tt_mantic_domicilios on tt_mantic_domicilios.id_domicilio= tt_mantic_cliente_domicilio.id_domicilio
 				inner join 
 					tc_mantic_usos_cfdi on tc_mantic_ventas.id_uso_cfdi = tc_mantic_usos_cfdi.id_uso_cfdi
 				inner join 
@@ -5930,7 +5930,8 @@
 					tc_mantic_domicilios.codigo_postal,
 					tc_mantic_tipos_pagos.clave metodo_pago,
           tc_mantic_clientes.id_regimen_fiscal,
-          tc_mantic_regimenes_fiscales.codigo as regimen_fiscal
+          tc_mantic_regimenes_fiscales.codigo as regimen_fiscal,
+					tt_mantic_domicilios.codigo_postal as codigo_postal_cliente
 				from
 					tc_mantic_ventas
 				inner join
@@ -5939,6 +5940,10 @@
 					tc_mantic_facturas on tc_mantic_ventas.id_factura = tc_mantic_facturas.id_factura
 				inner join
 					tc_mantic_clientes on tc_mantic_ventas.id_cliente = tc_mantic_clientes.id_cliente								
+				inner join
+					tr_mantic_cliente_domicilio as tt_mantic_cliente_domicilio on tc_mantic_clientes.id_cliente= tt_mantic_cliente_domicilio.id_cliente
+				inner join
+					tc_mantic_domicilios as tt_mantic_domicilios on tt_mantic_domicilios.id_domicilio= tt_mantic_cliente_domicilio.id_domicilio
 				inner join 
 					tc_mantic_usos_cfdi on tc_mantic_ventas.id_uso_cfdi = tc_mantic_usos_cfdi.id_uso_cfdi
 				inner join 
