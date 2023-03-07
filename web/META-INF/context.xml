@@ -11,7 +11,7 @@
   <!-- MANTIC
     <Resource auth="Container" driverClassName="org.mariadb.jdbc.Driver" maxActive="100" maxIdle="30" maxWait="10000" name="jdbc/manticDS" password="tester2018" type="javax.sql.DataSource" url="jdbc:mysql://cpanel.bonanza.jvmhost.net:3306/bonanzaj_training?zeroDateTimeBehavior=convertToNull&amp;useUnicode=true&amp;characterEncoding=utf8mb4&amp;connectionCollation=utf8mb4_spanish_ci" username="bonanzaj_tester"/>
 	 -->
-  <!-- DEVELOMENT 
+  <!-- DEVELOMENT  -->
     <Resource auth="Container" driverClassName="org.mariadb.jdbc.Driver" maxActive="100" maxIdle="30" maxWait="10000" name="jdbc/manticDS" password="mantic" type="javax.sql.DataSource" url="jdbc:mariadb://localhost:3306/mantic?zeroDateTimeBehavior=convertToNull&amp;useUnicode=true&amp;characterEncoding=utf8mb4&amp;connectionCollation=utf8mb4_spanish_ci" username="mantic"/>
-	 -->
+	
 </Context>
