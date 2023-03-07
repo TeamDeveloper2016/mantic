@@ -23,7 +23,6 @@
 				'referencia': {validaciones: 'requerido', mascara: 'libre'},
 				'tipoPago'  : {validaciones: 'requerido', mascara: 'libre'},
 				'nombres'   : {multiple: '$', validaciones: 'requerido|libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
-				'sat'       : {multiple: '$', validaciones: 'requerido|entero|igual-caracteres({"cuantos": 8})', mascara: 'ocho-digitos', formatos: 'cambiar-mayusculas'},
 				'cantidades': {multiple: '$', validaciones: 'mayor-igual({"cuanto": 0})', mascara: 'libre'},
 				'precios'   : {multiple: '$', validaciones: 'mayor-igual({"cuanto": 0})', mascara: 'libre'}
 			};	
@@ -291,37 +290,25 @@
 										</div>	
 									</div>	
 								</p:column>
-								<p:column  class="MarAuto Responsive nombres">
+								<p:column class="MarAuto Responsive nombres">
 									<f:facet name="header">
 										<h:outputText value="Articulo"/>
 									</f:facet>
-									<p:inputText id="nombres" value="#{row['nombre']}" styleClass="janal-wid-100-txt key-event-sat filas"/>
+                  <p:inputText id="nombres" value="#{row['nombre']}" styleClass="janal-wid-100-txt key-event-sat filas" title="Código: #{row['propio']}, SAT: #{row['sat']}"/>
+                  <p:inputText id="sat" value="#{row['sat']}" styleClass="janal-wid-100-txt key-event-sat fila" style="display: none;"/>
 								</p:column>										
-								<p:column class="MarAuto Responsive janal-wid-8">
-									<f:facet name="header">
-										<h:outputText value="Propio"/>
-									</f:facet>
-									<p:outputLabel value="#{row['propio']}" title="Existencias: #{row['stock']}"/>
-								</p:column>		
-								<p:column class="janal-column-right MarAuto Responsive janal-wid-8 sat">
-									<f:facet name="header">
-										<h:outputText value="Sat"/>
-									</f:facet>
-									<p:outputLabel value="#{row['sat']}"/>
-									<p:inputText id="sat" value="#{row['sat']}" styleClass="janal-wid-100-txt key-event-sat fila" style="display: none;"/>
-								</p:column>		
-								<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
+								<p:column class="janal-column-right MarAuto Responsive janal-wid-6">
 									<f:facet name="header">
 										<h:outputText value="Cantidad"/>
 									</f:facet>
-									<p:outputLabel value="#{row['cantidad']}"/>
+									<p:outputLabel value="#{row['cantidad']}" title="Existencias: #{row['stock']}"/>
 									<p:inputText id="cantidades" value="#{row['cantidad']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event filas" onblur="janal.precio($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'), '1'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'));" style="display: none"/>
 								</p:column>		
-								<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
+								<p:column class="janal-column-right MarAuto Responsive janal-wid-6">
 									<f:facet name="header">
 										<h:outputText value="Precio"/>
 									</f:facet>
-									<p:outputLabel value="#{row['costo']}"/>
+									<p:outputLabel value="#{row['costo']}" title="Código: #{row['propio']}, SAT: #{row['sat']}"/>
 									<p:inputText id="values" value="#{row['valor']}" style="display:none"/>
 									<p:inputText id="precios" value="#{row['costo']}" styleClass="janal-wid-100-txt key-focus-event filas" style="display:none"/>
 								</p:column>				
@@ -329,26 +316,26 @@
 									<f:facet name="header">
 										<h:outputText value="Descuento"/>
 									</f:facet>
-									<p:outputLabel value="#{row['descuentoDescripcion']}"/>
+									<p:outputLabel value="#{row['descuentoDescripcion']}" title="Código: #{row['propio']}, SAT: #{row['sat']}"/>
 									<p:inputText id="descuentos" value="#{row['descuento']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event filas" onblur="janal.descuentos($('#contenedorGrupos\\:tabla\\:#{index}\\:descuentos'), '0'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:descuentos'));" style="display: none"/>
 								</p:column>		
-								<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
+								<p:column class="janal-column-center MarAuto Responsive janal-wid-6">
 									<f:facet name="header">
 										<h:outputText value="Unidad"/>
 									</f:facet>
-									<p:outputLabel value="#{row['unidadMedida']}"/>
+									<p:outputLabel value="#{row['unidadMedida']}" title="Código: #{row['propio']}, SAT: #{row['sat']}"/>
 								</p:column>		
-								<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
+								<p:column class="janal-column-right MarAuto Responsive janal-wid-6">
 									<f:facet name="header">
 										<h:outputText value="Impuesto"/>
 									</f:facet>
-									<p:outputLabel value="#{row['impuestos$']}"/>
+									<p:outputLabel value="#{row['impuestos$']}" title="Código: #{row['propio']}, SAT: #{row['sat']}"/>
 								</p:column>		
-								<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
+								<p:column class="janal-column-right MarAuto Responsive janal-wid-6">
 									<f:facet name="header">
 										<h:outputText value="Importe"/>
 									</f:facet>
-									<p:outputLabel value="#{row['importe$']}"/>
+									<p:outputLabel value="#{row['importe$']}" title="Código: #{row['propio']}, SAT: #{row['sat']}"/>
 								</p:column>		
 							</p:dataTable>
 							<p:outputLabel value="Observaciones"/>

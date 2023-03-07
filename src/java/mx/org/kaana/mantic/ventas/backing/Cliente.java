@@ -36,13 +36,17 @@ import mx.org.kaana.mantic.enums.ETipoVenta;
 import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.enums.ETiposDomicilios;
 import mx.org.kaana.mantic.ventas.beans.ClienteVenta;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.primefaces.event.SelectEvent;
 
 @Named(value = "manticVentasCliente")
 @ViewScoped
 public class Cliente extends IBaseAttribute implements Serializable {
 
+  private static final Log LOG = LogFactory.getLog(Cliente.class);
   private static final long serialVersionUID = -7668104942302148046L;
+  
 	private Domicilio domicilio;
 	private UISelectEntity domicilioBusqueda;
   private UISelectEntity ikRegimenFiscal;  
@@ -158,8 +162,6 @@ public class Cliente extends IBaseAttribute implements Serializable {
 			this.toAsignaMunicipio();
 			this.loadLocalidades();
 			this.toAsignaLocalidad();
-			//loadCodigosPostales();      
-			//toAsignaCodigoPostal();
 			this.asignaCodigoPostal();
 		} // try
 		catch (Exception e) {			
@@ -221,7 +223,7 @@ public class Cliente extends IBaseAttribute implements Serializable {
     String regresar          = null;
 		EAccion accion           = null;
     try {
-			accion      = this.attrs.get("idCliente")!= null && !Long.valueOf(this.attrs.get("idCliente").toString()).equals(-1L) ? EAccion.TRANSFORMACION : EAccion.ASIGNAR;
+			accion      = this.attrs.get("idCliente")!= null && !Long.valueOf(this.attrs.get("idCliente").toString()).equals(-1L)? EAccion.TRANSFORMACION: EAccion.ASIGNAR;
 			clienteVenta= this.toClienteVenta();			
       if(clienteVenta.getCliente()!= null && clienteVenta.getCliente().getIdRegimenFiscal()!= null && Objects.equals(clienteVenta.getCliente().getIdRegimenFiscal(), -1L))
         clienteVenta.getCliente().setIdRegimenFiscal(null);
@@ -240,10 +242,10 @@ public class Cliente extends IBaseAttribute implements Serializable {
 				} // if
 				else
 					regresar = "accion".concat(Constantes.REDIRECIONAR);
-        JsfBase.addMessage("Se" + (accion.equals(EAccion.TRANSFORMACION) ? "modificó" : "agregó") + "registro el cliente de forma correcta.", ETipoMensaje.INFORMACION);
+        JsfBase.addMessage("Se " + (accion.equals(EAccion.TRANSFORMACION) ? "modificó" : "agregó") + "registro el cliente de forma correcta", ETipoMensaje.INFORMACION);
       } // if
       else 
-        JsfBase.addMessage("Ocurrió un error al " + (accion.equals(EAccion.TRANSFORMACION) ? "modificar" : "agregar") + " el cliente", ETipoMensaje.ERROR);
+        JsfBase.addMessage("Ocurrió un error al " + (accion.equals(EAccion.TRANSFORMACION)? "modificar": "agregar") + " el cliente", ETipoMensaje.ERROR);
       if(clienteVenta.getCliente()!= null && clienteVenta.getCliente().getIdRegimenFiscal()!= null)
         clienteVenta.getCliente().setIdRegimenFiscal(-1L);
     } // try
@@ -463,11 +465,10 @@ public class Cliente extends IBaseAttribute implements Serializable {
 	} // toAsignaLocalidad
 
   private void loadCodigosPostales() {
-    List<UISelectItem> codigosPostales = null;
-    Map<String, Object> params = null;
+    List<UISelectItem> codigosPostales= null;
+    Map<String, Object> params        = new HashMap<>();
     try {
 			if(!this.domicilio.getIdEntidad().getKey().equals(-1L)){
-				params = new HashMap<>();				
 				params.put(Constantes.SQL_CONDICION, "id_entidad=" + this.domicilio.getIdEntidad().getKey());
 				codigosPostales = UISelect.build("TcManticCodigosPostalesDto", "row", params, "codigo", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
 				this.attrs.put("codigosPostales", codigosPostales);
@@ -762,11 +763,9 @@ public class Cliente extends IBaseAttribute implements Serializable {
 	}	// doCompleteCliente
 	
 	public void doUpdateCodigosPostales() {
-		List<Columna> columns     = null;
-    Map<String, Object> params= null;
+		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
     try {
-			params= new HashMap<>();
-			columns= new ArrayList<>();
       columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));      
   		params.put(Constantes.SQL_CONDICION, "id_entidad=" + this.domicilio.getIdEntidad().getKey() + " and codigo like '" + this.attrs.get("condicionCodigoPostal") + "%'");						  		
       this.attrs.put("allCodigosPostales", (List<UISelectEntity>) UIEntity.build("TcManticCodigosPostalesDto", "row", params, columns, 20L));
@@ -870,5 +869,38 @@ public class Cliente extends IBaseAttribute implements Serializable {
       Methods.clean(columns);
     } // finally
 	} // doLoadRegimenesFiscales  
+
+  public void doUpdateChange() {
+    
+  } 
+  
+  public void doCodigoPostal() {
+    Map<String, Object> params = new HashMap<>();
+    try {      
+      params.put("codigo", JsfBase.getParametro("cp")== null? JsfBase.getParametro("codigoPostal_input"): JsfBase.getParametro("cp"));      
+      Entity codigo = (Entity)DaoFactory.getInstance().toEntity("TcManticCodigosPostalesDto", "igual", params);
+      if(codigo!= null && !codigo.isEmpty()) {
+				this.domicilio.setCodigoPostal(codigo.toString("codigo"));
+        List<UISelectEntity> entidades= (List<UISelectEntity>)this.attrs.get("entidades");
+        int index= entidades.indexOf(new UISelectEntity(codigo.toLong("idEntidad")));
+        if(index>= 0)
+  				this.domicilio.setIdEntidad(entidades.get(index));
+        else {
+          Entity entidad= codigo.clone();
+          entidad.setKey(entidad.toLong("idEntidad"));
+  				this.domicilio.setIdEntidad(entidad);
+        } // if  
+				this.domicilio.setIdCodigoPostal(codigo.toLong("idCodigoPostal"));
+				this.attrs.put("codigoSeleccionado", new UISelectEntity(codigo));
+      } // if  
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+  } 
   
 }

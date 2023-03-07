@@ -241,7 +241,7 @@
             </p:tab>
             <p:tab id="tabTablaContactos" title="Contacto">
               <p:panelGrid id="panelTablaContactos" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
-                <p:dataTable id="tablaContactos" rowIndexVar="index" var="tipoContacto" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedoresTipoContacto}" rows="6" paginator="false" reflow="true" rowKey="#{tipoContacto.key}" emptyMessage=" " styleClass="paginated">																					
+                <p:dataTable id="tablaContactos" rowIndexVar="index" var="tipoContacto" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedoresTipoContacto}" rows="#{Constantes.REGISTROS_LOTE_TOPE}" paginator="false" reflow="true" rowKey="#{tipoContacto.key}" emptyMessage=" " styleClass="paginated">																					
                   <p:column headerText="No" styleClass="janal-wid-5">		
                     <p:outputLabel value="#{index+ 1}.-"/>
                   </p:column>  

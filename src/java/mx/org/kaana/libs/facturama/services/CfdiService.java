@@ -15,8 +15,8 @@ import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
-import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import java.io.FileOutputStream;
+import org.primefaces.util.Base64;
 
 public class CfdiService extends HttpService { //<mx.org.kaana.libs.facturama.models.Request.Cfdi,mx.org.kaana.libs.facturama.models.Response.Cfdi>{
 

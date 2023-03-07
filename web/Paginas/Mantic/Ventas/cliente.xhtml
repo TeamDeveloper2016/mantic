@@ -49,7 +49,7 @@
       <div class="ui-grid-row janal-grid-row">
         <div class="ui-grid-col-12">          
 					<p:fieldset id="fielGenerales" legend="Generales">
-            <p:panelGrid id="panelGenerales" columns="4" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-wid-30, janal-wid-40, janal-wid-30">
+            <p:panelGrid id="panelGenerales" columns="#{manticVentasCliente.attrs.admin? 4: 3}" layout="grid" styleClass="janal-wid-100" columnClasses="#{manticVentasCliente.attrs.admin? 'janal-wid-20, janal-wid-30, janal-wid-40, janal-wid-30': 'janal-wid-20, janal-wid-30, janal-wid-50'}">
               <p:outputLabel for="clave" value="Clave:"/>
               <p:outputLabel for="rfc" value="RFC:"/>
               <p:outputLabel for="razonSocial" value="Razon social:"/>
@@ -105,77 +105,93 @@
   						<p:commandButton process="@this" update="dialogoDomicilios" icon="fa fa-search" onstart="return janal.bloquear();" oncomplete="PF('dlgDomicilios').show();" title="Buscar domicilio" style="float: right !important"/>												
 						</p:panelGrid>	
 						<p:outputLabel for="tipoDomicilio" value="Tipo domicilio:"/>
-						<p:selectOneMenu id="tipoDomicilio" value="#{manticVentasCliente.domicilio.idTipoDomicilio}" styleClass="janal-wid-100-txt">									
-							<f:selectItems value="#{manticVentasCliente.attrs.tiposDomicilios}"/>
-						</p:selectOneMenu>												  						
+  					<p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-85, janal-wid-10 janal-column-right, janal-wid-5 janal-column-center">
+              <p:selectOneMenu id="tipoDomicilio" value="#{manticVentasCliente.domicilio.idTipoDomicilio}" styleClass="janal-wid-100-txt">									
+                <f:selectItems value="#{manticVentasCliente.attrs.tiposDomicilios}"/>
+              </p:selectOneMenu>		
+              <p:outputLabel value="Principal:"/>
+              <p:selectBooleanCheckbox value="#{manticVentasCliente.domicilio.principal}" styleClass="janal-wid-100-txt">
+                <p:ajax event="change" listener="#{manticVentasCliente.doUpdateChange}" process="@this"/>
+              </p:selectBooleanCheckbox>
+            </p:panelGrid>  
 					</p:panelGrid>
-					<p:panelGrid id="panelDetalleDomicilio" columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-25, janal-wid-45, janal-wid-30">						
-						<p:outputLabel for="entidad" value="Entidad:"/>
-						<p:outputLabel for="municipio" value="Municipio:"/>
-						<p:outputLabel for="localidad" value="Localidad:"/>
-						<p:selectOneMenu id="entidad" value="#{manticVentasCliente.domicilio.idEntidad}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity">									
-							<p:ajax event="change" listener="#{manticVentasCliente.doActualizaMunicipios}" process="@this" update="municipio localidad codigoPostal calle exterior interior asentamiento entreCalle  conCalle tipoDomicilio" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();"/>
-							<f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
-							<f:selectItems value="#{manticVentasCliente.attrs.entidades}" var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>
-							<p:column  styleClass="janal-column-center">
-								<h:outputText value="#{item.clave}"/>
-							</p:column>   
-							<p:column styleClass="janal-column-left">
-								<h:outputText value="#{item.descripcion}"/>
-							</p:column>  
-						</p:selectOneMenu>														
-						<p:selectOneMenu id="municipio" value="#{manticVentasCliente.domicilio.idMunicipio}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity">									
-							<p:ajax event="change" listener="#{manticVentasCliente.doActualizaLocalidades}" process="@this" update="localidad codigoPostal calle exterior interior asentamiento entreCalle  conCalle tipoDomicilio" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();"/>
-							<f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
-							<f:selectItems value="#{manticVentasCliente.attrs.municipios}" var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>
-							<p:column  styleClass="janal-column-center">
-								<h:outputText value="#{item.clave}"/>
-							</p:column>   
-							<p:column styleClass="janal-column-left">
-								<h:outputText value="#{item.descripcion}"/>
-							</p:column>  
-						</p:selectOneMenu>														
-						<p:selectOneMenu id="localidad" value="#{manticVentasCliente.domicilio.localidad}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity">									
-							<p:ajax event="change" listener="#{manticVentasCliente.doActualizaCodigosPostales}" process="@this" update="codigoPostal calle exterior interior asentamiento entreCalle  conCalle tipoDomicilio" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();"/>
-							<f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
-							<f:selectItems value="#{manticVentasCliente.attrs.localidades}" var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>
-							<p:column  styleClass="janal-column-center">
-								<h:outputText value="#{item.clave}"/>
-							</p:column>   
-							<p:column styleClass="janal-column-left">
-								<h:outputText value="#{item.descripcion}"/>
-							</p:column>  
-						</p:selectOneMenu>																	
-						<p:outputLabel for="cp" value="Código postal:" rendered="#{!manticVentasCliente.domicilio.nuevoCp}"/>
-						<p:outputLabel for="codigoPostal" value="Código postal:" rendered="#{manticVentasCliente.domicilio.nuevoCp}"/>
-						<p:outputLabel for="nuevo" value="Nuevo:"/>												
-						<p:spacer/>
-						<p:autoComplete id="codigoPostal" placeholder="Código postal" widgetVar="listadoCodigoPostal" var="customCp" itemLabel="#{customCp.codigo}" inputStyleClass="alinear-izquierda-cp janal-wid-100-txt" itemValue="#{customCp}" value="#{manticVentasCliente.attrs.codigoSeleccionado}" completeMethod="#{manticVentasCliente.doCompleteCodigoPostal}" converter="janal.convertidor.Entity" minQueryLength="0" maxResults="10" styleClass="janal-wid-100-txt" rendered="#{manticVentasCliente.domicilio.nuevoCp}">
-							<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this entidad" listener="#{manticVentasCliente.doAsignaCodigoPostal}" update="panelDetalleDomicilio calle exterior interior asentamiento entreCalle tipoDomicilio" oncomplete="janal.desbloquear();janal.refresh();"/>							
-							<f:facet name="itemtip">
-								<h:panelGrid columns="2" cellpadding="5">												
-									<h:outputText value="Código Postal:" />
-									<h:outputText value="#{customCp.codigo}"/>									
-								</h:panelGrid>
-							</f:facet>
-						</p:autoComplete>													
-						<p:inputText placeholder="Captura el nuevo código postal. Ej. 20284" id="cp" styleClass="janal-wid-100-txt cp-style" value="#{manticVentasCliente.domicilio.codigoPostal}" rendered="#{!manticVentasCliente.domicilio.nuevoCp}"/>						
-						<p:selectBooleanButton value="#{manticVentasCliente.attrs.cpNuevo}" onLabel="NO" offLabel="SI" id="nuevo" title="Selecciona SI, si el CP a captura es nuevo y NO si el CP ya existe.">
-							<p:ajax process="@this" update="panelDetalleDomicilio codigoPostal cp" listener="#{manticVentasCliente.doInicializaCodigo}" oncomplete="janal.refresh();"/>
-						</p:selectBooleanButton>
-						<p:spacer/>											
-						<p:outputLabel for="calle" value="Calle:"/>
-						<p:outputLabel for="exterior" value="Número exterior:"/>
-						<p:outputLabel for="interior" value="Número interior:"/>
-						<p:inputText id="calle" styleClass="janal-wid-100-txt" value="#{manticVentasCliente.domicilio.calle}" />						
-						<p:inputText id="exterior" styleClass="janal-wid-100-txt" value="#{manticVentasCliente.domicilio.numeroExterior}" />						
-						<p:inputText id="interior" styleClass="janal-wid-100-txt" value="#{manticVentasCliente.domicilio.numeroInterior}"/>	
-						<p:outputLabel for="asentamiento" value="Colonia:"/>
-						<p:outputLabel for="entreCalle" value="Entre calle:"/>
-						<p:outputLabel for="conCalle" value="Y calle:"/>
-						<p:inputText id="asentamiento" styleClass="janal-wid-100-txt" value="#{manticVentasCliente.domicilio.asentamiento}"/>							
-						<p:inputText id="entreCalle" styleClass="janal-wid-100-txt" value="#{manticVentasCliente.domicilio.entreCalle}"/>							
-						<p:inputText id="conCalle" styleClass="janal-wid-100-txt" value="#{manticVentasCliente.domicilio.ycalle}"/>							
+					<p:panelGrid id="panelDetalleDomicilio" columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100">						
+					  <p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-33, janal-wid-33, janal-wid-34">						
+              <p:outputLabel for="entidad" value="Entidad:"/>
+              <p:outputLabel for="municipio" value="Municipio:"/>
+              <p:outputLabel for="localidad" value="Localidad:"/>
+              <p:selectOneMenu id="entidad" value="#{manticVentasCliente.domicilio.idEntidad}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity">									
+                <p:ajax event="change" listener="#{manticVentasCliente.doActualizaMunicipios}" process="@this" update="municipio localidad codigoPostal calle exterior interior asentamiento entreCalle  conCalle tipoDomicilio" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();"/>
+                <f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
+                <f:selectItems value="#{manticVentasCliente.attrs.entidades}" var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>
+                <p:column  styleClass="janal-column-center">
+                  <h:outputText value="#{item.clave}"/>
+                </p:column>   
+                <p:column styleClass="janal-column-left">
+                  <h:outputText value="#{item.descripcion}"/>
+                </p:column>  
+              </p:selectOneMenu>														
+              <p:selectOneMenu id="municipio" value="#{manticVentasCliente.domicilio.idMunicipio}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity">									
+                <p:ajax event="change" listener="#{manticVentasCliente.doActualizaLocalidades}" process="@this" update="localidad codigoPostal calle exterior interior asentamiento entreCalle  conCalle tipoDomicilio" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();"/>
+                <f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
+                <f:selectItems value="#{manticVentasCliente.attrs.municipios}" var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>
+                <p:column  styleClass="janal-column-center">
+                  <h:outputText value="#{item.clave}"/>
+                </p:column>   
+                <p:column styleClass="janal-column-left">
+                  <h:outputText value="#{item.descripcion}"/>
+                </p:column>  
+              </p:selectOneMenu>														
+              <p:selectOneMenu id="localidad" value="#{manticVentasCliente.domicilio.localidad}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity">									
+                <p:ajax event="change" listener="#{manticVentasCliente.doActualizaCodigosPostales}" process="@this" update="codigoPostal calle exterior interior asentamiento entreCalle  conCalle tipoDomicilio" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();"/>
+                <f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
+                <f:selectItems value="#{manticVentasCliente.attrs.localidades}" var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>
+                <p:column  styleClass="janal-column-center">
+                  <h:outputText value="#{item.clave}"/>
+                </p:column>   
+                <p:column styleClass="janal-column-left">
+                  <h:outputText value="#{item.descripcion}"/>
+                </p:column>  
+              </p:selectOneMenu>																	
+            </p:panelGrid>  
+					  <p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-15, janal-wid-10, janal-wid-80">						
+              <p:outputLabel for="cp" value="Código postal:" rendered="#{!manticVentasCliente.domicilio.nuevoCp}"/>
+              <p:outputLabel for="codigoPostal" value="Código postal:" rendered="#{manticVentasCliente.domicilio.nuevoCp}"/>
+              <p:outputLabel for="nuevo" value="Nuevo:"/>												
+              <p:spacer/>
+              <p:autoComplete id="codigoPostal" placeholder="Código postal" widgetVar="listadoCodigoPostal" var="customCp" itemLabel="#{customCp.codigo}" inputStyleClass="alinear-izquierda-cp janal-wid-100-txt" itemValue="#{customCp}" value="#{manticVentasCliente.attrs.codigoSeleccionado}" completeMethod="#{manticVentasCliente.doCompleteCodigoPostal}" converter="janal.convertidor.Entity" minQueryLength="0" maxResults="10" styleClass="janal-wid-100-txt" rendered="#{manticVentasCliente.domicilio.nuevoCp}">
+                <p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this entidad" listener="#{manticVentasCliente.doAsignaCodigoPostal}" update="panelDetalleDomicilio calle exterior interior asentamiento entreCalle tipoDomicilio" oncomplete="janal.desbloquear(); janal.refresh()"/>
+                <p:ajax event="change" onstart="return janal.bloquear();" process="@this entidad" listener="#{manticVentasCliente.doCodigoPostal}" update="panelDetalleDomicilio entidad calle exterior interior asentamiento entreCalle tipoDomicilio" oncomplete="janal.desbloquear(); janal.refresh()"/>
+                <f:facet name="itemtip">
+                  <h:panelGrid columns="2" cellpadding="5">												
+                    <h:outputText value="Código Postal:" />
+                    <h:outputText value="#{customCp.codigo}"/>									
+                  </h:panelGrid>
+                </f:facet>
+              </p:autoComplete>													
+              <p:inputText placeholder="Nuevo ej. 20284" id="cp" styleClass="janal-wid-100-txt cp-style" value="#{manticVentasCliente.domicilio.codigoPostal}" rendered="#{!manticVentasCliente.domicilio.nuevoCp}">						
+                <p:ajax event="change" onstart="return janal.bloquear();" process="@this entidad" listener="#{manticVentasCliente.doCodigoPostal}" update="panelDetalleDomicilio calle exterior interior asentamiento entreCalle tipoDomicilio" oncomplete="janal.desbloquear(); janal.refresh()"/>
+              </p:inputText>  
+              <p:selectBooleanButton value="#{manticVentasCliente.attrs.cpNuevo}" onLabel="NO" offLabel="SI" id="nuevo" title="Selecciona SI, si el CP a captura es nuevo y NO si el CP ya existe">
+                <p:ajax process="@this" update="panelDetalleDomicilio codigoPostal cp" listener="#{manticVentasCliente.doInicializaCodigo}" oncomplete="janal.refresh();"/>
+                <p:ajax event="change" onstart="return janal.bloquear();" process="@this entidad" listener="#{manticVentasCliente.doCodigoPostal}" update="panelDetalleDomicilio entidad calle exterior interior asentamiento entreCalle tipoDomicilio" oncomplete="janal.desbloquear(); janal.refresh()"/>
+              </p:selectBooleanButton>
+              <p:spacer/>											
+            </p:panelGrid>  
+					  <p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-50, janal-wid-25, janal-wid-25">
+              <p:outputLabel for="calle" value="Calle:"/>
+              <p:outputLabel for="exterior" value="Número exterior:"/>
+              <p:outputLabel for="interior" value="Número interior:"/>
+              <p:inputText id="calle" styleClass="janal-wid-100-txt" value="#{manticVentasCliente.domicilio.calle}" />						
+              <p:inputText id="exterior" styleClass="janal-wid-100-txt" value="#{manticVentasCliente.domicilio.numeroExterior}" />						
+              <p:inputText id="interior" styleClass="janal-wid-100-txt" value="#{manticVentasCliente.domicilio.numeroInterior}"/>	
+              <p:outputLabel for="asentamiento" value="Colonia:"/>
+              <p:outputLabel for="entreCalle" value="Entre calle:"/>
+              <p:outputLabel for="conCalle" value="Y calle:"/>
+              <p:inputText id="asentamiento" styleClass="janal-wid-100-txt" value="#{manticVentasCliente.domicilio.asentamiento}"/>							
+              <p:inputText id="entreCalle" styleClass="janal-wid-100-txt" value="#{manticVentasCliente.domicilio.entreCalle}"/>							
+              <p:inputText id="conCalle" styleClass="janal-wid-100-txt" value="#{manticVentasCliente.domicilio.ycalle}"/>							
+    				</p:panelGrid>					
 					</p:panelGrid>					
 					</p:fieldset>
 					<p:fieldset id="fieldContacto" legend="Contacto">

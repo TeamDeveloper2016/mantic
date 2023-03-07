@@ -103,10 +103,9 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 		Domicilio regresar               = null;
 		TcManticDomiciliosDto domicilio  = null;
 		List<ClienteDomicilio> domicilios= null;
-		Map<String, Object>params        = null;
+		Map<String, Object> params       = new HashMap<>();
 		Entity entityDomicilio           = null;
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_cliente=" + this.idCliente);
 			domicilios= DaoFactory.getInstance().toEntitySet(ClienteDomicilio.class, "TrManticClienteDomicilioDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
 			int count= 1;
@@ -128,6 +127,7 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 					entityDomicilio.put("idLocalidad", new Value("idLocalidad", clienteDomicilio.getIdLocalidad().getKey()));
 					entityDomicilio.put("codigoPostal", new Value("codigoPostal", clienteDomicilio.getCodigoPostal()));
 					regresar.setDomicilio(entityDomicilio);
+          regresar.setPrincipal(Boolean.TRUE);
 				} // if
 				count++;
 			} // for

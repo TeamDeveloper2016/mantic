@@ -5173,7 +5173,7 @@
 				where 
 					{condicion} 
 				order by 
-					codigo
+					tc_mantic_codigos_postales.codigo
       </select>
       <select id="identically">
         select      
@@ -5203,6 +5203,21 @@
 				where 
 					id_entidad= {idEntidad}
 				  and codigo like '%{codigo}%'
+				order by
+				  codigo
+			</select>
+			<select id="igual">
+				select 
+					tc_mantic_codigos_postales.id_codigo_postal as id_key, 
+          tc_janal_entidades.clave,
+          tc_janal_entidades.descripcion,
+					tc_mantic_codigos_postales.*
+				from 
+					tc_mantic_codigos_postales
+        inner join
+          tc_janal_entidades on tc_mantic_codigos_postales.id_entidad= tc_janal_entidades.id_entidad
+				where 
+				  codigo like '%{codigo}%'
 				order by
 				  codigo
 			</select>

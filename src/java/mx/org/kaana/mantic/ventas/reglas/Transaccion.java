@@ -443,9 +443,9 @@ public class Transaccion extends TransaccionFactura {
 	
 	@Override
 	protected boolean procesarCliente(Session sesion) throws Exception {
-    boolean regresar= false;
-    Long idCliente  = -1L;    
-		this.messageError = "ERROR AL REGISTRAR EL CLIENTE";
+    boolean regresar = Boolean.FALSE;
+    Long idCliente   = -1L;    
+		this.messageError= "ERROR AL REGISTRAR EL CLIENTE";
 		this.clienteVenta.getCliente().setIdCredito(2L);
 		this.clienteVenta.getCliente().setLimiteCredito(0D);
 		this.clienteVenta.getCliente().setPlazoDias(15L);
@@ -520,13 +520,13 @@ public class Transaccion extends TransaccionFactura {
 		ClienteDomicilio clienteDomicilio= null;
     boolean regresar                 = true;
     try {			
-			clienteDomicilio= toClienteDomicilio();
+			clienteDomicilio= this.toClienteDomicilio();
 			clienteDomicilio.setIdCliente(idCliente);
 			clienteDomicilio.setIdUsuario(JsfBase.getIdUsuario());
-			clienteDomicilio.setIdDomicilio(toIdDomicilio(sesion, clienteDomicilio));		
+			clienteDomicilio.setIdDomicilio(this.toIdDomicilio(sesion, clienteDomicilio));		
 			clienteDomicilio.setIdClienteDomicilio(-1L);
 			clienteDomicilio.setIdPrincipal(1L);
-			dto= (TrManticClienteDomicilioDto) clienteDomicilio;
+			dto= (TrManticClienteDomicilioDto)clienteDomicilio;
 			regresar= DaoFactory.getInstance().insert(sesion, dto)>= 1L;			
     } // try    
     finally {
@@ -535,15 +535,14 @@ public class Transaccion extends TransaccionFactura {
     return regresar;
   } // registraClientesDomicilios
 	
-	private boolean updateDomicilioPrincipal(Session sesion, Long idCliente) throws Exception{
-		boolean regresar         = false;
-		Map<String, Object>params= null;
+	private boolean updateDomicilioPrincipal(Session sesion, Long idCliente) throws Exception {
+		boolean regresar         = Boolean.FALSE;
+		Map<String, Object>params= new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put("idCliente", idCliente);
 			regresar= DaoFactory.getInstance().execute(ESql.UPDATE, sesion, "TrManticClienteDomicilioDto", "principal", params)>= 0L;
 		} // try		
-		finally{
+		finally {
 			Methods.clean(params);
 		} // finally
 		return regresar;		
