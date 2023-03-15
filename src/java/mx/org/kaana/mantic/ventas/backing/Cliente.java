@@ -883,8 +883,10 @@ public class Cliente extends IBaseAttribute implements Serializable {
 				this.domicilio.setCodigoPostal(codigo.toString("codigo"));
         List<UISelectEntity> entidades= (List<UISelectEntity>)this.attrs.get("entidades");
         int index= entidades.indexOf(new UISelectEntity(codigo.toLong("idEntidad")));
-        if(index>= 0)
+        if(index>= 0) {
   				this.domicilio.setIdEntidad(entidades.get(index));
+          this.doActualizaMunicipios();
+        } // if  
         else {
           Entity entidad= codigo.clone();
           entidad.setKey(entidad.toLong("idEntidad"));

@@ -1946,6 +1946,69 @@
 					tc_mantic_ventas.id_usuario  
 				{sortOrder}
 			</select>
+			<select id="general">
+        select
+					tc_mantic_ventas.id_venta as id_key,
+					tc_mantic_ventas.id_venta,
+					tc_mantic_ventas.id_empresa,  
+				  tc_mantic_empresas.clave as empresa,  
+				  tc_mantic_empresas.nombre as nombre_empresa,  
+					tc_mantic_ventas.consecutivo,  
+					tc_mantic_ventas.ticket,
+          ifnull(tc_mantic_ventas.cotizacion, '') as cotizacion,  
+					tc_mantic_clientes.id_cliente,  
+					tc_mantic_ventas.id_manual,
+					tc_mantic_clientes.razon_social as cliente,
+					tc_mantic_clientes.limite_credito,
+					tc_mantic_ventas.total,
+					tc_mantic_ventas.sub_total,
+					tc_mantic_ventas.impuestos,
+					tc_mantic_ventas.total as precio_total,
+				  tc_mantic_ventas_estatus.nombre as estatus,
+					tc_mantic_ventas.id_venta_estatus,
+				  tc_mantic_ventas.id_factura,
+					tc_mantic_ventas.registro,
+					tc_mantic_ventas.registro as hora,
+					tc_mantic_ventas_estatus.estatus_asociados, 					
+					tc_mantic_personas.cuenta,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre,
+					tc_mantic_clientes.id_credito,
+					tc_mantic_clientes_deudas.saldo,
+					tc_mantic_clientes_deudas.limite,
+          ifnull(tc_mantic_garantias.consecutivo, '') as garantia,
+          tc_mantic_garantias.total as devuelto,
+          tc_mantic_garantias.registro as fecha
+				from 
+					tc_mantic_ventas
+				inner join 
+					tc_mantic_ventas_detalles on tc_mantic_ventas.id_venta= tc_mantic_ventas_detalles.id_venta
+				left join 
+					tr_mantic_articulo_proveedor on tc_mantic_ventas_detalles.id_articulo= tr_mantic_articulo_proveedor.id_articulo
+				left join
+					tc_mantic_proveedores on tr_mantic_articulo_proveedor.id_proveedor= tc_mantic_proveedores.id_proveedor											
+				inner join 
+					tc_mantic_clientes on tc_mantic_ventas.id_cliente= tc_mantic_clientes.id_cliente
+				inner join 
+				  tc_mantic_clientes_deudas on tc_mantic_ventas.id_venta= tc_mantic_clientes_deudas.id_venta
+				inner join 
+					tc_mantic_empresas on tc_mantic_ventas.id_empresa= tc_mantic_empresas.id_empresa
+				inner join 
+					tc_mantic_ventas_estatus on tc_mantic_ventas.id_venta_estatus=tc_mantic_ventas_estatus.id_venta_estatus
+	 	  	inner join
+    			tc_mantic_tipos_documentos on tc_mantic_tipos_documentos.id_tipo_documento= tc_mantic_ventas_estatus.id_tipo_documento
+				inner join 
+				  tc_janal_usuarios on tc_mantic_ventas.id_usuario = tc_janal_usuarios.id_usuario
+				inner join				
+					tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_persona				
+				left join
+				  tc_mantic_garantias on tc_mantic_ventas.id_venta= tc_mantic_garantias.id_venta
+				where
+					tc_mantic_ventas.id_empresa in ({idEmpresa})
+				  and {condicion}
+				group by 
+					tc_mantic_ventas.id_venta
+				{sortOrder}
+			</select>
 			<select id="lazy">
         select
 					tc_mantic_ventas.id_venta as id_key,
@@ -1960,8 +2023,6 @@
 					tc_mantic_ventas.id_manual,
 					tc_mantic_clientes.razon_social as cliente,
 					tc_mantic_clientes.limite_credito,
-					tc_mantic_almacenes.clave,
-					tc_mantic_almacenes.nombre as almacen,
 					tc_mantic_ventas.total,
 					tc_mantic_ventas.sub_total,
 					tc_mantic_ventas.impuestos,
@@ -1975,29 +2036,21 @@
 					tc_mantic_personas.cuenta,
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre,
 					tc_mantic_clientes.id_credito,
-          (select saldo from tc_mantic_clientes_deudas where tc_mantic_clientes_deudas.id_venta= tc_mantic_ventas.id_venta) saldo,
-          (select limite from tc_mantic_clientes_deudas where tc_mantic_clientes_deudas.id_venta= tc_mantic_ventas.id_venta) limite,
+					tc_mantic_clientes_deudas.saldo,
+					tc_mantic_clientes_deudas.limite,
           ifnull(tc_mantic_garantias.consecutivo, '') as garantia,
           tc_mantic_garantias.total as devuelto,
           tc_mantic_garantias.registro as fecha
 				from 
 					tc_mantic_ventas
 				inner join 
-					tc_mantic_ventas_detalles on tc_mantic_ventas.id_venta = tc_mantic_ventas_detalles.id_venta
-				left join 
-					tr_mantic_articulo_proveedor on tc_mantic_ventas_detalles.id_articulo = tr_mantic_articulo_proveedor.id_articulo
-				left join
-					tc_mantic_proveedores on tr_mantic_articulo_proveedor.id_proveedor = tc_mantic_proveedores.id_proveedor											
-				inner join 
 					tc_mantic_clientes on tc_mantic_ventas.id_cliente= tc_mantic_clientes.id_cliente
 				inner join 
-					tc_mantic_almacenes on tc_mantic_ventas.id_almacen= tc_mantic_almacenes.id_almacen
+				  tc_mantic_clientes_deudas on tc_mantic_ventas.id_venta= tc_mantic_clientes_deudas.id_venta
 				inner join 
 					tc_mantic_empresas on tc_mantic_ventas.id_empresa= tc_mantic_empresas.id_empresa
 				inner join 
 					tc_mantic_ventas_estatus on tc_mantic_ventas.id_venta_estatus=tc_mantic_ventas_estatus.id_venta_estatus
-				inner join
-					tc_mantic_tipos_documentos on tc_mantic_tipos_documentos.id_tipo_documento= tc_mantic_ventas_estatus.id_tipo_documento
 				inner join 
 				  tc_janal_usuarios on tc_mantic_ventas.id_usuario = tc_janal_usuarios.id_usuario
 				inner join				

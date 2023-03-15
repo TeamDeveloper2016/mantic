@@ -251,7 +251,7 @@
 									<p:ajax event="dateSelect" process="@this" listener="#{manticVentasCajaAccion.doLoadTicketAbiertos}" update="encabezadoVenta contenedorGrupos aceptar aceptarIcon @(.cotizar) @(.janal-abono)" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
 								</p:calendar>																
 								<p:selectOneMenu id="ticketsAbiertos" value="#{manticVentasCajaAccion.attrs.ticketAbierto}" styleClass="janal-wid-100-txt cambio-cliente tickets-principal" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
-									<p:ajax event="change" process="@this contenedorGrupos" onstart="return janal.bloquear();" listener="#{manticVentasCajaAccion.doAsignaTicketAbierto}" update="contenedorGrupos aceptar aceptarIcon @(.cotizar) @(.janal-abono)" oncomplete="janal.desbloquear();jsArticulos.refreshCobroValidate();" />									
+									<p:ajax event="change" process="@this contenedorGrupos" onstart="return janal.bloquear();" listener="#{manticVentasCajaAccion.doAsignaTicketAbierto}" update="contenedorGrupos contenedorGrupos:idRegimen contenedorGrupos:idRegimenFiscal aceptar aceptarIcon @(.cotizar) @(.janal-abono)" oncomplete="janal.desbloquear();jsArticulos.refreshCobroValidate();" />									
 									<f:selectItem itemValue="" itemLabel="SELECCIONE"/> 
 									<f:selectItems value="#{manticVentasCajaAccion.attrs.ticketsAbiertos}" var="element" itemValue="#{element}" itemLabel="No.: #{element.consecutivo} - Cliente: #{element.cliente} - Importe: #{element.precioTotal} - Tipo: #{element.tipo}"/>
 									<p:column headerText="No. cuenta">

@@ -83,7 +83,7 @@ public class Ventas extends IBaseTicket implements Serializable {
       columns.add(new Columna("total", EFormatoDinamicos.NUMERO_CON_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));      
       columns.add(new Columna("hora", EFormatoDinamicos.HORA_CORTA));      			
-      this.lazyModel = new FormatCustomLazy("VistaConsultasDto", params, columns);
+      this.lazyModel = new FormatCustomLazy("VistaConsultasDto", "general", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {

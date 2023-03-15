@@ -41,9 +41,8 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 	
 	public TcManticClientesDto toCliente(Long idRepresentante) throws Exception {
 		TcManticClientesDto regresar= null;
-		Map<String, Object>params   = null;
+		Map<String, Object>params   = new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put("idRepresentante", idRepresentante);
 			regresar= (TcManticClientesDto)DaoFactory.getInstance().toEntity(TcManticClientesDto.class, "TcManticClientesDto", "representante", params);
 		} // try
@@ -63,18 +62,17 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 	public List<ClienteDomicilio> toClientesDomicilio(boolean update) throws Exception {
 		List<ClienteDomicilio> regresar= null;
 		TcManticDomiciliosDto domicilio= null;
-		Map<String, Object>params      = null;
+		Map<String, Object>params      = new HashMap<>();
 		Entity entityDomicilio         = null;
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_cliente=" + this.idCliente);
 			regresar= DaoFactory.getInstance().toEntitySet(ClienteDomicilio.class, "TrManticClienteDomicilioDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
-			for(ClienteDomicilio clienteDomicilio: regresar){
+			for(ClienteDomicilio clienteDomicilio: regresar) {
 				clienteDomicilio.setIdLocalidad(toLocalidad(clienteDomicilio.getIdDomicilio()));
 				clienteDomicilio.setIdMunicipio(toMunicipio(clienteDomicilio.getIdLocalidad().getKey()));
 				clienteDomicilio.setIdEntidad(toEntidad(clienteDomicilio.getIdMunicipio().getKey()));
-				if(update){
-					domicilio= toDomicilio(clienteDomicilio.getIdDomicilio());
+				if(update) {
+					domicilio= this.toDomicilio(clienteDomicilio.getIdDomicilio());
 					clienteDomicilio.setCalle(domicilio.getCalle());
 					clienteDomicilio.setCodigoPostal(domicilio.getCodigoPostal());
 					clienteDomicilio.setColonia(domicilio.getAsentamiento());
@@ -170,9 +168,8 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 	
 	public List<ClienteRepresentante> toClientesRepresentantes() throws Exception {
 		List<ClienteRepresentante> regresar= null;
-		Map<String, Object>params          = null;
+		Map<String, Object>params          = new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put("idCliente,", this.idCliente);
 			regresar= DaoFactory.getInstance().toEntitySet(ClienteRepresentante.class, "TrManticClienteRepresentanteDto", "cuentas", params, Constantes.SQL_TODOS_REGISTROS);
 		} // try
@@ -187,9 +184,8 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 	
 	public List<ClienteContactoRepresentante> toPersonasTipoContacto() throws Exception {
 		List<ClienteContactoRepresentante> regresar= null;
-		Map<String, Object>params    = null;
+		Map<String, Object>params    = new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_persona=" + this.idCliente);
 			regresar= DaoFactory.getInstance().toEntitySet(ClienteContactoRepresentante.class, "TrManticPersonaTipoContactoDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
 		} // try
@@ -204,10 +200,9 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 	
 	public List<ClienteContactoRepresentante> toRepresentantes() throws Exception{
 		List<ClienteContactoRepresentante> regresar= null;
-		Map<String, Object>params                  = null;
+		Map<String, Object> params                 = new HashMap<>();
 		TcManticPersonasDto persona                = null;
 		try {
-			params= new HashMap<>();
 			params.put("idCliente", this.idCliente);
 			regresar= DaoFactory.getInstance().toEntitySet(ClienteContactoRepresentante.class, "TrManticClienteRepresentanteDto", "cuentas", params, Constantes.SQL_TODOS_REGISTROS);
 			if(!regresar.isEmpty()) {
@@ -240,9 +235,8 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 	public Entity toDomicilioCliente() throws Exception{
 		Entity regresar          = null;
 		Entity domicilio         = null;
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_cliente=" + this.idCliente + " and id_principal=1");
 			domicilio= (Entity) DaoFactory.getInstance().toEntity("TrManticClienteDomicilioDto", "row", params);
 			if(domicilio!= null){

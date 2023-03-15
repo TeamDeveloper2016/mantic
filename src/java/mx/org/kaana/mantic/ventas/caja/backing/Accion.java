@@ -1083,7 +1083,10 @@ public class Accion extends IBaseVenta implements Serializable {
 				if(!seleccionado.toString("clave").equals(CLAVE_VENTA_GRAL)) {
           UISelectEntity temporal= this.getIkRegimenFiscal();
 					this.doAsignaDomicilioClienteInicial(seleccionado.getKey());
-          if(!Objects.equals(temporal.getKey(), this.getIkRegimenFiscal().getKey()) && !Objects.equals(temporal.getKey(), -1L))
+          if(!Objects.equals(seleccionado.toLong("idRegimenFiscal"), this.getIkRegimenFiscal().getKey()) && 
+             !Objects.equals(this.getIkRegimenFiscal().getKey(), -1L) && 
+             !Objects.equals(temporal.getKey(), this.getIkRegimenFiscal().getKey()) && 
+             !Objects.equals(temporal.getKey(), -1L))
             this.setIkRegimenFiscal(temporal);
 					motor= new MotorBusqueda(-1L, seleccionado.getKey());
 					this.clientesTiposContacto= motor.toCorreosCliente();
@@ -1582,11 +1585,10 @@ public class Accion extends IBaseVenta implements Serializable {
 		return regresar;		
 	} // toPrepare
 	
-	private void loadUltimoTicket() throws Exception{
+	private void loadUltimoTicket() throws Exception {
 		Entity ultimoTicket      = null;
-		Map<String, Object>params= null;		
+		Map<String, Object>params= new HashMap<>();		
 		try {
-			params= new HashMap<>();
 			params.put("sortOrder", "order by tc_mantic_ventas.cobro desc");
 			params.put("idEmpresa", this.attrs.get("idEmpresa"));
 			params.put(Constantes.SQL_CONDICION, "tc_mantic_ventas.id_venta_estatus in (" + EEstatusVentas.CREDITO.getIdEstatusVenta() + "," + EEstatusVentas.PAGADA.getIdEstatusVenta() + "," + EEstatusVentas.TERMINADA.getIdEstatusVenta() + "," + EEstatusVentas.TIMBRADA.getIdEstatusVenta() + ")");
@@ -1609,13 +1611,12 @@ public class Accion extends IBaseVenta implements Serializable {
 	} // doPrintTicket
 	
 	public void doPrint(Entity seleccionado) {
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		CreateTicket ticket      = null;
 		AdminTickets adminTicket = null;		
 		Entity cliente           = null;
 		MotorBusqueda motor      = null;
 		try {			
-			params= new HashMap<>();
 			params.put("idVenta", seleccionado.toLong("idVenta"));
 			adminTicket= new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params));
 			if(EEstatusVentas.fromIdTipoPago(seleccionado.toLong("idVentaEstatus")).equals(EEstatusVentas.TIMBRADA)) {
@@ -1627,7 +1628,7 @@ public class Accion extends IBaseVenta implements Serializable {
 				ticket= new CreateTicket(adminTicket, toPago(adminTicket, seleccionado.getKey()), toTipoTransaccion(seleccionado.toLong("idVentaEstatus")));
 			UIBackingUtilities.execute("jsTicket.imprimirTicket('" + ticket.getPrincipal().getClave()  + "-" + toConsecutivoTicket(seleccionado.toLong("idVentaEstatus"), adminTicket) + "','" + ticket.toHtml() + "');");
 			UIBackingUtilities.execute("jsTicket.clicTicket();");
-			doLoadTickets();
+			this.doLoadTickets();
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
