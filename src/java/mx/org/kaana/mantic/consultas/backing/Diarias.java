@@ -161,6 +161,7 @@ public class Diarias extends IBaseTicket implements Serializable {
 	protected Map<String, Object> toPrepare(EEstatusVentas consulta) {
 	  Map<String, Object> regresar= new HashMap<>();	
 		StringBuilder sb= new StringBuilder();		
+		StringBuilder sf= new StringBuilder();		
 		sb.append("tc_mantic_ventas.id_tipo_documento=").append(ETipoDocumento.VENTAS_NORMALES.getIdTipoDocumento()).append(" and ");
 		switch(consulta) {
 			case CREDITO:
@@ -180,9 +181,13 @@ public class Diarias extends IBaseTicket implements Serializable {
 		else
 		  regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
 		if(!Cadena.isVacio(this.attrs.get("idCaja")) && !this.attrs.get("idCaja").toString().equals("-1"))
-  		sb.append("(tc_mantic_cajas.id_caja= ").append(this.attrs.get("idCaja")).append(") and ");
+  		sf.append("(tc_mantic_cajas.id_caja= ").append(this.attrs.get("idCaja")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idMedioPago")) && !this.attrs.get("idMedioPago").toString().equals("-1"))
-  		sb.append("(tc_mantic_tipos_medios_pagos.id_tipo_medio_pago= ").append(this.attrs.get("idMedioPago")).append(") and ");
+  		sf.append("(tc_mantic_tipos_medios_pagos.id_tipo_medio_pago= ").append(this.attrs.get("idMedioPago")).append(") and ");
+		if(sf.length()== 0)
+		  regresar.put("apartado", Constantes.SQL_VERDADERO);
+		else	
+		  regresar.put("apartado", sf.substring(0, sf.length()- 4));
 		if(sb.length()== 0)
 		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 		else	

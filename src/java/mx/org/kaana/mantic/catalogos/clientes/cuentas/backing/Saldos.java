@@ -165,13 +165,12 @@ public class Saldos extends IBaseFilter implements Serializable {
 
   @Override
   public void doLoad() {
-    List<Columna> columns     = null;
+    List<Columna> columns     = new ArrayList<>();
 	  Map<String, Object> params= null;	
     try {
   	  params = this.toPrepare();	
       params.put("sortOrder", "order by	tc_mantic_clientes_deudas.registro desc");
 			params.put("idCliente", this.idCliente);
-      columns= new ArrayList<>();
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));      
       columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));      
       columns.add(new Columna("saldo", EFormatoDinamicos.MILES_CON_DECIMALES));    
@@ -233,10 +232,9 @@ public class Saldos extends IBaseFilter implements Serializable {
 	} // toPrepare	
 
  	protected void toLoadCatalog() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       List<UISelectEntity> estatus= (List<UISelectEntity>) UIEntity.seleccione("TcManticClientesEstatusDto", "row", params, columns, "nombre");
@@ -265,12 +263,10 @@ public class Saldos extends IBaseFilter implements Serializable {
 	
 	public void doClientes() {
 		List<UISelectEntity> clientes= null;
-    Map<String, Object> params   = null;
-		List<Columna> columns        = null;
+    Map<String, Object> params   = new HashMap<>();
+		List<Columna> columns        = new ArrayList<>();
     try {
-			columns= new ArrayList<>();
 			if(this.attrs.get("busqueda")!= null && this.attrs.get("busqueda").toString().length()> 3) {
-				params = new HashMap<>();      
 				params.put(Constantes.SQL_CONDICION, "upper(razon_social) like upper('%".concat((String)this.attrs.get("busqueda")).concat("%')"));
 				// params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
@@ -312,11 +308,9 @@ public class Saldos extends IBaseFilter implements Serializable {
 	
 	private void loadSucursales() {
 		List<UISelectEntity> sucursales= null;
-		Map<String, Object>params      = null;
-		List<Columna> columns          = null;
+		Map<String, Object>params      = new HashMap<>();
+		List<Columna> columns          = new ArrayList<>();
 		try {
-			columns= new ArrayList<>();
-			params= new HashMap<>();
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
@@ -363,13 +357,12 @@ public class Saldos extends IBaseFilter implements Serializable {
   
   public void doNotificar(String nombre, Entity pagoRealizado) throws Exception {
     Parametros comunes           = null;
-		Map<String, Object>params    = null;
+		Map<String, Object>params    = new HashMap<>();
 		Map<String, Object>parametros= null;
 		EReportes reporteSeleccion   = null;
 		try {		
       reporteSeleccion= EReportes.valueOf(nombre);
       this.idCliente= pagoRealizado.toLong("idCliente");
-      params= new HashMap<>();
       params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
       params.put("idCliente", pagoRealizado.toLong("idCliente"));
       params.put("idClientePagoControl", pagoRealizado.toLong("idClientePagoControl"));
@@ -584,7 +577,7 @@ public class Saldos extends IBaseFilter implements Serializable {
   } // doAccion 
   
   public void doCalcularPlazo() {
-		Integer plazo= null;				
+		Integer plazo  = null;				
     Calendar actual= null;
     Calendar inicio= null;
 		try {					
@@ -779,14 +772,13 @@ public class Saldos extends IBaseFilter implements Serializable {
 	} // doAgregarCorreo
   
   public void doLoadDetalle() {
-    List<Columna> columns     = null;
+    List<Columna> columns     = new ArrayList<>();
 	  Map<String, Object> params= null;	
     try {
   	  params = this.toPrepare();
 			Entity entity= this.attrs.get("seleccionado")== null? (Entity)this.attrs.get("rowSeleccionado"): (Entity)this.attrs.get("seleccionado");
 			params.put("sortOrder", "order by dias desc, tc_mantic_ventas.ticket desc");
 			params.put("idCliente", entity.toLong("idCliente"));
-      columns= new ArrayList<>();
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));      
       columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));      
       columns.add(new Columna("saldo", EFormatoDinamicos.MILES_CON_DECIMALES));    
@@ -820,16 +812,14 @@ public class Saldos extends IBaseFilter implements Serializable {
 	} // onRowToggle
  
   public void toLoadPagosRealizados(Entity row) {
-    List<Columna> columns     = null;    
-    Map<String, Object> params= null;
+    List<Columna> columns     = new ArrayList<>();    
+    Map<String, Object> params= new HashMap<>();
     try {      
       this.attrs.put("seleccionado", row);
-      params = new HashMap<>();      
       params.put("idCliente", row.toLong("idCliente"));      
       Periodo periodo= new Periodo();
       periodo.addMeses(-12);
       params.put("inicio", periodo.toString());      
-      columns = new ArrayList<>();
       columns.add(new Columna("pago", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
       this.pagosRealizados = (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaClientesDto", "pagosRealizados", params);
@@ -888,14 +878,12 @@ public class Saldos extends IBaseFilter implements Serializable {
 	} // onRowTogglePagosRealizados
  
   public void doLoadDetallePagosRealizados() {
-    List<Columna> columns     = null;
-	  Map<String, Object> params= null;	
+    List<Columna> columns     = new ArrayList<>();
+	  Map<String, Object> params= new HashMap<>();	
     try {
-      params = new HashMap<>();      
 			Entity entity= this.attrs.get("pagoRealizado")== null? (Entity)this.attrs.get("rowPagoRealizado"): (Entity)this.attrs.get("pagoRealizado");
 			params.put("sortOrder", "order by tc_mantic_clientes_pagos.registro desc");
 			params.put("idClientePagoControl", entity.toLong("idClientePagoControl"));
-      columns= new ArrayList<>();
       columns.add(new Columna("venta", EFormatoDinamicos.MILES_CON_DECIMALES));    
       columns.add(new Columna("abonado", EFormatoDinamicos.MILES_CON_DECIMALES));      
 			this.lazyPagosRealizados= new FormatCustomLazy("VistaClientesDto", "detallePagosRealizados", params, columns);
@@ -913,7 +901,7 @@ public class Saldos extends IBaseFilter implements Serializable {
   
 	public String doCheckUser() {
 		String regresar   = null;
-    String texto      = null;
+    String texto      = "";
     String ticket     = null;
 		String cuenta     = (String)this.attrs.get("cuenta");
 		String contrasenia= (String)this.attrs.get("contrasenia");

@@ -1553,8 +1553,8 @@ public class Accion extends IBaseVenta implements Serializable {
 	private Map<String, Object> toPrepare() {
 		Map<String, Object> regresar= new HashMap<>();	
 		StringBuilder sb= new StringBuilder();	
-		Date inicio= (Date) this.attrs.get("fechaApartirTicket");			
-		Date fin= (Date) this.attrs.get("fechaHastaTicket");			
+		Date inicio     = (Date) this.attrs.get("fechaApartirTicket");			
+		Date fin        = (Date) this.attrs.get("fechaHastaTicket");			
 		sb.append("date_format(tc_mantic_ventas.registro, '%Y%m%d') >= ").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, inicio)).append(" and ");
 		sb.append("date_format(tc_mantic_ventas.registro, '%Y%m%d') <= ").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, fin)).append(" and ");
 		if(this.attrs.get("noTicket")!= null && !Cadena.isVacio(this.attrs.get("noTicket"))) {
@@ -1589,13 +1589,20 @@ public class Accion extends IBaseVenta implements Serializable {
 		Entity ultimoTicket      = null;
 		Map<String, Object>params= new HashMap<>();		
 		try {
-			params.put("sortOrder", "order by tc_mantic_ventas.cobro desc");
 			params.put("idEmpresa", this.attrs.get("idEmpresa"));
-			params.put(Constantes.SQL_CONDICION, "tc_mantic_ventas.id_venta_estatus in (" + EEstatusVentas.CREDITO.getIdEstatusVenta() + "," + EEstatusVentas.PAGADA.getIdEstatusVenta() + "," + EEstatusVentas.TERMINADA.getIdEstatusVenta() + "," + EEstatusVentas.TIMBRADA.getIdEstatusVenta() + ")");
-      ultimoTicket= (Entity) DaoFactory.getInstance().toEntity("VistaConsultasDto", "lazy", params);
-			this.attrs.put("ultimoTicketEntity", ultimoTicket);
-			this.attrs.put("ultimoTicket", ultimoTicket.toString("ticket"));
-			this.attrs.put("descripcionUltimoTicket", "Ticket: ".concat(ultimoTicket.toString("ticket")).concat(", Total: $").concat(ultimoTicket.toString("total")));
+			// params.put(Constantes.SQL_CONDICION, "tc_mantic_ventas.id_venta_estatus in (" + EEstatusVentas.CREDITO.getIdEstatusVenta() + "," + EEstatusVentas.PAGADA.getIdEstatusVenta() + "," + EEstatusVentas.TERMINADA.getIdEstatusVenta() + "," + EEstatusVentas.TIMBRADA.getIdEstatusVenta()+ ") and (date_format(tc_mantic_ventas.registro, '%Y%m%d')>= '"+ Fecha.getHoyEstandar(-1)+ "')");
+			params.put(Constantes.SQL_CONDICION, "tc_mantic_ventas.id_venta_estatus in (" + EEstatusVentas.CREDITO.getIdEstatusVenta() + "," + EEstatusVentas.PAGADA.getIdEstatusVenta() + "," + EEstatusVentas.TERMINADA.getIdEstatusVenta() + "," + EEstatusVentas.TIMBRADA.getIdEstatusVenta()+ ")");
+      ultimoTicket= (Entity) DaoFactory.getInstance().toEntity("VistaConsultasDto", "maximo", params);
+      if(ultimoTicket== null || ultimoTicket.isEmpty()) {
+        ultimoTicket= new Entity(-1L);
+        ultimoTicket.put("idVenta", new Value("idVenta", -1L));
+        ultimoTicket.put("idVentaEstatus", new Value("idVentaEstatus", -1L));
+        ultimoTicket.put("ticket", new Value("ticket", "9999000001"));
+        ultimoTicket.put("total", new Value("total", "0.00"));
+      } // else
+		  this.attrs.put("ultimoTicketEntity", ultimoTicket);
+		  this.attrs.put("ultimoTicket", ultimoTicket.toString("ticket"));
+      this.attrs.put("descripcionUltimoTicket", "Ticket: ".concat(ultimoTicket.toString("ticket")).concat(", Total: $").concat(ultimoTicket.toString("total")));
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -1617,18 +1624,22 @@ public class Accion extends IBaseVenta implements Serializable {
 		Entity cliente           = null;
 		MotorBusqueda motor      = null;
 		try {			
-			params.put("idVenta", seleccionado.toLong("idVenta"));
-			adminTicket= new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params));
-			if(EEstatusVentas.fromIdTipoPago(seleccionado.toLong("idVentaEstatus")).equals(EEstatusVentas.TIMBRADA)) {
-				motor= new MotorBusqueda(-1L, adminTicket.getIdCliente());
-				cliente= motor.toCliente();
-				ticket= new CreateTicket(adminTicket, toPago(adminTicket, seleccionado.getKey()), toTipoTransaccion(seleccionado.toLong("idVentaEstatus")), cliente.toString("razonSocial"));
-			} // if
-			else
-				ticket= new CreateTicket(adminTicket, toPago(adminTicket, seleccionado.getKey()), toTipoTransaccion(seleccionado.toLong("idVentaEstatus")));
-			UIBackingUtilities.execute("jsTicket.imprimirTicket('" + ticket.getPrincipal().getClave()  + "-" + toConsecutivoTicket(seleccionado.toLong("idVentaEstatus"), adminTicket) + "','" + ticket.toHtml() + "');");
-			UIBackingUtilities.execute("jsTicket.clicTicket();");
-			this.doLoadTickets();
+      if(!Objects.equals(seleccionado.toLong("idVenta"), -1L)) {
+        params.put("idVenta", seleccionado.toLong("idVenta"));
+        adminTicket= new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params));
+        if(EEstatusVentas.fromIdTipoPago(seleccionado.toLong("idVentaEstatus")).equals(EEstatusVentas.TIMBRADA)) {
+          motor= new MotorBusqueda(-1L, adminTicket.getIdCliente());
+          cliente= motor.toCliente();
+          ticket= new CreateTicket(adminTicket, toPago(adminTicket, seleccionado.getKey()), toTipoTransaccion(seleccionado.toLong("idVentaEstatus")), cliente.toString("razonSocial"));
+        } // if
+        else
+          ticket= new CreateTicket(adminTicket, toPago(adminTicket, seleccionado.getKey()), toTipoTransaccion(seleccionado.toLong("idVentaEstatus")));
+        UIBackingUtilities.execute("jsTicket.imprimirTicket('" + ticket.getPrincipal().getClave()  + "-" + toConsecutivoTicket(seleccionado.toLong("idVentaEstatus"), adminTicket) + "','" + ticket.toHtml() + "');");
+        UIBackingUtilities.execute("jsTicket.clicTicket();");
+        this.doLoadTickets();
+      } // if
+      else 
+        JsfBase.addMessage("No existe un ticket seleccionado", ETipoMensaje.INFORMACION);        
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

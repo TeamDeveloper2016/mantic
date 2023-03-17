@@ -32,8 +32,6 @@ import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.enums.ETipoDocumento;
-import mx.org.kaana.mantic.enums.ETipoVenta;
-import mx.org.kaana.mantic.inventarios.almacenes.enums.ETiposVentas;
 import mx.org.kaana.mantic.ventas.comun.IBaseTicket;
 import org.primefaces.context.RequestContext;
 
@@ -61,8 +59,8 @@ public class Ventas extends IBaseTicket implements Serializable {
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.attrs.put("idVenta", JsfBase.getFlashAttribute("idVenta"));
       this.attrs.put("sortOrder", "order by tc_mantic_ventas.registro desc");
-			loadTiposPagos();
-			toLoadCatalog();      
+			this.loadTiposPagos();
+			this.toLoadCatalog();      
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -72,11 +70,10 @@ public class Ventas extends IBaseTicket implements Serializable {
  
   @Override
   public void doLoad() {
-    List<Columna> columns     = null;
+    List<Columna> columns     = new ArrayList<>();
 		Map<String, Object> params= null;
     try {
-			params= toPrepare();
-      columns = new ArrayList<>();
+			params= this.toPrepare();
       columns.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));

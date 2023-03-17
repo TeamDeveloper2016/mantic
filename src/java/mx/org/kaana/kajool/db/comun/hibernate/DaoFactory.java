@@ -11,6 +11,7 @@ package mx.org.kaana.kajool.db.comun.hibernate;
  */
 
 import java.sql.Connection;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -33,6 +34,7 @@ import mx.org.kaana.kajool.db.comun.transform.TransformSourceEntity;
 import mx.org.kaana.kajool.db.comun.transform.Transformer;
 import mx.org.kaana.xml.Dml;
 import mx.org.kaana.kajool.enums.ESql;
+import mx.org.kaana.libs.formato.Fecha;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.ScrollMode;
@@ -1467,15 +1469,17 @@ public final class DaoFactory<T extends IBaseDto> {
   }
 
   public Value toField(Session session, String sql, String name) throws Exception {
-    Value regresar = null;
-    NativeQuery query = null;
-    List list = null;
-    Entity entity = null;
+    Value regresar   = null;
+    NativeQuery query= null;
+    List list        = null;
+    Entity entity    = null;
     Object[] resultado = null;
+    Calendar now     = Calendar.getInstance();
     try {
       query = session.createNativeQuery(sql);
       query.setMaxResults(Constantes.SQL_PRIMER_REGISTRO);
       list = query.setResultTransformer(new TransformEntity()).list();
+      this.toEstimatedTime(now, sql);
       if (list != null && list.size() > 0) {
         entity = (Entity) list.get(0);
         if (name != null) {
@@ -2046,13 +2050,15 @@ public final class DaoFactory<T extends IBaseDto> {
    * @throws Exception
    */
   public T toEntity(Session session, Class<IBaseDto> dto, String sql) throws Exception {
-    T regresar = null;
-    NativeQuery query = null;
-    List list = null;
+    T regresar       = null;
+    NativeQuery query= null;
+    List list        = null;
+    Calendar now     = Calendar.getInstance();
     try {
       query = session.createNativeQuery(sql);
       query.setMaxResults(Constantes.SQL_PRIMER_REGISTRO);
       list = query.setResultTransformer(new TransformDto(dto)).list();
+      this.toEstimatedTime(now, sql);
       if (list != null && list.size() > 0) {
         regresar = (T) list.get(0);
       }
@@ -3017,13 +3023,15 @@ public final class DaoFactory<T extends IBaseDto> {
 
   public List<T> toEntitySet(Session session, Class<IBaseDto> dto, String sql, Long records) throws Exception {
     List<T> regresar = null;
-    NativeQuery query = null;
+    NativeQuery query= null;
+    Calendar now     = Calendar.getInstance();
     try {
       query = session.createSQLQuery(sql);
       if (records != Constantes.SQL_TODOS_REGISTROS) {
         query.setMaxResults(records.intValue());
       }
       regresar = query.setResultTransformer(new TransformDto(dto)).list();
+      this.toEstimatedTime(now, sql);
     } // try
     catch (Exception e) {
       throw e;
@@ -3493,12 +3501,14 @@ public final class DaoFactory<T extends IBaseDto> {
 
   public List<T> toEntityPage(Session session, Class<IBaseDto> dto, String sql, Integer first, Integer records) throws Exception {
     List<T> regresar = null;
-    NativeQuery query = null;
+    NativeQuery query= null;
+    Calendar now     = Calendar.getInstance();
     try {
       query = session.createNativeQuery(sql);
       query.setFirstResult(first);
       query.setMaxResults(records);
       regresar = query.setResultTransformer(new TransformDto(dto)).list();
+      this.toEstimatedTime(now, sql);
     } // try   
     catch (Exception e) {
       throw e;
@@ -3604,14 +3614,16 @@ public final class DaoFactory<T extends IBaseDto> {
   }
 
   public PageRecords toEntityPage(Session session, String sql, Integer first, Integer records) throws Exception {
-    PageRecords regresar = null;
-    NativeQuery query = null;
+    PageRecords regresar= null;
+    NativeQuery query   = null;
     List<IBaseDto> list = null;
+    Calendar now        = Calendar.getInstance();
     try {
       query = session.createNativeQuery(sql);
       query.setFirstResult(first);
       query.setMaxResults(records);
       list = query.setResultTransformer(new TransformEntity()).list();
+      this.toEstimatedTime(now, sql);
       String total = "select count(*) count from (".concat(SessionFactoryFacade.getInstance().isOracle() ? sql : Cadena.toSqlCleanOrderBy(sql)).concat(") datos");
       Long count = ((Number) toField(session, total, "count").getData()).longValue();
       regresar = new PageRecords((int) (first / records), records, count.intValue(), list);
@@ -4146,11 +4158,13 @@ public final class DaoFactory<T extends IBaseDto> {
 
   private List<T> toRecordsEntity(Session session, String sql, Transformer transformer) throws Exception {
     List<T> regresar = null;
-    NativeQuery query = null;
+    NativeQuery query= null;
+    Calendar now     = Calendar.getInstance();
     try {
       query = session.createNativeQuery(sql);
       query.setMaxResults(Constantes.SQL_PRIMER_REGISTRO);
       regresar = query.setResultTransformer(transformer).list();
+      this.toEstimatedTime(now, sql);
     } // try
     catch (Exception e) {
       throw e;
@@ -4163,13 +4177,15 @@ public final class DaoFactory<T extends IBaseDto> {
 
   private List<T> toRecordsEntity(Session session, String sql, Long records, Transformer transformer) throws Exception {
     List<T> regresar = null;
-    NativeQuery query = null;
+    NativeQuery query= null;
+    Calendar now     = Calendar.getInstance();
     try {
       query = session.createNativeQuery(sql);
       if (records != Constantes.SQL_TODOS_REGISTROS) {
         query.setMaxResults(records.intValue());
       }
       regresar = query.setResultTransformer(transformer).list();
+      this.toEstimatedTime(now, sql);
     } // try
     catch (Exception e) {
       throw e;
@@ -4182,12 +4198,14 @@ public final class DaoFactory<T extends IBaseDto> {
 
   private List<T> toRecordsEntity(Session session, String sql, Integer first, Integer records, Transformer transformer) throws Exception {
     List<T> regresar = null;
-    NativeQuery query = null;
+    NativeQuery query= null;
+    Calendar now     = Calendar.getInstance();
     try {
       query = session.createNativeQuery(sql);
       query.setFirstResult(first);
       query.setMaxResults(records);
       regresar = query.setResultTransformer(transformer).list();
+      this.toEstimatedTime(now, sql);
     } // try
     catch (Exception e) {
       throw e;
@@ -4502,14 +4520,15 @@ public final class DaoFactory<T extends IBaseDto> {
   }
 
   public List toEntityMap(String sql, Long records, Session session) throws Exception {
-    List regresar = null;
-    NativeQuery query = null;
+    List regresar    = null;
+    NativeQuery query= null;
+    Calendar now     = Calendar.getInstance();
     try {
       query = session.createNativeQuery(sql);
-      if (records != Constantes.SQL_TODOS_REGISTROS) {
+      if (records != Constantes.SQL_TODOS_REGISTROS) 
         query.setMaxResults(records.intValue());
-      }
       regresar = query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP).list();
+      this.toEstimatedTime(now, sql);
     } // try
     catch (Exception e) {
       throw e;
@@ -4713,4 +4732,12 @@ public final class DaoFactory<T extends IBaseDto> {
     return SessionFactoryFacade.getInstance().getDataBase();
   }
 
+  private void toEstimatedTime(Calendar now, String sql) {
+    long diferencia= Fecha.diferenciaSegundo(now.getTimeInMillis(), Calendar.getInstance().getTimeInMillis());
+    if(diferencia> 2) {
+      LOG.error("TIEMPO SUPERIOR A 2 SEG [".concat(Fecha.toFormatSecondsToHour(diferencia)).concat("]"));
+      LOG.error("SQL [".concat(sql).concat("]"));
+    } // if  
+  }
+  
 }

@@ -110,13 +110,12 @@ public class Horas extends IBaseTicket implements Serializable {
  
   @Override
   public void doLoad() {
-    List<Columna> columns       = null;
+    List<Columna> columns       = new ArrayList<>();
 		Map<String, Object> params  = null;
 		Map<String, Object> credito = null;
 		Map<String, Object> apartado= null;
     try {
 			params= this.toPrepare();
-      columns = new ArrayList<>();
       columns.add(new Columna("nombreEmpresa", EFormatoDinamicos.MAYUSCULAS));      
       columns.add(new Columna("fecha", EFormatoDinamicos.FECHA_CORTA));      
       columns.add(new Columna("total", EFormatoDinamicos.MILES_SAT_DECIMALES));      
@@ -164,6 +163,7 @@ public class Horas extends IBaseTicket implements Serializable {
 	protected Map<String, Object> toPrepare(EEstatusVentas consulta) {
 	  Map<String, Object> regresar= new HashMap<>();	
 		StringBuilder sb= new StringBuilder();	
+		StringBuilder sf= new StringBuilder();		
 		regresar.put("idTipoDocumento", ETipoDocumento.VENTAS_NORMALES.getIdTipoDocumento());
 		regresar.put("idVentaEstatus", EEstatusVentas.PAGADA.getIdEstatusVenta()+","+EEstatusVentas.TIMBRADA.getIdEstatusVenta()+","+EEstatusVentas.TERMINADA.getIdEstatusVenta());
 		regresar.put("fechaInicio", Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio")));
@@ -189,25 +189,24 @@ public class Horas extends IBaseTicket implements Serializable {
 		else
 		  regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
 		if(!Cadena.isVacio(this.attrs.get("idCaja")) && !this.attrs.get("idCaja").toString().equals("-1"))
-  		sb.append("(tc_mantic_cajas.id_caja= ").append(this.attrs.get("idCaja")).append(") and ");
+  		sf.append("(tc_mantic_cajas.id_caja= ").append(this.attrs.get("idCaja")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idMedioPago")) && !this.attrs.get("idMedioPago").toString().equals("-1"))
-  		sb.append("(tc_mantic_tipos_medios_pagos.id_tipo_medio_pago= ").append(this.attrs.get("idMedioPago")).append(") and ");
-		if(sb.length()== 0){
+  		sf.append("(tc_mantic_tipos_medios_pagos.id_tipo_medio_pago= ").append(this.attrs.get("idMedioPago")).append(") and ");
+		if(sf.length()== 0)
+		  regresar.put("apartado", Constantes.SQL_VERDADERO);
+		else	
+		  regresar.put("apartado", sf.substring(0, sf.length()- 4));
+		if(sb.length()== 0) 
 		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-		  regresar.put("condicionPrincipal", Constantes.SQL_VERDADERO);
-		} // if		
-		else{	
+		else
 		  regresar.put(Constantes.SQL_CONDICION, sb.substring(0, sb.length()- 4));
-		  regresar.put("condicionPrincipal", sb.substring(0, sb.length()- 4));
-		} // else
 		return regresar;		
 	} // toPrepare
 	
 	protected void toLoadCatalog() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
         params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
 			else
@@ -238,15 +237,13 @@ public class Horas extends IBaseTicket implements Serializable {
 	}	
 	
 	public void doReporte() throws Exception {
-		Map<String, Object>params    = null;
-		Map<String, Object>parametros= null;
+		Map<String, Object>params    = new HashMap<>();
+		Map<String, Object>parametros= new HashMap<>();
 		EReportes reporteSeleccion   = null;
 		try{				
 			reporteSeleccion= EReportes.ORDEN_COMPRA;
 			this.reporte= JsfBase.toReporte();
-			params= new HashMap<>();
 			params.put("idVenta", ((Entity)this.attrs.get("seleccionado")).getKey());			
-			parametros= new HashMap<>();
 			parametros.put("REPORTE_EMPRESA", JsfBase.getAutentifica().getEmpresa().getNombreCorto());
 		  parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
 			parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
@@ -272,10 +269,9 @@ public class Horas extends IBaseTicket implements Serializable {
 	} // doVerificarReporte		
 
 	public void doLoadCajas() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			params.put("idEmpresa", ((UISelectEntity)this.attrs.get("idEmpresa")).getKey());
@@ -291,7 +287,7 @@ public class Horas extends IBaseTicket implements Serializable {
     } // finally
 	} // doLoadCajas
 	
-	private void doLoadMediosPagos(){
+	private void doLoadMediosPagos() {
 		List<UISelectItem> mediosPagos= null;
 		try {
 			mediosPagos= new ArrayList<>();
@@ -307,4 +303,5 @@ public class Horas extends IBaseTicket implements Serializable {
 			throw e;
 		} // catch		
 	} // doLoadMediosPagos	
+  
 }

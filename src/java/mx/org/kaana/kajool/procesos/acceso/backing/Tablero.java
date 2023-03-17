@@ -1079,6 +1079,7 @@ public class Tablero extends Comun implements Serializable {
       sb.append("tc_mantic_ventas.id_venta_estatus in (").append(EEstatusVentas.PAGADA.getIdEstatusVenta()).append(",").append(EEstatusVentas.TIMBRADA.getIdEstatusVenta()).append(",").append(EEstatusVentas.TERMINADA.getIdEstatusVenta()).append(") and ");
       sb.append("(date_format(tc_mantic_ventas.registro, '%Y%m%d')= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') ");			
       params.put(Constantes.SQL_CONDICION, sb.toString());
+      params.put("apartado", Constantes.SQL_VERDADERO);
       params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
       columns.add(new Columna("nombreEmpresa", EFormatoDinamicos.MAYUSCULAS));      
       columns.add(new Columna("importe", EFormatoDinamicos.MILES_SAT_DECIMALES));      
