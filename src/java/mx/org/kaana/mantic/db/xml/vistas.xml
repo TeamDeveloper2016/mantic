@@ -2130,13 +2130,13 @@
 			</select>
 			<select id="ventas">
         select
-          convert(concat(id_empresa,id_caja,id_tipo_medio_pago),signed) as id_key,
-          empresa,
-          nombre_empresa,
-          id_caja,
-          caja,
-          tipo_medio_pago,
-          sum(total+ deduccion) importe,
+          convert(concat(tt_mantic_general.id_empresa, tt_mantic_general.id_caja, tt_mantic_general.id_tipo_medio_pago), signed) as id_key,
+          tt_mantic_general.empresa,
+          tt_mantic_general.nombre_empresa,
+          tt_mantic_general.id_caja,
+          tc_mantic_cajas.clave as caja,
+          tt_mantic_general.tipo_medio_pago,
+          sum(tt_mantic_general.total+ tt_mantic_general.deduccion) importe,
           count(*) total     
         from (
           select
@@ -2144,8 +2144,7 @@
             tc_mantic_empresas.id_empresa,
             tc_mantic_empresas.clave as empresa,
             tc_mantic_empresas.nombre as nombre_empresa,
-            tc_mantic_cajas.id_caja,
-            tc_mantic_cajas.clave as caja,
+            tc_mantic_cierres_cajas.id_caja,
             tr_mantic_venta_medio_pago.importe,
             tc_mantic_ventas.total,
             ifnull(tc_mantic_garantias.total* -1, 0) as deduccion,
@@ -2171,8 +2170,6 @@
             tc_mantic_tipos_medios_pagos on tr_mantic_venta_medio_pago.id_tipo_medio_pago = tc_mantic_tipos_medios_pagos.id_tipo_medio_pago          
           inner join
             tc_mantic_cierres_cajas on tr_mantic_venta_medio_pago.id_cierre= tc_mantic_cierres_cajas.id_cierre          
-          inner join
-            tc_mantic_cajas on tc_mantic_cierres_cajas.id_caja = tc_mantic_cajas.id_caja          
           left join
             tc_mantic_garantias on tc_mantic_ventas.id_venta= tc_mantic_garantias.id_venta
           where
@@ -2181,23 +2178,17 @@
           group by
             tc_mantic_ventas.id_venta,
             tc_mantic_empresas.id_empresa,
-            tc_mantic_empresas.clave,
-            tc_mantic_empresas.nombre,
-            tc_mantic_cajas.id_caja,
-            tc_mantic_cajas.clave,
-            tr_mantic_venta_medio_pago.importe,
-            tc_mantic_ventas.total,
-            tc_mantic_tipos_medios_pagos.id_tipo_medio_pago,
-            tc_mantic_tipos_medios_pagos.nombre) as tt_mantic_general     
+            tc_mantic_cierres_cajas.id_caja,
+            tc_mantic_tipos_medios_pagos.id_tipo_medio_pago) as tt_mantic_general     
+       inner join
+         tc_mantic_cajas on tt_mantic_general.id_caja = tc_mantic_cajas.id_caja          
        group by
-          empresa,
-          nombre_empresa,
-          id_caja,
-          caja,
-          tipo_medio_pago     
-        order by
-          empresa,
-          importe desc	        
+         tt_mantic_general.empresa,
+         tt_mantic_general.id_caja,
+         tt_mantic_general.tipo_medio_pago     
+       order by
+         tt_mantic_general.empresa,
+         tt_mantic_general.importe desc
       </select>  
 			<select id="credito">
 				select				
@@ -2444,8 +2435,7 @@
               tc_mantic_ventas
             where
               tc_mantic_ventas.id_empresa in ({idEmpresa})
-              and tc_mantic_tipos_documentos.id_tipo_documento= {idTipoDocumento}       
-              and tc_mantic_ventas_estatus.id_venta_estatus in ({idVentaEstatus})       
+              and tc_mantic_ventas.id_venta_estatus in ({idVentaEstatus})       
               and (date_format(tc_mantic_ventas.registro, '%Y%m%d')&gt;= '{fechaInicio}')       
               and (date_format(tc_mantic_ventas.registro, '%Y%m%d')&lt;= '{fechaFin}')            
           ) tt_mantic_ventas on tc_mantic_ventas.id_venta= tt_mantic_ventas.id_venta
@@ -2467,6 +2457,7 @@
 					  tc_mantic_cajas on tc_mantic_cierres_cajas.id_caja = tc_mantic_cajas.id_caja     
 					where
 						tc_mantic_ventas.id_empresa in ({idEmpresa})             
+            and tc_mantic_tipos_documentos.id_tipo_documento= {idTipoDocumento}       
 					  and	{apartado}
 					group by
 						tc_mantic_ventas.id_empresa,
@@ -2522,8 +2513,7 @@
               tc_mantic_ventas
             where
               tc_mantic_ventas.id_empresa in ({idEmpresa})
-              and tc_mantic_tipos_documentos.id_tipo_documento= {idTipoDocumento}       
-              and tc_mantic_ventas_estatus.id_venta_estatus in ({idVentaEstatus})       
+              and tc_mantic_ventas.id_venta_estatus in ({idVentaEstatus})       
               and (date_format(tc_mantic_ventas.registro, '%Y%m%d')&gt;= '{fechaInicio}')       
               and (date_format(tc_mantic_ventas.registro, '%Y%m%d')&lt;= '{fechaFin}')            
           ) tt_mantic_ventas on tc_mantic_ventas.id_venta= tt_mantic_ventas.id_venta
@@ -2545,6 +2535,7 @@
 					  tc_mantic_cajas on tc_mantic_cierres_cajas.id_caja = tc_mantic_cajas.id_caja     
 					where
 						tc_mantic_ventas.id_empresa in ({idEmpresa})             
+            and tc_mantic_tipos_documentos.id_tipo_documento= {idTipoDocumento}       
 					  and {apartado}
 					group by
 						tc_mantic_ventas.id_empresa,

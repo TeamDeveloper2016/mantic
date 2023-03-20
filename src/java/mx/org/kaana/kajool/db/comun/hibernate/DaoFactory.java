@@ -3617,15 +3617,21 @@ public final class DaoFactory<T extends IBaseDto> {
     PageRecords regresar= null;
     NativeQuery query   = null;
     List<IBaseDto> list = null;
+    Long count          = 0L; 
     Calendar now        = Calendar.getInstance();
     try {
-      query = session.createNativeQuery(sql);
+      query= session.createNativeQuery(sql);
       query.setFirstResult(first);
       query.setMaxResults(records);
       list = query.setResultTransformer(new TransformEntity()).list();
       this.toEstimatedTime(now, sql);
-      String total = "select count(*) count from (".concat(SessionFactoryFacade.getInstance().isOracle() ? sql : Cadena.toSqlCleanOrderBy(sql)).concat(") datos");
-      Long count = ((Number) toField(session, total, "count").getData()).longValue();
+      if(list!= null)
+        if(list.size()>= records) {
+          String total = "select count(*) count from (".concat(SessionFactoryFacade.getInstance().isOracle()? sql: Cadena.toSqlCleanOrderBy(sql)).concat(") datos");
+          count= ((Number) this.toField(session, total, "count").getData()).longValue();
+        } // if
+        else
+          count= new Long(list.size());
       regresar = new PageRecords((int) (first / records), records, count.intValue(), list);
     } // try   
     catch (Exception e) {
@@ -3642,7 +3648,7 @@ public final class DaoFactory<T extends IBaseDto> {
     Dml dml = null;
     try {
       dml = Dml.getInstance();
-      regresar = toEntityPage(session, dml.getSelect(process, idXml, params), first, records);
+      regresar = this.toEntityPage(session, dml.getSelect(process, idXml, params), first, records);
     } // try
     catch (Exception e) {
       throw e;
@@ -3661,7 +3667,7 @@ public final class DaoFactory<T extends IBaseDto> {
       session = SessionFactoryFacade.getInstance().getSession();
       transaction = session.beginTransaction();
       session.clear();
-      regresar = toEntityPage(session, process, idXml, params, first, records);
+      regresar = this.toEntityPage(session, process, idXml, params, first, records);
       transaction.commit();
     } // try
     catch (Exception e) {
@@ -3688,7 +3694,7 @@ public final class DaoFactory<T extends IBaseDto> {
       session = SessionFactoryFacade.getInstance().getSession(idFuenteDato);
       transaction = session.beginTransaction();
       session.clear();
-      regresar = toEntityPage(session, process, idXml, params, first, records);
+      regresar = this.toEntityPage(session, process, idXml, params, first, records);
       transaction.commit();
     } // try
     catch (Exception e) {
