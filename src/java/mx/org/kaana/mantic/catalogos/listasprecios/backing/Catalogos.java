@@ -18,6 +18,7 @@ import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 
 @javax.inject.Named("manticCatalogosListaPreciosCatalogos")
@@ -67,9 +68,10 @@ public class Catalogos extends IBaseAttribute implements Serializable{
   } // doLoadProveedores
   
   public void doLoad(){
-    Map<String, Object> params = null;
+    Map<String, Object> params= null;
     try {
-      params = toPrepare();
+      params= this.toPrepare();
+      params.put("logo", Configuracion.getInstance().getEmpresa("icon"));
       params.put("sortOrder", "order by tc_mantic_proveedores.razon_social");
       lazyModel = DaoFactory.getInstance().toEntitySet("VistaListasArchivosDto", "lazyProveedores", params);
     } // try

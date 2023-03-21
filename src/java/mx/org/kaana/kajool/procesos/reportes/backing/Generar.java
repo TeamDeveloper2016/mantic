@@ -85,6 +85,7 @@ public class Generar extends BaseReportes implements Serializable {
 			this.ireporte.getParametros().put(Constantes.REPORTE_VERSION, Configuracion.getInstance().getPropiedad("sistema.version"));
 			this.ireporte.getParametros().put(Constantes.REPORTE_REGISTROS, this.total);
 			this.ireporte.getParametros().put(Constantes.REPORTE_IMAGENES, JsfBase.getRealPath(Constantes.RUTA_IMAGENES).concat(File.separator));
+			this.ireporte.getParametros().put(Constantes.REPORTE_LOGO, JsfBase.getRealPath(Constantes.RUTA_IMAGENES).concat(File.separator).concat(Configuracion.getInstance().getEmpresa("logo")));
 			this.ireporte.getParametros().put(Constantes.REPORTE_TITULOS, this.idTitulos);
 			this.ireporte.getParametros().put(Constantes.REPORTE_SUBREPORTE, source.substring(0, source.lastIndexOf(File.separator)+File.separator.length()));
 			if (ireporte instanceof IReporteDataSource)

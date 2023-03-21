@@ -59,8 +59,9 @@ public final class LoadImages {
 		if(Cadena.isVacio(name))
 		  return new DefaultStreamedContent(new FileInputStream(JsfBase.getRealPath("/resources/janal/img/sistema/sin-foto.png")), "image/png"); // svg+xml
 		else {
-		  File file= new File(name);
-		  return file.exists()? new DefaultStreamedContent(new FileInputStream(name), "image/jpg"): new DefaultStreamedContent(new FileInputStream(JsfBase.getRealPath("/resources/janal/img/sistema/bonanza.svg")), "image/svg+xml");
+      String logo= Configuracion.getInstance().getEmpresa("icon");
+		  File file  = new File(name);
+		  return file.exists()? new DefaultStreamedContent(new FileInputStream(name), "image/jpg"): new DefaultStreamedContent(new FileInputStream(JsfBase.getRealPath("/resources/janal/img/sistema/"+ logo)), "image/svg+xml");
 		} // else	
 	} 
 	

@@ -104,6 +104,7 @@ public final class Constantes {
   public static final String REPORTE_SQL        = "REPORTE_SQL";
   public static final String REPORTE_REGISTROS  = "REPORTE_REGISTROS";
   public static final String REPORTE_IMAGENES   = "REPORTE_IMAGENES";
+  public static final String REPORTE_LOGO       = "REPORTE_LOGO";
   public static final String REPORTE_TITULOS    = "REPORTE_TITULOS";
   public static final String REPORTE_SUBREPORTE = "REPORTE_SUBREPORTE";
   public static final String REPORTE_VERSION    = "REPORTE_VERSION";

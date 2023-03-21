@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="facturaDetalle" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" scriptletClass="mx.org.kaana.mantic.facturas.scriplet.FacturaDetalle" uuid="bb4277c3-ed80-4c79-b7ab-b51954ca7552">
 	<property name="ireport.zoom" value="3.0"/>
-	<property name="ireport.x" value="729"/>
-	<property name="ireport.y" value="240"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="80"/>
 	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false" pdfFontName="Times-Bold"/>
 	<style name="SubTitle" forecolor="#CCCCCC" fontName="Times New Roman" fontSize="18" isBold="false" pdfFontName="Times-Roman"/>
 	<style name="Column header" forecolor="#666666" fontName="Times New Roman" fontSize="14" isBold="true" pdfFontName="Times-Roman"/>
@@ -71,6 +71,7 @@
 	<parameter name="REPORTE_ALMACEN_EMAILS" class="java.lang.String"/>
 	<parameter name="REPORTE_ALMACEN_MUNICIPIO" class="java.lang.String"/>
 	<parameter name="REPORTE_REGIMEN_FISCAL" class="java.lang.String"/>
+	<parameter name="REPORTE_LOGO" class="java.lang.String"/>
 	<queryString language="SQL">
 		<![CDATA[$P!{REPORTE_SQL}]]>
 	</queryString>
@@ -208,7 +209,7 @@
 					<bottomPen lineWidth="0.0" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineColor="#000000"/>
 				</box>
-				<imageExpression><![CDATA[$P{REPORTE_IMAGENES}+"bonanza-report.png"]]></imageExpression>
+				<imageExpression><![CDATA[$P{REPORTE_LOGO}]]></imageExpression>
 			</image>
 			<textField pattern="">
 				<reportElement x="596" y="121" width="155" height="10" uuid="4fbf3e35-e52a-4797-b5e7-cd988e1d758f"/>

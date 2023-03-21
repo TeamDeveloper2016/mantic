@@ -44,7 +44,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     try {
 			puntoVenta= JsfBase.getFlashAttribute("puntoVenta");			
 			this.attrs.put("puntoVenta", puntoVenta!= null);
-      this.attrs.put("sortOrder", "order by tc_mantic_clientes.razon_social");
+      this.attrs.put("sortOrder", "order by tc_mantic_clientes.razon_social, tc_mantic_clientes.paterno, tc_mantic_clientes.materno");
       this.attrs.put("idPrincipal", 1L);
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());     
 			this.loadCreditos();
@@ -111,10 +111,10 @@ public class Filtro extends IBaseFilter implements Serializable {
       if(!Cadena.isVacio(this.attrs.get("idClienteProcess")) && !this.attrs.get("idClienteProcess").toString().equals("-1")) 
         condicion.append("tc_mantic_clientes.id_cliente=").append(this.attrs.get("idClienteProcess")).append(" and ");
 			if(clientes!= null && cliente!= null && clientes.indexOf(cliente)>= 0) 
-				condicion.append("tc_mantic_clientes.razon_social regexp '.*").append(clientes.get(clientes.indexOf(cliente)).toString("razonSocial").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*")).append(".*' and ");				
+				condicion.append("concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, '')) regexp '.*").append(clientes.get(clientes.indexOf(cliente)).toString("razonSocial").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*")).append(".*' and ");				
 			else 
 				if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input"))) 
-					condicion.append("tc_mantic_clientes.razon_social regexp '.*").append(JsfBase.getParametro("razonSocial_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*")).append(".*' and ");				
+					condicion.append("concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, '')) regexp '.*").append(JsfBase.getParametro("razonSocial_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*")).append(".*' and ");				
 			if(!Cadena.isVacio(this.attrs.get("rfc")))
 				condicion.append("tc_mantic_clientes.rfc like '%").append(this.attrs.get("rfc")).append("%' and ");
 			if(!Cadena.isVacio(this.attrs.get("clave")))

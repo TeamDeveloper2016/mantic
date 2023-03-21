@@ -102,7 +102,6 @@ public class Transaccion extends IBaseTnx implements Serializable {
 		return regresar;
 	}	// ejecutar
 
-
 	private TcManticRespaldosDto toBackup() throws Exception {
 		TcManticRespaldosDto regresar= null;
 		StringBuilder path= new StringBuilder();  
@@ -127,7 +126,8 @@ public class Transaccion extends IBaseTnx implements Serializable {
     name.append(".");
     path.append(name.toString().concat(EFormatos.SQL.name().toLowerCase()));
 		// C:\Software\Server\MariaDB-10_1\bin\mysqldump -h 127.0.0.1 -u mantic --password=mantic --compact --databases mantic --add-drop-table --complete-insert --extended-insert --skip-comments -r d:/temporal/hola.sql
-		String server= "";
+    String server= Configuracion.getInstance().getPropiedadServidor("user.db.backup");
+		/*
 		switch(Configuracion.getInstance().getEtapaServidor()) {
 			case DESARROLLO:
   			server= "C:/Software/Server/MariaDB-10_1/bin/mysqldump -h 127.0.0.1 -u mantic --password=mantic --databases mantic ";
@@ -142,6 +142,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
         server= "mysqldump -h localhost -u ferreter_super --password=super2018 --databases ferreter_production ";
 				break;
 		} // swtich
+    */
 		LOG.error("Proceso a generar: "+ server.concat(" --compact --add-drop-table --complete-insert --extended-insert -r ").concat(path.toString()));
 		Process runtimeProcess = Runtime.getRuntime().exec(server.concat(" --compact --add-drop-table --complete-insert --extended-insert -r ").concat(path.toString()));
 		LOG.error("Proceso en ejecucion ...");

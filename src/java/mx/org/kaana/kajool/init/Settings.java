@@ -1,4 +1,3 @@
-
 package mx.org.kaana.kajool.init;
 
 import mx.org.kaana.libs.Constantes;

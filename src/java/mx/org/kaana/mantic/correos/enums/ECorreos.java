@@ -1,5 +1,8 @@
 package mx.org.kaana.mantic.correos.enums;
 
+import java.util.HashMap;
+import java.util.Map;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.recurso.TcConfiguraciones;
 
 /**
@@ -11,30 +14,85 @@ import mx.org.kaana.libs.recurso.TcConfiguraciones;
  */
 public enum ECorreos {
 	
-  FACTURACION   ("/mx/org/kaana/mantic/correos/templates/facturacion.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "facturas@ferreteriabonanza.com", "Facturas F. Bonanza"), 
-  TICKET        ("/mx/org/kaana/mantic/correos/templates/ticket.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "facturas@ferreteriabonanza.com", "Ticket F. Bonanza"), 
-	COTIZACIONES  ("/mx/org/kaana/mantic/correos/templates/cotizacion.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "ventas@ferreteriabonanza.com", "Ventas F. Bonanza"),
-	ORDENES_COMPRA("/mx/org/kaana/mantic/correos/templates/ordenes.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "compras@ferreteriabonanza.com", "Compras F. Bonanza"),
-	CUENTAS       ("/mx/org/kaana/mantic/correos/templates/cuentas.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "ventas@ferreteriabonanza.com", "Ventas F. Bonanza"),
-	CREDITO       ("/mx/org/kaana/mantic/correos/templates/cobrar.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "ventas@ferreteriabonanza.com", "Ventas F. Bonanza"),
-	DEVOLUCION    ("/mx/org/kaana/mantic/correos/templates/devolucion.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "ventas@ferreteriabonanza.com", "Ventas F. Bonanza"),
-	PAGOS         ("/mx/org/kaana/mantic/correos/templates/pagos.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "ventas@ferreteriabonanza.com", "Ventas F. Bonanza"),
-	ORDENES_TALLER("/mx/org/kaana/mantic/correos/templates/taller.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "ventas@ferreteriabonanza.com", "Taller F. Bonanza");
+  FACTURACION   ("facturacion.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "facturas@ferreteriabonanza.com", "Facturas F. Bonanza"), 
+  TICKET        ("ticket.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "facturas@ferreteriabonanza.com", "Ticket F. Bonanza"), 
+	COTIZACIONES  ("cotizacion.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "ventas@ferreteriabonanza.com", "Ventas F. Bonanza"),
+	ORDENES_COMPRA("ordenes.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "compras@ferreteriabonanza.com", "Compras F. Bonanza"),
+	CUENTAS       ("cuentas.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "ventas@ferreteriabonanza.com", "Ventas F. Bonanza"),
+	CREDITO       ("cobrar.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "ventas@ferreteriabonanza.com", "Ventas F. Bonanza"),
+	DEVOLUCION    ("devolucion.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "ventas@ferreteriabonanza.com", "Ventas F. Bonanza"),
+	PAGOS         ("pagos.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "ventas@ferreteriabonanza.com", "Ventas F. Bonanza"),
+	ORDENES_TALLER("taller.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "ventas@ferreteriabonanza.com", "Taller F. Bonanza");
 	 
 	private String template;
 	private String images;
 	private String user;
 	private String password;
-	private String email;
 	private String alias;
+  private static Map<String, String> empresas;
+  
+  static {
+    empresas= new HashMap<>();
+    empresas.put("mantic.ticket.email", "facturas@ferreteriabonanza.com");  
+    empresas.put("mantic.facturacion.email", "facturas@ferreteriabonanza.com");  
+    empresas.put("mantic.facturacion.backup", "");  
+    empresas.put("mantic.cotizaciones.email", "ventas@ferreteriabonanza.com");  
+    empresas.put("mantic.cotizaciones.backup", "compras@ferreteriabonanza.com");  
+    empresas.put("mantic.ordenes_compra.email", "compras@ferreteriabonanza.com");  
+    empresas.put("mantic.ordenes_compra.backup", "compras@ferreteriabonanza.com");  
+    empresas.put("mantic.cuentas.email", "ventas@ferreteriabonanza.com");  
+    empresas.put("mantic.cuentas.backup", "imox.soluciones.web@gmail.com");  
+    empresas.put("mantic.ventas.email", "ventas@ferreteriabonanza.com");  
+    empresas.put("mantic.ventas.backup", "imox.soluciones.web@gmail.com");  
+    empresas.put("mantic.compras.email", "compras@ferreteriabonanza.com");  
+    empresas.put("mantic.compras.backup", "imox.soluciones.web@gmail.com");  
+    empresas.put("mantic.administracion.email", "administracion@ferreteriabonanza.com");  
+    empresas.put("mantic.administracion.backup", "imox.soluciones.web@gmail.com");  
+    empresas.put("mantic.control.email", "controlbonanza@gmail.com");  
+    
+    empresas.put("kalan.ticket.email", "facturas@kalan.com");  
+    empresas.put("kalan.facturacion.email", "facturas@kalan.com");  
+    empresas.put("kalan.facturacion.backup", "");  
+    empresas.put("kalan.cotizaciones.email", "ventas@kalan.com");  
+    empresas.put("kalan.cotizaciones.backup", "compras2@kalan.com");  
+    empresas.put("kalan.ordenes_compra.email", "compras@kalan.com");  
+    empresas.put("kalan.ordenes_compra.backup", "compras@kalan.com");  
+    empresas.put("kalan.cuentas.email", "ventas@kalan.com");  
+    empresas.put("kalan.cuentas.backup", "");  
+    empresas.put("kalan.ventas.email", "ventas@kalan.com");  
+    empresas.put("kalan.ventas.backup", "imox.soluciones.web@gmail.com");  
+    empresas.put("kalan.compras.email", "compras@kalan.com");  
+    empresas.put("kalan.compras.backup", "imox.soluciones.web@gmail.com");  
+    empresas.put("kalan.administracion.email", "administracion@kalan.com");  
+    empresas.put("kalan.administracion.backup", "imox.soluciones.web@gmail.com");  
+    empresas.put("kalan.control.email", "imox.soluciones.web@gmail.com");  
+    
+    empresas.put("tsaak.ticket.email", "facturas@tsaak.com");  
+    empresas.put("tsaak.facturacion.email", "facturas@tsaak.com");  
+    empresas.put("tsaak.facturacion.backup", "");  
+    empresas.put("tsaak.cotizaciones.email", "ventas@tsaak.com");  
+    empresas.put("tsaak.cotizaciones.backup", "compras@tsaak.com");  
+    empresas.put("tsaak.ordenes_compra.email", "compras@tsaak.com");  
+    empresas.put("tsaak.ordenes_compra.backup", "compras@tsaak.com");  
+    empresas.put("tsaak.cuentas.email", "ventas@tsaak.com");  
+    empresas.put("tsaak.cuentas.backup", "");  
+    empresas.put("tsaak.ventas.email", "ventas@tsaak.com");  
+    empresas.put("tsaak.ventas.backup", "imox.soluciones.web@gmail.com");  
+    empresas.put("tsaak.compras.email", "compras@tsaak.com");  
+    empresas.put("tsaak.compras.backup", "imox.soluciones.web@gmail.com");  
+    empresas.put("tsaak.administracion.email", "administracion@tsaak.com");  
+    empresas.put("tsaak.administracion.backup", "imox.soluciones.web@gmail.com");  
+    empresas.put("tsaak.control.email", "imox.soluciones.web@gmail.com");  
+  }
 
 	private ECorreos(String template, String images, String user, String password, String email, String alias) {
 		this.template=template;
 		this.images=images;
 		this.user= user;
 		this.password= password;
-		this.email= email;
 		this.alias= alias;
+    // AQUI SE AGREGA LA CUENTA DE CORREO DE jimenez76@yahoo.com QUE ESTA REGISTRADA EN LA BASE DE DATOS 
+		// this.backup  = Cadena.isVacio(backup)? TcConfiguraciones.getInstance().getPropiedad(Constantes.EMAILS_@BACKUP_SYSTEM): backup.concat(",").concat(TcConfiguraciones.getInstance().getPropiedad(Constantes.EMAILS_BACKUP_SYSTEM));
 	}
 
 	public String getTemplate() {
@@ -54,11 +112,42 @@ public enum ECorreos {
 	}
 
 	public String getEmail() {
-		return email;
+    String token   = Configuracion.getInstance().getPropiedad("sistema.empresa.principal").toLowerCase().concat(".").concat(this.name().toLowerCase()).concat(".").concat("email");
+    String regresar= "";
+    if(empresas.containsKey(token))
+      regresar= empresas.get(token);
+		return regresar;
 	}
 
 	public String getAlias() {
-		return alias;
+		return alias.concat(" | ").concat(Configuracion.getInstance().getPropiedad("sistema.empresa.principal").toUpperCase());
 	}
 
+  public String getBackup() {
+    String token   = Configuracion.getInstance().getPropiedad("sistema.empresa.principal").toLowerCase().concat(".").concat(this.name().toLowerCase()).concat(".").concat("backup");
+    String regresar= "";
+    if(empresas.containsKey(token))
+      regresar= empresas.get(token);
+		return regresar;
+  }
+	
+  public String getControl() {
+    String token   = Configuracion.getInstance().getPropiedad("sistema.empresa.principal").toLowerCase().concat(".control.").concat("email");
+    String regresar= "";
+    if(empresas.containsKey(token))
+      regresar= empresas.get(token);
+		return regresar;
+  }
+	
+  public String getRespaldo() {
+    String token   = Configuracion.getInstance().getPropiedad("sistema.empresa.principal").toLowerCase().concat(".administracion.").concat("backup");
+    String regresar= "";
+    if(empresas.containsKey(token))
+      regresar= empresas.get(token);
+		return regresar;
+  }
+  
+  public String getSource() {
+	  return "/mx/org/kaana/mantic/correos/templates/".concat(Configuracion.getInstance().getPropiedad("sistema.empresa.principal").toLowerCase()).concat("/");
+  }          
 }

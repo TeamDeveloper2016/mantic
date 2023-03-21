@@ -174,7 +174,7 @@ public class Filtro extends IBaseAttribute implements Serializable {
 					LOG.info("Generando invitacion personalizada: "+ image);
 					params.put("invitacion", user.getId());
 					files.add(user);
-					IBaseAttachment notificar= new IBaseAttachment(ECorreos.FACTURACION, "team.developer@gmail.com", item, "Invitación al evento de KAANA", params, files);
+					IBaseAttachment notificar= new IBaseAttachment(ECorreos.FACTURACION, ECorreos.FACTURACION.getRespaldo(), item, "Invitación al evento de KAANA", params, files);
 					LOG.info("Enviando correo a la cuenta: "+ item);
 					notificar.send();
 					files.remove(user);

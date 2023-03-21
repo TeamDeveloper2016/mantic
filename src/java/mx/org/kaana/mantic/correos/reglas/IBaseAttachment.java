@@ -70,7 +70,7 @@ public class IBaseAttachment extends IBaseMail implements Serializable {
 	}
 	
 	public void send() throws Exception {
-		BufferedReader input= new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream(this.type.getTemplate())));
+		BufferedReader input= new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream(this.type.getSource().concat(this.type.getTemplate()))));
 		String html= input.lines().collect(Collectors.joining());
 		StringBuilder content= new StringBuilder(Cadena.replaceHtml(html, this.params));
 		LOG.info("----------------------------------------------------------------------------------------");

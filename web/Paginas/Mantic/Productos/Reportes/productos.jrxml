@@ -56,6 +56,7 @@
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA["D:\\desarrollo\\plataforma\\netbeans\\mantic\\web\\Paginas\\Mantic\\Productos\\Reportes\\"]]></defaultValueExpression>
 	</parameter>
+	<parameter name="REPORTE_LOGO" class="java.lang.String"/>
 	<queryString language="SQL">
 		<![CDATA[$P!{REPORTE_SQL}]]>
 	</queryString>
@@ -128,7 +129,7 @@
 					<bottomPen lineWidth="0.0" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineColor="#000000"/>
 				</box>
-				<imageExpression><![CDATA[$P{REPORTE_IMAGENES}+"bonanza-report.png"]]></imageExpression>
+				<imageExpression><![CDATA[$P{REPORTE_LOGO}]]></imageExpression>
 			</image>
 			<frame>
 				<reportElement mode="Opaque" x="95" y="1" width="677" height="68" forecolor="#D0B48E" backcolor="#006699" uuid="c47e0965-85b2-41c4-9ac8-66043f42157d"/>

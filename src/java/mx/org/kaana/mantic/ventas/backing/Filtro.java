@@ -647,6 +647,19 @@ public class Filtro extends IBaseTicket implements Serializable {
 		  parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
 			parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
 			parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));		
+			parametros.put("REPORTE_DNS", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));		
+      switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+        case "mantic":
+   			  parametros.put("REPORTE_SUB_TITULO", "CENTRO DE SERVICIO DEWALT Y B&D");		
+          break;
+        case "kalan":
+   			  parametros.put("REPORTE_SUB_TITULO", "LA CALIDAD Y EL SERVICIO NOS DISTINGUE");		
+          break;
+        case "tsaak":
+   			  parametros.put("REPORTE_SUB_TITULO", "LA CALIDAD Y EL SERVICIO NOS DISTINGUE");		
+          break;
+      } // swtich
+			parametros.put("REPORTE_NOTIFICA", Configuracion.getInstance().getEmpresa("celular"));		
       Encriptar encriptado= new Encriptar();
       String codigo= encriptado.encriptar(Fecha.formatear(Fecha.CODIGO_SEGURIDAD, ((Entity)this.attrs.get("seleccionado")).toTimestamp("registro")));
 			parametros.put("REPORTE_CODIGO_SEGURIDAD", codigo);			
@@ -683,7 +696,10 @@ public class Filtro extends IBaseTicket implements Serializable {
 			Entity seleccionado= (Entity)this.attrs.get("seleccionado");
 			params.put("header", "...");
 			params.put("footer", "...");
+			params.put("titulo", Configuracion.getInstance().getEmpresa("titulo"));
 			params.put("empresa", JsfBase.getAutentifica().getEmpresa().getNombre());
+			params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
+			params.put("host", Configuracion.getInstance().getEmpresa("host"));
 			params.put("tipo", "Ticket");			
 			params.put("razonSocial", seleccionado.toString("cliente"));
 			params.put("correo", ECorreos.TICKET.getEmail());			
@@ -691,12 +707,12 @@ public class Filtro extends IBaseTicket implements Serializable {
 			this.doReporte(Boolean.TRUE);
 			Attachment attachments= new Attachment(this.reporte.getNombre(), Boolean.FALSE);
 			files.add(attachments);
-			files.add(new Attachment("logo", ECorreos.TICKET.getImages().concat("logo.png"), Boolean.TRUE));
+			files.add(new Attachment("logo", ECorreos.TICKET.getImages().concat(Configuracion.getInstance().getEmpresa("logo")), Boolean.TRUE));
 			params.put("attach", attachments.getId());
 			for (String item: emails) {
 				try {
 					if(!Cadena.isVacio(item)) {
-					  IBaseAttachment notificar= new IBaseAttachment(ECorreos.TICKET, ECorreos.TICKET.getEmail(), item, "controlbonanza@gmail.com", "Ferreteria Bonanza - Ticket", params, files);
+					  IBaseAttachment notificar= new IBaseAttachment(ECorreos.TICKET, ECorreos.TICKET.getEmail(), item, ECorreos.TICKET.getControl(), Configuracion.getInstance().getEmpresa("titulo").concat(" | Ticket"), params, files);
 					  LOG.info("Enviando correo a la cuenta: "+ item);
 					  notificar.send();
 					} // if	
@@ -708,9 +724,9 @@ public class Filtro extends IBaseTicket implements Serializable {
 				  } // if	
 				} // finally	
 			} // for
-	  	LOG.info("Se envio el correo de forma exitosa");
+	  	LOG.info("Se envió el correo de forma exitosa");
 			if(sb.length()> 0)
-		    JsfBase.addMessage("Se envió el correo de forma exitosa.", ETipoMensaje.INFORMACION);
+		    JsfBase.addMessage("Se envió el correo de forma exitosa", ETipoMensaje.INFORMACION);
 			else
 		    JsfBase.addMessage("No se selecciono ningún correo, por favor verifiquelo e intente de nueva cuenta.", ETipoMensaje.ALERTA);
 		} // try // try
@@ -719,6 +735,7 @@ public class Filtro extends IBaseTicket implements Serializable {
 			JsfBase.addMessageError(e);
 		} // catch
 		finally {
+			Methods.clean(params);
 			Methods.clean(files);
 		} // finally
 	} 

@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="CAS_09" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" scriptletClass="mx.org.kaana.libs.reportes.scriptlets.BarraProgreso" uuid="a8200203-6dfa-40d6-9832-8a8839ffd884">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="253"/>
+	<property name="ireport.y" value="0"/>
 	<parameter name="REPORTE_VERSION" class="java.lang.String">
 		<defaultValueExpression><![CDATA["0.0.0.0"]]></defaultValueExpression>
 	</parameter>
@@ -26,6 +26,7 @@
 	<parameter name="ENCUESTA" class="java.lang.String"/>
 	<parameter name="REPORTE_ICON" class="java.lang.String"/>
 	<parameter name="NOMBRE_REPORTE" class="java.lang.String"/>
+	<parameter name="REPORTE_LOGO" class="java.lang.String"/>
 	<queryString language="SQL">
 		<![CDATA[$P!{REPORTE_SQL}]]>
 	</queryString>
@@ -184,7 +185,7 @@
 					<bottomPen lineWidth="0.0" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineColor="#000000"/>
 				</box>
-				<imageExpression><![CDATA[$P{REPORTE_IMAGENES}+"bonanza-report.png"]]></imageExpression>
+				<imageExpression><![CDATA[$P{REPORTE_LOGO}]]></imageExpression>
 			</image>
 			<staticText>
 				<reportElement mode="Opaque" x="396" y="29" width="160" height="14" forecolor="#000000" backcolor="#CCCCCC" uuid="821bd7e6-6ab7-49ae-9d52-ed5657c3f3c2"/>

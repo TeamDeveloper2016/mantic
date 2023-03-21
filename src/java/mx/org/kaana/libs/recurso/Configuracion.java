@@ -19,7 +19,8 @@ public class Configuracion {
   private static final String DB_PACKAGE    = "db";
 
   private static Configuracion instance;
-  private static Object mutex= null;
+  private static Object mutex  = null;
+  private static String empresa= null;
   private Properties properties;
 
   static {
@@ -40,6 +41,10 @@ public class Configuracion {
     return instance;
   } // getInstance
 
+  public String getEmpresa() {
+    return empresa== null? "mantic": empresa;
+  }
+
   public void reload() {
     try  {
       instance= new Configuracion();
@@ -55,9 +60,18 @@ public class Configuracion {
       this.properties= new Properties();
       // kajool default kajool.properties
       this.properties.load(this.getClass().getResourceAsStream(Settings.getInstance().getCustomProperties()));
-      LOG.info("Se cargo el archivo de default de kajool.properties");
+      LOG.info("Se cargo el archivo por defecto kajool.properties");
       if(is!= null)
         this.properties.load(is);
+      empresa= this.properties.getProperty("sistema.empresa.principal", "keet").toLowerCase();
+      InputStream company= this.getClass().getResourceAsStream("/".concat(empresa).concat(".properties"));
+      if(company!= null) {
+        Properties items= new Properties();
+        items.load(company);
+        for (Object key: items.keySet()) {
+          this.properties.put(key, items.get(key));
+        } // for
+      } // if
     } // try
     catch (Exception e) {
       Error.mensaje(e, "Estar seguro que esta en el CLASSPATH ".concat(Constantes.KAANA_PROPERTIES));
@@ -67,7 +81,7 @@ public class Configuracion {
   public String getPropiedad(String id) {
     String regresar = null;
     try {
-      regresar= getProperties().getProperty(id);
+      regresar= this.getProperties().getProperty(id);
     } // try
     catch (Exception e) {
       LOG.warn("No se pudo leer la propiedad ".concat(id).concat(". !"));
@@ -80,7 +94,7 @@ public class Configuracion {
     int regresar= 0;
     String value= null;
     try {
-      value   = getProperties().getProperty(id);
+      value   = this.getProperties().getProperty(id);
       regresar= Integer.parseInt(value);
     } // try
     catch (Exception e) {
@@ -118,14 +132,8 @@ public class Configuracion {
   } // getPropiedadDouble
 
   public String getPropiedad(String secion, String id) {
-    return getPropiedad(secion.concat(".").concat(id));
+    return this.getPropiedad(secion.concat(".").concat(id));
   } // getPropiedad
-
-  public void finalize() {
-    instance.getProperties().clear();
-    instance= null;
-    mutex   = null;
-  } // finalize
 
   private Properties getProperties() {
     return properties;
@@ -135,8 +143,8 @@ public class Configuracion {
 		String regresar = null;
 		String propiedad= null;
     try {
-      propiedad = "sistema.".concat(id).concat(".").concat(getEtapaServidor().toLowerCase());			
-      regresar = getProperties().getProperty(propiedad);
+      propiedad= "sistema.".concat(id).concat(".").concat(getEtapaServidor().toLowerCase());			
+      regresar = this.getProperties().getProperty(propiedad);
     } // try
     catch (Exception e) {
       LOG.warn("No se pudo leer la propiedad ".concat(id).concat(". !"));
@@ -156,7 +164,7 @@ public class Configuracion {
     return null;
   }	// getPropiedadServidor
 	
-	public String getVersion () {
+	public String getVersion() {
 	  return Configuracion.getInstance().getPropiedad("sistema.version");
 	} // getVersion
 	
@@ -174,7 +182,7 @@ public class Configuracion {
   public String getEstiloPersonalizado() {
     String css= "kajool";
     try {
-      css= getProperties().getProperty("sistema.css").concat(".css");
+      css= this.getProperties().getProperty("sistema.css").concat(".css");
     } // try
     catch (Exception e) {
       LOG.warn("No se pudo leer la propiedad ".concat("sistema.css").concat(". !"));
@@ -194,17 +202,17 @@ public class Configuracion {
   } // dbPackagePath
 	
 	public String toFileModule() {
-    String item= getPropiedad("sistema.modulos");
+    String item= this.getPropiedad("sistema.modulos");
     return Cadena.isVacio(item)? Settings.getInstance().toFileModules(): item;
 	} // toFileModule
 
   public String getHibernateCustomFile() {
-    String item= getPropiedadServidor("hibernate.db.connection");
+    String item= this.getPropiedadServidor("hibernate.db.connection");
     return Cadena.isVacio(item)? Settings.getInstance().getHibernateCustomFile(): item;
   } // getHibernateCustomFile
 
   public String getHibernateCustomMapping() {
-    String item= getPropiedad("hibernate.file.mapping");
+    String item= this.getPropiedad("hibernate.file.mapping");
     return Cadena.isVacio(item)? Settings.getInstance().getHibernateCustomMapping(): item;
   } // getHibernateCustomMapping
 
@@ -228,4 +236,23 @@ public class Configuracion {
     LOG.warn("Acceso libre [".concat(String.valueOf(Configuracion.getInstance().getPropiedadServidor("sistema.firmarse").equalsIgnoreCase("no"))).concat("]"));
     return Configuracion.getInstance().getPropiedadServidor("sistema.firmarse").equalsIgnoreCase("no");
   } // isFreeAccess
+	
+  public String getEmpresa(String id) {
+    String regresar = null;
+    try {
+      regresar= this.getProperties().getProperty("sistema.".concat(empresa).concat(".").concat(id));
+    } // try
+    catch (Exception e) {
+      LOG.warn("No se pudo leer la propiedad ".concat("sistema.").concat(empresa).concat(".").concat(id).concat(". !"));
+      regresar= "";
+    } // catch
+    return regresar;
+  } // getPropiedad
+
+  public void finalize() {
+    instance.getProperties().clear();
+    instance= null;
+    mutex   = null;
+  } // finalize
+	
 }

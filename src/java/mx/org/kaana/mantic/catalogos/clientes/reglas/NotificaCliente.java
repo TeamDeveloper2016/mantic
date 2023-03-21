@@ -216,7 +216,7 @@ public class NotificaCliente implements Serializable {
 			for (String item: emails) {
 				try {
 					if(!Cadena.isVacio(item)) {
-					  IBaseAttachment notificar= new IBaseAttachment(this.correo, this.correo.getEmail(), item, "controlbonanza@gmail.com", "Ferreteria Bonanza - Estado de cuenta", params, files);
+					  IBaseAttachment notificar= new IBaseAttachment(this.correo, this.correo.getEmail(), item, this.correo.getControl(), Configuracion.getInstance().getEmpresa("titulo").concat(" | Estado de cuenta"), params, files);
 					  LOG.info("Enviando correo a la cuenta: "+ item);
 					  notificar.send();
 					} // if	
@@ -258,7 +258,7 @@ public class NotificaCliente implements Serializable {
         if(this.idVenta> 0L) {
           if(!this.ticket)
             this.toReporteTicket();
-          alias.append("\\n\\n*Ticket de venta:*\\nhttps://ferreteriabonanza.com/Temporal/Pdf/").append(this.voucher.getAlias());
+          alias.append("\\n\\n*Ticket de venta:*\\nhttps://").append(Configuracion.getInstance().getEmpresa("host")).append("/Temporal/Pdf/").append(this.voucher.getAlias());
         } // if  
         Bonanza notificar= new Bonanza(this.razonSocial, "celular", alias.toString(), "ticket", "fecha");
         String[] phones= this.celulares.substring(0, this.celulares.length()- 2).split("[,]");

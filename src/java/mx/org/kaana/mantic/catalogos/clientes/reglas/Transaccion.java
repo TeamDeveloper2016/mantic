@@ -148,7 +148,7 @@ public class Transaccion extends TransaccionFactura {
 		try {
 			gestor= new CFDIGestor(idCliente);
 			cliente= gestor.toClienteFactura(sesion);
-			setCliente(cliente);
+			this.setCliente(cliente);
 			super.procesarCliente(sesion);
 		} // try
 		catch (Exception e) {			
@@ -417,7 +417,7 @@ public class Transaccion extends TransaccionFactura {
 							validate = this.registrar(sesion, dto);
               // VERIFICAR SI YA FUE NOTIFICADO PARA RECIBIR MENSAJES POR WHATSUP
               if(dto.getIdPreferido().equals(1L) && (dto.getIdTipoContacto().equals(6L) || dto.getIdTipoContacto().equals(7L) || dto.getIdTipoContacto().equals(8L))) {
-                Bonanza notificar= new Bonanza(this.registroCliente.getCliente().getRazonSocial(), dto.getValor());
+                Bonanza notificar= new Bonanza(this.toNombreCliente(this.registroCliente.getCliente()), dto.getValor());
                 notificar.doSendMessage(sesion);
               } // if
 							break;
@@ -684,6 +684,10 @@ public class Transaccion extends TransaccionFactura {
     catch(Exception e) {
       throw e;
     } // catch
+  }
+
+  private String toNombreCliente(TcManticClientesDto cliente) {
+    return cliente.getRazonSocial().concat(Cadena.isVacio(cliente.getPaterno()) || cliente.getPaterno().isEmpty()? "": " ".concat(cliente.getPaterno())).concat(Cadena.isVacio(cliente.getMaterno()) || cliente.getMaterno().isEmpty()? "": " ".concat(cliente.getMaterno()));
   }
   
 }

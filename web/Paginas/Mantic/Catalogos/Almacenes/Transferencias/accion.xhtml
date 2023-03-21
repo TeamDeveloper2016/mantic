@@ -75,7 +75,7 @@
 									<p:autoComplete id="idArticulo" tabindex="1" placeholder="Nombre o código" var="custom" itemLabel="#{custom.nombre}" inputStyleClass="janal-wid-100-txt activa refresh" itemValue="#{custom}" value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.origen}" completeMethod="#{manticCatalogosAlmacenesTransferenciasAccion.doCompleteArticulo}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100 activa refresh" forceSelection="true" readonly="#{manticCatalogosAlmacenesTransferenciasAccion.transferencia.idAlmacen lt 0}">
 										<p:ajax event="itemSelect" process="@this" listener="#{manticCatalogosAlmacenesTransferenciasAccion.doAsignaArticulo}" update="@(.cantidad) @(.filas) idArticulo panelImage" oncomplete="$('#source-image').attr('href', $('#icon-image').attr('src'));setTimeout(function() {$('#cantidad_input').focus()}, 1000);"/>
 										<p:column styleClass="janal-column-center">
-											<p:graphicImage library="janal" name="img/sistema/bonanza.svg" styleClass="janal-logo-mini" width="50" height="30"/>
+                      <p:graphicImage library="janal" name="img/sistema/#{kajoolUtilAplicacion.logoIcon}" styleClass="janal-logo-mini" width="30" style="#{kajoolUtilAplicacion.logoWidth}"/>                                      
 										</p:column>
 										<p:column headerText="Nombre">
 											<h:outputText value="#{custom.nombre}" />

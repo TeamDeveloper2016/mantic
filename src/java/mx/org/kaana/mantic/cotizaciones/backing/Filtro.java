@@ -46,14 +46,14 @@ import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.enums.ETipoMovimiento;
 import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.facturas.beans.Correo;
-import mx.org.kaana.mantic.facturas.comun.FiltroFactura;
+import mx.org.kaana.mantic.facturas.comun.Factura;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.primefaces.event.SelectEvent;
 
 @Named(value= "manticCotizacionesFiltro")
 @ViewScoped
-public class Filtro extends FiltroFactura implements Serializable {
+public class Filtro extends Factura implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428332L;
 	private static final Log LOG=LogFactory.getLog(Filtro.class);				
@@ -558,7 +558,7 @@ public class Filtro extends FiltroFactura implements Serializable {
 			for (String item: emails) {
 				try {
 					if(!Cadena.isVacio(item)) {
-					  IBaseAttachment notificar= new IBaseAttachment(ECorreos.COTIZACIONES, ECorreos.COTIZACIONES.getEmail(), item, "controlbonanza@gmail.com", "Ferreteria Bonanza - Cotización", params, files);
+					  IBaseAttachment notificar= new IBaseAttachment(ECorreos.COTIZACIONES, ECorreos.COTIZACIONES.getEmail(), item, ECorreos.COTIZACIONES.getControl(), Configuracion.getInstance().getEmpresa("titulo").concat(" | Cotización"), params, files);
 					  LOG.info("Enviando correo a la cuenta: "+ item);
 					  notificar.send();
 					} // if	

@@ -1,7 +1,7 @@
 package mx.org.kaana.libs.pagina;
 
-import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
+import com.lowagie.text.Element;
 import com.lowagie.text.Font;
 import com.lowagie.text.HeaderFooter;
 import com.lowagie.text.Image;
@@ -10,6 +10,8 @@ import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.BaseFont;
+import com.lowagie.text.pdf.PdfPCell;
+import com.lowagie.text.pdf.PdfPTable;
 import java.text.MessageFormat;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -32,6 +34,7 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.procesos.mantenimiento.contadores.reglas.Ayudas;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.FillPatternType;
 
 /**
  * @company KAANA
@@ -57,15 +60,48 @@ public class UtilAplicacion {
   private static final String CLOSE = "jquery.janal.close.core-0.0.5.js";
   private static final String DLGS  = "jquery.janal.precio.core-0.5.2.js";
   private static final String FUSION= "jquery.janal.fusion.charts-3.3.1.js";
+	private static final String ECHART= "jquery.janal.echarts.core-0.5.1.js";
 
   public String getTituloSistema() {
-    return Configuracion.getInstance().getPropiedad("sistema.titulo").toUpperCase();
+    return Configuracion.getInstance().getEmpresa("titulo").toUpperCase();
   }
 
   public String getTituloCorto() {
-    return Configuracion.getInstance().getPropiedad("sistema.corto");
+    return Configuracion.getInstance().getEmpresa("corto");
   }
 
+  public String getLogoEmpresa() {
+    return Configuracion.getInstance().getEmpresa("logo");
+  }
+
+  public String getLogoAyudaEmpresa() {
+    return Configuracion.getInstance().getEmpresa("ayuda");
+  }
+
+  public String getLogoFavicon() {
+    return Configuracion.getInstance().getEmpresa("favicon");
+  }
+  
+  public String getLogoIcon() {
+    return Configuracion.getInstance().getEmpresa("icon");
+  }
+
+  public String getLogoWidth() {
+    String regresar= "width: 35px !important;";
+    switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+      case "mantic":
+        regresar= "width: 35px !important;";
+        break;
+      case "kalan":
+        regresar= "width: 105px !important;";
+        break;
+      case "tsaak":
+        regresar= "width: 85px !important;";
+        break;
+    } // switch
+    return regresar;
+  }
+	
   public String getIngresoCurp() {
     return Configuracion.getInstance().getPropiedad("sistema.ingreso.curp");
   }
@@ -126,8 +162,8 @@ public class UtilAplicacion {
   }
 
   public void doPostProcessXls(Object document) {
-    HSSFWorkbook wb = (HSSFWorkbook) document;
-    HSSFSheet sheet = wb.getSheetAt(0);
+    HSSFWorkbook wb= (HSSFWorkbook) document;
+    HSSFSheet sheet= wb.getSheetAt(0);
     HSSFRow header = sheet.getRow(0);
     HSSFCellStyle cellStyle = wb.createCellStyle();
     cellStyle.setFillForegroundColor(HSSFColor.GREEN.index);
@@ -138,46 +174,71 @@ public class UtilAplicacion {
     }	// for
   }
 
+	private void addCellText(PdfPTable table, String text, int align, int colspan, Font font) {
+		// create a new cell with the specified Text and Font
+		PdfPCell cell=new PdfPCell(new Phrase(text.trim(), font));
+		cell.setBorder(Rectangle.NO_BORDER);
+    //cell.setBackgroundColor(new Color(255,255,45));
+		// set the cell alignment
+		cell.setHorizontalAlignment(align);
+		// set the cell column span in case you want to merge two or more cells
+		cell.setColspan(colspan);
+		// in case there is no text and you wan to create an empty row
+		if (text.trim().equalsIgnoreCase("")) {
+			cell.setMinimumHeight(10f);
+		}
+		// add the call to the table
+		table.addCell(cell);
+	}
+		
+	private void addCellImage(PdfPTable table, Image image, int align, int colspan, Font font) {
+		// create a new cell with the specified Text and Font
+		PdfPCell cell=new PdfPCell(image);
+		cell.setBorder(Rectangle.NO_BORDER);
+    //cell.setBackgroundColor(new Color(255,255,45));
+		// set the cell alignment
+		cell.setHorizontalAlignment(align);
+		// set the cell column span in case you want to merge two or more cells
+		cell.setColspan(colspan);
+		// in case there is no text and you wan to create an empty row
+		table.addCell(cell);
+	}
+	
   public void doPreProcessPdf(Object document) {
-    Document pdf;
-    Image logoKaajol;
     ServletContext servletContext;
-    String rutaLogoKajool;
-    Chunk kajool;
     String hora;
     String version;
-    BaseFont font;
-    Paragraph parrafoEncabezado;
-    HeaderFooter header;
-    Paragraph parrafoPieDePagina;
-    HeaderFooter footer;
     try {
-      font = BaseFont.createFont(BaseFont.HELVETICA_BOLD, "Cp1252", false);
-      servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
-      rutaLogoKajool = servletContext.getRealPath("").concat(Constantes.RUTA_IMAGENES).concat("logo.png");
-      logoKaajol = Image.getInstance(rutaLogoKajool);
-      logoKaajol.scalePercent(50);
-      kajool = new Chunk(logoKaajol, 0, -15);
-      parrafoEncabezado = new Paragraph();
-      parrafoEncabezado.add(new Phrase(Cadena.letraCapital(Constantes.NOMBRE_DE_APLICACION), new Font(font)));
-      parrafoEncabezado.add(kajool);
-      parrafoEncabezado.setAlignment(Paragraph.ALIGN_CENTER);
-      header = new HeaderFooter(parrafoEncabezado, false);
+      Font font10   = new Font(BaseFont.createFont(BaseFont.HELVETICA, "Cp1252", false), 10F);
+      Font font12   = new Font(BaseFont.createFont(BaseFont.HELVETICA, "Cp1252", false), 12F);
+      servletContext= (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+      Image logo = Image.getInstance(servletContext.getRealPath("").concat(Constantes.RUTA_IMAGENES).concat(Configuracion.getInstance().getEmpresa("logo")));
+      logo.scalePercent(12);
+      PdfPTable table = new PdfPTable(3);
+			table.getDefaultCell().setBorder(0);
+			table.setWidthPercentage(95f);
+      this.addCellImage(table, logo, Element.ALIGN_LEFT, 1, font10);			
+      this.addCellText(table, Configuracion.getInstance().getEmpresa("titulo"), Element.ALIGN_CENTER, 1, font12);			
+      this.addCellText(table, Configuracion.getInstance().isEtapaProduccion() ? " " : getServidor(), Element.ALIGN_RIGHT, 1, font10);			
+			Paragraph paragraph = new Paragraph();
+      paragraph.add(table);
+      paragraph.setAlignment(Paragraph.ALIGN_LEFT);
+      HeaderFooter header = new HeaderFooter(paragraph, false);
       header.setBorder(Rectangle.NO_BORDER);
       header.setAlignment(HeaderFooter.ALIGN_CENTER);
-      parrafoPieDePagina = new Paragraph();
-      hora = Fecha.formatear(Fecha.FECHA_HORA_CORTA, Calendar.getInstance().getTime());
-      version = Configuracion.getInstance().isEtapaProduccion() ? getVersionAplicacion() : getVersionAplicacion().concat(" - ").concat(getServidor());
-      parrafoPieDePagina.add(new Phrase(hora.concat("          ").concat(version), new Font(font)));
+      Paragraph parrafoPieDePagina = new Paragraph();
+      hora = Fecha.formatear(Fecha.FECHA_HORA_CORTA, Calendar.getInstance().getTime()).concat("                      ");
+      version = "                      ".concat(getVersionAplicacion());
+      parrafoPieDePagina.add(new Phrase(hora.concat("                      ").concat("                      ".concat(version)), new Font(font10)));
       parrafoPieDePagina.setAlignment(Phrase.ALIGN_CENTER);
-      footer = new HeaderFooter(parrafoPieDePagina, true);
+      HeaderFooter footer = new HeaderFooter(parrafoPieDePagina, true);
       footer.setAlignment(HeaderFooter.ALIGN_CENTER);
-      footer.setBorder(Rectangle.NO_BORDER);
-      pdf = (Document) document;
-      pdf.setPageSize(PageSize.LETTER);
+      footer.setBorder(Rectangle.NO_BORDER);      
+      Document pdf= (Document) document;
+      pdf.setPageSize(PageSize.LETTER.rotate());
       pdf.setHeader(header);
       pdf.setFooter(footer);
-      pdf.setMargins(-40, -40, 50, 20);
+      pdf.setMargins(10, 10, 50, 50);
       pdf.open();
     } // try
     catch (Exception e) {
@@ -267,6 +328,10 @@ public class UtilAplicacion {
 
   public String getLibraryFusion() {
     return "fusion/chart/" + this.FUSION;
+  }
+
+  public String getLibraryEchart() {
+    return "core/" + this.ECHART;
   }
 
   public boolean isDirectivo() {

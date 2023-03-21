@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/filtro.xhtml">
+  <ui:param name="titulo" value="Catalogo de clientes" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      Janal.Control.fields = {
+        'razonSocial': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+        'clave': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+        'rfc': {validaciones: 'rfc', mascara: 'fiscal', formatos: 'cambiar-mayusculas'}       
+      };
+    </script>		
+  </ui:define>
+  <ui:define name="contenido">
+    <div class="janal-align-right xs-pantalla janal-wid-100">
+      <p:commandButton icon="fa fa-search" value="Filtrar" iconPos="right" onstart="janal.togglePanel('panelBusqueda');" styleClass="janal-text-white janal-wid-100"/>
+    </div>			
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+      <div class="ui-grid-row janal-grid-row">
+        <div id="collapse-find" class="ui-grid-col-3">
+          <p:panel id="panelBusqueda" header="Busqueda:" styleClass="lg-pantalla" toggleable="true" toggleOrientation="horizontal">
+						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
+            <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+              <p:outputLabel for="clave" value="Clave:"/>
+              <p:inputText id="clave" value="#{manticCatalogosClientesFiltro.attrs.clave}" styleClass="janal-wid-100-txt"/> 
+              <p:outputLabel for="rfc" value="RFC:"/>
+              <p:inputText id="rfc" value="#{manticCatalogosClientesFiltro.attrs.rfc}" styleClass="janal-wid-100-txt"/>              			                            
+              <p:outputLabel for="razonSocial" value="Razón social:"/>
+              <p:autoComplete id="razonSocial" var="custom" placeholder="ejemplo: JUAN PEREZ LOPEZ" itemLabel="#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticCatalogosClientesFiltro.attrs.cliente}" completeMethod="#{manticCatalogosClientesFiltro.doCompleteCliente}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+								<f:facet name="itemtip">
+									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
+										<h:outputText value="Clave:" />
+										<h:outputText value="#{custom.clave}" />
+										<h:outputText value="RFC:" />
+										<h:outputText value="#{custom.rfc}" />
+										<h:outputText value="Razón social:" />
+										<h:outputText value="#{custom.razonSocial}" />
+									</h:panelGrid>
+								</f:facet>
+							</p:autoComplete>	
+							<p:outputLabel for="credito" value="Credito:"/>
+							<p:selectOneMenu id="credito" value="#{manticCatalogosClientesFiltro.attrs.credito}" styleClass="janal-wid-100-txt">
+								<f:selectItems value="#{manticCatalogosClientesFiltro.attrs.creditos}"/>
+							</p:selectOneMenu>
+							<p:separator/>
+            </p:panelGrid>
+						<div class="janal-align-right">
+							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute();" process="@this clave razonSocial rfc credito" actionListener="#{manticCatalogosClientesFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
+							<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.execute();" process="@this clave razonSocial rfc credito" actionListener="#{manticCatalogosClientesFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
+						</div>
+          </p:panel>
+        </div>
+        <div id="collapse-content" class="ui-grid-col-9">
+          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticCatalogosClientesFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosClientesFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosClientesFiltro.lazyModel.rowCount gt manticCatalogosClientesFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+            <p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
+						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
+						<f:facet name="header" >
+							<div class="janal-icons-header">
+								<h:outputLink value="#{request.contextPath}/Temporal/Masivo/masivo-clientes.xls" title="Plantilla de clientes XLS">
+									<p:commandButton type="button" icon="fa fa-file-excel-o"/>
+								</h:outputLink>
+							</div>	
+              <div class="lg-pantalla">
+                <p:menuButton value="Opciones">
+                  <p:menuitem value="Agregar" action="#{manticCatalogosClientesFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
+                  <p:separator rendered="#{manticCatalogosClientesFiltro.attrs.puntoVenta}"/>
+									<p:menuitem value="Punto de venta" action="#{manticCatalogosClientesFiltro.doPuntoVenta}" icon="fa fa-usd" title="Regresar a punto de venta" onstart="return janal.bloquear()" rendered="#{manticCatalogosClientesFiltro.attrs.puntoVenta}"/>						
+									<p:separator/>
+									<p:menuitem icon="fa fa-history" value="Importar" title="Carga masiva" action="#{manticCatalogosClientesFiltro.doMasivo()}" onstart="return janal.bloquear()"/>						
+                  <p:separator/>
+                  <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                  <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                </p:menuButton>
+              </div>  
+              <div class="xs-pantalla">              
+								<p:commandButton action="#{manticCatalogosClientesFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
+								<p:commandButton action="#{manticCatalogosClientesFiltro.doPuntoVenta}" icon="fa fa-usd" title="Regresar a punto de venta" onstart="return janal.bloquear()" rendered="#{manticCatalogosClientesFiltro.attrs.puntoVenta}"/>						
+								<p:commandButton icon="fa fa-history" title="Carga masiva" action="#{manticCatalogosClientesFiltro.doMasivo()}" onstart="return janal.bloquear()"/>						
+								<p:commandButton id="pdf" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+								<p:commandButton id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+              </div>  
+            </f:facet>												
+            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{filtro.clave}">
+              <f:facet name="header">
+                <h:outputText value="Clave"/>
+              </f:facet>
+              <h:outputText value="#{filtro['clave']}"/>
+            </p:column>														
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-13" sortBy="#{filtro.rfc}">
+              <f:facet name="header">
+                <h:outputText value="RFC"/>
+              </f:facet>
+              <h:outputText value="#{filtro['rfc']}"/>
+            </p:column>					
+            <p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.razonSocial}">
+              <f:facet name="header">
+                <h:outputText value="Razón social"/>
+              </f:facet>
+              <h:outputText value="#{filtro['razonSocial']}"/>
+            </p:column>
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{filtro.credito}">
+              <f:facet name="header">
+                <h:outputText value="Credito"/>
+              </f:facet>
+              <h:outputText value="#{filtro['credito']}"/>
+            </p:column>
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.saldo}">
+							<f:facet name="header">
+								<h:outputText value="Saldo"/>
+							</f:facet>
+							<h:outputText value="#{filtro['saldo']}"/>
+						</p:column>
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{filtro.dias}">
+							<f:facet name="header">
+								<h:outputText value="Días" title="Días trascurridos desde la compra"/>
+							</f:facet>
+							<h:outputText value="#{filtro['dias']}"/>
+						</p:column>
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-col-38">
+							<h:graphicImage library="janal" name="icon/semaforos/#{filtro.idFacturama eq '-1' ? 'circulo-gris.png': 'circulo-verde.png'}" title="Cliente #{filtro.idFacturama eq '-1' ? 'NO': ''} registrado en facturama"/>
+						</p:column>
+            <f:facet name="footer">
+              <p:outputLabel value="Total [#{manticCatalogosClientesFiltro.lazyModel==null?0:manticCatalogosClientesFiltro.lazyModel.rowCount}] registros"/>
+            </f:facet>
+          </p:dataTable>
+          <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
+            <p:menuitem id="consultar" action="#{manticCatalogosClientesFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+						<p:separator/>
+            <p:menuitem id="modificar" action="#{manticCatalogosClientesFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+            <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>					
+						<p:separator/>
+						<p:menuitem id="importar" icon="fa fa-external-link" value="Importar" title="Importar identificacion de representante" onstart="return janal.bloquear()" process="@this tabla" action="#{manticCatalogosClientesFiltro.doImportar}"/>
+						<p:separator rendered="#{manticCatalogosClientesFiltro.attrs.seleccionado.idFacturama eq '-1'}"/>
+						<p:menuitem id="facturama" icon="fa fa-gear" value="Sincronizar" title="Registrar cliente en facturama" onstart="return janal.bloquear()" process="@this tabla" oncomplete="janal.desbloquear()" action="#{manticCatalogosClientesFiltro.doPublicarFacturama}"/>
+          </p:contextMenu>
+        </div>
+      </div>
+    </div>		           				
+  </ui:define>    
+  <ui:param name="componenteBloqueo" value="buscar tabla" />
+  <ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar el cliente ?" />
+  <ui:param name="accionConfirmacion" value="#{manticCatalogosClientesFiltro}"/>
+  <ui:param name="updateComponent" value="tabla"/>
+  <ui:param name="eventoConfirmacion" value="doEliminar"	/>	
+  <ui:param name="renderedConfirmacion" value="true"/>	
+  <ui:define name="detalleConfirmacion">
+    <h:panelGrid columns="2">
+      <p:outputLabel value="Cliente: "/>
+      <p:outputLabel value="#{manticCatalogosClientesFiltro.attrs.seleccionado.razonSocial}"/>
+    </h:panelGrid>			
+  </ui:define>
+</ui:composition>

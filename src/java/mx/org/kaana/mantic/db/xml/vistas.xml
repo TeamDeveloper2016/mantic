@@ -5343,7 +5343,7 @@
 					tc_mantic_clientes.rfc,
 					if(tc_mantic_clientes.id_credito = 1, 'SI', 'NO') credito,
 					tc_mantic_clientes.id_credito,
-					tc_mantic_clientes.razon_social,
+					concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, '')) as razon_social
 					tc_mantic_clientes.limite_credito,
 					tc_mantic_clientes.plazo_dias,
 					if(tc_mantic_clientes.saldo is null, 0, tc_mantic_clientes.saldo) saldo,
@@ -10525,9 +10525,9 @@
 					tc_mantic_listas_precios_archivos.observaciones,
 					tc_mantic_listas_precios_archivos.registro
 				from
-						tc_mantic_listas_precios
+					tc_mantic_listas_precios
 				inner join
-						tc_mantic_listas_precios_archivos on tc_mantic_listas_precios.id_lista_precio= tc_mantic_listas_precios_archivos.id_lista_precio     
+					tc_mantic_listas_precios_archivos on tc_mantic_listas_precios.id_lista_precio= tc_mantic_listas_precios_archivos.id_lista_precio     
 				inner join
 					tc_mantic_tipos_archivos on tc_mantic_listas_precios_archivos.id_tipo_archivo= tc_mantic_tipos_archivos.id_tipo_archivo
 				inner join
@@ -10551,7 +10551,7 @@
           if(tc_mantic_listas_precios.id_proveedor is null, tc_mantic_listas_precios.nombre, tc_mantic_proveedores.razon_social) as razon_social,
           if(tc_mantic_listas_precios.id_proveedor is null, tc_mantic_listas_precios.nombre, tc_mantic_proveedores.clave) as clave,
           tc_mantic_proveedores.rfc,
-          if(tc_mantic_listas_precios.id_proveedor is null, tc_mantic_listas_precios.logotipo, ifnull(tc_mantic_proveedores.logotipo, 'bonanza.svg')) as logotipo,
+          if(tc_mantic_listas_precios.id_proveedor is null, tc_mantic_listas_precios.logotipo, ifnull(tc_mantic_proveedores.logotipo, '{logo}')) as logotipo,
           tc_mantic_listas_precios_archivos.alias,
           tc_mantic_listas_precios_archivos.nombre,
           tc_mantic_listas_precios_archivos.ruta
@@ -10577,7 +10577,7 @@
           if(tc_mantic_listas_precios.id_proveedor is null, tc_mantic_listas_precios.nombre, tc_mantic_proveedores.razon_social) as razon_social,
           if(tc_mantic_listas_precios.id_proveedor is null, tc_mantic_listas_precios.nombre, tc_mantic_proveedores.clave) as clave,
           tc_mantic_proveedores.rfc,
-          if(tc_mantic_listas_precios.id_proveedor is null, tc_mantic_listas_precios.logotipo, ifnull(tc_mantic_proveedores.logotipo, 'bonanza.svg')) as logotipo,
+          if(tc_mantic_listas_precios.id_proveedor is null, tc_mantic_listas_precios.logotipo, ifnull(tc_mantic_proveedores.logotipo, '{logo}')) as logotipo,
           tc_mantic_listas_precios_archivos.alias,
           tc_mantic_listas_precios_archivos.nombre,
           tc_mantic_listas_precios_archivos.ruta

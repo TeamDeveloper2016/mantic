@@ -698,7 +698,7 @@ public class Saldos extends IBaseFilter implements Serializable {
 			for (String item: emails) {
 				try {
 					if(!Cadena.isVacio(item)) {
-					  IBaseAttachment notificar= new IBaseAttachment(ECorreos.CUENTAS, ECorreos.CUENTAS.getEmail(), item, "controlbonanza@gmail.com", "Ferreteria Bonanza - Estado de cuenta", params, files);
+					  IBaseAttachment notificar= new IBaseAttachment(ECorreos.CUENTAS, ECorreos.CUENTAS.getEmail(), item, ECorreos.CUENTAS.getControl(), Configuracion.getInstance().getEmpresa("titulo").concat(" | Estado de cuenta"), params, files);
 					  LOG.info("Enviando correo a la cuenta: "+ item);
 					  notificar.send();
 					} // if	

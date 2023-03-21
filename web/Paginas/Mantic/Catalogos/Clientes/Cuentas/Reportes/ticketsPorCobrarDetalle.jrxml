@@ -70,6 +70,7 @@
 	<parameter name="REPORTE_ALMACEN_TELEFONOS" class="java.lang.String"/>
 	<parameter name="REPORTE_ALMACEN_EMAILS" class="java.lang.String"/>
 	<parameter name="REPORTE_ALMACEN_MUNICIPIO" class="java.lang.String"/>
+	<parameter name="REPORTE_LOGO" class="java.lang.String"/>
 	<queryString language="SQL">
 		<![CDATA[$P!{REPORTE_SQL}]]>
 	</queryString>
@@ -274,7 +275,7 @@
 					<bottomPen lineWidth="0.0" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineColor="#000000"/>
 				</box>
-				<imageExpression><![CDATA[$P{REPORTE_IMAGENES}+"bonanza-report.png"]]></imageExpression>
+				<imageExpression><![CDATA[$P{REPORTE_LOGO}]]></imageExpression>
 			</image>
 			<textField pattern="">
 				<reportElement x="606" y="110" width="145" height="10" uuid="2af5e27a-bf0f-4ed1-9a92-0edfe84c08eb"/>

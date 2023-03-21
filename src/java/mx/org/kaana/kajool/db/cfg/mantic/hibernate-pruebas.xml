@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<hibernate-configuration>  
+  <session-factory>    
+    <property name="hibernate.dialect">org.hibernate.dialect.MariaDB53Dialect</property>
+		<property name="connection.datasource">java://comp/env/jdbc/manticDS</property>    
+    <!-- Habilitar cuando el desplegado sea para weblogic 
+      <property name="connection.datasource">jdbc/manticDS</property>    
+     -->		
+    <property name="connection.useUnicode">true</property> 
+    <property name="connection.characterEncoding">utf-8</property>
+    <!-- INICIO: Problemas con la codificación de caracteres Ñ tildes -->
+    <property name="hibernate.connection.defaultNChar">true</property>
+    <!-- FIN: Problemas con la codificación de caracteres Ñ tildes -->
+    <property name="show_sql">true</property>
+    <property name="format_sql">true</property>
+    <property name="use_sql_comments">true</property>
+    <property name="hibernate.jdbc.batch_size">20</property>    
+  </session-factory>
+</hibernate-configuration>

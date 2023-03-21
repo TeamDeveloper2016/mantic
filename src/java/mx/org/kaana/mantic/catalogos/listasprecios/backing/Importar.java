@@ -63,7 +63,7 @@ public class Importar extends IBaseImportar implements Serializable {
 				this.lista = new TcManticListasPreciosDto();
 				this.lista.setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 				this.lista.setIdUsuario(JsfBase.getIdUsuario());
-				this.lista.setLogotipo("bonanza.svg");
+				this.lista.setLogotipo(Configuracion.getInstance().getEmpresa("icon"));
         this.attrs.put("isDeshabilitado", false);
         this.lista.setIdProveedor((Long)this.attrs.get("idProveedor"));
         this.doLoadImportados("VistaListasArchivosDto", "importados", this.attrs);

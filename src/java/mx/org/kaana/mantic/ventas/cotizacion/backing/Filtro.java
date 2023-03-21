@@ -27,6 +27,7 @@ import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
 import mx.org.kaana.mantic.catalogos.comun.MotorBusquedaCatalogos;
@@ -439,7 +440,7 @@ public class Filtro extends IBaseTicket implements Serializable {
 			for (String item: emails) {
 				try {
 					if(!Cadena.isVacio(item)) {
-					  IBaseAttachment notificar= new IBaseAttachment(ECorreos.COTIZACIONES, ECorreos.COTIZACIONES.getEmail(), item, "controlbonanza@gmail.com", "Ferreteria Bonanza - Cotización", params, files);
+					  IBaseAttachment notificar= new IBaseAttachment(ECorreos.COTIZACIONES, ECorreos.COTIZACIONES.getEmail(), item, ECorreos.COTIZACIONES.getControl(), Configuracion.getInstance().getEmpresa("titulo").concat(" | Cotización"), params, files);
 					  LOG.info("Enviando correo a la cuenta: "+ item);
 					  notificar.send();
 					} // if	

@@ -64,6 +64,10 @@ public class TcManticClientesDto implements IBaseDto, Serializable {
   private Double especial;
   @Column (name="id_regimen_fiscal")
   private Long idRegimenFiscal;
+  @Column (name="paterno")
+  private String paterno;
+  @Column (name="materno")
+  private String materno;
 
   public TcManticClientesDto() {
     this(new Long(-1L));
@@ -230,6 +234,22 @@ public class TcManticClientesDto implements IBaseDto, Serializable {
     this.idRegimenFiscal = idRegimenFiscal;
   }
 
+  public String getPaterno() {
+    return paterno;
+  }
+
+  public void setPaterno(String paterno) {
+    this.paterno = paterno;
+  }
+
+  public String getMaterno() {
+    return materno;
+  }
+
+  public void setMaterno(String materno) {
+    this.materno = materno;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -278,6 +298,10 @@ public class TcManticClientesDto implements IBaseDto, Serializable {
 		regresar.append(getEspecial());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdRegimenFiscal());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getPaterno());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getMaterno());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -302,13 +326,15 @@ public class TcManticClientesDto implements IBaseDto, Serializable {
 		regresar.put("idFacturama", getIdFacturama());
 		regresar.put("especial", getEspecial());
 		regresar.put("idRegimenFiscal", getIdRegimenFiscal());
+		regresar.put("paterno", getPaterno());
+		regresar.put("materno", getMaterno());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-      getClave(), getPlazoDias(), getIdCliente(), getLimiteCredito(), getIdCredito(), getRazonSocial(), getSaldo(), getRfc(), getRegistro(), getIdUsuario(), getIdUsoCfdi(), getObservaciones(), getIdEmpresa(), getIdTipoVenta(), getIdFacturama(), getEspecial(), getIdRegimenFiscal()
+      getClave(), getPlazoDias(), getIdCliente(), getLimiteCredito(), getIdCredito(), getRazonSocial(), getSaldo(), getRfc(), getRegistro(), getIdUsuario(), getIdUsoCfdi(), getObservaciones(), getIdEmpresa(), getIdTipoVenta(), getIdFacturama(), getEspecial(), getIdRegimenFiscal(), getPaterno(), getMaterno()
     };
     return regresar;
   }

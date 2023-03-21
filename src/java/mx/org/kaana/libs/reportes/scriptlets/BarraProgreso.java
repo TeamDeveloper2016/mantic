@@ -32,6 +32,7 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reportes.CodigoBarras;
 import mx.org.kaana.kajool.catalogos.backing.Monitoreo;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.libs.recurso.Configuracion;
 import net.sf.jasperreports.engine.JRScriptletException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -197,7 +198,7 @@ public class BarraProgreso extends DJDefaultScriptlet implements Serializable {
   }
 
   public InputStream fotografia() throws FileNotFoundException, JRScriptletException {
-    File file = new File(this.checkParameter("REPORTE_IMAGENES")+ "imagen-default.png");
+    File file = new File(this.checkParameter("REPORTE_IMAGENES")+ Configuracion.getInstance().getEmpresa("logo"));
     FileInputStream in = new FileInputStream(file);
     return (InputStream) in;
   }

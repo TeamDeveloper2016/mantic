@@ -38,7 +38,7 @@ import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.enums.ETipoMovimiento;
 import mx.org.kaana.mantic.facturas.beans.Correo;
-import mx.org.kaana.mantic.facturas.comun.FiltroFactura;
+import mx.org.kaana.mantic.facturas.comun.Factura;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -46,7 +46,7 @@ import org.primefaces.event.SelectEvent;
 
 @Named(value= "manticFacturasFiltro")
 @ViewScoped
-public class Filtro extends FiltroFactura implements Serializable {
+public class Filtro extends Factura implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428332L;
 	private static final Log LOG=LogFactory.getLog(Filtro.class);			
