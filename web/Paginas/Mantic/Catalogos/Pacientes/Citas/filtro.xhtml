@@ -22,7 +22,7 @@
           <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
             <p:outputLabel for="fecha" value="Fecha:"/>
             <p:calendar id="fecha" value="#{manticCatalogosPacientesCitasFiltro.attrs.fecha}" inputStyleClass="janal-wid-100-txt janal-column-center" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario" />
-            <p:outputLabel for="razonSocial" value="Razón social:"/>
+            <p:outputLabel for="razonSocial" value="Clientes:"/>
             <p:autoComplete id="razonSocial" var="custom" placeholder="ejemplo: JUAN PEREZ LOPEZ" itemLabel="#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticCatalogosPacientesCitasFiltro.attrs.cliente}" completeMethod="#{manticCatalogosPacientesCitasFiltro.doCompleteCliente}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
               <f:facet name="itemtip">
                 <h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
@@ -30,8 +30,8 @@
                   <h:outputText value="#{custom.clave}" />
                   <h:outputText value="RFC:" />
                   <h:outputText value="#{custom.rfc}" />
-                  <h:outputText value="Razón social:" />
-                  <h:outputText value="#{custom.razonSocial}" />
+                  <h:outputText value="Nombre:" />
+                  <h:outputText value="#{custom.cliente}" />
                 </h:panelGrid>
               </f:facet>
             </p:autoComplete>	
@@ -59,29 +59,17 @@
 								<p:commandButton title="Exportar XLS" icon="fa fa-file-excel-o" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
               </div>  
             </f:facet>												
-            <p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.razonSocial}">
+            <p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.cliente}">
               <f:facet name="header">
                 <h:outputText value="Nombre"/>
               </f:facet>
-              <h:outputText value="#{row['razonSocial']}"/>
+              <h:outputText value="#{row['cliente']}"/>
             </p:column>
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.credito}">
-              <f:facet name="header">
-                <h:outputText value="Credito"/>
-              </f:facet>
-              <h:outputText value="#{row['credito']}"/>
-            </p:column>
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.saldo}">
-							<f:facet name="header">
-								<h:outputText value="Saldo"/>
-							</f:facet>
-							<h:outputText value="#{row['saldo']}"/>
-						</p:column>
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.cita}">
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.inicio}">
 							<f:facet name="header">
 								<h:outputText value="Horario"/>
 							</f:facet>
-							<h:outputText value="#{row['cita']}"/>
+							<h:outputText value="#{row['inicio']}"/>
 						</p:column>
 						<p:column class="MarAuto Responsive janal-wid-20" sortBy="#{row.motivo}">
 							<f:facet name="header">
