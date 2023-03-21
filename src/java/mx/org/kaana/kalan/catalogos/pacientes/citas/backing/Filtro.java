@@ -1,7 +1,9 @@
-package mx.org.kaana.mantic.catalogos.pacientes.citas.backing;
+package mx.org.kaana.kalan.catalogos.pacientes.citas.backing;
 
 import java.io.Serializable;
+import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +18,7 @@ import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -23,19 +26,22 @@ import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 
-@Named(value = "manticCatalogosPacientesCitasClientes")
+@Named(value = "kalanCatalogosPacientesCitasFiltro")
 @ViewScoped
-public class Clientes extends IBaseFilter implements Serializable {
+public class Filtro extends IBaseFilter implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428879L;
-  
-  private Entity seleccionado;  
 
   @PostConstruct
   @Override
   protected void init() {
     try {
-      this.doLoad();
+      this.attrs.put("fecha", new Date(Calendar.getInstance().getTimeInMillis()));     
+      if(JsfBase.getFlashAttribute("idClienteProcess")!= null) {
+        this.attrs.put("idClienteProcess", JsfBase.getFlashAttribute("idClienteProcess"));
+        this.doLoad();
+        this.attrs.put("idClienteProcess", null);
+      } // if
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -43,25 +49,19 @@ public class Clientes extends IBaseFilter implements Serializable {
     } // catch		
   } // init
 
-	public Entity getSeleccionado() {
-		return seleccionado;
-	}
-
-	public void setSeleccionado(Entity seleccionado) {
-		this.seleccionado = seleccionado;
-	}	
-  
   @Override
   public void doLoad() {
     List<Columna> columns    = new ArrayList<>();		
 		Map<String, Object>params= this.toPrepare();
     try {
-      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));      
-      columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));      
       columns.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));      
-      columns.add(new Columna("domicilio", EFormatoDinamicos.MAYUSCULAS));      
-      this.lazyModel = new FormatCustomLazy("VistaClientesCitasDto", "clientes", params, columns);
-      UIBackingUtilities.resetDataGrid();
+      columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_HORA));    
+      columns.add(new Columna("motivo", EFormatoDinamicos.MAYUSCULAS));    
+      columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));    
+      params.put("sortOrder", "order by tc_mantic_clientes.razon_social, tc_mantic_clientes.paterno, tc_mantic_clientes.materno");
+			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getDependencias());			
+      this.lazyModel = new FormatCustomLazy("VistaClientesCitasDto", params, columns);
+      UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -74,20 +74,26 @@ public class Clientes extends IBaseFilter implements Serializable {
   } // doLoad
 
 	private Map<String, Object> toPrepare() {
-		Map<String, Object> regresar= new HashMap<>();
+		Map<String, Object> regresar= new HashMap();
+		StringBuilder sb            = null;
 		UISelectEntity cliente      = null;
 		List<UISelectEntity>clientes= null;
 		try {
+			sb      = new StringBuilder("");
 			cliente = (UISelectEntity)this.attrs.get("cliente");
 			clientes= (List<UISelectEntity>)this.attrs.get("clientes");
+  		if(!Cadena.isVacio(this.attrs.get("fecha")))
+	  	  sb.append("(date_format(tc_kalan_citas.cuando, '%Y%m%d')= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fecha"))).append("') and ");	
 			if(clientes!= null && cliente!= null && clientes.indexOf(cliente)>= 0) 
-        regresar.put("codigo", clientes.get(clientes.indexOf(cliente)).toString("razonSocial").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*"));
+				sb.append("concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, '')) regexp '.*").append(clientes.get(clientes.indexOf(cliente)).toString("razonSocial").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*")).append(".*' and ");				
 			else 
 				if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input"))) 
-          regresar.put("codigo", JsfBase.getParametro("razonSocial_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*"));
-			if(regresar.isEmpty())
-        regresar.put("codigo", " ");
-			regresar.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());			
+					sb.append("concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, '')) regexp '.*").append(JsfBase.getParametro("razonSocial_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*")).append(".*' and ");				
+			if(Cadena.isVacio(sb))
+				sb.append(Constantes.SQL_VERDADERO);
+			else
+				sb.delete(sb.length()- 4, sb.length());
+			regresar.put(Constantes.SQL_CONDICION, sb.toString());
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -99,6 +105,7 @@ public class Clientes extends IBaseFilter implements Serializable {
     EAccion eaccion= null;
 		try {
 			eaccion= EAccion.valueOf(accion.toUpperCase());
+			JsfBase.setFlashAttribute("puntoVenta", this.attrs.get("puntoVenta"));		
 			JsfBase.setFlashAttribute("accion", eaccion);		
 			JsfBase.setFlashAttribute("idCliente", (eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)) ? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);
 		} // try
@@ -109,6 +116,17 @@ public class Clientes extends IBaseFilter implements Serializable {
 		return "accion".concat(Constantes.REDIRECIONAR);
   } // doAccion
 
+  public void doEliminar() {
+		Entity seleccionado= null;
+		try {
+			seleccionado= (Entity) this.attrs.get("seleccionado");			
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch			
+  } // doEliminar
+	
 	public List<UISelectEntity> doCompleteCliente(String codigo) {
  		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
@@ -124,7 +142,7 @@ public class Clientes extends IBaseFilter implements Serializable {
 			else
 				codigo= "WXYZ";
   		params.put("codigo", codigo);
-      this.attrs.put("clientes", UIEntity.build("TcManticClientesDto", "porNombre", params, columns, 40L));
+      this.attrs.put("clientes", UIEntity.build("VistaClientesCitasDto", "nombre", params, columns, 40L));
 		} // try
 	  catch (Exception e) {
       Error.mensaje(e);
@@ -136,19 +154,5 @@ public class Clientes extends IBaseFilter implements Serializable {
     }// finally
 		return (List<UISelectEntity>)this.attrs.get("clientes");
 	}	
-
-  public String doPagina() {
-    String regresar= null;
-    try {
-			JsfBase.setFlashAttribute("idCliente", this.seleccionado.getKey());
-			JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Catalogos/Pacientes/Citas/clientes.jsf");
-			regresar= "agendar".concat(Constantes.REDIRECIONAR);			
-		} // try
-		catch (Exception e) {
-			JsfBase.addMessageError(e);
-			Error.mensaje(e);			
-		} // catch		
-    return regresar;
-  }
-  
+	
 }

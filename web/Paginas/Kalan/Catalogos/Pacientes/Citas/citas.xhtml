@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+  <ui:param name="titulo" value="Citas del cliente" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      Janal.Control.fields = {
+        'razonSocial': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}
+      };
+    </script>		
+  </ui:define>
+  <ui:define name="contenido">
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+      <div class="ui-grid-row janal-grid-row">
+        <div id="collapse-find" class="ui-grid-col-12">
+          <p:accordionPanel id="panelBusqueda" activeIndex="1" multiple="true">
+					  <p:tab title="Cliente [ #{kalanCatalogosPacientesCitasCitas.cliente.cliente} ]">
+              <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-50, janal-wid-50">
+                  <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                    <p:outputLabel for="clave" value="Clave:"/>
+                    <p:inputText id="clave" value="#{kalanCatalogosPacientesCitasCitas.cliente.clave}" styleClass="janal-wid-100-txt" readonly="true"/>
+                  </p:panelGrid>  
+                  <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                    <p:outputLabel for="rfc" value="RFC:"/>
+                    <p:inputText id="rfc" value="#{kalanCatalogosPacientesCitasCitas.cliente.rfc}" styleClass="janal-wid-100-txt" readonly="true"/>
+                  </p:panelGrid>                     
+                </p:panelGrid>                     
+                <p:outputLabel for="razonSocial" value="Cliente:"/>
+                <p:inputText id="razonSocial" value="#{kalanCatalogosPacientesCitasCitas.cliente.cliente}" styleClass="janal-wid-100-txt" readonly="true"/>
+                <p:outputLabel for="domicilio" value="Domicilio:"/>
+                <p:inputText id="domicilio" value="#{kalanCatalogosPacientesCitasCitas.cliente.domicilio}" styleClass="janal-wid-100-txt" readonly="true"/>
+              </p:panelGrid>
+            </p:tab>
+          </p:accordionPanel>  
+          <p:spacer width="5px"/>
+          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{kalanCatalogosPacientesCitasCitas.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{kalanCatalogosPacientesCitasCitas.attrs.seleccionado}" selectionMode="single" paginator="#{kalanCatalogosPacientesCitasCitas.lazyModel.rowCount gt kalanCatalogosPacientesCitasCitas.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+            <p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
+						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
+						<f:facet name="header" >
+              <div style="float: left;">
+                <p:outputLabel value="Citas agendadas ..." styleClass="janal-color-white"/>
+              </div>  
+              <div class="lg-pantalla">
+                <p:menuButton value="Opciones">
+                  <p:menuitem value="Agendar" action="#{kalanCatalogosPacientesCitasCitas.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
+									<p:separator/>
+                  <p:menuitem value="Exportar PDF" icon="fa fa-file-pdf-o" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                  <p:menuitem value="Exportar XLS" icon="fa fa-file-excel-o" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                </p:menuButton>
+              </div>  
+              <div class="xs-pantalla">              
+								<p:commandButton action="#{kalanCatalogosPacientesCitasCitas.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
+								<p:commandButton title="Exportar PDF" icon="fa fa-file-pdf-o" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+								<p:commandButton title="Exportar XLS" icon="fa fa-file-excel-o" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+              </div>  
+            </f:facet>												
+            <p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.cliente}">
+              <f:facet name="header">
+                <h:outputText value="Nombre"/>
+              </f:facet>
+              <h:outputText value="#{row['cliente']}"/>
+            </p:column>
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{row.inicio}">
+							<f:facet name="header">
+								<h:outputText value="Inicio"/>
+							</f:facet>
+							<h:outputText value="#{row['inicio']}"/>
+						</p:column>
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{row.termino}">
+							<f:facet name="header">
+								<h:outputText value="Termino"/>
+							</f:facet>
+							<h:outputText value="#{row['termino']}"/>
+						</p:column>
+						<p:column class="MarAuto Responsive janal-wid-20" sortBy="#{row.motivo}">
+							<f:facet name="header">
+								<h:outputText value="Motivo"/>
+							</f:facet>
+							<h:outputText value="#{row['motivo']}"/>
+						</p:column>
+						<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.estatus}">
+							<f:facet name="header">
+								<h:outputText value="Estatus"/>
+							</f:facet>
+							<h:outputText value="#{row['estatus']}"/>
+						</p:column>
+            <f:facet name="footer">
+              <p:outputLabel value="Total [#{kalanCatalogosPacientesCitasCitas.lazyModel== null? 0: kalanCatalogosPacientesCitasCitas.lazyModel.rowCount}] registros"/>
+            </f:facet>
+          </p:dataTable>
+          <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
+            <p:menuitem id="consultar" action="#{kalanCatalogosPacientesCitasCitas.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+						<p:separator/>
+            <p:menuitem id="modificar" action="#{kalanCatalogosPacientesCitasCitas.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+            <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>					
+          </p:contextMenu>
+        </div>
+      </div>
+    </div>		    
+  </ui:define>    
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="regresar" value="Regresar" icon="fa fa-reply" process="@this" action="#{kalanCatalogosPacientesCitasCitas.doCancelar}" immediate="true"/>
+		</div>	
+		<div class="xs-pantalla">
+			<p:commandButton id="regresarIcon" title="Regresar" icon="fa fa-reply" process="@this" action="#{kalanCatalogosPacientesCitasCitas.doCancelar}" immediate="true"/>
+		</div>	
+	</ui:define>	
+  <ui:param name="componenteBloqueo" value="tabla" />
+  <ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar la cita ?" />
+  <ui:param name="accionConfirmacion" value="#{kalanCatalogosPacientesCitasCitas}"/>
+  <ui:param name="updateComponent" value="tabla"/>
+  <ui:param name="eventoConfirmacion" value="doEliminar"	/>	
+  <ui:param name="renderedConfirmacion" value="true"/>	
+  <ui:define name="detalleConfirmacion">
+    <h:panelGrid columns="2">
+      <p:outputLabel value="Cliente: "/>
+      <p:outputLabel value="#{kalanCatalogosPacientesCitasCitas.attrs.seleccionado.razonSocial}"/>
+    </h:panelGrid>			
+  </ui:define>
+</ui:composition>

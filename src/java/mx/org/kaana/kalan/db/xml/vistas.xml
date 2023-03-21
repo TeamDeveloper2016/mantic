@@ -13,9 +13,9 @@ select
   tc_mantic_clientes.rfc,
   concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, '')) as cliente,
   tc_kalan_citas.consecutivo,
-  tc_kalan_citas.recordatorio,
   tc_kalan_citas.id_cita_estatus,
-  tc_kalan_citas.cuando,
+  tc_kalan_citas.inicio,
+  tc_kalan_citas.termino,
   tc_kalan_citas.recordatorio,
   tc_mantic_clientes.limite_credito as credito,
   tc_mantic_clientes.saldo,
@@ -54,7 +54,7 @@ inner join
 inner join
   tc_kalan_citas_estatus on tc_kalan_citas.id_cita_estatus= tc_kalan_citas_estatus.id_cita_estatus
 where
-  concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, '')) regexp '.*{codigo}.*'
+  {condicion}
 order by
   tc_mantic_clientes.razon_social, 
   tc_mantic_clientes.paterno, 
@@ -69,14 +69,14 @@ select
 from      
   tc_mantic_clientes
 left join
-  tr_mantic_cliente_domicilio on tr_mantic_cliente_domicilio.id_cliente=tc_mantic_clientes.id_cliente 
+  tr_mantic_cliente_domicilio on tr_mantic_cliente_domicilio.id_cliente= tc_mantic_clientes.id_cliente 
   and tr_mantic_cliente_domicilio.id_tipo_domicilio= 1 
   and tr_mantic_cliente_domicilio.id_principal= 1
 left join
-  tc_mantic_domicilios on tc_mantic_domicilios.id_domicilio = tr_mantic_cliente_domicilio.id_domicilio
+  tc_mantic_domicilios on tc_mantic_domicilios.id_domicilio= tr_mantic_cliente_domicilio.id_domicilio
 where 
   id_empresa in ({sucursales})
-  and (upper(concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, ''))) regexp '.*{codigo}.*' or upper(rfc) regexp '.*{codigo}.*')
+  and {condicion}
 order by
   tc_mantic_clientes.razon_social, 
   tc_mantic_clientes.paterno, 

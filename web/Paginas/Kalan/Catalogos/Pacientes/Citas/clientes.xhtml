@@ -20,7 +20,7 @@
         <div id="collapse-find" class="ui-grid-col-12">
           <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
             <p:outputLabel for="razonSocial" value="Cliente:"/>
-            <p:autoComplete id="razonSocial" var="custom" placeholder="ejemplo: JUAN PEREZ LOPEZ" itemLabel="#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticCatalogosPacientesCitasClientes.attrs.cliente}" completeMethod="#{manticCatalogosPacientesCitasClientes.doCompleteCliente}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+            <p:autoComplete id="razonSocial" var="custom" placeholder="ejemplo: JUAN PEREZ LOPEZ" itemLabel="#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{kalanCatalogosPacientesCitasClientes.attrs.cliente}" completeMethod="#{kalanCatalogosPacientesCitasClientes.doCompleteCliente}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
               <f:facet name="itemtip">
                 <h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
                   <h:outputText value="Clave:" />
@@ -34,31 +34,38 @@
             </p:autoComplete>	
           </p:panelGrid>
           <div class="janal-align-right janal-wid-100">
-            <p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute();" process="@this razonSocial" actionListener="#{manticCatalogosPacientesCitasClientes.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
-            <p:commandButton id="buscarIcon" value="Buscar" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.execute();" process="@this razonSocial" actionListener="#{manticCatalogosPacientesCitasClientes.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
+            <p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute();" process="@this razonSocial" actionListener="#{kalanCatalogosPacientesCitasClientes.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
+            <p:commandButton id="buscarIcon" value="Buscar" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.execute();" process="@this razonSocial" actionListener="#{kalanCatalogosPacientesCitasClientes.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
           </div>
           <p:spacer width="5px"/>
           <center>
-            <p:dataGrid lazy="true" id="tabla" var="row" styleClass="janal-wid-99" value="#{manticCatalogosPacientesCitasClientes.lazyModel}" columns="3" layout="grid" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticCatalogosPacientesCitasClientes.lazyModel.rowCount gt manticCatalogosPacientesCitasClientes.lazyModel.pageSize}" rowIndexVar="index" paginatorPosition="bottom">
+            <p:dataGrid lazy="true" id="tabla" var="row" styleClass="janal-wid-99" value="#{kalanCatalogosPacientesCitasClientes.lazyModel}" columns="3" layout="grid" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{kalanCatalogosPacientesCitasClientes.lazyModel.rowCount gt kalanCatalogosPacientesCitasClientes.lazyModel.pageSize}" rowIndexVar="index" paginatorPosition="bottom">
               <f:facet name="header">
-                Clientes disponibles
+                C L I E N T E S
               </f:facet>
               <p:panel header="Clave: [ #{row.clave} ]" style="width:100%;" >
                 <p:panelGrid columns="1" columnClasses="janal-column-center" style="width:100%;">
-                  <p:commandLink action="#{manticCatalogosPacientesCitasClientes.doPagina}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" title="Clic para agendar">
+                  <p:commandLink action="#{kalanCatalogosPacientesCitasClientes.doAgendar}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" title="Clic para agendar">
                     <p:graphicImage width="100px" height="65px" library="janal" name="img/sistema/#{kajoolUtilAplicacion.logoAyudaEmpresa}"/>
                     <br/>
-                    <h:outputText value="#{row.cliente}" styleClass="FontBold Fs18 janal-color-blue"/>
-                    <f:setPropertyActionListener value="#{row}" target="#{manticCatalogosPacientesCitasClientes.seleccionado}"  />
+                    <h:outputText value="#{row.cliente}" styleClass="FontBold Fs16 janal-color-blue"/>
+                    <f:setPropertyActionListener value="#{row}" target="#{kalanCatalogosPacientesCitasClientes.seleccionado}"  />
                   </p:commandLink>	                
                   <p:outputLabel value="Domicilio:" styleClass="FontBold"/>
                   <h:outputText value="#{row.domicilio}" />
                   <p:outputLabel value="RFC:" styleClass="FontBold"/>
                   <h:outputText value="#{row.rfc}" />								
                 </p:panelGrid>
+                <f:facet name="footer" >
+                  <div class="janal-line-button">
+                    <p:commandButton iconPos="left" title="Citas" styleClass="janal-text-white" accesskey="z" icon="fa fa-calendar" action="#{kalanCatalogosPacientesCitasClientes.doCitas}">
+                      <f:setPropertyActionListener value="#{row}" target="#{kalanCatalogosPacientesCitasClientes.seleccionado}"  />
+                    </p:commandButton>
+                  </div>
+                </f:facet>
               </p:panel>
               <f:facet name="footer">
-                <p:outputLabel value="Total [#{manticCatalogosPacientesCitasClientes.lazyModel== null? 0: manticCatalogosPacientesCitasClientes.lazyModel.rowCount}] registros"/>
+                <p:outputLabel value="Total [#{kalanCatalogosPacientesCitasClientes.lazyModel== null? 0: kalanCatalogosPacientesCitasClientes.lazyModel.rowCount}] registros"/>
               </f:facet>
             </p:dataGrid>
           </center>  
