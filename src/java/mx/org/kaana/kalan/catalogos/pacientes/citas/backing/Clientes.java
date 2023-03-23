@@ -59,10 +59,12 @@ public class Clientes extends IBaseFilter implements Serializable {
     List<Columna> columns    = new ArrayList<>();		
 		Map<String, Object>params= this.toPrepare();
     try {
+      params.put("idCliente", -1L);
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));      
       columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));      
       columns.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));      
-      columns.add(new Columna("domicilio", EFormatoDinamicos.MAYUSCULAS));      
+      columns.add(new Columna("inicio", EFormatoDinamicos.DIA_FECHA_HORA_CORTA));      
+      columns.add(new Columna("servicios", EFormatoDinamicos.MAYUSCULAS));      
       this.lazyModel = new FormatCustomLazy("VistaClientesCitasDto", "clientes", params, columns);
       UIBackingUtilities.resetDataGrid();
     } // try
@@ -77,8 +79,6 @@ public class Clientes extends IBaseFilter implements Serializable {
   } // doLoad
 
 	private Map<String, Object> toPrepare() {
-    // concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, '')) regexp '.*{codigo}.*'
-    // (upper(concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, ''))) regexp '.*{codigo}.*' or upper(rfc) regexp '.*{codigo}.*')
 		Map<String, Object> regresar= new HashMap<>();
     StringBuilder sb            = new StringBuilder();
 		UISelectEntity cliente      = null;
@@ -86,8 +86,8 @@ public class Clientes extends IBaseFilter implements Serializable {
 		try {
 			cliente = (UISelectEntity)this.attrs.get("cliente");
 			clientes= (List<UISelectEntity>)this.attrs.get("clientes");
-			if(!Cadena.isVacio(this.attrs.get("idCliente"))) 
-        sb.append("(tc_mantic_clientes.id_cliente= ").append(this.attrs.get("idCliente")).append(") and");
+			if(!Cadena.isVacio(this.attrs.get("idClienteProcess"))) 
+        sb.append("(tc_mantic_clientes.id_cliente= ").append(this.attrs.get("idClienteProcess")).append(") and");
 			if(clientes!= null && cliente!= null && clientes.indexOf(cliente)>= 0) 
         sb.append("(tc_mantic_clientes.id_cliente= ").append(clientes.get(clientes.indexOf(cliente)).toLong("idCliente")).append(") and");
 			else 

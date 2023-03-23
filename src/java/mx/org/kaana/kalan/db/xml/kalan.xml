@@ -7,5 +7,113 @@
   </model>
 
   <dml>
+    <unit id="TcKalanCitasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_kalan_citas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_kalan_citas
+        where      
+          consecutivo = '{consecutivo}'
+      </select>
+    </unit>   
+    <unit id="TcKalanCitasBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_kalan_citas_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_kalan_citas_bitacora
+        where      
+          id_cita_bitacora = {idCitaBitacora}
+      </select>
+    </unit>  
+    <unit id="TcKalanCitasDetallesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_kalan_citas_detalles
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_kalan_citas_detalles
+        where      
+          id_cita = {idCita} and id_articulo = {idArticulo}
+      </select>
+    </unit>       
+    <unit id="TcKalanCitasEstatusDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_kalan_citas_estatus
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_kalan_citas_estatus
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>
+    <unit id="TcKalanMensajesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_kalan_mensajes
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_kalan_mensajes
+        where      
+          consecutivo = {consecutivo}
+      </select>
+    </unit> 
+    <unit id="TcKalanMensajesDetalleDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_kalan_mensajes_detalle
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_kalan_mensajes_detalle
+        where      
+          id_cliente = {idCliente} and id_mensaje = {idMensaje}
+      </select>
+    </unit>         
   </dml>    
 </process>

@@ -30,11 +30,19 @@
                     <p:outputLabel for="rfc" value="RFC:"/>
                     <p:inputText id="rfc" value="#{kalanCatalogosPacientesCitasCitas.cliente.rfc}" styleClass="janal-wid-100-txt" readonly="true"/>
                   </p:panelGrid>                     
-                </p:panelGrid>                     
-                <p:outputLabel for="razonSocial" value="Cliente:"/>
-                <p:inputText id="razonSocial" value="#{kalanCatalogosPacientesCitasCitas.cliente.cliente}" styleClass="janal-wid-100-txt" readonly="true"/>
-                <p:outputLabel for="domicilio" value="Domicilio:"/>
-                <p:inputText id="domicilio" value="#{kalanCatalogosPacientesCitasCitas.cliente.domicilio}" styleClass="janal-wid-100-txt" readonly="true"/>
+                </p:panelGrid>  
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                  <p:outputLabel for="razonSocial" value="Cliente:"/>
+                  <p:inputText id="razonSocial" value="#{kalanCatalogosPacientesCitasCitas.cliente.cliente}" styleClass="janal-wid-100-txt" readonly="true"/>
+                </p:panelGrid>  
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                  <p:outputLabel for="cita" value="Última cita:"/>
+                  <p:inputText id="cita" value="#{kalanCatalogosPacientesCitasCitas.cliente.servicios.toString() eq ''? 'SIN CITA': kalanCatalogosPacientesCitasCitas.cliente.inicio}#{kalanCatalogosPacientesCitasCitas.cliente.servicios.toString() eq ''? '': ' HRS'}" styleClass="janal-wid-100-txt janal-color-orange FontBold" readonly="true"/>
+                </p:panelGrid>  
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                  <p:outputLabel for="servicios" value="Servicio(s):"/>
+                  <p:inputText id="servicios" value="#{kalanCatalogosPacientesCitasCitas.cliente.servicios.toString() eq ''? 'SIN SERVICIOS': kalanCatalogosPacientesCitasCitas.cliente.servicios}" styleClass="janal-wid-100-txt" readonly="true"/>
+                </p:panelGrid>  
               </p:panelGrid>
             </p:tab>
           </p:accordionPanel>  
@@ -44,7 +52,7 @@
 						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
 						<f:facet name="header" >
               <div style="float: left;">
-                <p:outputLabel value="Citas agendadas ..." styleClass="janal-color-white"/>
+                <p:outputLabel value="C I T A S" styleClass="janal-color-white"/>
               </div>  
               <div class="lg-pantalla">
                 <p:menuButton value="Opciones">
@@ -66,25 +74,31 @@
               </f:facet>
               <h:outputText value="#{row['cliente']}"/>
             </p:column>
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{row.inicio}">
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-12" sortBy="#{row.inicio}">
 							<f:facet name="header">
 								<h:outputText value="Inicio"/>
 							</f:facet>
 							<h:outputText value="#{row['inicio']}"/>
 						</p:column>
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{row.termino}">
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-12" sortBy="#{row.termino}">
 							<f:facet name="header">
 								<h:outputText value="Termino"/>
 							</f:facet>
 							<h:outputText value="#{row['termino']}"/>
 						</p:column>
-						<p:column class="MarAuto Responsive janal-wid-20" sortBy="#{row.motivo}">
+						<p:column class="MarAuto Responsive janal-wid-20" sortBy="#{row.servicios}">
 							<f:facet name="header">
-								<h:outputText value="Motivo"/>
+								<h:outputText value="Sevicio(s)"/>
 							</f:facet>
-							<h:outputText value="#{row['motivo']}"/>
+							<h:outputText value="#{row['servicios']}"/>
 						</p:column>
-						<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.estatus}">
+						<p:column class="MarAuto Responsive janal-wid-15" sortBy="#{row.atendio}">
+							<f:facet name="header">
+								<h:outputText value="Atendio"/>
+							</f:facet>
+							<h:outputText value="#{row['atendio']}"/>
+						</p:column>
+						<p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.estatus}">
 							<f:facet name="header">
 								<h:outputText value="Estatus"/>
 							</f:facet>

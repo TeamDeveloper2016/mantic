@@ -56,15 +56,20 @@ public class Citas extends IBaseFilter implements Serializable {
 
   @Override
   public void doLoad() {
-    List<Columna> columns    = new ArrayList<>();		
+    List<Columna> columns    = new ArrayList<>();	
 		Map<String, Object>params= this.toPrepare();
     try {
+      params.put("idCliente", this.attrs.get("idCliente"));
+      columns.add(new Columna("inicio", EFormatoDinamicos.DIA_FECHA_HORA_CORTA));    
       this.cliente= (Entity)DaoFactory.getInstance().toEntity("VistaClientesCitasDto", "clientes", params);
+      if(this.cliente!= null && !this.cliente.isEmpty())
+        UIBackingUtilities.toFormatEntity(this.cliente, columns);
       params.put("sortOrder", "order by tc_kalan_citas.inicio desc");
+      columns.clear();
       columns.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));      
       columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_HORA));    
       columns.add(new Columna("termino", EFormatoDinamicos.FECHA_HORA));    
-      columns.add(new Columna("motivo", EFormatoDinamicos.MAYUSCULAS));    
+      columns.add(new Columna("servicios", EFormatoDinamicos.MAYUSCULAS));    
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));    
       this.lazyModel = new FormatCustomLazy("VistaClientesCitasDto", params, columns);
       UIBackingUtilities.resetDataTable();

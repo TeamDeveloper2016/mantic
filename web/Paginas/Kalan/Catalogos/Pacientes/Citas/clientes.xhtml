@@ -13,6 +13,11 @@
         'razonSocial': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}
       };
     </script>		
+    <style type="text/css">
+      .ui-commandlink {  
+        text-decoration: none;
+      }  
+    </style>
   </ui:define>
   <ui:define name="contenido">
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
@@ -48,13 +53,13 @@
                   <p:commandLink action="#{kalanCatalogosPacientesCitasClientes.doAgendar}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" title="Clic para agendar">
                     <p:graphicImage width="100px" height="65px" library="janal" name="img/sistema/#{kajoolUtilAplicacion.logoAyudaEmpresa}"/>
                     <br/>
-                    <h:outputText value="#{row.cliente}" styleClass="FontBold Fs16 janal-color-blue"/>
+                    <h:outputText value="#{row.cliente}" styleClass="FontBold Fs16"/>
                     <f:setPropertyActionListener value="#{row}" target="#{kalanCatalogosPacientesCitasClientes.seleccionado}"  />
                   </p:commandLink>	                
-                  <p:outputLabel value="Domicilio:" styleClass="FontBold"/>
-                  <h:outputText value="#{row.domicilio}" />
-                  <p:outputLabel value="RFC:" styleClass="FontBold"/>
-                  <h:outputText value="#{row.rfc}" />								
+                  <p:outputLabel value="Última cita:" styleClass="FontBold janal-color-orange"/>
+                  <h:outputText value="#{row.servicios.toString() eq ''? 'SIN CITA': row.inicio}" styleClass="FontBold Fs14 janal-color-orange" />								
+                  <p:outputLabel value="Servicio(s):" styleClass="FontBold"/>
+                  <h:outputText value="#{row.servicios.toString() eq ''? 'SIN SERVICIOS': row.servicios}" />
                 </p:panelGrid>
                 <f:facet name="footer" >
                   <div class="janal-line-button">
