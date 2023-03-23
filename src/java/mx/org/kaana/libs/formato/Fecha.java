@@ -13,6 +13,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Objects;
 import mx.org.kaana.libs.recurso.Configuracion;
 
 public class Fecha {
@@ -479,30 +480,32 @@ public class Fecha {
      // 01234567890123456
     // yyyy-MM-dd HH:mm:ss.S
     // 012345678901234567012
-    if (fecha.length() == 6) // yyyyMMdd
-      fecha = reversa(fecha);
-    else
-      if (fecha.length() == 8) // dd/mm/yy
-        fecha = fecha.substring(0, 6).concat("19").concat(fecha.substring(6)).concat(" 00:00:00");
-    else
-      if (fecha.length() == 10) // dd/mm/yyyy
-        fecha = getFormatoEspaniol(fecha).concat(" 00:00:00");
-    else
-      if (fecha.length() == 12) // yyyyMMddHHmm
-        fecha= reversa(fecha.substring(0, 8)).concat(" ").concat(fecha.substring(8, 10)).concat(":").concat(fecha.substring(10, 12)).concat(":");
-    else
-      if (fecha.length() == 14 || fecha.length() == 15 || fecha.length() == 16 || fecha.length() == 17) // yyyyMMddHHmmss YYYYMMDDHHmmssS
-        fecha = reversa(fecha.substring(0, 8)).concat(" ").concat(fecha.substring(8, 10)).concat(":").concat(fecha.substring(10, 12)).concat(":").concat(fecha.substring(12, 14));
-      else
-        if (fecha.length() >= 20) // dd/mm/yyyy HH:mm:ss.S
-          fecha = getFormatoEspaniol(fecha.substring(0, 10)).concat(fecha.substring(10));
     Calendar calendar = Calendar.getInstance();
-    calendar.set(Calendar.DATE, Numero.getInteger(fecha.substring(0, 2)));
-    calendar.set(Calendar.MONTH, Numero.getInteger(fecha.substring(3, 5)) - 1);
-    calendar.set(Calendar.YEAR, Numero.getInteger(fecha.substring(6, 10)));
-    calendar.set(Calendar.HOUR_OF_DAY, Numero.getInteger(fecha.substring(11, 13)));
-    calendar.set(Calendar.MINUTE, Numero.getInteger(fecha.substring(14, 16)));
-    calendar.set(Calendar.SECOND, Numero.getInteger(fecha.substring(17, 19)));
+    if(!Objects.equals(fecha, null)) {
+      if (fecha.length() == 6) // yyyyMMdd
+        fecha = reversa(fecha);
+      else
+        if (fecha.length() == 8) // dd/mm/yy
+          fecha = fecha.substring(0, 6).concat("19").concat(fecha.substring(6)).concat(" 00:00:00");
+      else
+        if (fecha.length() == 10) // dd/mm/yyyy
+          fecha = getFormatoEspaniol(fecha).concat(" 00:00:00");
+      else
+        if (fecha.length() == 12) // yyyyMMddHHmm
+          fecha= reversa(fecha.substring(0, 8)).concat(" ").concat(fecha.substring(8, 10)).concat(":").concat(fecha.substring(10, 12)).concat(":");
+      else
+        if (fecha.length() == 14 || fecha.length() == 15 || fecha.length() == 16 || fecha.length() == 17) // yyyyMMddHHmmss YYYYMMDDHHmmssS
+          fecha = reversa(fecha.substring(0, 8)).concat(" ").concat(fecha.substring(8, 10)).concat(":").concat(fecha.substring(10, 12)).concat(":").concat(fecha.substring(12, 14));
+        else
+          if (fecha.length() >= 20) // dd/mm/yyyy HH:mm:ss.S
+            fecha = getFormatoEspaniol(fecha.substring(0, 10)).concat(fecha.substring(10));
+      calendar.set(Calendar.DATE, Numero.getInteger(fecha.substring(0, 2)));
+      calendar.set(Calendar.MONTH, Numero.getInteger(fecha.substring(3, 5)) - 1);
+      calendar.set(Calendar.YEAR, Numero.getInteger(fecha.substring(6, 10)));
+      calendar.set(Calendar.HOUR_OF_DAY, Numero.getInteger(fecha.substring(11, 13)));
+      calendar.set(Calendar.MINUTE, Numero.getInteger(fecha.substring(14, 16)));
+      calendar.set(Calendar.SECOND, Numero.getInteger(fecha.substring(17, 19)));
+    };
     return calendar;
   }
 

@@ -128,6 +128,7 @@ public class Clientes extends IBaseFilter implements Serializable {
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+  		params.put("idCliente", -1L);
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			if(!Cadena.isVacio(codigo)) {
   			codigo= codigo.replaceAll(Constantes.CLEAN_SQL, "").trim();
@@ -135,8 +136,8 @@ public class Clientes extends IBaseFilter implements Serializable {
 			} // if	
 			else
 				codigo= "WXYZ";
-  		params.put("codigo", codigo);
-      this.attrs.put("clientes", UIEntity.build("TcManticClientesDto", "porNombre", params, columns, 40L));
+  		params.put(Constantes.SQL_CONDICION, "(upper(concat(razon_social, ' ', ifnull(paterno, ''), ' ', ifnull(materno, ''))) regexp '.*{".concat(codigo).concat("}.*' or upper(rfc) regexp '.*{").concat(codigo).concat(")}.*')"));
+      this.attrs.put("clientes", UIEntity.build("VistaClientesCitasDto", "clientes", params, columns, 40L));
 		} // try
 	  catch (Exception e) {
       Error.mensaje(e);
@@ -154,7 +155,7 @@ public class Clientes extends IBaseFilter implements Serializable {
     try {
 			JsfBase.setFlashAttribute("idCliente", this.seleccionado.getKey());
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Catalogos/Pacientes/Citas/clientes.jsf");
-			regresar= "agendar".concat(Constantes.REDIRECIONAR);			
+			regresar= "nuevo".concat(Constantes.REDIRECIONAR);			
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

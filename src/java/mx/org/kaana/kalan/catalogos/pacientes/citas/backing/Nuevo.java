@@ -27,11 +27,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 
-@Named(value = "kalanCatalogosPacientesCitasAgendar")
+@Named(value = "kalanCatalogosPacientesCitasNuevo")
 @ViewScoped
-public class Agendar extends IBaseFilter implements Serializable {
+public class Nuevo extends IBaseFilter implements Serializable {
 
-  private static final Log LOG = LogFactory.getLog(Agendar.class);
+  private static final Log LOG = LogFactory.getLog(Nuevo.class);
   private static final long serialVersionUID = 327393488565639267L;  
 	
   private EAccion accion;

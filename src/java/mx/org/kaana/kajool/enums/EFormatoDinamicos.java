@@ -2,6 +2,7 @@ package mx.org.kaana.kajool.enums;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Objects;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Numero;
@@ -104,40 +105,40 @@ public enum EFormatoDinamicos implements IFormatosKajool {
           regresar = Numero.formatear(Numero.NUMERO_SAT_DECIMALES, Numero.getDouble(regresar));
           break;
         case FECHA_CORTA:
-          regresar = Fecha.formatear(Fecha.FECHA_CORTA, Fecha.getFechaHora(regresar));
+          regresar = Objects.equals(regresar, null) || Objects.equals(regresar.length(), 0)? "": Fecha.formatear(Fecha.FECHA_CORTA, Fecha.getFechaHora(regresar));
           break;
         case FECHA_NOMBRE_DIA:
-          regresar = Fecha.formatear(Fecha.FECHA_NOMBRE_DIA, Fecha.getFechaHora(regresar));
+          regresar = Objects.equals(regresar, null) || Objects.equals(regresar.length(), 0)? "": Fecha.formatear(Fecha.FECHA_NOMBRE_DIA, Fecha.getFechaHora(regresar));
           break;
         case FECHA_EXTENDIDA:
-          regresar = Fecha.formatear(Fecha.FECHA_EXTENDIDA, Fecha.getFechaHora(regresar));
+          regresar = Objects.equals(regresar, null) || Objects.equals(regresar.length(), 0)? "": Fecha.formatear(Fecha.FECHA_EXTENDIDA, Fecha.getFechaHora(regresar));
           break;
         case FECHA_LARGA:
-          regresar = Fecha.formatear(Fecha.FECHA_LARGA, Fecha.getFechaHora(regresar));
+          regresar = Objects.equals(regresar, null) || Objects.equals(regresar.length(), 0)? "": Fecha.formatear(Fecha.FECHA_LARGA, Fecha.getFechaHora(regresar));
           break;
         case FECHA_NOMBRE_MES:
-          regresar = Fecha.formatear(Fecha.FECHA_NOMBRE_MES, Fecha.getFechaHora(regresar));
+          regresar = Objects.equals(regresar, null) || Objects.equals(regresar.length(), 0)? "": Fecha.formatear(Fecha.FECHA_NOMBRE_MES, Fecha.getFechaHora(regresar));
           break;
         case HORA_CORTA:
-          regresar = Fecha.formatear(Fecha.HORA_CORTA, Fecha.getFechaHora(regresar));
+          regresar = Objects.equals(regresar, null) || Objects.equals(regresar.length(), 0)? "": Fecha.formatear(Fecha.HORA_CORTA, Fecha.getFechaHora(regresar));
           break;
         case HORA_LARGA:
-          regresar = Fecha.formatear(Fecha.HORA_LARGA, Fecha.getFechaHora(regresar));
+          regresar = Objects.equals(regresar, null) || Objects.equals(regresar.length(), 0)? "": Fecha.formatear(Fecha.HORA_LARGA, Fecha.getFechaHora(regresar));
           break;
         case FECHA_HORA:
-          regresar = Fecha.formatear(Fecha.FECHA_HORA, Fecha.getFechaHora(regresar));
+          regresar = Objects.equals(regresar, null) || Objects.equals(regresar.length(), 0)? "": Fecha.formatear(Fecha.FECHA_HORA, Fecha.getFechaHora(regresar));
           break;
         case FECHA_HORA_CORTA:
-          regresar = Fecha.formatear(Fecha.FECHA_HORA_CORTA, Fecha.getFechaHora(regresar));
+          regresar = Objects.equals(regresar, null) || Objects.equals(regresar.length(), 0)? "": Fecha.formatear(Fecha.FECHA_HORA_CORTA, Fecha.getFechaHora(regresar));
           break;
         case DIA_FECHA_HORA:
-          regresar = Fecha.formatear(Fecha.FECHA_HORA_EXTENDIDA, Fecha.getFechaHora(regresar));
+          regresar = Objects.equals(regresar, null) || Objects.equals(regresar.length(), 0)? "": Fecha.formatear(Fecha.FECHA_HORA_EXTENDIDA, Fecha.getFechaHora(regresar));
           break;
         case DIA_FECHA_HORA_CORTA:
-          regresar = Fecha.formatear(Fecha.DIA_FECHA_HORA_CORTA, Fecha.getFechaHora(regresar));
+          regresar = Objects.equals(regresar, null) || Objects.equals(regresar.length(), 0)? "": Fecha.formatear(Fecha.DIA_FECHA_HORA_CORTA, Fecha.getFechaHora(regresar));
           break;
         case FECHA_HORA_LARGA:
-          regresar = Fecha.formatear(Fecha.FECHA_HORA_LARGA, Fecha.getFechaHora(regresar));
+          regresar = Objects.equals(regresar, null) || Objects.equals(regresar.length(), 0)? "": Fecha.formatear(Fecha.FECHA_HORA_LARGA, Fecha.getFechaHora(regresar));
           break;
         case FECHA_HORA_ANTERIOR:
           Calendar anterior = Fecha.getFechaHora(regresar);
