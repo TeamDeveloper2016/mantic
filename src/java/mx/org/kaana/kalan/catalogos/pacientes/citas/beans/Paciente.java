@@ -1,7 +1,6 @@
 package mx.org.kaana.kalan.catalogos.pacientes.citas.beans;
 
 import java.io.Serializable;
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Objects;
