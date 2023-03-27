@@ -62,6 +62,7 @@ group by
       <select id="clientes">
 select      
   tc_mantic_clientes.id_cliente as id_key,
+  tc_kalan_citas.id_cita,
   tc_mantic_clientes.id_cliente,
   tc_mantic_clientes.clave,
   tc_mantic_clientes.rfc,
@@ -71,7 +72,6 @@ select
   tc_mantic_clientes.limite_credito,
   tc_mantic_clientes.saldo,
   concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, '')) as cliente,
-  tc_kalan_citas.id_cita,
   tc_kalan_citas.consecutivo,
   tc_kalan_citas.inicio,
   tc_kalan_citas.termino,
@@ -113,6 +113,7 @@ order by
       <select id="agenda">
 select      
   tc_kalan_citas.id_cita as id_key,
+  tc_kalan_citas.id_cita,
   tc_mantic_clientes.id_cliente,
   tc_mantic_clientes.clave,
   tc_mantic_clientes.rfc,
@@ -122,7 +123,6 @@ select
   tc_mantic_clientes.limite_credito,
   tc_mantic_clientes.saldo,
   if(tc_mantic_clientes.razon_social is null, ' ', concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, ''))) as cliente,
-  tc_kalan_citas.id_cita,
   tc_kalan_citas.consecutivo,
   tc_kalan_citas.inicio,
   tc_kalan_citas.termino,
@@ -158,15 +158,43 @@ order by
       <select id="personal">
 select
   tc_mantic_personas.id_persona as id_key,
+  tc_mantic_personas.id_persona,
   tr_mantic_empresa_personal.id_empresa_persona,
-  concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as empleado
+  concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as empleado,
+  tt_mantic_persona_celular.celular,
+  tt_mantic_persona_corrreo.correo
 from
   tr_mantic_empresa_personal
+left join (
+  select
+    tr_mantic_persona_tipo_contacto.id_persona,
+    tr_mantic_persona_tipo_contacto.valor as celular
+  from
+    tr_mantic_persona_tipo_contacto
+  where
+    tr_mantic_persona_tipo_contacto.id_tipo_contacto in (6, 7, 8)
+    and tr_mantic_persona_tipo_contacto.id_preferido= 1
+  order by
+    tr_mantic_persona_tipo_contacto.orden      
+) as tt_mantic_persona_celular on tr_mantic_empresa_personal.id_persona= tt_mantic_persona_celular.id_persona
+left join (
+  select
+    tr_mantic_persona_tipo_contacto.id_persona,
+    tr_mantic_persona_tipo_contacto.valor as correo
+  from
+    tr_mantic_persona_tipo_contacto
+  where
+    tr_mantic_persona_tipo_contacto.id_tipo_contacto in (9, 10, 11)
+    and tr_mantic_persona_tipo_contacto.id_preferido= 1
+  order by
+    tr_mantic_persona_tipo_contacto.orden      
+) as tt_mantic_persona_corrreo on tr_mantic_empresa_personal.id_persona= tt_mantic_persona_corrreo.id_persona
 inner join
   tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
 where
   tr_mantic_empresa_personal.id_empresa in ({sucursales})
   and tr_mantic_empresa_personal.id_activo= 1
+  and tc_mantic_personas.id_tipo_persona!= 1
 order by
   tc_mantic_personas.nombres, 
   tc_mantic_personas.paterno,
@@ -175,6 +203,7 @@ order by
   	  <select id="servicios">
 select
   tc_mantic_articulos.id_articulo as id_key,
+  tc_mantic_articulos.id_articulo,
   tc_mantic_articulos_codigos.codigo,
   tc_mantic_articulos.nombre,
   tc_mantic_articulos.precio      
@@ -185,6 +214,52 @@ inner join
 where  
   tc_mantic_articulos.id_articulo_tipo= {idArticuloTipo}
 			</select>		
+      <select id="paciente">
+select
+  tc_mantic_clientes.id_cliente as id_key,
+  tc_mantic_clientes.*,
+  tt_mantic_cliente_celular.celular,
+  tt_mantic_cliente_corrreo.correo,
+  if(tc_kalan_citas.inicio is null, now(), tc_kalan_citas.inicio) as inicio,
+  if(tc_kalan_citas.termino is null, now(), tc_kalan_citas.termino) as termino,
+  if(tc_kalan_citas.recordatorio is null, 24, tc_kalan_citas.recordatorio) as recordatorio,
+  if(tc_kalan_citas.notificacion is null, 2, tc_kalan_citas.notificacion) as notificacion,
+  tc_kalan_citas.id_cita
+from
+  tc_mantic_clientes
+left join
+  tc_kalan_citas on tc_kalan_citas.id_cliente= tc_mantic_clientes.id_cliente and tc_kalan_citas.id_cita= {idCita}
+left join (
+  select
+    tr_mantic_cliente_tipo_contacto.id_cliente,
+    tr_mantic_cliente_tipo_contacto.valor as celular
+  from
+    tr_mantic_cliente_tipo_contacto
+  where
+    tr_mantic_cliente_tipo_contacto.id_cliente= {idCliente}
+    and tr_mantic_cliente_tipo_contacto.id_tipo_contacto in (6, 7, 8)
+    and tr_mantic_cliente_tipo_contacto.id_preferido= 1
+  order by
+    tr_mantic_cliente_tipo_contacto.orden      
+  limit 1  
+) as tt_mantic_cliente_celular on tc_mantic_clientes.id_cliente= tt_mantic_cliente_celular.id_cliente
+left join (
+  select
+    tr_mantic_cliente_tipo_contacto.id_cliente,
+    tr_mantic_cliente_tipo_contacto.valor as correo
+  from
+    tr_mantic_cliente_tipo_contacto
+  where
+    tr_mantic_cliente_tipo_contacto.id_cliente= {idCliente}
+    and tr_mantic_cliente_tipo_contacto.id_tipo_contacto in (9, 10, 11)
+    and tr_mantic_cliente_tipo_contacto.id_preferido= 1
+  order by
+    tr_mantic_cliente_tipo_contacto.orden      
+  limit 1  
+) as tt_mantic_cliente_corrreo on tc_mantic_clientes.id_cliente= tt_mantic_cliente_corrreo.id_cliente
+where
+  tc_mantic_clientes.id_cliente= {idCliente}
+     </select>  
     </unit>    
 	</dml>    
 </process>

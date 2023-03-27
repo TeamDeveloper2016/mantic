@@ -4576,6 +4576,16 @@
           id_empresa in ({sucursales})
 				  and razon_social like '%{razonSocial}%'
 			</select>
+			<select id="total">
+        select      
+      		id_cliente as id_key,
+          (count(*)+ 1) as total
+        from      
+          tc_mantic_clientes
+        where
+          date_format(tc_mantic_clientes.registro, '%Y%m')&gt;= '{mes}'
+          and date_format(tc_mantic_clientes.registro, '%Y%m')&lt;= '{mes}'        
+			</select>
 			<select id="correos">
         select
           tr_mantic_cliente_tipo_contacto.id_cliente_tipo_contacto as id_key,
@@ -4734,6 +4744,15 @@
         order by
           id_tipo_contacto
       </select>      
+			<select id="total">
+        select      
+          id_cliente_tipo_contacto as id_key,
+          (count(*)+ 1) as total
+        from      
+          tr_mantic_cliente_tipo_contacto
+        where
+          id_cliente= {idCliente}
+      </select>
 			<select id="maximo">
         select      
           max(id_cliente_tipo_contacto) maximo

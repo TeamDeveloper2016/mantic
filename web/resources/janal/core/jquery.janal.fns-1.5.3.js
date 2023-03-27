@@ -48,7 +48,7 @@ PrimeFaces.widget.CustomSticky = PrimeFaces.widget.Sticky.extend({
     } // if
   }
 });
-PrimeFaces.locales['es'] = {
+PrimeFaces.locales['mx'] = {
     backLabel: 'Atras',
     nextLabel: 'Siguiente',
     closeText: 'Cerrar',

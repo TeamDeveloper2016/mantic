@@ -38,7 +38,8 @@
     
       Janal.Control.fields = {
         'contenedorGrupos\\:razonSocial': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
-        'contenedorGrupos\\:idServicio':  {validaciones: 'libre', mascara: 'libre'}
+        'contenedorGrupos\\:idServicio':  {validaciones: 'libre', mascara: 'libre'},
+        'contenedorGrupos\\:idPersona':  {validaciones: 'libre', mascara: 'libre'}
       };
     </script>		
     <style type="text/css">
@@ -127,6 +128,8 @@
     </style>
   </ui:define>
   <ui:define name="contenido">
+    <p:remoteCommand name="agregar" action="#{kalanCatalogosPacientesCitasAgenda.doPageAgregar}" process="@this" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
+    <p:remoteCommand name="modificar" action="#{kalanCatalogosPacientesCitasAgenda.doPageModificar}" process="@this" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
       <div class="ui-grid-row janal-grid-row">
         <div id="collapse-find" class="ui-grid-col-12">
@@ -163,17 +166,26 @@
 								</p:selectOneMenu>
               </p:panelGrid>
             </p:tab>
+            <p:tab title="Atiende">
+              <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                <p:outputLabel for="idPersona" value="Doctor:"/>
+								<p:selectOneMenu id="idPersona" value="#{kalanCatalogosPacientesCitasAgenda.attrs.idPersona}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+									<f:selectItems value="#{kalanCatalogosPacientesCitasAgenda.attrs.personal}" var="element" itemValue="#{element.key}" itemLabel="#{element.empleado}"/>
+									<p:column headerText="Nombre">
+										<h:outputText value="#{item.empleado}"/>
+									</p:column>   
+								</p:selectOneMenu>
+              </p:panelGrid>
+            </p:tab>
           </p:tabView>
           <div class="janal-align-right janal-wid-100">
-            <p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute();" process="@this contenedorGrupos:razonSocial contenedorGrupos:idServicio" actionListener="#{kalanCatalogosPacientesCitasAgenda.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
-            <p:commandButton id="buscarIcon" value="Buscar" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.execute();" process="@this contenedorGrupos:razonSocial contenedorGrupos:idServicio" actionListener="#{kalanCatalogosPacientesCitasAgenda.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
+            <p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute();" process="@this contenedorGrupos:razonSocial contenedorGrupos:idServicio contenedorGrupos:idPersona" actionListener="#{kalanCatalogosPacientesCitasAgenda.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
+            <p:commandButton id="buscarIcon" value="Buscar" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.execute();" process="@this contenedorGrupos:razonSocial contenedorGrupos:idServicio contenedorGrupos:idPersona" actionListener="#{kalanCatalogosPacientesCitasAgenda.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
           </div>
           <p:spacer width="5px"/>
           <p:schedule id="tabla" value="#{kalanCatalogosPacientesCitasAgenda.lazyEventModel}" locale="mx" timeFormat="LT" clientTimeZone="true">
-            <p:ajax event="dateSelect" listener="#{kalanCatalogosPacientesCitasAgenda.doDateSelect}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />
-            <p:ajax event="eventSelect" listener="#{kalanCatalogosPacientesCitasAgenda.doEventSelect}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />
-            <p:ajax event="eventMove" listener="#{kalanCatalogosPacientesCitasAgenda.doEventMove}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />
-            <p:ajax event="eventResize" listener="#{kalanCatalogosPacientesCitasAgenda.doEventResize}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />
+            <p:ajax event="dateSelect" listener="#{kalanCatalogosPacientesCitasAgenda.doDateSelect}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear(); agregar()" />
+            <p:ajax event="eventSelect" listener="#{kalanCatalogosPacientesCitasAgenda.doEventSelect}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear(); modificar()" />
           </p:schedule>
         </div>
       </div>

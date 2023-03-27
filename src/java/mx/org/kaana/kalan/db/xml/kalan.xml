@@ -24,6 +24,16 @@
         where      
           consecutivo = '{consecutivo}'
       </select>
+			<select id="siguiente">
+        select
+					max(orden)+ 1 as siguiente
+				from 
+					tc_kalan_citas
+				where
+				  ejercicio= {ejercicio} 
+				  and id_empresa= {idEmpresa}	
+				  and orden{operador} 900000			
+			</select>
     </unit>   
     <unit id="TcKalanCitasBitacoraDto">
       <select id="row">
@@ -59,6 +69,21 @@
           tc_kalan_citas_detalles
         where      
           id_cita = {idCita} and id_articulo = {idArticulo}
+      </select>
+      <select id="detalle">
+        select      
+          tc_kalan_citas_detalles.id_cita_detalle as id_key,
+          tc_kalan_citas_detalles.*
+        from      
+          tc_kalan_citas_detalles
+        where      
+          id_cita = {idCita}
+      </select>
+      <delete id="rows">
+        delete from      
+          tc_kalan_citas_detalles
+        where      
+          id_cita = {idCita}
       </select>
     </unit>       
     <unit id="TcKalanCitasEstatusDto">

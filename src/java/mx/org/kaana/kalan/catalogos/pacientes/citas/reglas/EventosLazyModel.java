@@ -36,9 +36,6 @@ public class EventosLazyModel extends LazyScheduleModel implements Serializable 
   private List<Columna> columns;
   private Map<String, Object> params;
 
-  public EventosLazyModel() {
-  }
-
   public EventosLazyModel(String process, String idXml, Map<String, Object> params, List<Columna> columns) {
     this.process= process;
     this.idXml  = idXml;
@@ -60,6 +57,7 @@ public class EventosLazyModel extends LazyScheduleModel implements Serializable 
           cita= new DefaultScheduleEvent(Objects.equals(cliente.trim().length(), 0)? item.toString("servicios"): cliente, item.toTimestamp("inicio"), item.toTimestamp("termino"), item);
           cita.setStyleClass("janal-cita-".concat(Objects.equals(cliente.trim().length(), 0)? "extras": item.toString("estatus").toLowerCase()));
           cita.setDescription(item.toString("servicios"));
+          cita.setEditable(Boolean.TRUE);
           this.addEvent(cita);
         } // for
       } // if
@@ -83,7 +81,5 @@ public class EventosLazyModel extends LazyScheduleModel implements Serializable 
     Methods.clean(this.params);
     super.finalize(); 
   }
-
-  
   
 }

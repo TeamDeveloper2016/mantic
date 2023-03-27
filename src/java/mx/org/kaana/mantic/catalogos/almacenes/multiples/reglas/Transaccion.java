@@ -127,7 +127,7 @@ public class Transaccion extends ComunInventarios {
 		for (Articulo item: todos) {
       int index= this.toIndexOf(item);
 			if (index< 0) 
-				DaoFactory.getInstance().delete(sesion, item.toTransferenciaDetalle());
+				DaoFactory.getInstance().delete(sesion, item.toTransferenciaMultipleDetalle());
     } // if  
 		for (Articulo articulo: this.articulos) {
 			TcManticTransferenciasMultiplesDetallesDto item= articulo.toTransferenciaMultipleDetalle();

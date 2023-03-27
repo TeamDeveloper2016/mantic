@@ -1,6 +1,7 @@
 package mx.org.kaana.kalan.catalogos.pacientes.citas.backing;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,6 +10,9 @@ import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
+import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
@@ -20,10 +24,9 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
-import org.primefaces.event.ScheduleEntryMoveEvent;
-import org.primefaces.event.ScheduleEntryResizeEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.TabChangeEvent;
+import org.primefaces.model.ScheduleEvent;
 import org.primefaces.model.ScheduleModel;
 
 @Named(value = "kalanCatalogosPacientesCitasAgenda")
@@ -33,7 +36,7 @@ public class Agenda extends IBaseFilter implements Serializable {
   private static final long serialVersionUID = 8793667741599428879L;
   
   private ScheduleModel lazyEventModel;
-  private Boolean criterio;
+  private Integer idCriterio;
 
   public ScheduleModel getLazyEventModel() {
     return lazyEventModel;
@@ -43,9 +46,10 @@ public class Agenda extends IBaseFilter implements Serializable {
   @Override
   protected void init() {
     try {
-      this.criterio= Boolean.TRUE;
+      this.idCriterio= 0;
       this.attrs.put("idClienteProcess", JsfBase.getFlashAttribute("idClienteProcess"));
       this.doLoad();
+      this.toLoadPersonal();
       this.toLoadServicios();
       this.attrs.put("idClienteProcess", null);
     } // try
@@ -84,21 +88,30 @@ public class Agenda extends IBaseFilter implements Serializable {
 		List<UISelectEntity>clientes= null;
 		try {
 			sb      = new StringBuilder("");
-      if(this.criterio) { 
-        // BUSCAR POR CLIENTE
-        cliente = (UISelectEntity)this.attrs.get("cliente");
-        clientes= (List<UISelectEntity>)this.attrs.get("clientes");
-        if(clientes!= null && cliente!= null && clientes.indexOf(cliente)>= 0) 
-          sb.append("concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, '')) regexp '.*").append(clientes.get(clientes.indexOf(cliente)).toString("razonSocial").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*")).append(".*' and ");				
-        else 
-          if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input"))) 
-            sb.append("concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, '')) regexp '.*").append(JsfBase.getParametro("razonSocial_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*")).append(".*' and ");				
-      } // if
-      else {
-        // BUSCAR POR SERVICIO
-        if(!Cadena.isVacio(this.attrs.get("idServicio")) && !Objects.equals(this.attrs.get("idServicio"), "-1"))
-          sb.append("(tc_kalan_citas_detalles.id_articulo= ").append(this.attrs.get("idServicio")).append(") and ");
-      } // else
+      switch(this.idCriterio) {
+        case 0: // BUSCAR POR CLIENTE
+          cliente = (UISelectEntity)this.attrs.get("cliente");
+          clientes= (List<UISelectEntity>)this.attrs.get("clientes");
+          if(clientes!= null && cliente!= null && clientes.indexOf(cliente)>= 0) 
+            sb.append("concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, '')) regexp '.*").append(clientes.get(clientes.indexOf(cliente)).toString("razonSocial").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*")).append(".*' and ");				
+          else 
+            if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input"))) 
+              sb.append("concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, '')) regexp '.*").append(JsfBase.getParametro("razonSocial_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*")).append(".*' and ");				
+          break;
+        case 1: // BUSCAR POR SERVICIO
+          if(!Cadena.isVacio(this.attrs.get("idServicio").toString()) && !Objects.equals(this.attrs.get("idServicio").toString(), "-1"))
+            sb.append("(tc_kalan_citas_detalles.id_articulo= ").append(this.attrs.get("idServicio").toString()).append(") and ");
+          break;
+        case 2: // BUSCAR POR DOCTOR
+          if(!Cadena.isVacio(this.attrs.get("idPersona").toString())) {
+            if(Objects.equals(this.attrs.get("idPersona").toString(), "0"))
+              sb.append("(tc_kalan_citas.id_atendio is null) and ");
+            else 
+              if(!Objects.equals(this.attrs.get("idPersona").toString(), "-1"))
+                sb.append("(tc_kalan_citas.id_atendio= ").append(this.attrs.get("idPersona").toString()).append(") and ");
+          } // if  
+          break;
+      } // switch
 			if(Cadena.isVacio(sb))
 				sb.append(Constantes.SQL_VERDADERO);
 			else
@@ -153,21 +166,83 @@ public class Agenda extends IBaseFilter implements Serializable {
 		return (List<UISelectEntity>)this.attrs.get("clientes");
 	}	
   
+  public String doPageAgregar() {
+    String regresar= null;
+    try {
+      SelectEvent event= (SelectEvent)this.attrs.get("seleccionado");
+      if(event!= null) {
+        Date fecha= (Date)event.getObject();
+			  JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);
+			  JsfBase.setFlashAttribute("idCita", -1L);
+			  JsfBase.setFlashAttribute("idCliente", -1L);
+			  JsfBase.setFlashAttribute("fecha", fecha);
+			  JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Catalogos/Pacientes/Citas/clientes.jsf");
+        regresar= "nuevo".concat(Constantes.REDIRECIONAR);
+      } // if  
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+    return regresar;
+  }
+
+  public String doPageModificar() {
+    String regresar= null;
+    try {
+      ScheduleEvent event= (ScheduleEvent)this.attrs.get("seleccionado");
+      if(event!= null) {
+        Entity cliente= (Entity)event.getData();
+			  JsfBase.setFlashAttribute("accion", EAccion.MODIFICAR);
+			  JsfBase.setFlashAttribute("idCita", cliente.toLong("idCita"));
+			  JsfBase.setFlashAttribute("idCliente", cliente.toLong("idCliente"));
+			  JsfBase.setFlashAttribute("fecha", cliente.toTime("inicio"));
+			  JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Catalogos/Pacientes/Citas/clientes.jsf");
+        regresar= "nuevo".concat(Constantes.REDIRECIONAR);
+      } // if  
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+    return regresar;
+  }
+    
   public void doEventSelect(SelectEvent selectEvent) {
-    // event = (ScheduleEvent) selectEvent.getObject();
+    this.attrs.put("seleccionado", selectEvent);
   }
 
   public void doDateSelect(SelectEvent selectEvent) {
-    // event = new DefaultScheduleEvent("", (Date) selectEvent.getObject(), (Date) selectEvent.getObject());
+    this.attrs.put("seleccionado", selectEvent);
+    // return regresar;
   }
 
-  public void doEventMove(ScheduleEntryMoveEvent event) {
-    // FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Event moved", "Day delta:" + event.getDayDelta() + ", Minute delta:" + event.getMinuteDelta());
-  }
-
-  public void doEventResize(ScheduleEntryResizeEvent event) {
-    // FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Event resized", "Day delta:" + event.getDayDelta() + ", Minute delta:" + event.getMinuteDelta());
-  }
+	private void toLoadPersonal() {
+		List<Columna> columns        = new ArrayList<>();    
+    Map<String, Object> params   = new HashMap<>();
+    List<UISelectEntity> personal= null;
+    try {      
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());			
+      columns.add(new Columna("empleado", EFormatoDinamicos.MAYUSCULAS));
+      personal= (List<UISelectEntity>) UIEntity.seleccione("VistaClientesCitasDto", "personal", params, columns, "empleado");
+			this.attrs.put("personal", personal);
+      if(personal!= null && !personal.isEmpty()) {
+        this.attrs.put("idPersona", personal.get(0));
+        Entity sinDoctor= new Entity(0L);
+        sinDoctor.put("idPersona", new Value("idPersona", 0L, "id_persona"));
+        sinDoctor.put("idEmpresaPersona", new Value("idEmpresaPersona", 0L, "id_empresa_persona"));
+        sinDoctor.put("empleado", new Value("empleado", "SIN DOCTOR"));
+        personal.add(1, new UISelectEntity(sinDoctor));
+      } // if  
+    } // try
+    catch (Exception e) {
+			throw e;
+    } // catch	
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally    
+	}
   
   private void toLoadServicios() {
 		List<Columna> columns     = new ArrayList<>();    
@@ -194,7 +269,17 @@ public class Agenda extends IBaseFilter implements Serializable {
   }
 
 	public void doTabChange(TabChangeEvent event) {
-		this.criterio= Objects.equals(event.getTab().getTitle(), "Cliente");
+    switch(event.getTab().getTitle()) {
+      case "Cliente":
+    		this.idCriterio= 0;
+        break;
+      case "Servicio":
+    		this.idCriterio= 1;
+        break;
+      case "Atiende":
+    		this.idCriterio= 2;
+        break;
+    } // switch
   }  
   
 }
