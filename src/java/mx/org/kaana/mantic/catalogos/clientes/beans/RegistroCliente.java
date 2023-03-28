@@ -339,14 +339,15 @@ public class RegistroCliente implements Serializable {
 	} // doActualizarClienteDomicilio
 	
 	public void toUpdateClientePivote(ClienteDomicilio clienteDomicilio, boolean actualizar) throws Exception {
+    Long idDomicilio= this.getDomicilioPivote()== null? -1L: this.getDomicilioPivote().getIdDomicilio();
 		try {
 			if(this.domicilio.getPrincipal()) {
 				for(ClienteDomicilio record: this.clientesDomicilio)
 					record.setIdPrincipal(0L);
 			} // if
-  		clienteDomicilio.setIdDomicilio(this.getDomicilioPivote().getIdDomicilio());
+  		clienteDomicilio.setIdDomicilio(idDomicilio);
 			clienteDomicilio.setIdPrincipal(this.domicilio.getPrincipal()? 1L: 2L);
-			clienteDomicilio.setDomicilio(new Entity(this.getDomicilioPivote().getIdDomicilio()));
+			clienteDomicilio.setDomicilio(new Entity(idDomicilio));
 			clienteDomicilio.setIdUsuario(JsfBase.getIdUsuario());
 			clienteDomicilio.setIdTipoDomicilio(this.domicilio.getIdTipoDomicilio());
 			if(!actualizar)

@@ -54,7 +54,6 @@
               <p:outputLabel for="rfc" value="RFC:"/>
               <p:outputLabel for="razonSocial" value="Razon social:"/>
               <p:outputLabel for="tipoVenta" value="Tipo de venta:" rendered="#{manticVentasCliente.attrs.admin}"/>
-              <p:spacer rendered="#{!manticVentasCliente.attrs.admin}"/>
               <p:inputText id="clave" styleClass="janal-wid-100-txt" value="#{manticVentasCliente.attrs.registroCliente.clave}"/>                    						
               <p:inputText id="rfc" styleClass="janal-wid-100-txt" value="#{manticVentasCliente.attrs.registroCliente.rfc}">
                 <p:ajax event="blur" listener="#{manticVentasCliente.doLoadRegimenesFiscales}" process="@this" update="idRegimenFiscal" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
@@ -63,7 +62,6 @@
               <p:selectOneMenu id="tipoVenta" value="#{manticVentasCliente.attrs.registroCliente.idTipoVenta}" styleClass="janal-wid-100-txt" rendered="#{manticVentasCliente.attrs.admin}">
                 <f:selectItems value="#{manticVentasCliente.attrs.tiposVentas}"/>
               </p:selectOneMenu>						
-              <p:spacer rendered="#{!manticVentasCliente.attrs.admin}"/>
             </p:panelGrid>			
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100-txt">
               <p:outputLabel for="idRegimenFiscal" value="Régimen fiscal:"/>

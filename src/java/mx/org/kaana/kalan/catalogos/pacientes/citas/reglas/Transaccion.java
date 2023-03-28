@@ -231,6 +231,8 @@ public class Transaccion extends IBaseTnx {
       if(clon!= null && (!Objects.equals(this.paciente.getRazonSocial(), clon.getRazonSocial()) || 
          !Objects.equals(this.paciente.getPaterno(), clon.getPaterno()) || 
          !Objects.equals(this.paciente.getMaterno(), clon.getMaterno()))) {
+        if(Objects.equals(this.paciente.getIdRegimenFiscal(), -1L))
+          this.paciente.setIdRegimenFiscal(null);
         DaoFactory.getInstance().update(sesion, this.paciente);
       } // if  
 
@@ -302,6 +304,8 @@ public class Transaccion extends IBaseTnx {
       if(clon!= null && (!Objects.equals(this.paciente.getRazonSocial(), clon.getRazonSocial()) || 
          !Objects.equals(this.paciente.getPaterno(), clon.getPaterno()) || 
          !Objects.equals(this.paciente.getMaterno(), clon.getMaterno()))) {
+        if(Objects.equals(this.paciente.getIdRegimenFiscal(), -1L))
+          this.paciente.setIdRegimenFiscal(null);
         DaoFactory.getInstance().update(sesion, this.paciente);
       } // if  
 
@@ -429,11 +433,9 @@ public class Transaccion extends IBaseTnx {
  
 	private Siguiente toSiguiente(Session sesion) throws Exception {
 		Siguiente regresar        = null;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("ejercicio", this.getCurrentYear());
-			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			params.put("operador", this.getCurrentSign());
 			Value next= DaoFactory.getInstance().toField(sesion, "TcKalanCitasDto", "siguiente", params, "siguiente");
 			if(next.getData()!= null)

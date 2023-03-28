@@ -7,7 +7,6 @@
         Relación de módulos
  -->
 
-
  <modulos load="true">
 
    <module id="kajool" load="true" mapping="true" backing="false" dto="mx.org.kaana.kajool.db.dto" msg="/mx/org/kaana/kajool/msg">

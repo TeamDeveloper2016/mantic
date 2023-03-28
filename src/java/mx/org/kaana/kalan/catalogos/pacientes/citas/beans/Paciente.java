@@ -53,7 +53,7 @@ public class Paciente extends TcManticClientesDto implements Serializable {
     this.recordatorio = 24L;
     this.notificacion = 2L;
     this.comentarios  = "";
-    this.init(Boolean.TRUE);
+    this.init();
   }
 
   public Long getIdCita() {
@@ -70,7 +70,6 @@ public class Paciente extends TcManticClientesDto implements Serializable {
 
   public void setInicio(Timestamp inicio) {
     this.inicio = inicio;
-    this.init(Objects.equals(this.inicio, null));
   }
 
   public Timestamp getTermino() {
@@ -129,17 +128,15 @@ public class Paciente extends TcManticClientesDto implements Serializable {
     this.comentarios = comentarios;
   }
 
-  private void init(Boolean clean) {
+  private void init() {
     Calendar minutos= Calendar.getInstance();
-    if(clean) {
-      if(minutos.get(Calendar.MINUTE)<= 30)
-        minutos.set(Calendar.MINUTE, 30);
-      else
-        if(minutos.get(Calendar.MINUTE)> 30)
-          minutos.set(Calendar.MINUTE, 60);
-      minutos.set(Calendar.SECOND, 0);
-      this.inicio= new Timestamp(minutos.getTimeInMillis());
-    } // if  
+    if(minutos.get(Calendar.MINUTE)<= 30)
+      minutos.set(Calendar.MINUTE, 30);
+    else
+      if(minutos.get(Calendar.MINUTE)> 30)
+        minutos.set(Calendar.MINUTE, 60);
+    minutos.set(Calendar.SECOND, 0);
+    this.inicio= new Timestamp(minutos.getTimeInMillis());
     minutos.add(Calendar.MINUTE, 30);
     this.termino= new Timestamp(minutos.getTimeInMillis());
   }

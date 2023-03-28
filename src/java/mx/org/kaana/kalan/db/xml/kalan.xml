@@ -31,7 +31,6 @@
 					tc_kalan_citas
 				where
 				  ejercicio= {ejercicio} 
-				  and id_empresa= {idEmpresa}	
 				  and orden{operador} 900000			
 			</select>
     </unit>   
@@ -84,7 +83,7 @@
           tc_kalan_citas_detalles
         where      
           id_cita = {idCita}
-      </select>
+      </delete>
     </unit>       
     <unit id="TcKalanCitasEstatusDto">
       <select id="row">
