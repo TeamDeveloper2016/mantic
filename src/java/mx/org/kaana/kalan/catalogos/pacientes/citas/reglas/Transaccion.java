@@ -19,10 +19,12 @@ import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.libs.wassenger.Citas;
 import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
 import mx.org.kaana.mantic.db.dto.TrManticClienteDomicilioDto;
 import mx.org.kaana.mantic.db.dto.TrManticClienteTipoContactoDto;
 import org.hibernate.Session;
+import org.mozilla.javascript.edu.emory.mathcs.backport.java.util.Arrays;
 
 public class Transaccion extends IBaseTnx {
 
@@ -176,6 +178,18 @@ public class Transaccion extends IBaseTnx {
         );
         this.paciente.setIdCita(cita.getIdCita());
         regresar= DaoFactory.getInstance().insert(sesion, bitacora)> 0L;
+        // NOTIFICAR POR WHASTAPP AL CLIENTE
+        Citas notificar= new Citas(this.paciente.getRazonSocial().concat(" ").concat(this.paciente.getPaterno()), this.paciente.getCelular(), this.paciente.getInicio(), "agendada", Arrays.asList(this.servicios));
+        notificar.doSendCitaCliente(sesion);
+
+        // NOTIFICAR POR WHASTAPP A LA PERSONA QUE LO VA ATENDER
+        if(this.paciente.getIkAtendio()!= null && !Objects.equals(this.paciente.getIkAtendio().getKey(), -1L)) {
+          notificar.setNombre(this.paciente.getIkAtendio().toString("empleado"));
+          if(this.paciente.getIkAtendio().toString("celular")!= null && !Objects.equals(this.paciente.getIkAtendio().toString("celular"), null)) { 
+            notificar.setCelular(this.paciente.getIkAtendio().toString("celular"));
+            notificar.doSendCitaAtiende(sesion, this.paciente.getRazonSocial().concat(" ").concat(this.paciente.getPaterno()));
+          } // if  
+        } // if
       } // if
     } // try
     catch (Exception e) {
@@ -285,6 +299,18 @@ public class Transaccion extends IBaseTnx {
       );
       this.paciente.setIdCita(cita.getIdCita());
       regresar= DaoFactory.getInstance().insert(sesion, bitacora)> 0L;
+      
+      // NOTIFICAR POR WHASTAPP AL CLIENTE
+      Citas notificar= new Citas(this.paciente.getRazonSocial().concat(" ").concat(this.paciente.getPaterno()), this.paciente.getCelular(), this.paciente.getInicio(), "agendo", Arrays.asList(this.servicios));
+      notificar.doSendCitaCliente(sesion);
+      // NOTIFICAR POR WHASTAPP A LA PERSONA QUE LO VA ATENDER
+      if(this.paciente.getIkAtendio()!= null && !Objects.equals(this.paciente.getIkAtendio().getKey(), -1L)) {
+        notificar.setNombre(this.paciente.getIkAtendio().toString("empleado"));
+        if(this.paciente.getIkAtendio().toString("celular")!= null && !Objects.equals(this.paciente.getIkAtendio().toString("celular"), null)) { 
+          notificar.setCelular(this.paciente.getIkAtendio().toString("celular"));
+          notificar.doSendCitaAtiende(sesion, this.paciente.getRazonSocial().concat(" ").concat(this.paciente.getPaterno()));
+        } // if  
+      } // if
     } // try
     catch (Exception e) {
       throw e;
@@ -327,8 +353,21 @@ public class Transaccion extends IBaseTnx {
          !Objects.equals(this.paciente.getTermino(), cita.getTermino()) ||
          !Objects.equals(this.paciente.getRecordatorio(), cita.getRecordatorio()) ||
          !Objects.equals(this.paciente.getNotificacion(), cita.getNotificacion()))) {
-        if(!Objects.equals(this.paciente.getInicio(), cita.getInicio()) || !Objects.equals(this.paciente.getTermino(), cita.getTermino())) 
+        if(!Objects.equals(this.paciente.getInicio(), cita.getInicio()) || !Objects.equals(this.paciente.getTermino(), cita.getTermino())) {
           cita.setIdCitaEstatus(5L);
+
+          // NOTIFICAR POR WHASTAPP AL CLIENTE
+          Citas notificar= new Citas(this.paciente.getRazonSocial().concat(" ").concat(this.paciente.getPaterno()), this.paciente.getCelular(), this.paciente.getInicio(), "reprogramo", Arrays.asList(this.servicios));
+          notificar.doSendCitaCliente(sesion);
+          // NOTIFICAR POR WHASTAPP A LA PERSONA QUE LO VA ATENDER
+          if(this.paciente.getIkAtendio()!= null && !Objects.equals(this.paciente.getIkAtendio().getKey(), -1L)) {
+            notificar.setNombre(this.paciente.getIkAtendio().toString("empleado"));
+            if(this.paciente.getIkAtendio().toString("celular")!= null && !Objects.equals(this.paciente.getIkAtendio().toString("celular"), null)) { 
+              notificar.setCelular(this.paciente.getIkAtendio().toString("celular"));
+              notificar.doSendCitaAtiende(sesion, this.paciente.getRazonSocial().concat(" ").concat(this.paciente.getPaterno()));
+            } // if  
+          } // if
+        } // if  
         cita.setInicio(this.paciente.getInicio());
         cita.setTermino(this.paciente.getTermino());
         cita.setRecordatorio(this.paciente.getRecordatorio());
@@ -419,6 +458,18 @@ public class Transaccion extends IBaseTnx {
           this.paciente.getIdCita() // Long idCita
         );
         DaoFactory.getInstance().insert(sesion, bitacora);
+
+        // NOTIFICAR POR WHASTAPP AL CLIENTE
+        Citas notificar= new Citas(this.paciente.getRazonSocial().concat(" ").concat(this.paciente.getPaterno()), this.paciente.getCelular(), this.paciente.getInicio(), "eliminado", Arrays.asList(this.servicios));
+        notificar.doSendCitaCliente(sesion);
+        // NOTIFICAR POR WHASTAPP A LA PERSONA QUE LO VA ATENDER
+        if(this.paciente.getIkAtendio()!= null && !Objects.equals(this.paciente.getIkAtendio().getKey(), -1L)) {
+          notificar.setNombre(this.paciente.getIkAtendio().toString("empleado"));
+          if(this.paciente.getIkAtendio().toString("celular")!= null && !Objects.equals(this.paciente.getIkAtendio().toString("celular"), null)) { 
+            notificar.setCelular(this.paciente.getIkAtendio().toString("celular"));
+            notificar.doSendCitaAtiende(sesion, this.paciente.getRazonSocial().concat(" ").concat(this.paciente.getPaterno()));
+          } // if  
+        } // if
       } // if
       regresar= Boolean.TRUE;
     } // try

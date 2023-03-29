@@ -154,6 +154,16 @@ public class Nuevo extends IBaseFilter implements Serializable {
     try {
       LOG.info(this.seleccionados);
       if(this.seleccionados!= null && this.seleccionados.length>0) {
+        if(!Objects.equals(this.paciente.getIkAtendio(), null) && !Objects.equals(this.paciente.getIkAtendio().getKey(), -1L)) {
+          List<UISelectEntity> empleados= (List<UISelectEntity>)this.attrs.get("personal");
+          if(empleados!= null && !empleados.isEmpty()) {
+            int index= empleados.indexOf(this.paciente.getIkAtendio());
+            if(index>= 0)
+              this.paciente.setIkAtendio(empleados.get(index));
+            else
+              this.paciente.setIkAtendio(new UISelectEntity(-1L));
+          } // if
+        } // if
         transaccion= new Transaccion(this.paciente, this.seleccionados);
         if (transaccion.ejecutar(this.accion)) {
           JsfBase.setFlashAttribute("idCita", this.paciente.getIdCita());

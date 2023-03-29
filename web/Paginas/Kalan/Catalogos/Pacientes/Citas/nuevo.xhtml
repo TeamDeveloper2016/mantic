@@ -131,11 +131,11 @@
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
 			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" update="@form" action="#{kalanCatalogosPacientesCitasNuevo.doAceptar}" onstart="return janal.partial('general');" oncomplete="janal.desbloquear(); janal.refresh();"/>
-			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-cancel" process="@this" action="#{kalanCatalogosPacientesCitasNuevo.doCancelar}" immediate="true"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-remove" process="@this" action="#{kalanCatalogosPacientesCitasNuevo.doCancelar}" immediate="true"/>
 		</div>	
 		<div class="xs-pantalla">
 			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" update="@form" action="#{kalanCatalogosPacientesCitasNuevo.doAceptar}" onstart="return janal.partial('general');" oncomplete="janal.desbloquear(); janal.refresh();"/>
-			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-cancel" process="@this" action="#{kalanCatalogosPacientesCitasNuevo.doCancelar}" immediate="true"/>
+			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-remove" process="@this" action="#{kalanCatalogosPacientesCitasNuevo.doCancelar}" immediate="true"/>
 		</div>	
 	</ui:define>	
   <ui:param name="componenteBloqueo" value="tabla" />

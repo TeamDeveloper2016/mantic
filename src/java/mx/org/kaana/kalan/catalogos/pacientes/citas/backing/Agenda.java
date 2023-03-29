@@ -3,6 +3,7 @@ package mx.org.kaana.kalan.catalogos.pacientes.citas.backing;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,10 +16,12 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kalan.catalogos.pacientes.citas.reglas.EventosLazyModel;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIEntity;
@@ -171,13 +174,25 @@ public class Agenda extends IBaseFilter implements Serializable {
     try {
       SelectEvent event= (SelectEvent)this.attrs.get("seleccionado");
       if(event!= null) {
-        Date fecha= (Date)event.getObject();
-			  JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);
-			  JsfBase.setFlashAttribute("idCita", -1L);
-			  JsfBase.setFlashAttribute("idCliente", -1L);
-			  JsfBase.setFlashAttribute("fecha", fecha);
-			  JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Catalogos/Pacientes/Citas/clientes.jsf");
-        regresar= "nuevo".concat(Constantes.REDIRECIONAR);
+        Date fecha  = (Date)event.getObject();
+        Calendar dia= Calendar.getInstance();
+        dia.add(Calendar.DATE, -1);
+        Date actual = new Date(dia.getTimeInMillis());
+        dia.setTimeInMillis(fecha.getTime());
+        dia.add(Calendar.DATE, 1);
+        fecha= new Date(dia.getTimeInMillis());
+        if(fecha.before(actual)) 
+          JsfBase.addMessage("Fecha", "No se puede agendar sobre fechas pasadas, ".concat("fecha seleccionada [").concat(
+            Fecha.formatear(Fecha.FECHA_NOMBRE_DIA, actual)
+          ).concat("]"), ETipoMensaje.ALERTA);
+        else {
+          JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);
+          JsfBase.setFlashAttribute("idCita", -1L);
+          JsfBase.setFlashAttribute("idCliente", -1L);
+          JsfBase.setFlashAttribute("fecha", fecha);
+          JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Catalogos/Pacientes/Citas/clientes.jsf");
+          regresar= "nuevo".concat(Constantes.REDIRECIONAR);
+        } // if
       } // if  
 		} // try
 		catch (Exception e) {
@@ -214,7 +229,6 @@ public class Agenda extends IBaseFilter implements Serializable {
 
   public void doDateSelect(SelectEvent selectEvent) {
     this.attrs.put("seleccionado", selectEvent);
-    // return regresar;
   }
 
 	private void toLoadPersonal() {
