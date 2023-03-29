@@ -2,6 +2,8 @@ package mx.org.kaana.kalan.catalogos.pacientes.citas.backing;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -107,13 +109,15 @@ public class Citas extends IBaseFilter implements Serializable {
 		try {
 			eaccion= EAccion.valueOf(accion.toUpperCase());
 			JsfBase.setFlashAttribute("accion", eaccion);		
+			JsfBase.setFlashAttribute("fecha", new Date(Calendar.getInstance().getTimeInMillis()));		
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Catalogos/Pacientes/Citas/citas.jsf");		
 			JsfBase.setFlashAttribute("idCliente", (eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)) ? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch
-		return "accion".concat(Constantes.REDIRECIONAR);
+		return "nuevo".concat(Constantes.REDIRECIONAR);
   } // doAccion
 
   public void doEliminar() {

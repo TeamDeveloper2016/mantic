@@ -48,9 +48,9 @@ public final class Citas implements Serializable {
   private static final String CITA_MESSAGE_KALAN = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te notificamos que se ha *{estatus}* la cita para el día *{fecha}* hrs. para realizar los siguientes servicios:\\n{servicios}\\nPara cualquier cambio en su cita, por favor no dude en contactarnos al teléfono *{notifica}*\\nGracias por preferirnos *_{empresa}_*.\\n\\nchatbot *IMOX* _Soluciones web_ (4492090586)\"";
   private static final String CITA_MESSAGE_TSAAK = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te notificamos que se ha *{estatus}* la cita para el día *{fecha}* hrs. para realizar los siguientes servicios:\\n{servicios}\\nPara cualquier cambio en su cita, por favor no dude en contactarnos al teléfeno *{notifica}*\\nGracias por preferirnos *_{empresa}_*.\\n\\nchatbot *IMOX* _Soluciones web_ (4492090586)\"";
   
-  private static final String ATIENDE_MESSAGE_MANTIC= "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te notificamos que *{cliente}* ha *{estatus}* una cita para que lo atiendas el día *{fecha}* hrs. para realizarle los siguientes servicios:\\n{servicios}\\nEn caso de no poder atender al cliente, favor de notificar de inmediato al teléfono *{notifica}*\\nAtentamente *_{empresa}_*.\\n\\nchatbot *IMOX* _Soluciones web_ (4492090586)\"";
-  private static final String ATIENDE_MESSAGE_KALAN = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te notificamos que *{cliente}* ha *{estatus}* una cita para que lo atiendas el día *{fecha}* hrs. para realizarle los siguientes servicios:\\n{servicios}\\nEn caso de no poder atender al cliente, favor de notificar de inmediato al teléfono *{notifica}*\\nAtentamente *_{empresa}_*.\\n\\nchatbot *IMOX* _Soluciones web_ (4492090586)\"";
-  private static final String ATIENDE_MESSAGE_TSAAK = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te notificamos que *{cliente}* ha *{estatus}* una cita para que lo atiendas el día *{fecha}* hrs. para realizarle los siguientes servicios:\\n{servicios}\\nEn caso de no poder atender al cliente, favor de notificar de inmediato al teléfono *{notifica}*\\nAtentamente *_{empresa}_*.\\n\\nchatbot *IMOX* _Soluciones web_ (4492090586)\"";
+  private static final String ATIENDE_MESSAGE_MANTIC= "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te notificamos que *{cliente}* ha *{estatus}* una cita para que lo atiendas el día *{fecha}* hrs. para realizarle los siguientes servicios:\\n{servicios}\\nEn caso de no poder atender al cliente en el horario indicado, favor de notificar de inmediato al teléfono *{notifica}*\\nAtentamente *_{empresa}_*.\\n\\nchatbot *IMOX* _Soluciones web_ (4492090586)\"";
+  private static final String ATIENDE_MESSAGE_KALAN = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te notificamos que *{cliente}* ha *{estatus}* una cita para que lo atiendas el día *{fecha}* hrs. para realizarle los siguientes servicios:\\n{servicios}\\nEn caso de no poder atender al cliente en el horario indicado, favor de notificar de inmediato al teléfono *{notifica}*\\nAtentamente *_{empresa}_*.\\n\\nchatbot *IMOX* _Soluciones web_ (4492090586)\"";
+  private static final String ATIENDE_MESSAGE_TSAAK = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te notificamos que *{cliente}* ha *{estatus}* una cita para que lo atiendas el día *{fecha}* hrs. para realizarle los siguientes servicios:\\n{servicios}\\nEn caso de no poder atender al cliente en el horario indicado, favor de notificar de inmediato al teléfono *{notifica}*\\nAtentamente *_{empresa}_*.\\n\\nchatbot *IMOX* _Soluciones web_ (4492090586)\"";
   
   private static final String AGENDA_MESSAGE_MANTIC= "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te enviamos las citas por atender el día de hoy *{fecha}*\\n\\n{clientes}Atentamente *_{empresa}_*.\\n\\nchatbot *IMOX* _Soluciones web_ (4492090586)\"";
   private static final String AGENDA_MESSAGE_KALAN = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te enviamos las citas por atender el día de hoy *{fecha}*\\n\\n{clientes}Atentamente *_{empresa}_*.\\n\\nchatbot *IMOX* _Soluciones web_ (4492090586)\"";
@@ -79,11 +79,12 @@ public final class Citas implements Serializable {
   }
   
   public Citas(String nombre, String celular, Timestamp fecha, String estatus, List<Entity> servicios) {
-    this.nombre = Cadena.nombrePersona(nombre);
-    this.celular= this.clean(celular);
-    this.fecha  = fecha;
-    this.estatus= estatus;
-    this.token  = System.getenv(IMOX_TOKEN);
+    this.nombre   = Cadena.nombrePersona(nombre);
+    this.celular  = this.clean(celular);
+    this.fecha    = fecha;
+    this.estatus  = estatus;
+    this.servicios= servicios;
+    this.token    = System.getenv(IMOX_TOKEN);
   }
 
   public String getNombre() {

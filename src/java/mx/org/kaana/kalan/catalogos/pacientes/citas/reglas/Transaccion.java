@@ -1,5 +1,6 @@
 package mx.org.kaana.kalan.catalogos.pacientes.citas.reglas;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +46,7 @@ public class Transaccion extends IBaseTnx {
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
 		boolean regresar= Boolean.FALSE;
 		try {
-			this.messageError= "Ocurrio un error al ".concat(accion.name().toLowerCase()).concat(" un cliente");
+			this.messageError= "Ocurrio un error al ".concat(accion.name().toLowerCase()).concat(" una cita para el cliente");
 			switch(accion){
 				case AGREGAR:
           if(Objects.equals(this.paciente.getIdCliente(), null) || Objects.equals(this.paciente.getIdCliente(), -1L))
@@ -58,6 +59,12 @@ public class Transaccion extends IBaseTnx {
 					break;				
 				case ELIMINAR:
           regresar= this.toEliminar(sesion);
+					break;
+				case DEPURAR:
+          regresar= this.toCancelar(sesion);
+					break;
+				case RESTAURAR:
+          regresar= this.toRecuperar(sesion);
 					break;
 			} // switch
 			if(!regresar)
@@ -179,7 +186,7 @@ public class Transaccion extends IBaseTnx {
         this.paciente.setIdCita(cita.getIdCita());
         regresar= DaoFactory.getInstance().insert(sesion, bitacora)> 0L;
         // NOTIFICAR POR WHASTAPP AL CLIENTE
-        Citas notificar= new Citas(this.paciente.getRazonSocial().concat(" ").concat(this.paciente.getPaterno()), this.paciente.getCelular(), this.paciente.getInicio(), "agendada", Arrays.asList(this.servicios));
+        Citas notificar= new Citas(this.paciente.getRazonSocial().concat(" ").concat(this.paciente.getPaterno()), this.paciente.getCelular(), this.paciente.getInicio(), "agendada", new ArrayList<>(Arrays.asList(this.servicios)));
         notificar.doSendCitaCliente(sesion);
 
         // NOTIFICAR POR WHASTAPP A LA PERSONA QUE LO VA ATENDER
@@ -301,7 +308,7 @@ public class Transaccion extends IBaseTnx {
       regresar= DaoFactory.getInstance().insert(sesion, bitacora)> 0L;
       
       // NOTIFICAR POR WHASTAPP AL CLIENTE
-      Citas notificar= new Citas(this.paciente.getRazonSocial().concat(" ").concat(this.paciente.getPaterno()), this.paciente.getCelular(), this.paciente.getInicio(), "agendo", Arrays.asList(this.servicios));
+      Citas notificar= new Citas(this.paciente.getRazonSocial().concat(" ").concat(this.paciente.getPaterno()), this.paciente.getCelular(), this.paciente.getInicio(), "agendado", new ArrayList<>(Arrays.asList(this.servicios)));
       notificar.doSendCitaCliente(sesion);
       // NOTIFICAR POR WHASTAPP A LA PERSONA QUE LO VA ATENDER
       if(this.paciente.getIkAtendio()!= null && !Objects.equals(this.paciente.getIkAtendio().getKey(), -1L)) {
@@ -357,7 +364,7 @@ public class Transaccion extends IBaseTnx {
           cita.setIdCitaEstatus(5L);
 
           // NOTIFICAR POR WHASTAPP AL CLIENTE
-          Citas notificar= new Citas(this.paciente.getRazonSocial().concat(" ").concat(this.paciente.getPaterno()), this.paciente.getCelular(), this.paciente.getInicio(), "reprogramo", Arrays.asList(this.servicios));
+          Citas notificar= new Citas(this.paciente.getRazonSocial().concat(" ").concat(this.paciente.getPaterno()), this.paciente.getCelular(), this.paciente.getInicio(), "reprogramo", new ArrayList<>(Arrays.asList(this.servicios)));
           notificar.doSendCitaCliente(sesion);
           // NOTIFICAR POR WHASTAPP A LA PERSONA QUE LO VA ATENDER
           if(this.paciente.getIkAtendio()!= null && !Objects.equals(this.paciente.getIkAtendio().getKey(), -1L)) {
@@ -441,7 +448,19 @@ public class Transaccion extends IBaseTnx {
     return regresar;
   }  
   
+  private Boolean toCancelar(Session sesion) throws Exception {
+    return this.toEliminar(sesion, "cancelada");
+  }
+  
   private Boolean toEliminar(Session sesion) throws Exception {
+    return this.toEliminar(sesion, "eliminada");
+  }
+  
+  private Boolean toRecuperar(Session sesion) throws Exception {
+    return this.toEliminar(sesion, "reprogramada");
+  }
+  
+  private Boolean toEliminar(Session sesion, String estatus) throws Exception {
     Boolean regresar          = Boolean.FALSE;
     Map<String, Object> params= new HashMap<>();
     try {      
@@ -460,7 +479,7 @@ public class Transaccion extends IBaseTnx {
         DaoFactory.getInstance().insert(sesion, bitacora);
 
         // NOTIFICAR POR WHASTAPP AL CLIENTE
-        Citas notificar= new Citas(this.paciente.getRazonSocial().concat(" ").concat(this.paciente.getPaterno()), this.paciente.getCelular(), this.paciente.getInicio(), "eliminado", Arrays.asList(this.servicios));
+        Citas notificar= new Citas(this.paciente.getRazonSocial().concat(" ").concat(this.paciente.getPaterno()), this.paciente.getCelular(), this.paciente.getInicio(), estatus, new ArrayList<>(Arrays.asList(this.servicios)));
         notificar.doSendCitaCliente(sesion);
         // NOTIFICAR POR WHASTAPP A LA PERSONA QUE LO VA ATENDER
         if(this.paciente.getIkAtendio()!= null && !Objects.equals(this.paciente.getIkAtendio().getKey(), -1L)) {

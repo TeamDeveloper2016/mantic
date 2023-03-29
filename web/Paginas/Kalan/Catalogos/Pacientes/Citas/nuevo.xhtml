@@ -131,11 +131,17 @@
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
 			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" update="@form" action="#{kalanCatalogosPacientesCitasNuevo.doAceptar}" onstart="return janal.partial('general');" oncomplete="janal.desbloquear(); janal.refresh();"/>
-			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-remove" process="@this" action="#{kalanCatalogosPacientesCitasNuevo.doCancelar}" immediate="true"/>
+      <p:commandButton id="depurar" value="Cancelar" icon="fa fa-remove" accesskey="a" process="@form" update="@form" action="#{kalanCatalogosPacientesCitasNuevo.doDepurar}" onstart="return janal.partial('general');" oncomplete="janal.desbloquear(); janal.refresh();" rendered="#{kalanCatalogosPacientesCitasNuevo.cancelar}"/>
+			<p:commandButton id="recuperar" value="Recuperar" icon="fa fa-recycle" accesskey="a" process="@form" update="@form" action="#{kalanCatalogosPacientesCitasNuevo.doRecuperar}" onstart="return janal.partial('general');" oncomplete="janal.desbloquear(); janal.refresh();" rendered="#{kalanCatalogosPacientesCitasNuevo.recuperar}"/>
+			<p:commandButton id="eliminar" value="Eliminar" icon="fa fa-trash" accesskey="a" process="@form" update="@form" action="#{kalanCatalogosPacientesCitasNuevo.doEliminar}" onstart="return janal.partial('general');" oncomplete="janal.desbloquear(); janal.refresh();" rendered="#{kalanCatalogosPacientesCitasNuevo.eliminar}"/>
+			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-undo" process="@this" action="#{kalanCatalogosPacientesCitasNuevo.doCancelar}" immediate="true"/>
 		</div>	
 		<div class="xs-pantalla">
 			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" update="@form" action="#{kalanCatalogosPacientesCitasNuevo.doAceptar}" onstart="return janal.partial('general');" oncomplete="janal.desbloquear(); janal.refresh();"/>
-			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-remove" process="@this" action="#{kalanCatalogosPacientesCitasNuevo.doCancelar}" immediate="true"/>
+			<p:commandButton id="depurarIcon" title="Cancelar" icon="fa fa-remove" process="@form" update="@form" action="#{kalanCatalogosPacientesCitasNuevo.doDepurar}" onstart="return janal.partial('general');" oncomplete="janal.desbloquear(); janal.refresh();" rendered="#{kalanCatalogosPacientesCitasNuevo.cancelar}"/>
+			<p:commandButton id="recuperarIcon" title="Recuperar" icon="fa fa-recycle" process="@form" update="@form" action="#{kalanCatalogosPacientesCitasNuevo.doRecuperar}" onstart="return janal.partial('general');" oncomplete="janal.desbloquear(); janal.refresh();" rendered="#{kalanCatalogosPacientesCitasNuevo.recuperar}"/>
+			<p:commandButton id="elminarIcon" title="Eliminar" icon="fa fa-trash" process="@form" update="@form" action="#{kalanCatalogosPacientesCitasNuevo.doEliminar}" onstart="return janal.partial('general');" oncomplete="janal.desbloquear(); janal.refresh();" rendered="#{kalanCatalogosPacientesCitasNuevo.eliminar}"/>
+			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-undo" process="@this" action="#{kalanCatalogosPacientesCitasNuevo.doCancelar}" immediate="true"/>
 		</div>	
 	</ui:define>	
   <ui:param name="componenteBloqueo" value="tabla" />

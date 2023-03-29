@@ -1,6 +1,7 @@
 package mx.org.kaana.kalan.catalogos.pacientes.citas.backing;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -189,7 +190,7 @@ public class Agenda extends IBaseFilter implements Serializable {
           JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);
           JsfBase.setFlashAttribute("idCita", -1L);
           JsfBase.setFlashAttribute("idCliente", -1L);
-          JsfBase.setFlashAttribute("fecha", fecha);
+          JsfBase.setFlashAttribute("fecha", new Timestamp(fecha.getTime()));
           JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Catalogos/Pacientes/Citas/clientes.jsf");
           regresar= "nuevo".concat(Constantes.REDIRECIONAR);
         } // if
@@ -211,7 +212,7 @@ public class Agenda extends IBaseFilter implements Serializable {
 			  JsfBase.setFlashAttribute("accion", EAccion.MODIFICAR);
 			  JsfBase.setFlashAttribute("idCita", cliente.toLong("idCita"));
 			  JsfBase.setFlashAttribute("idCliente", cliente.toLong("idCliente"));
-			  JsfBase.setFlashAttribute("fecha", cliente.toTime("inicio"));
+			  JsfBase.setFlashAttribute("fecha", cliente.toTimestamp("inicio"));
 			  JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Catalogos/Pacientes/Citas/clientes.jsf");
         regresar= "nuevo".concat(Constantes.REDIRECIONAR);
       } // if  
@@ -224,7 +225,7 @@ public class Agenda extends IBaseFilter implements Serializable {
   }
     
   public void doEventSelect(SelectEvent selectEvent) {
-    this.attrs.put("seleccionado", selectEvent);
+    this.attrs.put("seleccionado", selectEvent.getObject());
   }
 
   public void doDateSelect(SelectEvent selectEvent) {

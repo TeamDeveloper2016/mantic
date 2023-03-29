@@ -176,7 +176,7 @@ $.mask.masks = $.extend($.mask.masks, {
   'cuenta': {mask: 'e', type: 'repeat', maxLength: -1},
   'numeros-letras': {mask: 'o', type: 'repeat', maxLength: -1},
   'nombre-dto': {mask: 'g', type: 'repeat', maxLength: 30},
-  'telefono': {mask: '(999)999-99-99', fixedChars: '[()-]'},
+  'telefono': {mask: '(999)-999-99-99', fixedChars: '[()-]'},
   'ip': {mask: '999.999.999.999', type: 'reverse', fixedChars: '[.]'},
   'version': {mask: '9.9.9.9', type: 'reverse', fixedChars: '[.]'},
 	'correo':{mask:'q', type:'repeat'},

@@ -63,7 +63,7 @@
       $control.console('Janal.Control.Function.init');
       if(typeof(root)!== 'undefined')
         this.root   = root;
-      $control.load(0, ['/resources/janal/core/jquery.shortcut.core.0.4.3.js','/resources/janal/core/jquery.janal.sticky.min-1.0.0.js','/resources/janal/js/jquery.janal.menu-2.0.1.js','/resources/janal/core/jquery.longclick-1.0.0.js', '/resources/janal/core/jquery.validate.min-1.15.0.js', '/resources/janal/core/jquery.meio.mask.min-1.1.15.js', '/resources/janal/core/jquery.janal.fns-1.5.3.js']);
+      $control.load(0, ['/resources/janal/core/jquery.shortcut.core.0.4.3.js','/resources/janal/core/jquery.janal.sticky.min-1.0.0.js','/resources/janal/js/jquery.janal.menu-2.0.1.js','/resources/janal/core/jquery.longclick-1.0.0.js', '/resources/janal/core/jquery.validate.min-1.15.0.js', '/resources/janal/core/jquery.meio.mask.min-1.1.15.js', '/resources/janal/core/jquery.janal.fns-1.5.5.js']);
       $control.console('Janal.Control.Function.init resource loaded');
     },
     dateFormat: function(format) {
@@ -125,8 +125,8 @@
     remove: function(value, characters) {
       return value.replace(new RegExp(characters.join('|'), 'g'), '');
     }, // remove
-    cleanToken: function(value) {
-      var separators= ['\\\ ', '\\\,', '\\\$', '\\\(', '\\\)'];
+    cleanToken: function(value, minus) {
+      var separators= typeof(minus)!== 'undefined' && minus? ['\\\ ', '\\\,', '\\\$', '\\\(', '\\\)', '\\\-']: ['\\\ ', '\\\,', '\\\$', '\\\(', '\\\)'];
       return this.remove(value, separators);
     }, // cleanToken
     isNonnegativeInteger: function(s) {
@@ -508,7 +508,7 @@
     names         : {
       validations : ['libre', 'max-caracteres', 'marca', 'alfanumerico', 'min-caracteres', 'igual-caracteres', 'mayor', 'mayor-igual', 'max-valor', 'menor', 'menor-igual', 'min-valor', 'requerido', 'entero', 'entero-signo', 'valor-simple', 'telefono', 'contiene-a', 'igual-a', 'menor-a', 'mayor-a', 'asterisco', 'moneda', 'moneda-decimal', 'sat', 'flotante', 'flotante-signo', 'mayusculas', 'minusculas', 'vocales', 'rango', 'secuencia-palabra', 'longitud', 'letras', 'texto', 'curp', 'rfc', 'moral', 'texto-especial', 'boleano', 'fecha', 'fecha-menor', 'fecha-mayor', 'registro', 'registro-mayor', 'registro-menor', 'hora', 'hora-completa', 'hora-mayor', 'hora-menor', 'comodin', 'no-permitir', 'ipv4', 'ipv6', 'no-aplica', 'esta-en', 'correo', 'acceso', 'porcentaje', 'depende'],
       masks       : ['libre', 'fecha', 'fecha-hora', 'registro', 'hora', 'hora-completa', 'tarjeta-credito', 'decimal', 'decimal-signo', 'letras', 'vocales', 'texto', 'numero', 'un-digito', 'dos-digitos', 'tres-digitos', 'tres-digitos-default', 'cuatro-digitos', 'cinco-digitos', 'siete-digitos', 'ocho-digitos', 'nueve-digitos', 'diez-digitos', 'entero', 'entero-blanco', 'entero-signo', 'entero-sin-signo', 'sat', 'flotante', 'flotante-signo', 'rfc', 'fiscal', 'moral', 'curp', 'moneda', 'moneda-decimal', 'mayusculas', 'minusculas', 'cuenta', 'numeros-letras', 'nombre-dto', 'telefono', 'ip', 'version', 'no-aplica','correo', 'valor-simple', 'acceso', 'marca', 'producto', 'alfanumerico', 'codigo', 'codigo-diagonal'],
-      watermarks  : ['entero', 'entero-signo', 'valor-simple', 'decimal', 'decimal-signo', 'sat', 'flotante', 'flotante-signo', 'moneda', 'moneda-decimal', 'mayor', 'mayor-igual', 'mayor-a', 'max-valor', 'menor', 'menor-a', 'menor-igual', 'min-valor'],
+      watermarks  : ['entero', 'entero-signo', 'valor-simple', 'decimal', 'decimal-signo', 'sat', 'flotante', 'flotante-signo', 'moneda', 'moneda-decimal', 'mayor', 'mayor-igual', 'mayor-a', 'max-valor', 'menor', 'menor-a', 'menor-igual', 'min-valor', 'telefono'],
       formats     : ['libre', 'cambiar-mayusculas', 'especial-mayusculas', 'cambiar-minusculas', 'rellenar-caracter', 'precio', 'cantidad', 'consecutivo', 'descuentos', 'sat'],
       customs     : []
     },
@@ -854,7 +854,7 @@
         var $components= $janal.inputs(value.multiple, id);
         $.each($components, function() {
           if($janal.isWaterMark($janal.vector(value.validaciones, ['\\\|'])))
-            $(this).val($janal.cleanToken($(this).val()));
+            $(this).val($janal.cleanToken($(this).val(), value.mascara=== 'telefono'));
         });
       }); // each
     }, // cleanMarks
@@ -1310,7 +1310,7 @@
 			alert(msg);
     }, // alert
     version: function() {
-      return '0.3.6.5';
+      return '0.3.6.8';
     }, // version
     align: function(pixels) {
       try {

@@ -21,6 +21,8 @@ public class Paciente extends TcManticClientesDto implements Serializable {
   private static final long serialVersionUID = 933154433403709712L;
 
   private Long idCita;
+  private Long idCitaEstatus;
+  private Long idAtendio;
   private Timestamp inicio;
   private Timestamp termino;
   private String celular;
@@ -35,8 +37,8 @@ public class Paciente extends TcManticClientesDto implements Serializable {
     this(-1L);
   }
 
-  public Paciente(Date fecha) {
-    this(-1L, new Timestamp(fecha.getTime()), new Timestamp(fecha.getTime()), "", "", -1L);
+  public Paciente(Timestamp fecha) {
+    this(-1L, fecha, fecha, "", "", -1L);
   }
 
   public Paciente(Long key) {
@@ -50,9 +52,12 @@ public class Paciente extends TcManticClientesDto implements Serializable {
     this.celular = celular;
     this.correo  = correo;
     this.idCita  = idCita;
+    this.idCitaEstatus= -1L;
+    this.idAtendio    = -1L;
     this.recordatorio = 24L;
     this.notificacion = 2L;
     this.comentarios  = "";
+    this.ikAtendio    = new UISelectEntity(this.idAtendio);
     this.init();
   }
 
@@ -62,6 +67,22 @@ public class Paciente extends TcManticClientesDto implements Serializable {
 
   public void setIdCita(Long idCita) {
     this.idCita = idCita;
+  }
+
+  public Long getIdCitaEstatus() {
+    return idCitaEstatus;
+  }
+
+  public void setIdCitaEstatus(Long idCitaEstatus) {
+    this.idCitaEstatus = idCitaEstatus;
+  }
+
+  public Long getIdAtendio() {
+    return idAtendio;
+  }
+
+  public void setIdAtendio(Long idAtendio) {
+    this.idAtendio = idAtendio;
   }
   
   public Timestamp getInicio() {
@@ -102,6 +123,8 @@ public class Paciente extends TcManticClientesDto implements Serializable {
 
   public void setIkAtendio(UISelectEntity ikAtendio) {
     this.ikAtendio = ikAtendio;
+    if(ikAtendio!= null && !ikAtendio.isEmpty())
+      this.idAtendio= ikAtendio.getKey();
   }
 
   public Long getRecordatorio() {
@@ -128,7 +151,7 @@ public class Paciente extends TcManticClientesDto implements Serializable {
     this.comentarios = comentarios;
   }
 
-  private void init() {
+  public void init() {
     Calendar minutos= Calendar.getInstance();
     if(minutos.get(Calendar.MINUTE)<= 30)
       minutos.set(Calendar.MINUTE, 30);
@@ -143,6 +166,7 @@ public class Paciente extends TcManticClientesDto implements Serializable {
 
   public Paciente clon() {
     Paciente regresar= new Paciente(this.getKey(), getInicio(), getTermino(), getCelular(), getCorreo(), getIdCita());
+    regresar.setIdCitaEstatus(this.idCitaEstatus);
     regresar.setIkAtendio(new UISelectEntity(this.getIkAtendio().getKey()));
     return regresar;
   }  

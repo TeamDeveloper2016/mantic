@@ -2,7 +2,6 @@ package mx.org.kaana.kalan.catalogos.pacientes.citas.backing;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -64,6 +63,18 @@ public class Nuevo extends IBaseFilter implements Serializable {
 		this.seleccionados = seleccionados;
 	}	
   
+  public Boolean getCancelar() {
+    return  Objects.equals(this.paciente.getIdCitaEstatus(), 1L) || Objects.equals(this.paciente.getIdCitaEstatus(), 4L) || Objects.equals(this.paciente.getIdCitaEstatus(), 5L) || Objects.equals(this.paciente.getIdCitaEstatus(), 7L); 
+  }
+  
+  public Boolean getRecuperar() {
+    return Objects.equals(this.paciente.getIdCitaEstatus(), 3L); // CANCELADA 
+  }
+
+  public Boolean getEliminar() {  // PROGRAMADA                                            SUSPENDIDA                                           REPROGRAMADA                                            RESERVADA
+    return  Objects.equals(this.paciente.getIdCitaEstatus(), 1L) || Objects.equals(this.paciente.getIdCitaEstatus(), 4L) || Objects.equals(this.paciente.getIdCitaEstatus(), 5L) || Objects.equals(this.paciente.getIdCitaEstatus(), 7L); 
+  }
+  
   @PostConstruct
   @Override
   protected void init() {
@@ -71,13 +82,13 @@ public class Nuevo extends IBaseFilter implements Serializable {
       this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.attrs.put("idCita", JsfBase.getFlashAttribute("idCita")== null? -1L: JsfBase.getFlashAttribute("idCita"));
       this.attrs.put("idCliente", JsfBase.getFlashAttribute("idCliente")== null? -1L: JsfBase.getFlashAttribute("idCliente"));
-      this.attrs.put("fecha", JsfBase.getFlashAttribute("fecha")== null? new Date(Calendar.getInstance().getTimeInMillis()): JsfBase.getFlashAttribute("fecha"));
+      this.attrs.put("fecha", JsfBase.getFlashAttribute("fecha")== null? new Timestamp(Calendar.getInstance().getTimeInMillis()): JsfBase.getFlashAttribute("fecha"));
       this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "agenda": JsfBase.getFlashAttribute("retorno"));
-      this.attrs.put("activeIndex", Objects.equals(this.accion, EAccion.AGREGAR)? 0: 1);
+      this.attrs.put("activeIndex", Objects.equals(this.accion, EAccion.AGREGAR) && Objects.equals(this.attrs.get("idCliente"), -1L)? 0: 1);
       this.seleccionados= new Entity[]{};      
-      this.doLoad();   
       this.toLoadPersonal();
       this.toLoadServicios();
+      this.doLoad();   
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -91,13 +102,15 @@ public class Nuevo extends IBaseFilter implements Serializable {
       this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
       switch (this.accion) {
         case AGREGAR:
-          this.paciente= new Paciente((Date)this.attrs.get("fecha"));
-          this.doUpdateInicio();
+          if(Objects.equals((Long)this.attrs.get("idCliente"), -1L))
+            this.paciente= new Paciente((Timestamp)this.attrs.get("fecha"));
+          else  
+            this.toLoadPaciente((Long)this.attrs.get("idCliente"));
           break;
         case MODIFICAR:
         case CONSULTAR:
           this.toLoadPaciente((Long)this.attrs.get("idCita"), (Long)this.attrs.get("idCliente"));
-          this.attrs.put("fecha", new Date(this.paciente.getInicio().getTime()));
+          this.attrs.put("fecha", new Timestamp(this.paciente.getInicio().getTime()));
           break;
       } // switch      
     } // try
@@ -117,8 +130,6 @@ public class Nuevo extends IBaseFilter implements Serializable {
       columns.add(new Columna("correo", EFormatoDinamicos.MAYUSCULAS));
       personal= (List<UISelectEntity>) UIEntity.seleccione("VistaClientesCitasDto", "personal", params, columns, "empleado");
 			this.attrs.put("personal", personal);
-      if(personal!= null && !personal.isEmpty()) 
-        this.paciente.setIkAtendio(personal.get(0));
     } // try
     catch (Exception e) {
 			throw e;
@@ -153,7 +164,7 @@ public class Nuevo extends IBaseFilter implements Serializable {
     Transaccion transaccion= null;
     try {
       LOG.info(this.seleccionados);
-      if(this.seleccionados!= null && this.seleccionados.length>0) {
+      if(this.seleccionados!= null && this.seleccionados.length> 0) {
         if(!Objects.equals(this.paciente.getIkAtendio(), null) && !Objects.equals(this.paciente.getIkAtendio().getKey(), -1L)) {
           List<UISelectEntity> empleados= (List<UISelectEntity>)this.attrs.get("personal");
           if(empleados!= null && !empleados.isEmpty()) {
@@ -184,10 +195,54 @@ public class Nuevo extends IBaseFilter implements Serializable {
     return regresar;
   } // doAccion
 
+  public String doDepuerar() {  
+    return doDepuerar(EAccion.DEPURAR);
+  }
+  
+  public String doEliminar() {  
+    return doDepuerar(EAccion.ELIMINAR);
+  }
+  
+  public String doRecuperar() {  
+    return doDepuerar(EAccion.RESTAURAR);
+  }
+  
+  public String doDepuerar(EAccion ejecuta) {  
+    String regresar        = null;
+    Transaccion transaccion= null;
+    try {
+      if(!Objects.equals(this.paciente.getIkAtendio(), null) && !Objects.equals(this.paciente.getIkAtendio().getKey(), -1L)) {
+        List<UISelectEntity> empleados= (List<UISelectEntity>)this.attrs.get("personal");
+        if(empleados!= null && !empleados.isEmpty()) {
+          int index= empleados.indexOf(this.paciente.getIkAtendio());
+          if(index>= 0)
+            this.paciente.setIkAtendio(empleados.get(index));
+          else
+            this.paciente.setIkAtendio(new UISelectEntity(-1L));
+        } // if
+      } // if
+      transaccion= new Transaccion(this.paciente, this.seleccionados);
+      if (transaccion.ejecutar(ejecuta)) {
+        JsfBase.setFlashAttribute("idCita", this.paciente.getIdCita());
+        JsfBase.setFlashAttribute("idCliente", this.paciente.getIdCliente());
+        JsfBase.addMessage("Se registro el cliente de forma correcta", ETipoMensaje.INFORMACION);
+        regresar= this.doCancelar();
+      } // if
+      else 
+        JsfBase.addMessage("Ocurrió un error al registrar el cliente", ETipoMensaje.ERROR);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    return regresar;
+  } // doAccion
+
   public String doCancelar() {   
     String regresar= null;
     try {
       JsfBase.setFlashAttribute("idCita", this.paciente.getIdCita());
+      JsfBase.setFlashAttribute("idCliente", this.paciente.getIdCliente());
       JsfBase.setFlashAttribute("idClienteProcess", this.paciente.getIdCliente());
   		regresar= ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);			
 		} // try
@@ -254,8 +309,8 @@ public class Nuevo extends IBaseFilter implements Serializable {
     }// finally
 		return (List<UISelectEntity>)this.attrs.get("clientes");
 	}	
-
-  public void doLoadGenerales() {
+  
+  private void toLoadCliente() {
  		UISelectEntity cliente      = null;
 		List<UISelectEntity>clientes= null;
 		try {
@@ -263,29 +318,64 @@ public class Nuevo extends IBaseFilter implements Serializable {
 			clientes= (List<UISelectEntity>)this.attrs.get("clientes");
       if(clientes!= null && !clientes.isEmpty()) {
         int index= clientes.indexOf(cliente);
-        if(index>= 0) {
+        if(index>= 0) 
           cliente= clientes.get(index);
-          this.attrs.put("cliente", cliente);
-        } // if  
-        // BUSCAR EL CLIENTE Y QUE DEVUELVA UN OBJETO DE TIPO PACIENTE
-        this.toLoadPaciente((Long)this.attrs.get("idCita"), cliente.toLong("idCliente"));
-        this.doUpdateInicio();
+        else
+          cliente= clientes.get(0);
+        this.attrs.put("cliente", cliente);
       } // if          
 		} // try
 		catch (Exception e) {			
 			throw e;
 		} // catch		
- } 
+  }
 
+  private void toAtendio() throws Exception {
+    try {      
+      List<UISelectEntity> personal= (List<UISelectEntity>) this.attrs.get("personal");
+      if(personal!= null && !personal.isEmpty()) {
+        int index= personal.indexOf(new UISelectEntity(this.paciente.getIdAtendio()));
+        if(index>= 0)
+          this.paciente.setIkAtendio(personal.get(index));
+        else 
+          this.paciente.setIkAtendio(personal.get(0));
+      } // if  
+      else
+        this.paciente.setIkAtendio(new UISelectEntity(this.paciente.getIdAtendio()));
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+  }
+  private void toLoadPaciente(Long idCliente) {
+    Map<String, Object> params= new HashMap<>();
+    try {      
+      params.put("idCita", -1L);      
+      params.put("idCliente", idCliente);      
+      this.paciente= (Paciente)DaoFactory.getInstance().toEntity(Paciente.class, "VistaClientesCitasDto", "paciente", params);
+      if(this.paciente!= null) {
+        this.paciente.init();
+        this.toAtendio();
+        this.doCompleteCliente(this.paciente.getRfc());
+        this.toLoadCliente();
+      } // if
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+  }
   private void toLoadPaciente(Long idCita, Long idCliente) {
     Map<String, Object> params= new HashMap<>();
-    UISelectEntity ikAtendio  = this.paciente.getIkAtendio();
     try {      
       params.put("idCita", idCita);      
       params.put("idCliente", idCliente);      
       this.paciente= (Paciente)DaoFactory.getInstance().toEntity(Paciente.class, "VistaClientesCitasDto", "paciente", params);
       if(this.paciente!= null) 
-        this.paciente.setIkAtendio(ikAtendio);
+        this.toAtendio();
     } // try
     catch (Exception e) {
       Error.mensaje(e);

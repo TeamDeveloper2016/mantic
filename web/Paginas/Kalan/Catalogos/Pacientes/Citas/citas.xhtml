@@ -120,10 +120,12 @@
   </ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="regresar" value="Regresar" icon="fa fa-reply" process="@this" action="#{kalanCatalogosPacientesCitasCitas.doCancelar}" immediate="true"/>
+			<p:commandButton id="aceptar" value="Agendar" icon="fa fa-calendar" accesskey="a" process="@form" update="@form" action="#{kalanCatalogosPacientesCitasCitas.doAccion('AGREGAR')}" onstart="return janal.partial('general');" oncomplete="janal.desbloquear(); janal.refresh();"/>
+			<p:commandButton id="regresar" value="Regresar" icon="fa fa-undo" process="@this" action="#{kalanCatalogosPacientesCitasCitas.doCancelar}" immediate="true"/>
 		</div>	
 		<div class="xs-pantalla">
-			<p:commandButton id="regresarIcon" title="Regresar" icon="fa fa-reply" process="@this" action="#{kalanCatalogosPacientesCitasCitas.doCancelar}" immediate="true"/>
+			<p:commandButton id="aceptarIcon" title="Agendar" icon="fa fa-calendar" process="@form" update="@form" action="#{kalanCatalogosPacientesCitasCitas.doAccion('AGREGAR')}" onstart="return janal.partial('general');" oncomplete="janal.desbloquear(); janal.refresh();"/>
+			<p:commandButton id="regresarIcon" title="Regresar" icon="fa fa-undo" process="@this" action="#{kalanCatalogosPacientesCitasCitas.doCancelar}" immediate="true"/>
 		</div>	
 	</ui:define>	
   <ui:param name="componenteBloqueo" value="tabla" />

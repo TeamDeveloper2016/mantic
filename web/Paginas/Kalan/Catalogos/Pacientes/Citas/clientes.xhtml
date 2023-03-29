@@ -23,6 +23,7 @@
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
       <div class="ui-grid-row janal-grid-row">
         <div id="collapse-find" class="ui-grid-col-12">
+          <p:focus context="razonSocial"/>
           <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
             <p:outputLabel for="razonSocial" value="Cliente:"/>
             <p:autoComplete id="razonSocial" var="custom" placeholder="ejemplo: JUAN PEREZ LOPEZ" itemLabel="#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{kalanCatalogosPacientesCitasClientes.attrs.cliente}" completeMethod="#{kalanCatalogosPacientesCitasClientes.doCompleteCliente}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
@@ -63,6 +64,9 @@
                 </p:panelGrid>
                 <f:facet name="footer" >
                   <div class="janal-line-button">
+                    <p:commandButton iconPos="left" title="Agendar" styleClass="janal-text-white" accesskey="z" icon="fa fa-plus" action="#{kalanCatalogosPacientesCitasClientes.doAgendar}">
+                      <f:setPropertyActionListener value="#{row}" target="#{kalanCatalogosPacientesCitasClientes.seleccionado}"  />
+                    </p:commandButton>
                     <p:commandButton iconPos="left" title="Citas" styleClass="janal-text-white" accesskey="z" icon="fa fa-calendar" action="#{kalanCatalogosPacientesCitasClientes.doCitas}">
                       <f:setPropertyActionListener value="#{row}" target="#{kalanCatalogosPacientesCitasClientes.seleccionado}"  />
                     </p:commandButton>

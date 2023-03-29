@@ -224,7 +224,9 @@ select
   if(tc_kalan_citas.termino is null, now(), tc_kalan_citas.termino) as termino,
   if(tc_kalan_citas.recordatorio is null, 24, tc_kalan_citas.recordatorio) as recordatorio,
   if(tc_kalan_citas.notificacion is null, 2, tc_kalan_citas.notificacion) as notificacion,
-  tc_kalan_citas.id_cita
+  tc_kalan_citas.id_cita,
+  ifnull(tc_kalan_citas.id_cita_estatus, '-1') as id_cita_estatus,
+  ifnull(tc_kalan_citas.id_atendio, '-1') as id_atendio
 from
   tc_mantic_clientes
 left join
