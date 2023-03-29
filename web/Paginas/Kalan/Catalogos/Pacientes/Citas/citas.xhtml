@@ -68,33 +68,39 @@
 								<p:commandButton title="Exportar XLS" icon="fa fa-file-excel-o" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
               </div>  
             </f:facet>												
-            <p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.cliente}">
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.consecutivo}">
+              <f:facet name="header">
+                <h:outputText value="Folio"/>
+              </f:facet>
+              <h:outputText value="#{row['consecutivo']}"/>
+            </p:column>
+            <p:column styleClass="janal-column-left MarAuto Responsive" sortBy="#{row.cliente}">
               <f:facet name="header">
                 <h:outputText value="Nombre"/>
               </f:facet>
               <h:outputText value="#{row['cliente']}"/>
             </p:column>
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-12" sortBy="#{row.inicio}">
+						<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-12" sortBy="#{row.inicio}">
 							<f:facet name="header">
 								<h:outputText value="Inicio"/>
 							</f:facet>
 							<h:outputText value="#{row['inicio']}"/>
 						</p:column>
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-12" sortBy="#{row.termino}">
+						<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-12" sortBy="#{row.termino}">
 							<f:facet name="header">
 								<h:outputText value="Termino"/>
 							</f:facet>
 							<h:outputText value="#{row['termino']}"/>
 						</p:column>
-						<p:column class="MarAuto Responsive janal-wid-20" sortBy="#{row.servicios}">
+						<p:column styleClass="MarAuto Responsive janal-wid-15" sortBy="#{row.servicios}">
 							<f:facet name="header">
 								<h:outputText value="Sevicio(s)"/>
 							</f:facet>
 							<h:outputText value="#{row['servicios']}"/>
 						</p:column>
-						<p:column class="MarAuto Responsive janal-wid-15" sortBy="#{row.atendio}">
+						<p:column styleClass="MarAuto Responsive janal-wid-15" sortBy="#{row.atendio}">
 							<f:facet name="header">
-								<h:outputText value="Atendio"/>
+								<h:outputText value="Asignado"/>
 							</f:facet>
 							<h:outputText value="#{row['atendio']}"/>
 						</p:column>
@@ -104,6 +110,11 @@
 							</f:facet>
 							<h:outputText value="#{row['estatus']}"/>
 						</p:column>
+            <p:column styleClass="MarAuto Responsive janal-column-center janal-wid-col-38" exportable="false">
+              <p:commandLink action="#{kalanCatalogosPacientesCitasCitas.doAccion('MODIFICAR')}" actionListener="#{kalanCatalogosPacientesCitasCitas.doAjustar(row)}" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" rendered="#{not(row.idCitaEstatus.toLong() eq 2)}" >
+                <p:commandButton icon="fa fa-calendar" title="Modificar" ajax="false" type="button"/>
+              </p:commandLink>										
+            </p:column>
             <f:facet name="footer">
               <p:outputLabel value="Total [#{kalanCatalogosPacientesCitasCitas.lazyModel== null? 0: kalanCatalogosPacientesCitasCitas.lazyModel.rowCount}] registros"/>
             </f:facet>

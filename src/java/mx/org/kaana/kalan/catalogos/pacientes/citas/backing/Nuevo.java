@@ -75,6 +75,10 @@ public class Nuevo extends IBaseFilter implements Serializable {
     return  Objects.equals(this.paciente.getIdCitaEstatus(), 1L) || Objects.equals(this.paciente.getIdCitaEstatus(), 4L) || Objects.equals(this.paciente.getIdCitaEstatus(), 5L) || Objects.equals(this.paciente.getIdCitaEstatus(), 7L); 
   }
   
+  public Boolean getVisualizar() {  // RESERVADA
+    return !Objects.equals(this.paciente.getIdCitaEstatus(), 7L); 
+  }
+  
   @PostConstruct
   @Override
   protected void init() {
@@ -89,6 +93,8 @@ public class Nuevo extends IBaseFilter implements Serializable {
       this.toLoadPersonal();
       this.toLoadServicios();
       this.doLoad();   
+      if(Objects.equals(this.paciente.getIdCitaEstatus(), 7L))
+        this.attrs.put("activeIndex", 2);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -110,6 +116,7 @@ public class Nuevo extends IBaseFilter implements Serializable {
         case MODIFICAR:
         case CONSULTAR:
           this.toLoadPaciente((Long)this.attrs.get("idCita"), (Long)this.attrs.get("idCliente"));
+          this.toLoadDetalle();
           this.attrs.put("fecha", new Timestamp(this.paciente.getInicio().getTime()));
           break;
       } // switch      
@@ -373,7 +380,14 @@ public class Nuevo extends IBaseFilter implements Serializable {
     try {      
       params.put("idCita", idCita);      
       params.put("idCliente", idCliente);      
-      this.paciente= (Paciente)DaoFactory.getInstance().toEntity(Paciente.class, "VistaClientesCitasDto", "paciente", params);
+      if(Objects.equals(idCliente, -1L)) {
+        params.put("inicio", "19000101");      
+        params.put("termino", "99991231");      
+        params.put(Constantes.SQL_CONDICION, "tc_kalan_citas.id_cita= "+ idCita);      
+        this.paciente= (Paciente)DaoFactory.getInstance().toEntity(Paciente.class, "VistaClientesCitasDto", "agenda", params);
+      } // if  
+      else
+        this.paciente= (Paciente)DaoFactory.getInstance().toEntity(Paciente.class, "VistaClientesCitasDto", "paciente", params);
       if(this.paciente!= null) 
         this.toAtendio();
     } // try
@@ -384,6 +398,32 @@ public class Nuevo extends IBaseFilter implements Serializable {
     finally {
       Methods.clean(params);
     } // finally
+  }
+ 
+  private void toLoadDetalle() {
+    List<Columna> columns     = new ArrayList<>();    
+    Map<String, Object> params= new HashMap<>();
+    try {      
+      if(!Objects.equals(this.paciente, null) && !Objects.equals(this.paciente, -1L)) {
+        params.put("idCita", this.paciente.getIdCita());      
+        columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
+        columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+        List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaClientesCitasDto", "detalle", params);
+        if(items!= null && !items.isEmpty()) 
+          this.seleccionados= items.toArray(new Entity[0]); 
+        else
+          this.seleccionados= new Entity[]{};
+      } // if  
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally
+  
   }
   
 }

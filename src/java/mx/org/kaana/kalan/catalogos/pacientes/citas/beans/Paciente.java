@@ -23,6 +23,7 @@ public class Paciente extends TcManticClientesDto implements Serializable {
   private Long idCita;
   private Long idCitaEstatus;
   private Long idAtendio;
+  private String consecutivo;
   private Timestamp inicio;
   private Timestamp termino;
   private String celular;
@@ -54,6 +55,7 @@ public class Paciente extends TcManticClientesDto implements Serializable {
     this.idCita  = idCita;
     this.idCitaEstatus= -1L;
     this.idAtendio    = -1L;
+    this.consecutivo  = "";
     this.recordatorio = 24L;
     this.notificacion = 2L;
     this.comentarios  = "";
@@ -125,6 +127,14 @@ public class Paciente extends TcManticClientesDto implements Serializable {
     this.ikAtendio = ikAtendio;
     if(ikAtendio!= null && !ikAtendio.isEmpty())
       this.idAtendio= ikAtendio.getKey();
+  }
+
+  public String getConsecutivo() {
+    return consecutivo;
+  }
+
+  public void setConsecutivo(String consecutivo) {
+    this.consecutivo = consecutivo;
   }
 
   public Long getRecordatorio() {

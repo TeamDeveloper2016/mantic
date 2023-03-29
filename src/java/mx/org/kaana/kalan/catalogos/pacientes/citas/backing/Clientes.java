@@ -1,9 +1,9 @@
 package mx.org.kaana.kalan.catalogos.pacientes.citas.backing;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -157,7 +157,7 @@ public class Clientes extends IBaseFilter implements Serializable {
     try {
 			JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);		
 			JsfBase.setFlashAttribute("idCliente", this.seleccionado.getKey());
-			JsfBase.setFlashAttribute("fecha", new Date(Calendar.getInstance().getTimeInMillis()));		
+			JsfBase.setFlashAttribute("fecha", new Timestamp(Calendar.getInstance().getTimeInMillis()));		
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Catalogos/Pacientes/Citas/clientes.jsf");
 			regresar= "nuevo".concat(Constantes.REDIRECIONAR);			
 		} // try

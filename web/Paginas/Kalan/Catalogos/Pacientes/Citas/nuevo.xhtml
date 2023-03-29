@@ -28,7 +28,7 @@
           <p:outputLabel for="contenedorGrupos:paterno" value="1er apellido" styleClass="janal-display-none"/>
           <p:outputLabel for="contenedorGrupos:celular" value="Celular" styleClass="janal-display-none"/>
           <p:accordionPanel id="contenedorGrupos" activeIndex="#{kalanCatalogosPacientesCitasNuevo.attrs.activeIndex}" multiple="true">
-					  <p:tab title="Cliente(s)">
+					  <p:tab title="Cliente(s)" titleStyle="display: #{kalanCatalogosPacientesCitasNuevo.visualizar? '': 'none'}">
               <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                 <p:autoComplete id="clientes" var="custom" placeholder="BUSCAR Ej. JUAN PEREZ LOPEZ" itemLabel="#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{kalanCatalogosPacientesCitasNuevo.attrs.cliente}" completeMethod="#{kalanCatalogosPacientesCitasNuevo.doCompleteCliente}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
   								<p:ajax event="itemSelect" process="contenedorGrupos" update="@(.generales)" listener="#{kalanCatalogosPacientesCitasNuevo.doLoadGenerales}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
@@ -45,7 +45,7 @@
                 </p:autoComplete>	
               </p:panelGrid>  
 					  </p:tab>
-					  <p:tab title="Generales">
+					  <p:tab title="Generales" titleStyle="display: #{kalanCatalogosPacientesCitasNuevo.visualizar? '': 'none'}">
               <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                 <p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-34, janal-wid-33, janal-wid-33">
                   <p:inputText id="nombre" placeholder="NOMBRE(S) Ej. JUAN JOSE" value="#{kalanCatalogosPacientesCitasNuevo.paciente.razonSocial}" styleClass="janal-wid-100-txt generales"/>
@@ -58,7 +58,7 @@
                 </p:panelGrid>
               </p:panelGrid>
             </p:tab>  
-            <p:tab title="Horario">  
+            <p:tab title="Horario [Cita: #{kalanCatalogosPacientesCitasNuevo.paciente.consecutivo}]">  
               <p:panelGrid columns="7" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-20 janal-column-center, janal-wid-5 janal-column-center, janal-wid-20 janal-column-center, janal-wid-20 janal-column-right, janal-wid-10 janal-column-center, janal-wid-15 janal-column-right, janal-wid-10 janal-column-center">
                 <p:calendar id="inicio" inputStyleClass="janal-wid-100-txt janal-column-center" styleClass="janal-wid-100 generales" value="#{kalanCatalogosPacientesCitasNuevo.paciente.inicio}" pattern="dd/MM/yyyy HH:mm:ss" readonlyInput="false" locale="mx" converter="janal.convertidor.Calendario">
                   <p:ajax event="dateSelect" listener="#{kalanCatalogosPacientesCitasNuevo.doUpdateInicio}" process="@this contenedorGrupos:termino" update="contenedorGrupos:termino"/>
@@ -73,7 +73,7 @@
                 <p:inputNumber id="notificacion" value="#{kalanCatalogosPacientesCitasNuevo.paciente.notificacion}" inputStyleClass="janal-wid-100-txt janal-column-center generales" symbol=" HRS" symbolPosition="s" converter="javax.faces.Long" decimalPlaces="0" emptyValue="0" maxValue="12" minValue="2" thousandSeparator=","/>
               </p:panelGrid>
             </p:tab>  
-            <p:tab title="Atendará">  
+            <p:tab title="Asignar:" titleStyle="display: #{kalanCatalogosPacientesCitasNuevo.visualizar? '': 'none'}">  
               <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                 <p:selectOneMenu id="idAtendio" tabindex="0" value="#{kalanCatalogosPacientesCitasNuevo.paciente.ikAtendio}" var="row" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt generales" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                   <f:selectItems value="#{kalanCatalogosPacientesCitasNuevo.attrs.personal}" var="element" itemValue="#{element.key}" itemLabel="#{element.empleado}"/>
