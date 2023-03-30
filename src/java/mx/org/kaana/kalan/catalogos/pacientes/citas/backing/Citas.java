@@ -16,6 +16,7 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.Constantes;
@@ -26,6 +27,7 @@ import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.libs.wassenger.Saras;
 
 @Named(value = "kalanCatalogosPacientesCitasCitas")
 @ViewScoped
@@ -109,6 +111,8 @@ public class Citas extends IBaseFilter implements Serializable {
 		try {
 			eaccion= EAccion.valueOf(accion.toUpperCase());
 			JsfBase.setFlashAttribute("accion", eaccion);		
+			JsfBase.setFlashAttribute("idCliente", this.attrs.get("idCliente"));		
+			JsfBase.setFlashAttribute("fecha", new Timestamp(Calendar.getInstance().getTimeInMillis()));		
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Catalogos/Pacientes/Citas/citas.jsf");		
 		} // try
 		catch (Exception e) {
@@ -163,6 +167,36 @@ public class Citas extends IBaseFilter implements Serializable {
 		JsfBase.setFlashAttribute("idCita", item.toLong("idCita"));		
 		JsfBase.setFlashAttribute("idCliente", item.toLong("idCliente"));		
     JsfBase.setFlashAttribute("fecha", item.toTimestamp("inicia"));
+  }
+  
+  public void doMensaje(Entity item) {
+    Map<String, Object> params= new HashMap<>();
+    try {
+      if(item!= null && !item.isEmpty()) {
+        params.put("idCita", item.toLong("idCita"));      
+        params.put("idCliente", item.toLong("idCliente"));
+        Entity citado= (Entity)DaoFactory.getInstance().toEntity("VistaClientesCitasDto", "paciente", params);
+        if(citado!= null && !citado.isEmpty() && !Objects.equals(citado.toString("celular"), null)) {
+          List<Entity> servicios= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaClientesCitasDto", "detalle", params);
+          if(servicios== null || servicios.isEmpty()) 
+            servicios= new ArrayList<>();
+          Saras notificar= new Saras(item.toString("cliente"), citado.toString("celular"), item.toTimestamp("inicia"), citado.toString("estatus"), servicios);
+          notificar.doSendCitaCliente();
+          JsfBase.addMessage("WhatsApp", "El mensaje fué enviado con éxito !", ETipoMensaje.INFORMACION);
+        } // if
+        else 
+          JsfBase.addMessage("WhatsApp", "El empleado no tiene celular registrado !", ETipoMensaje.INFORMACION);
+      } // if
+      else 
+        JsfBase.addMessage("WhatsApp", "No se pudo enviar el mensaje, intente de nuevo !", ETipoMensaje.ERROR);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+    finally {
+      Methods.clean(params);
+    } // finally
   }
   
 }

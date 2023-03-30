@@ -58,7 +58,7 @@
                 </p:panelGrid>
               </p:panelGrid>
             </p:tab>  
-            <p:tab title="Horario [Cita: #{kalanCatalogosPacientesCitasNuevo.paciente.consecutivo}]">  
+            <p:tab title="Horario #{empty(kalanCatalogosPacientesCitasNuevo.paciente.consecutivo)? '': '[Cita: '.concat(kalanCatalogosPacientesCitasNuevo.paciente.consecutivo).concat(']')}">  
               <p:panelGrid columns="7" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-20 janal-column-center, janal-wid-5 janal-column-center, janal-wid-20 janal-column-center, janal-wid-20 janal-column-right, janal-wid-10 janal-column-center, janal-wid-15 janal-column-right, janal-wid-10 janal-column-center">
                 <p:calendar id="inicio" inputStyleClass="janal-wid-100-txt janal-column-center" styleClass="janal-wid-100 generales" value="#{kalanCatalogosPacientesCitasNuevo.paciente.inicio}" pattern="dd/MM/yyyy HH:mm:ss" readonlyInput="false" locale="mx" converter="janal.convertidor.Calendario">
                   <p:ajax event="dateSelect" listener="#{kalanCatalogosPacientesCitasNuevo.doUpdateInicio}" process="@this contenedorGrupos:termino" update="contenedorGrupos:termino"/>
