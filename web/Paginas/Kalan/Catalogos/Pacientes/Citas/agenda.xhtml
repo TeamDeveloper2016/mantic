@@ -170,7 +170,7 @@
               <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                 <p:outputLabel for="idPersona" value="Doctor:"/>
 								<p:selectOneMenu id="idPersona" value="#{kalanCatalogosPacientesCitasAgenda.attrs.idPersona}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-									<f:selectItems value="#{kalanCatalogosPacientesCitasAgenda.attrs.personal}" var="element" itemValue="#{element.key}" itemLabel="#{element.empleado}"/>
+									<f:selectItems value="#{kalanCatalogosPacientesCitasAgenda.attrs.personas}" var="element" itemValue="#{element.key}" itemLabel="#{element.empleado}"/>
 									<p:column headerText="Nombre">
 										<h:outputText value="#{item.empleado}"/>
 									</p:column>   

@@ -95,7 +95,7 @@ public class Clientes extends IBaseFilter implements Serializable {
 			else 
 				if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input"))) {
           String codigo= JsfBase.getParametro("razonSocial_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
-          sb.append("(upper(concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, ''))) regexp '.*").append(codigo).append(".*' or upper(rfc) regexp '.*").append(codigo).append(".*') and");
+          sb.append("(upper(concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, ''))) regexp '.*").append(codigo).append(".*' or upper(tc_mantic_clientes.rfc) regexp '.*").append(codigo).append(".*') and");
         } // if  
 			regresar.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());			
 			if(Objects.equals(sb.length(), 0))
@@ -138,7 +138,7 @@ public class Clientes extends IBaseFilter implements Serializable {
 			} // if	
 			else
 				codigo= "WXYZ";
-  		params.put(Constantes.SQL_CONDICION, "(upper(concat(razon_social, ' ', ifnull(paterno, ''), ' ', ifnull(materno, ''))) regexp '.*{".concat(codigo).concat("}.*' or upper(rfc) regexp '.*{").concat(codigo).concat(")}.*')"));
+  		params.put(Constantes.SQL_CONDICION, "(upper(concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, ''))) regexp '.*".concat(codigo).concat(".*' or upper(tc_mantic_clientes.rfc) regexp '.*").concat(codigo).concat(".*')"));
       this.attrs.put("clientes", UIEntity.build("VistaClientesCitasDto", "clientes", params, columns, 40L));
 		} // try
 	  catch (Exception e) {

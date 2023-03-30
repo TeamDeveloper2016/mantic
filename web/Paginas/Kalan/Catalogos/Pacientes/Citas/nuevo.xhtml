@@ -76,7 +76,7 @@
             <p:tab title="Asignar:" titleStyle="display: #{kalanCatalogosPacientesCitasNuevo.visualizar? '': 'none'}">  
               <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                 <p:selectOneMenu id="idAtendio" tabindex="0" value="#{kalanCatalogosPacientesCitasNuevo.paciente.ikAtendio}" var="row" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt generales" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                  <f:selectItems value="#{kalanCatalogosPacientesCitasNuevo.attrs.personal}" var="element" itemValue="#{element.key}" itemLabel="#{element.empleado}"/>
+                  <f:selectItems value="#{kalanCatalogosPacientesCitasNuevo.attrs.personas}" var="element" itemValue="#{element.key}" itemLabel="#{element.empleado}"/>
                   <p:column headerText="Nombre">
                     <h:outputText value="#{row.empleado}"/>
                   </p:column>   

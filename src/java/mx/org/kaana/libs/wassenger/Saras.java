@@ -34,10 +34,10 @@ import org.hibernate.Session;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public final class Citas implements Serializable {
+public final class Saras implements Serializable {
 
   private static final long serialVersionUID = -6510759858245427836L;
-  private static final Log LOG = LogFactory.getLog(Citas.class);
+  private static final Log LOG = LogFactory.getLog(Saras.class);
   
   private static final String IMOX_TOKEN       = "IMOX_TOKEN";
   public static final String IMOX_GROUP_MANTIC = "5214491813810-1598307650@g.us";
@@ -66,7 +66,7 @@ public final class Citas implements Serializable {
   private String estatus;
   private List<Entity> servicios;
 
-  public Citas() {
+  public Saras() {
     this("", "", new Timestamp(Calendar.getInstance().getTimeInMillis()), "agendada");
     this.servicios= new ArrayList<>();
     this.servicios.add(new Entity(1L, "nombre", "MANICURE"));
@@ -74,11 +74,11 @@ public final class Citas implements Serializable {
     this.servicios.add(new Entity(3L, "nombre", "CORTE DE CABALLERO"));
   }
   
-  public Citas(String nombre, String celular, Timestamp fecha, String estatus) {
+  public Saras(String nombre, String celular, Timestamp fecha, String estatus) {
     this(nombre, celular, fecha, estatus, Collections.EMPTY_LIST);
   }
   
-  public Citas(String nombre, String celular, Timestamp fecha, String estatus, List<Entity> servicios) {
+  public Saras(String nombre, String celular, Timestamp fecha, String estatus, List<Entity> servicios) {
     this.nombre   = Cadena.nombrePersona(nombre);
     this.celular  = this.clean(celular);
     this.fecha    = fecha;
@@ -426,14 +426,14 @@ public final class Citas implements Serializable {
     clientes.put(1L, new Citado(1L, "Alejandro Jimenez", new Timestamp(Calendar.getInstance().getTimeInMillis()), servicios));
     clientes.put(2L, new Citado(2L, "Juan Pérez", new Timestamp(Calendar.getInstance().getTimeInMillis()), servicios));
     clientes.put(3L, new Citado(3L, "María García", new Timestamp(Calendar.getInstance().getTimeInMillis()), servicios));
-    Citas notificar= new Citas();
+    Saras notificar= new Saras();
     for (String item: actores.keySet()) {
       notificar.setNombre(Cadena.nombrePersona(item));
       notificar.setCelular((String)actores.get(item));
       LOG.info("Enviando mensaje de whatsapp al celular: "+ notificar.getCelular());
       notificar.doSendCitaCliente();
       // notificar.doSendCitaAtiende(Cadena.nombrePersona("Juan Perez López"));
-      // notificar.doSendAgenda(clientes);
+      notificar.doSendAgenda(clientes);
     } // for
   }  
 

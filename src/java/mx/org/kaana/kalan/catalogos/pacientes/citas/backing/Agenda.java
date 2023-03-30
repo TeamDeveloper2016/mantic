@@ -156,7 +156,7 @@ public class Agenda extends IBaseFilter implements Serializable {
 			} // if	
 			else
 				codigo= "WXYZ";
-  		params.put(Constantes.SQL_CONDICION, "(upper(concat(razon_social, ' ', ifnull(paterno, ''), ' ', ifnull(materno, ''))) regexp '.*".concat(codigo).concat(".*' or upper(rfc) regexp '.*").concat(codigo).concat(".*')"));
+  		params.put(Constantes.SQL_CONDICION, "(upper(concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, ''))) regexp '.*".concat(codigo).concat(".*' or upper(tc_mantic_clientes.rfc) regexp '.*").concat(codigo).concat(".*')"));
       this.attrs.put("clientes", UIEntity.build("VistaClientesCitasDto", "clientes", params, columns, 40L));
 		} // try
 	  catch (Exception e) {
@@ -235,19 +235,21 @@ public class Agenda extends IBaseFilter implements Serializable {
 	private void toLoadPersonal() {
 		List<Columna> columns        = new ArrayList<>();    
     Map<String, Object> params   = new HashMap<>();
-    List<UISelectEntity> personal= null;
+    List<UISelectEntity> personas= null;
     try {      
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());			
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);			
       columns.add(new Columna("empleado", EFormatoDinamicos.MAYUSCULAS));
-      personal= (List<UISelectEntity>) UIEntity.seleccione("VistaClientesCitasDto", "personal", params, columns, "empleado");
-			this.attrs.put("personal", personal);
-      if(personal!= null && !personal.isEmpty()) {
-        this.attrs.put("idPersona", personal.get(0));
+      columns.add(new Columna("correo", EFormatoDinamicos.MAYUSCULAS));
+      personas= (List<UISelectEntity>) UIEntity.seleccione("VistaClientesCitasDto", "personas", params, columns, "empleado");
+			this.attrs.put("personas", personas);
+      if(personas!= null && !personas.isEmpty()) {
+        this.attrs.put("idPersona", personas.get(0));
         Entity sinDoctor= new Entity(0L);
         sinDoctor.put("idPersona", new Value("idPersona", 0L, "id_persona"));
         sinDoctor.put("idEmpresaPersona", new Value("idEmpresaPersona", 0L, "id_empresa_persona"));
         sinDoctor.put("empleado", new Value("empleado", "SIN DOCTOR"));
-        personal.add(1, new UISelectEntity(sinDoctor));
+        personas.add(1, new UISelectEntity(sinDoctor));
       } // if  
     } // try
     catch (Exception e) {

@@ -130,13 +130,14 @@ public class Nuevo extends IBaseFilter implements Serializable {
 	private void toLoadPersonal() {
 		List<Columna> columns        = new ArrayList<>();    
     Map<String, Object> params   = new HashMap<>();
-    List<UISelectEntity> personal= null;
+    List<UISelectEntity> personas= null;
     try {      
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());			
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);			
       columns.add(new Columna("empleado", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("correo", EFormatoDinamicos.MAYUSCULAS));
-      personal= (List<UISelectEntity>) UIEntity.seleccione("VistaClientesCitasDto", "personal", params, columns, "empleado");
-			this.attrs.put("personal", personal);
+      personas= (List<UISelectEntity>) UIEntity.seleccione("VistaClientesCitasDto", "personas", params, columns, "empleado");
+			this.attrs.put("personas", personas);
     } // try
     catch (Exception e) {
 			throw e;
@@ -173,7 +174,7 @@ public class Nuevo extends IBaseFilter implements Serializable {
       LOG.info(this.seleccionados);
       if(this.seleccionados!= null && this.seleccionados.length> 0) {
         if(!Objects.equals(this.paciente.getIkAtendio(), null) && !Objects.equals(this.paciente.getIkAtendio().getKey(), -1L)) {
-          List<UISelectEntity> empleados= (List<UISelectEntity>)this.attrs.get("personal");
+          List<UISelectEntity> empleados= (List<UISelectEntity>)this.attrs.get("personas");
           if(empleados!= null && !empleados.isEmpty()) {
             int index= empleados.indexOf(this.paciente.getIkAtendio());
             if(index>= 0)
@@ -219,7 +220,7 @@ public class Nuevo extends IBaseFilter implements Serializable {
     Transaccion transaccion= null;
     try {
       if(!Objects.equals(this.paciente.getIkAtendio(), null) && !Objects.equals(this.paciente.getIkAtendio().getKey(), -1L)) {
-        List<UISelectEntity> empleados= (List<UISelectEntity>)this.attrs.get("personal");
+        List<UISelectEntity> empleados= (List<UISelectEntity>)this.attrs.get("personas");
         if(empleados!= null && !empleados.isEmpty()) {
           int index= empleados.indexOf(this.paciente.getIkAtendio());
           if(index>= 0)
@@ -303,7 +304,7 @@ public class Nuevo extends IBaseFilter implements Serializable {
 			} // if	
 			else
 				codigo= "WXYZ";
-  		params.put(Constantes.SQL_CONDICION, "(upper(concat(razon_social, ' ', ifnull(paterno, ''), ' ', ifnull(materno, ''))) regexp '.*".concat(codigo).concat(".*' or upper(rfc) regexp '.*").concat(codigo).concat(".*')"));
+  		params.put(Constantes.SQL_CONDICION, "(upper(concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, ''))) regexp '.*".concat(codigo).concat(".*' or upper(tc_mantic_clientes.rfc) regexp '.*").concat(codigo).concat(".*')"));
       this.attrs.put("clientes", UIEntity.build("VistaClientesCitasDto", "clientes", params, columns, 40L));
 		} // try
 	  catch (Exception e) {
@@ -339,7 +340,7 @@ public class Nuevo extends IBaseFilter implements Serializable {
 
   private void toAtendio() throws Exception {
     try {      
-      List<UISelectEntity> personal= (List<UISelectEntity>) this.attrs.get("personal");
+      List<UISelectEntity> personal= (List<UISelectEntity>) this.attrs.get("personas");
       if(personal!= null && !personal.isEmpty()) {
         int index= personal.indexOf(new UISelectEntity(this.paciente.getIdAtendio()));
         if(index>= 0)
@@ -401,13 +402,10 @@ public class Nuevo extends IBaseFilter implements Serializable {
   }
  
   private void toLoadDetalle() {
-    List<Columna> columns     = new ArrayList<>();    
     Map<String, Object> params= new HashMap<>();
     try {      
       if(!Objects.equals(this.paciente, null) && !Objects.equals(this.paciente, -1L)) {
         params.put("idCita", this.paciente.getIdCita());      
-        columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
-        columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
         List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaClientesCitasDto", "detalle", params);
         if(items!= null && !items.isEmpty()) 
           this.seleccionados= items.toArray(new Entity[0]); 
@@ -421,9 +419,7 @@ public class Nuevo extends IBaseFilter implements Serializable {
     } // catch	
     finally {
       Methods.clean(params);
-      Methods.clean(columns);
     } // finally
-  
   }
   
 }

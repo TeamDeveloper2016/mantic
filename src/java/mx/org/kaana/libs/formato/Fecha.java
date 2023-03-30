@@ -42,6 +42,7 @@ public class Fecha {
   public static final int FECHA_NOMBRE_MES_CORTO = 24;
   public static final int CODIGO_SEGURIDAD = 25;
   public static final int FECHA_NUMERO_MES = 26;
+  public static final int DIA_FECHA = 27;
 
 	protected Fecha (){
 	}
@@ -168,6 +169,12 @@ public class Fecha {
         fecha = getNombreDia(calendario.get(calendario.DAY_OF_WEEK))  + ", " + calendario.get(calendario.DATE) + " de " + getNombreMes(calendario.get(calendario.MONTH)) +
                 " de " + calendario.get(calendario.YEAR)+" "+fecha.substring(8, 10).concat(":").concat(fecha.substring(10, 12)).concat(":").concat(fecha.substring(12, 14));
 
+        break;
+      case DIA_FECHA: // Fecha en Dia, dd/mmm/yyyy Miercoles, 03/12/2007 
+        fecha =
+					  getNombreDia(calendario.get(calendario.DAY_OF_WEEK))  + ", " +
+            fecha.substring(6, 8).concat("/").concat(fecha.substring(4, 6)).concat("/").concat(
+            fecha.substring(0, 4));
         break;
       case DIA_FECHA_HORA: // Fecha en Dia, dd/mmm/yyyy hh:mm:ss  03/12/2007 12:26:00
         fecha =
