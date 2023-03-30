@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+  <ui:param name="titulo" value="Listado de cliente agendados" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      Janal.Control.fields = {
+        'razonSocial': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}
+      };
+    </script>		
+  </ui:define>
+  <ui:define name="contenido">
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+      <div class="ui-grid-row janal-grid-row">
+        <div id="collapse-find" class="ui-grid-col-12">
+          <p:accordionPanel id="panelBusqueda" activeIndex="1" multiple="true">
+					  <p:tab title="Agendados para el día #{kalanCatalogosPacientesCitasCitados.attrs.registro} [ #{kalanCatalogosPacientesCitasCitados.attrs.persona.citados} ]">
+              <p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-40, janal-wid-30, janal-wid-30">
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                  <p:outputLabel for="nombre" value="Nombre:"/>
+                  <p:inputText id="nombre" value="#{kalanCatalogosPacientesCitasCitados.attrs.persona.empleado}" styleClass="janal-wid-100-txt" readonly="true"/>
+                </p:panelGrid>  
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                  <p:outputLabel for="celular" value="Celular:"/>
+                  <p:inputText id="celular" value="#{kalanCatalogosPacientesCitasCitados.attrs.persona.celular}" styleClass="janal-wid-100-txt" readonly="true"/>
+                </p:panelGrid>                     
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                  <p:outputLabel for="correo" value="Correo:"/>
+                  <p:inputText id="correo" value="#{kalanCatalogosPacientesCitasCitados.attrs.persona.correo}" styleClass="janal-wid-100-txt" readonly="true"/>
+                </p:panelGrid>  
+              </p:panelGrid>  
+            </p:tab>
+          </p:accordionPanel>  
+          <p:spacer width="5px"/>
+          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{kalanCatalogosPacientesCitasCitados.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{kalanCatalogosPacientesCitasCitados.attrs.seleccionado}" selectionMode="single" paginator="#{kalanCatalogosPacientesCitasCitados.lazyModel.rowCount gt kalanCatalogosPacientesCitasCitados.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+            <p:ajax event="rowSelect" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
+						<f:facet name="header" >
+              <div style="float: left;">
+                <p:outputLabel value="C I T A D O S" styleClass="janal-color-white"/>
+              </div>  
+              <div class="lg-pantalla">
+                <p:menuButton value="Opciones">
+                  <p:menuitem value="Exportar PDF" icon="fa fa-file-pdf-o" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                  <p:menuitem value="Exportar XLS" icon="fa fa-file-excel-o" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                </p:menuButton>
+              </div>  
+              <div class="xs-pantalla">              
+								<p:commandButton title="Exportar PDF" icon="fa fa-file-pdf-o" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+								<p:commandButton title="Exportar XLS" icon="fa fa-file-excel-o" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+              </div>  
+            </f:facet>												
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.consecutivo}">
+              <f:facet name="header">
+                <h:outputText value="Folio"/>
+              </f:facet>
+              <h:outputText value="#{row['consecutivo']}"/>
+            </p:column>
+            <p:column styleClass="janal-column-left MarAuto Responsive" sortBy="#{row.cliente}">
+              <f:facet name="header">
+                <h:outputText value="Nombre"/>
+              </f:facet>
+              <h:outputText value="#{row['cliente']}"/>
+            </p:column>
+						<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-12" sortBy="#{row.inicio}">
+							<f:facet name="header">
+								<h:outputText value="Inicio"/>
+							</f:facet>
+							<h:outputText value="#{row['inicio']}"/>
+						</p:column>
+						<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-12" sortBy="#{row.termino}">
+							<f:facet name="header">
+								<h:outputText value="Termino"/>
+							</f:facet>
+							<h:outputText value="#{row['termino']}"/>
+						</p:column>
+						<p:column styleClass="MarAuto Responsive janal-wid-15" sortBy="#{row.servicios}">
+							<f:facet name="header">
+								<h:outputText value="Sevicio(s)"/>
+							</f:facet>
+							<h:outputText value="#{row['servicios']}"/>
+						</p:column>
+						<p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.estatus}">
+							<f:facet name="header">
+								<h:outputText value="Estatus"/>
+							</f:facet>
+							<h:outputText value="#{row['estatus']}"/>
+						</p:column>
+            <p:column styleClass="MarAuto Responsive janal-column-center janal-wid-col-38" exportable="false">
+              <p:commandLink action="#{kalanCatalogosPacientesCitasCitados.doAccion('MODIFICAR')}" actionListener="#{kalanCatalogosPacientesCitasCitados.doAjustar(row)}" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" rendered="#{not(row.idCitaEstatus.toLong() eq 2)}" >
+                <p:commandButton icon="fa fa-calendar" title="Modificar" ajax="false" type="button"/>
+              </p:commandLink>										
+            </p:column>
+            <f:facet name="footer">
+              <p:outputLabel value="Total [#{kalanCatalogosPacientesCitasCitados.lazyModel== null? 0: kalanCatalogosPacientesCitasCitados.lazyModel.rowCount}] registros"/>
+            </f:facet>
+          </p:dataTable>
+        </div>
+      </div>
+    </div>		    
+  </ui:define>    
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Notificar" icon="fa fa-whatsapp" accesskey="a" process="@form" update="@form" actionListener="#{kalanCatalogosPacientesCitasCitados.doCitas()}" onstart="return janal.partial('general');" oncomplete="janal.desbloquear(); janal.refresh();"/>
+			<p:commandButton id="regresar" value="Regresar" icon="fa fa-undo" process="@this" action="#{kalanCatalogosPacientesCitasCitados.doCancelar}" immediate="true"/>
+		</div>	
+		<div class="xs-pantalla">
+      <p:commandButton id="aceptarIcon" title="Notificar" icon="fa fa-whatsapp" process="@form" update="@form" actionListener="#{kalanCatalogosPacientesCitasCitados.doCitas()}" onstart="return janal.partial('general');" oncomplete="janal.desbloquear(); janal.refresh();"/>
+			<p:commandButton id="regresarIcon" title="Regresar" icon="fa fa-undo" process="@this" action="#{kalanCatalogosPacientesCitasCitados.doCancelar}" immediate="true"/>
+		</div>	
+	</ui:define>	
+  <ui:param name="componenteBloqueo" value="tabla" />
+</ui:composition>

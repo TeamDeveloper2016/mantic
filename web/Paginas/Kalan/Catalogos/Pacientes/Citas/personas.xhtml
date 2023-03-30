@@ -53,7 +53,7 @@
               </f:facet>
               <p:panel header="Agendados para hoy #{kalanCatalogosPacientesCitasPersonas.attrs.registro} [ #{row.citados} ]" style="width:100%;" >
                 <p:panelGrid columns="1" columnClasses="janal-column-center" style="width:100%;">
-                  <p:commandLink action="#{kalanCatalogosPacientesCitasPersonas.doAgendar}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" title="Clic para agendar">
+                  <p:commandLink action="#{kalanCatalogosPacientesCitasPersonas.doCitados}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" title="Clic para agendar">
                     <p:graphicImage width="100px" height="65px" library="janal" name="img/sistema/#{kajoolUtilAplicacion.logoAyudaEmpresa}"/>
                     <br/>
                     <h:outputText value="#{row.empleado}" styleClass="FontBold Fs16"/>
@@ -66,7 +66,7 @@
                 </p:panelGrid>
                 <f:facet name="footer" >
                   <div class="janal-line-button">
-                    <p:commandButton iconPos="left" title="Enviar citas por whatsapp" styleClass="janal-text-white" accesskey="z" icon="fa fa-whatsapp" actionListener="#{kalanCatalogosPacientesCitasPersonas.doCitas}">
+                    <p:commandButton iconPos="left" title="Enviar citas por whatsapp" styleClass="janal-text-white" accesskey="z" icon="fa fa-whatsapp" actionListener="#{kalanCatalogosPacientesCitasPersonas.doCitas(row)}">
                       <f:setPropertyActionListener value="#{row}" target="#{kalanCatalogosPacientesCitasPersonas.seleccionado}"  />
                     </p:commandButton>
                   </div>

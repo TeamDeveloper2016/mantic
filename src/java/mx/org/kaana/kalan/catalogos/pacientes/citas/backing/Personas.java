@@ -48,7 +48,6 @@ public class Personas extends IBaseFilter implements Serializable {
       this.attrs.put("idPersonaProcess", JsfBase.getFlashAttribute("idPersonaProcess"));
       this.doLoad();
       this.attrs.put("idPersonaProcess", null);
-      this.attrs.put("fecha", new Date(Calendar.getInstance().getTimeInMillis()));
       this.attrs.put("registro", Fecha.formatear(Fecha.DIA_FECHA, (Date)this.attrs.get("fecha")));
     } // try
     catch (Exception e) {
@@ -161,11 +160,12 @@ public class Personas extends IBaseFilter implements Serializable {
 		return (List<UISelectEntity>)this.attrs.get("personas");
 	}	
 
-  public String doAgendar() {
+  public String doCitados() {
     String regresar= null;
     try {
+			JsfBase.setFlashAttribute("persona", this.seleccionado);
 			JsfBase.setFlashAttribute("idPersona", this.seleccionado.getKey());
-			JsfBase.setFlashAttribute("fecha", new Timestamp(Calendar.getInstance().getTimeInMillis()));		
+			JsfBase.setFlashAttribute("fecha", new Date(Calendar.getInstance().getTimeInMillis()));		
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Catalogos/Pacientes/Citas/personas.jsf");
 			regresar= "citados".concat(Constantes.REDIRECIONAR);			
 		} // try
@@ -176,13 +176,14 @@ public class Personas extends IBaseFilter implements Serializable {
     return regresar;
   }
   
-  public void doCitas() {
+  public void doCitas(Entity row) {
     Map<Long, Citado>clientes = new HashMap<>();
     Map<String, Object> params= new HashMap<>();
     try {
-      if(this.seleccionado!= null && !this.seleccionado.isEmpty() && !Objects.equals(this.seleccionado.toString("celular"), null)) {
-        if(!Objects.equals(this.seleccionado.toLong("citados"), 0L)) {
-          params.put("idEmpresaPersona", this.seleccionado.toLong("idEmpresaPersona"));
+      if(row!= null && !row.isEmpty() && !Objects.equals(row.toString("celular"), null)) {
+        if(!Objects.equals(row.toLong("citados"), 0L)) {
+          params.put("idEmpresaPersona", row.toLong("idEmpresaPersona"));
+          params.put("sortOrder", "order by tc_kalan_citas.inicio");
           List<Entity> citados= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaClientesCitasDto", "programados", params);
           for (Entity item: citados) {
             params.put("idCita", item.toLong("idCita"));      
@@ -192,8 +193,8 @@ public class Personas extends IBaseFilter implements Serializable {
             clientes.put(item.getKey(), new Citado(item.getKey(), item.toString("cliente"), item.toTimestamp("inicio"), servicios));
           } // for
           Saras notificar= new Saras();
-          notificar.setNombre(Cadena.nombrePersona(this.seleccionado.toString("empleado")));
-          notificar.setCelular(this.seleccionado.toString("celular"));
+          notificar.setNombre(Cadena.nombrePersona(row.toString("empleado")));
+          notificar.setCelular(row.toString("celular"));
           notificar.doSendAgenda(clientes);
           JsfBase.addMessage("WhatsApp", "El mensaje fué enviado con éxito !", ETipoMensaje.INFORMACION);
         } // else 

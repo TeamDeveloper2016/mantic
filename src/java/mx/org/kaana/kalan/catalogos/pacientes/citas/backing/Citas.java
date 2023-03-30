@@ -109,9 +109,7 @@ public class Citas extends IBaseFilter implements Serializable {
 		try {
 			eaccion= EAccion.valueOf(accion.toUpperCase());
 			JsfBase.setFlashAttribute("accion", eaccion);		
-			JsfBase.setFlashAttribute("fecha", new Timestamp(Calendar.getInstance().getTimeInMillis()));		
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Catalogos/Pacientes/Citas/citas.jsf");		
-			JsfBase.setFlashAttribute("idCliente", (eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)) ? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -120,17 +118,6 @@ public class Citas extends IBaseFilter implements Serializable {
 		return "nuevo".concat(Constantes.REDIRECIONAR);
   } // doAccion
 
-  public void doEliminar() {
-		Entity seleccionado= null;
-		try {
-			seleccionado= (Entity) this.attrs.get("seleccionado");			
-		} // try
-		catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);			
-		} // catch			
-  } // doEliminar
-	
 	public List<UISelectEntity> doCompleteCliente(String codigo) {
  		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
@@ -175,6 +162,7 @@ public class Citas extends IBaseFilter implements Serializable {
   public void doAjustar(Entity item) {
 		JsfBase.setFlashAttribute("idCita", item.toLong("idCita"));		
 		JsfBase.setFlashAttribute("idCliente", item.toLong("idCliente"));		
+    JsfBase.setFlashAttribute("fecha", item.toTimestamp("inicia"));
   }
   
 }

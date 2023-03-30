@@ -48,8 +48,7 @@
           </p:accordionPanel>  
           <p:spacer width="5px"/>
           <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{kalanCatalogosPacientesCitasCitas.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{kalanCatalogosPacientesCitasCitas.attrs.seleccionado}" selectionMode="single" paginator="#{kalanCatalogosPacientesCitasCitas.lazyModel.rowCount gt kalanCatalogosPacientesCitasCitas.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
-            <p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
-						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
+            <p:ajax event="rowSelect" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
 						<f:facet name="header" >
               <div style="float: left;">
                 <p:outputLabel value="C I T A S" styleClass="janal-color-white"/>
@@ -119,12 +118,6 @@
               <p:outputLabel value="Total [#{kalanCatalogosPacientesCitasCitas.lazyModel== null? 0: kalanCatalogosPacientesCitasCitas.lazyModel.rowCount}] registros"/>
             </f:facet>
           </p:dataTable>
-          <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-            <p:menuitem id="consultar" action="#{kalanCatalogosPacientesCitasCitas.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
-						<p:separator/>
-            <p:menuitem id="modificar" action="#{kalanCatalogosPacientesCitasCitas.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
-            <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>					
-          </p:contextMenu>
         </div>
       </div>
     </div>		    
@@ -140,15 +133,4 @@
 		</div>	
 	</ui:define>	
   <ui:param name="componenteBloqueo" value="tabla" />
-  <ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar la cita ?" />
-  <ui:param name="accionConfirmacion" value="#{kalanCatalogosPacientesCitasCitas}"/>
-  <ui:param name="updateComponent" value="tabla"/>
-  <ui:param name="eventoConfirmacion" value="doEliminar"	/>	
-  <ui:param name="renderedConfirmacion" value="true"/>	
-  <ui:define name="detalleConfirmacion">
-    <h:panelGrid columns="2">
-      <p:outputLabel value="Cliente: "/>
-      <p:outputLabel value="#{kalanCatalogosPacientesCitasCitas.attrs.seleccionado.razonSocial}"/>
-    </h:panelGrid>			
-  </ui:define>
 </ui:composition>
