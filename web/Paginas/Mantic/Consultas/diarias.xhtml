@@ -59,7 +59,7 @@
                 </p:column>   
               </p:selectOneMenu>
 							<p:outputLabel for="fechaInicio" value="Fecha:"/>
-							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100"  value="#{manticConsultasDiarias.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" locale="es" converter="janal.convertidor.Calendario"/>              							
+							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100"  value="#{manticConsultasDiarias.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" locale="mx" converter="janal.convertidor.Calendario"/>              							
 							<p:outputLabel for="idMedioPago" value="Forma de pago:"/>
               <p:selectOneMenu id="idMedioPago" value="#{manticConsultasDiarias.attrs.idMedioPago}" styleClass="janal-wid-96">								
                 <f:selectItems value="#{manticConsultasDiarias.attrs.mediosPago}"/>              

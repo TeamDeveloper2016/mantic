@@ -31,9 +31,9 @@
         <f:selectItems value="#{kajoolMantenimientoMensajesGruposAgregar.attrs.grupos}"/>
       </p:selectOneMenu>
       <h:outputLabel for="vigenciaIni" value="Vigencia inicial"/>
-      <p:calendar id="vigenciaIni" styleClass="Wid100" value="#{kajoolMantenimientoMensajesGruposAgregar.attrs.dto.vigenciaIni}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+      <p:calendar id="vigenciaIni" styleClass="Wid100" value="#{kajoolMantenimientoMensajesGruposAgregar.attrs.dto.vigenciaIni}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario"/>
       <h:outputLabel for="vigenciaFin" value="Vigencia final"/>
-      <p:calendar id="vigenciaFin" styleClass="Wid100" value="#{kajoolMantenimientoMensajesGruposAgregar.attrs.dto.vigenciaFin}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+      <p:calendar id="vigenciaFin" styleClass="Wid100" value="#{kajoolMantenimientoMensajesGruposAgregar.attrs.dto.vigenciaFin}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario"/>
       <h:outputLabel for="urlSeguimiento" value="URL seguimiento"/>
       <p:inputText id="urlSeguimiento" value="#{kajoolMantenimientoMensajesGruposAgregar.attrs.dto.urlSeguimiento}" disabled="#{kajoolMantenimientoMensajesGruposAgregar.attrs.deshabilitar}" styleClass="Container50"/>
       <h:outputLabel for="descripcion" value="Mensaje"/>

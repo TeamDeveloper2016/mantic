@@ -39,7 +39,6 @@ import javax.xml.transform.stream.StreamSource;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.archivo.Archivo;
-import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.mantic.db.dto.TcManticClientesArchivosDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
@@ -48,6 +47,7 @@ import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import mx.org.kaana.mantic.catalogos.clientes.reglas.Transaccion;
+import mx.org.kaana.mantic.catalogos.comun.IBaseImportar;
 
 /**
  *@company KAANA
@@ -59,7 +59,7 @@ import mx.org.kaana.mantic.catalogos.clientes.reglas.Transaccion;
 
 @Named(value= "manticCatalogosClientesImportar")
 @ViewScoped
-public class Importar extends IBaseAttribute implements Serializable {
+public class Importar extends IBaseImportar implements Serializable {
 
 	private static final Log LOG              = LogFactory.getLog(Importar.class);
   private static final long serialVersionUID= 327353488565639367L;
@@ -84,7 +84,7 @@ public class Importar extends IBaseAttribute implements Serializable {
       this.idCliente= JsfBase.getFlashAttribute("idCliente")== null? -1L: (Long)JsfBase.getFlashAttribute("idCliente");
 			this.cliente= (TcManticClientesDto)DaoFactory.getInstance().findById(TcManticClientesDto.class, this.idCliente);
 			if(this.cliente!= null) {			  
-				this.toLoadCatalog();
+				this.toLoad();
 			} // if
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
 			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_IDENTIFICACION);
@@ -98,7 +98,7 @@ public class Importar extends IBaseAttribute implements Serializable {
     } // catch		
   } // init
 
-	private void toLoadCatalog() {
+	private void toLoad() {
 		List<Columna> columns     = null;
     Map<String, Object> params= null;
     try {
@@ -156,6 +156,7 @@ public class Importar extends IBaseAttribute implements Serializable {
 			result= new File(path.toString());		
 			if (!result.exists())
 				result.mkdirs();
+      String ruta= path.toString();
       path.append(nameFile);
 			result = new File(path.toString());
 			if (result.exists())
@@ -164,6 +165,7 @@ public class Importar extends IBaseAttribute implements Serializable {
 			fileSize= event.getFile().getSize();						
 			this.file= new Importado(nameFile, event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName().toUpperCase());
   		this.attrs.put("file", this.file.getName()); 			
+      this.toSaveFileRecord(event.getFile().getFileName().toUpperCase(), ruta, path.toString(), this.file.getName());            
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -314,20 +316,5 @@ public class Importar extends IBaseAttribute implements Serializable {
 		} // catch
     return regresar;
 	} // doAceptar
-	
-	public void doCerrar() {
-		try {
-//			String name= (String)this.attrs.get("temporal");
-//			if(name.endsWith("XML"))
-//				name= JsfBase.getContext().concat(name);
-//			else
-//				name= name.substring(0, name.lastIndexOf("?"));
-//			File file= new File(JsfBase.getRealPath().concat(name));
-//			file.delete();
-		} // try
-		catch (Exception e) {
-			JsfBase.addMessageError(e);
-			Error.mensaje(e);
-		} // catch
-	}	// doCerrar
+
 }

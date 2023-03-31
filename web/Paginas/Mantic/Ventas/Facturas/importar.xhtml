@@ -62,7 +62,7 @@
 								<p:outputLabel for="correos" value="Correo(s):"/>
 								<p:inputText id="correos" styleClass="janal-wid-100-txt" value="#{manticVentasFacturasImportar.attrs.factura.correos}" readonly="true"/>
 								<p:outputLabel for="timbrado" value="Fecha timbrado:"/>
-								<p:calendar id="timbrado" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100-txt" value="#{manticVentasFacturasImportar.attrs.factura.timbrado}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"  disabled="true"/>
+								<p:calendar id="timbrado" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100-txt" value="#{manticVentasFacturasImportar.attrs.factura.timbrado}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario"  disabled="true"/>
 								<p:outputLabel for="subtotal" value="Subtotal:"/>
 								<p:inputText id="subtotal" styleClass="janal-wid-100-txt janal-column-right" value="#{manticVentasFacturasImportar.attrs.venta.subTotal}" readonly="true"/>
 								<p:outputLabel for="iva" value="IVA:"/>

@@ -671,7 +671,7 @@
               <p:panel style="height:505px;" class="graphic-update-ventas">
                 <div class="Container100 Responsive Fs20 janal-color-orange">
                   <i class="icon-calendar"></i> Ventas diarias
-                  <p:calendar id="fechaInicio" styleClass="janal-steps-boton-siguiente" value="#{kajoolTablero.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" locale="es" converter="janal.convertidor.Calendario"> 
+                  <p:calendar id="fechaInicio" styleClass="janal-steps-boton-siguiente" value="#{kajoolTablero.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" locale="mx" converter="janal.convertidor.Calendario"> 
                     <p:ajax event="dateSelect" process="@this" update="ventas" listener="#{kajoolTablero.doLoadCuentasVentas}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
                   </p:calendar>  
                 </div>

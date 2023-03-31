@@ -247,7 +247,7 @@
   	  					</p:panelGrid>
 								<p:outputLabel/>
 								<p:outputLabel for="ultimoTicket" value="Reimpresión: #{manticVentasCajaAccion.attrs.ultimoTicket}" title="#{manticVentasCajaAccion.attrs.descripcionUltimoTicket}"/>
-								<p:calendar id="fecha" inputStyleClass="janal-wid-70" styleClass="janal-wid-100" value="#{manticVentasCajaAccion.attrs.fecha}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario" beforeShowDay="jsCaja.markedDays">
+								<p:calendar id="fecha" inputStyleClass="janal-wid-70" styleClass="janal-wid-100" value="#{manticVentasCajaAccion.attrs.fecha}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario" beforeShowDay="jsCaja.markedDays">
 									<p:ajax event="dateSelect" process="@this" listener="#{manticVentasCajaAccion.doLoadTicketAbiertos}" update="encabezadoVenta contenedorGrupos aceptar aceptarIcon @(.cotizar) @(.janal-abono)" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
 								</p:calendar>																
 								<p:selectOneMenu id="ticketsAbiertos" value="#{manticVentasCajaAccion.attrs.ticketAbierto}" styleClass="janal-wid-100-txt cambio-cliente tickets-principal" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
@@ -853,8 +853,8 @@
 										</h:panelGrid>
 									</f:facet>
 								</p:autoComplete>													
-								<p:calendar id="fechaApartirTicket" inputStyleClass="janal-wid-80" styleClass="janal-wid-100" value="#{manticVentasCajaAccion.attrs.fechaApartirTicket}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
-								<p:calendar id="fechaHastaTicket" inputStyleClass="janal-wid-80" styleClass="janal-wid-100" value="#{manticVentasCajaAccion.attrs.fechaHastaTicket}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+								<p:calendar id="fechaApartirTicket" inputStyleClass="janal-wid-80" styleClass="janal-wid-100" value="#{manticVentasCajaAccion.attrs.fechaApartirTicket}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario"/>
+								<p:calendar id="fechaHastaTicket" inputStyleClass="janal-wid-80" styleClass="janal-wid-100" value="#{manticVentasCajaAccion.attrs.fechaHastaTicket}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario"/>
 								<p:inputText id="importeTicket" styleClass="janal-wid-100-txt janal-column-right" value="#{manticVentasCajaAccion.attrs.importeTicket}"/>																	
 								<p:commandButton id="buscarTicket" icon="fa fa-search" process="@this noTicket fechaApartirTicket fechaHastaTicket importeTicket productoTicket" update="tablaTicket" actionListener="#{manticVentasCajaAccion.doLoadTickets}" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
 							</p:panelGrid>						       							

@@ -82,9 +82,9 @@
                 </p:tab>  
                 <p:tab title="Fecha">
                   <p:panelGrid columns="5" styleClass="janal-wid-100-txt" columnClasses="janal-fix-47, janal-fix-3 janal-column-center, janal-fix-47, janal-fix-3 janal-column-center">
-                    <p:calendar id="fechaInicio" inputStyleClass="janal-wid-90" styleClass="janal-wid-100" value="#{manticEgresosAsociar.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="false" locale="es" converter="janal.convertidor.Calendario"/>
+                    <p:calendar id="fechaInicio" inputStyleClass="janal-wid-90" styleClass="janal-wid-100" value="#{manticEgresosAsociar.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="false" locale="mx" converter="janal.convertidor.Calendario"/>
                     <p:outputLabel for="fechaInicio" value=" al " styleClass="janal-wid-100"/>
-                    <p:calendar id="fechaTermino" inputStyleClass="janal-wid-90" styleClass="janal-wid-100" value="#{manticEgresosAsociar.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="false" locale="es" converter="janal.convertidor.Calendario"/>
+                    <p:calendar id="fechaTermino" inputStyleClass="janal-wid-90" styleClass="janal-wid-100" value="#{manticEgresosAsociar.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="false" locale="mx" converter="janal.convertidor.Calendario"/>
                     <p:commandButton icon="fa fa-search" process="@this fechaInicio fechaTermino" update="encontrados" actionListener="#{manticEgresosAsociar.doLoad}" onstart="return janal.partial('fecha', true);" oncomplete="janal.desbloquear()"/>                  
                   </p:panelGrid>   
                 </p:tab>  

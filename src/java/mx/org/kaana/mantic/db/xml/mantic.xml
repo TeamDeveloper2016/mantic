@@ -2954,7 +2954,7 @@
         where      
           agrupador in ({agrupador})
         order by
-          orden
+          agrupador, orden
       </select>
     </unit>
    <unit id="TcManticEmpresasDeudasDto">

@@ -75,7 +75,7 @@
 								<p:outputLabel for="curp" value="CURP:"/>
 								<p:inputText id="curp" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.persona.curp}" />                    
 								<p:outputLabel for="nacimiento" value="Fecha de nacimiento:"/>
-								<p:calendar id="nacimiento" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-94" value="#{manticCatalogosPersonasAccion.registroPersona.persona.fechaNacimiento}" mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode" converter="janal.convertidor.Calendario" showOn="button"/>
+								<p:calendar id="nacimiento" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-94" value="#{manticCatalogosPersonasAccion.registroPersona.persona.fechaNacimiento}" mode="popup" pattern="dd/MM/yyyy" locale="mx" effect="explode" converter="janal.convertidor.Calendario" showOn="button"/>
 								<p:outputLabel for="tipoPersona" value="Tipo persona:" rendered="#{manticCatalogosPersonasAccion.attrs.general}"/>
 								<p:selectOneMenu id="tipoPersona" value="#{manticCatalogosPersonasAccion.registroPersona.persona.idTipoPersona}" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosPersonasAccion.attrs.general}" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
 									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.tiposPersonas}"/>
@@ -96,7 +96,7 @@
 									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.estadosCiviles}"/>
 								</p:selectOneMenu>		
 								<p:outputLabel for="fechaIngreso" value="Fecha ingreso:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
-								<p:calendar id="fechaIngreso" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-94" value="#{manticCatalogosPersonasAccion.registroPersona.persona.fechaIngreso}" mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode" converter="janal.convertidor.Calendario" showOn="button" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
+								<p:calendar id="fechaIngreso" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-94" value="#{manticCatalogosPersonasAccion.registroPersona.persona.fechaIngreso}" mode="popup" pattern="dd/MM/yyyy" locale="mx" effect="explode" converter="janal.convertidor.Calendario" showOn="button" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
 								<p:outputLabel for="sueldo" value="Sueldo:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
 								<p:inputText id="sueldo" styleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosPersonasAccion.registroPersona.persona.sueldo}" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>                    
 								<p:outputLabel for="proveedores" value="Proveedor:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarProveedores}"/>

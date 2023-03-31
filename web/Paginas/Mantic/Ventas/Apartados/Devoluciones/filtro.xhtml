@@ -62,7 +62,7 @@
               <p:outputLabel for="consecutivo" value="No. ticket:"/>
               <p:inputText id="consecutivo" value="#{manticVentasApartadosDevolucionesFiltro.attrs.consecutivo}" styleClass="janal-wid-100-txt"/>               
               <p:outputLabel for="fechaInicio" value="Fecha:"/>
-							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticVentasApartadosDevolucionesFiltro.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>              
+							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticVentasApartadosDevolucionesFiltro.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario"/>              
               <p:outputLabel for="idGarantiaEstatus" value="Estatus:"/>
               <p:selectOneMenu id="idGarantiaEstatus" value="#{manticVentasApartadosDevolucionesFiltro.attrs.idGarantiaEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>

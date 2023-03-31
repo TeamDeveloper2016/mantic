@@ -55,8 +55,8 @@
 								</h:panelGrid>
 							</f:facet>
 						</p:autoComplete>													
-						<p:calendar id="fechaApartir" inputStyleClass="janal-wid-70" styleClass="janal-wid-100" value="#{manticExplorarListado.attrs.fechaApartir}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
-						<p:calendar id="fechaHasta" inputStyleClass="janal-wid-70" styleClass="janal-wid-100" value="#{manticExplorarListado.attrs.fechaHasta}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+						<p:calendar id="fechaApartir" inputStyleClass="janal-wid-70" styleClass="janal-wid-100" value="#{manticExplorarListado.attrs.fechaApartir}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario"/>
+						<p:calendar id="fechaHasta" inputStyleClass="janal-wid-70" styleClass="janal-wid-100" value="#{manticExplorarListado.attrs.fechaHasta}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario"/>
 						<p:inputText id="importe" styleClass="janal-wid-100-txt janal-column-right" value="#{manticExplorarListado.attrs.importe}" />																	
 						<p:selectOneMenu id="estatus" value="#{manticExplorarListado.attrs.estatus}" styleClass="janal-wid-100-txt">
 							<f:selectItems value="#{manticExplorarListado.attrs.allEstatus}"/>

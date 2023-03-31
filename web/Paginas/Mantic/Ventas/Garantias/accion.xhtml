@@ -219,7 +219,7 @@
 							<p:panelGrid id="encabezadoVenta" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-wid-80" style="display: none">						
 								<p:outputLabel for="fecha" value="Fecha:"/>
 								<p:outputLabel value="Tickets:"/>
-								<p:calendar id="fecha" inputStyleClass="janal-wid-70" styleClass="janal-wid-100" value="#{manticVentasGarantiasAccion.attrs.fecha}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario">
+								<p:calendar id="fecha" inputStyleClass="janal-wid-70" styleClass="janal-wid-100" value="#{manticVentasGarantiasAccion.attrs.fecha}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario">
 									<p:ajax event="dateSelect" process="@this" listener="#{manticVentasGarantiasAccion.doLoadTicketAbiertos}" update="encabezadoVenta contenedorGrupos:contenido" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
 								</p:calendar>								
 								<p:selectOneMenu id="ticketsAbiertos" value="#{manticVentasGarantiasAccion.attrs.ticketAbierto}" styleClass="janal-wid-100-txt" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">

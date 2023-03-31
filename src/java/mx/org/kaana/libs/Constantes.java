@@ -132,6 +132,7 @@ public final class Constantes {
   public static final int REGISTROS_POR_LOTE   = 30;
   public static final int REGISTROS_LOTE_TOPE  = 50;
   public static final int REGISTROS_PARTIDAS   = 15;
+  public static final int REGISTROS_TOPE_PAGINA= 100;
   public static final String ICONOS_DE_PAGINACION = "{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}";
   public static final String REGISTROS_POR_CADA_PAGINA = "10,15,20";
   public static final String REGISTROS_MAX_CADA_PAGINA = "50,100,200";
@@ -181,6 +182,10 @@ public final class Constantes {
 
   public Integer getREGISTROS_MAX_PAGINA() {
     return Constantes.REGISTROS_MAX_PAGINA;
+  }
+
+  public Integer getREGISTROS_TOPE_PAGINA() {
+    return Constantes.REGISTROS_TOPE_PAGINA;
   }
 
   public Integer getREGISTROS_POR_LOTE() {

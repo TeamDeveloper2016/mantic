@@ -90,9 +90,9 @@
 								<p:outputLabel for="factura" value="No factura:"/>
 								<p:inputText id="factura" styleClass="janal-wid-100-txt involucrados" value="#{manticCatalogosEmpresasCuentasAccion.adminOrden.orden.factura}" onblur="janal.individual('contenedorGrupos\\:factura'); if($('#contenedorGrupos\\:factura').val().trim().length> 0) factura();"/>
 								<p:outputLabel for="fechaFactura" value="Fecha factura:"/>
-								<p:calendar id="fechaFactura" inputStyleClass="janal-wid-94" styleClass="janal-wid-100 involucrados" value="#{manticCatalogosEmpresasCuentasAccion.adminOrden.orden.fechaFactura}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+								<p:calendar id="fechaFactura" inputStyleClass="janal-wid-94" styleClass="janal-wid-100 involucrados" value="#{manticCatalogosEmpresasCuentasAccion.adminOrden.orden.fechaFactura}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario"/>
 								<p:outputLabel for="fechaRecepcion" value="Fecha recepción:"/>
-								<p:calendar id="fechaRecepcion" inputStyleClass="janal-wid-94" styleClass="janal-wid-99" value="#{manticCatalogosEmpresasCuentasAccion.adminOrden.orden.fechaRecepcion}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+								<p:calendar id="fechaRecepcion" inputStyleClass="janal-wid-94" styleClass="janal-wid-99" value="#{manticCatalogosEmpresasCuentasAccion.adminOrden.orden.fechaRecepcion}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario"/>
 								<p:outputLabel for="diasPlazo" value="Dias plazo:"/>
 								<p:inputText id="diasPlazo" styleClass="janal-wid-100-txt janal-column-right involucrados" value="#{manticCatalogosEmpresasCuentasAccion.adminOrden.orden.diasPlazo}">
 									<p:ajax event="keyup" listener="#{manticCatalogosEmpresasCuentasAccion.doCalculateFechaPago}" process="@this" update="fechaPago"/>
@@ -102,7 +102,7 @@
 								<p:outputLabel for="deuda" value="Deuda:"/>
 								<p:inputText id="deuda" styleClass="recalculo janal-wid-100-txt janal-column-right" value="#{manticCatalogosEmpresasCuentasAccion.adminOrden.orden.deuda}"/>
 								<p:outputLabel for="fechaPago" value="Fecha de pago:"/>
-								<p:calendar id="fechaPago" inputStyleClass="janal-wid-94" styleClass="janal-wid-99 involucrados" value="#{manticCatalogosEmpresasCuentasAccion.adminOrden.orden.fechaPago}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario">
+								<p:calendar id="fechaPago" inputStyleClass="janal-wid-94" styleClass="janal-wid-99 involucrados" value="#{manticCatalogosEmpresasCuentasAccion.adminOrden.orden.fechaPago}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario">
 									<p:ajax event="dateSelect" listener="#{manticCatalogosEmpresasCuentasAccion.doCalculatePagoFecha}" process="@this" update="diasPlazo"/>
 								</p:calendar>
 								<p:spacer width="1px"/><p:separator/>

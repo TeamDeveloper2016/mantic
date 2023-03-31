@@ -4,6 +4,26 @@
 -->
 <process>
 	<dml> 
+    <unit id="VistaExpedientesDto">
+      <select id="lazy">
+select      
+  tc_kalan_expedientes.id_expediente as id_key,
+  tc_kalan_expedientes.*,
+  tc_kalan_citas.id_cita,
+  tc_kalan_citas.consecutivo,
+  tc_mantic_tipos_archivos.nombre as tipo
+from      
+  tc_kalan_expedientes
+inner join 
+  tc_mantic_tipos_archivos on tc_kalan_expedientes.id_tipo_archivo= tc_mantic_tipos_archivos.id_tipo_archivo
+left join
+ tc_kalan_citas on tc_kalan_expedientes.id_cita= tc_kalan_citas.id_cita
+where
+  tc_kalan_expedientes.id_cliente= {idCliente}
+order by
+  tc_kalan_expedientes.registro desc 
+      </select>
+    </unit>    
     <unit id="VistaClientesCitasDto">
       <select id="lazy">
 select
@@ -69,8 +89,8 @@ select
   tc_mantic_clientes.clave,
   tc_mantic_clientes.rfc,
   tc_mantic_clientes.razon_social,
-  tc_mantic_clientes.paterno,
-  tc_mantic_clientes.materno,
+  ifnull(tc_mantic_clientes.paterno, '') as paterno,
+  ifnull(tc_mantic_clientes.materno, '') as materno,
   tc_mantic_clientes.limite_credito,
   tc_mantic_clientes.saldo,
   concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, '')) as cliente,
@@ -78,7 +98,7 @@ select
   tc_kalan_citas.inicio,
   tc_kalan_citas.termino,
   tc_kalan_citas.registro,
-  group_concat(tc_mantic_articulos.nombre separator ', ') as servicios,
+  ifnull(group_concat(tc_mantic_articulos.nombre separator ', '), '') as servicios,
   tc_kalan_citas_estatus.nombre as estatus
 from      
   tc_mantic_clientes

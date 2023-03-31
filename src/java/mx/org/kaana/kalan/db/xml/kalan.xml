@@ -7,6 +7,60 @@
   </model>
 
   <dml>
+    <unit id="TcKalanExpedientesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_kalan_expedientes
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_kalan_expedientes
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>    
+    <unit id="TcKalanExpedientesBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_kalan_expedientes_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_kalan_expedientes_bitacora
+        where      
+          id_expediente_bitacora = {idExpedienteBitacora}
+      </select>
+    </unit>  
+    <unit id="TcKalanExpedientesEstatusDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_kalan_expedientes_estatus
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_kalan_expedientes_estatus
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>      
     <unit id="TcKalanCitasDto">
       <select id="row">
         select      

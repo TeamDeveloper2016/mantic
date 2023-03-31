@@ -212,7 +212,7 @@
 								<f:selectItems value="#{manticCatalogosEmpresasCuentasAbono.attrs.tiposDocumentos}"/>								
 							</p:selectOneMenu>
 							<p:outputLabel for="fecha" value="Fecha:" styleClass="janal-wid-100-txt"/><br/>
-							<p:calendar id="fecha" inputStyleClass="janal-wid-99" styleClass="janal-wid-100-txt" value="#{manticCatalogosEmpresasCuentasAbono.attrs.fecha}" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+							<p:calendar id="fecha" inputStyleClass="janal-wid-99" styleClass="janal-wid-100-txt" value="#{manticCatalogosEmpresasCuentasAbono.attrs.fecha}" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario"/>
 							<br/>
 							<p:outputLabel for="observacionesFile" value="Observaciones:" styleClass="janal-wid-100-txt"/><br/>
 							<p:inputTextarea id="observacionesFile" rows="2" cols="33" styleClass="janal-wid-100-txt importado" value="#{manticCatalogosEmpresasCuentasAbono.file.observaciones}" autoResize="true"/>

@@ -9,33 +9,6 @@
   <ui:param name="titulo" value="Calendario de citas agendadas" />
   <ui:define name="librerias">
     <script type="text/javascript">
-      PrimeFaces.locales['mx'] = {
-        closeText: "Cerrar",
-        prevText: "Anterior",
-        nextText: "Siguiente",
-        monthNames: ["Enero","Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
-        monthNamesShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
-        dayNames: ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"],
-        dayNamesShort: ["Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sab"],
-        dayNamesMin: ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sa"],
-        weekHeader: "Semana",
-        firstDay: 0,
-        isRTL: false,
-        showMonthAfterYear: false,
-        yearSuffix: "",
-        timeOnlyTitle: "Solo hora",
-        timeText: "Tiempo",
-        hourText: "Hora",
-        minuteText: "Minuto",
-        secondText: "Segundo",
-        currentText: "Fecha actual",
-        ampm: false,
-        month: "Mes",
-        week: "Semana",
-        day: "Día",
-        allDayText : "Todo el día"
-      };
-    
       Janal.Control.fields = {
         'contenedorGrupos\\:razonSocial': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
         'contenedorGrupos\\:idServicio':  {validaciones: 'libre', mascara: 'libre'},
@@ -43,88 +16,26 @@
       };
     </script>		
     <style type="text/css">
-      .fc-view-container .fc-event {
-        background-color: transparent;
-        border: solid 1px #2E86C1;
-      }
-      .janal-cita-programado .fc-content {
-        display: flex;
-        color: #000;
-        background-color: #D1F2EB;
-        border: solid 1px #D1F2EB;
-      }
-      .janal-cita-programado .fc-content .fc-time {
-        color: #148F77;
-      }
-      .janal-cita-programado .fc-content .fc-title {
-        color: #148F77;
-      }
-      .janal-cita-atendido .fc-content {
-        display: flex;
-        color: #000;
-        background-color: #E8DAEF;
-        border: solid 1px #E8DAEF;
-      }
-      .janal-cita-atendido .fc-content .fc-time {
-        color: #7D3C98;
-      }
-      .janal-cita-atendido .fc-content .fc-title {
-        color: #7D3C98;
-      }
-      .janal-cita-cancelado .fc-content {
-        display: flex;
-        color: #fff;
-        background-color: #CB4335;
-        border: solid 1px #CB4335;
-      }
-      .janal-cita-suspendido .fc-content {
-        display: flex;
-        color: #000;
-        background-color: #EAEDED;
-        border: solid 1px #EAEDED;
-      }
-      .janal-cita-suspendido .fc-content .fc-time {
-        color: #000000;
-      }
-      .janal-cita-suspendido .fc-content .fc-title {
-        color: #000000;
-      }
-      .janal-cita-reprogramado .fc-content {
-        display: flex;
-        color: #000;
-        background-color: #D6EAF8;
-        border: solid 1px #D6EAF8;
-      }
-      .janal-cita-reprogramado .fc-content .fc-time {
-        color: #2874A6;
-      }
-      .janal-cita-reprogramado .fc-content .fc-title {
-        color: #2874A6;
-      }
-      .janal-cita-eliminado .fc-content {
-        display: flex;
-        color: #fff;
-        background-color: #C0392B;
-        border: solid 1px #C0392B;
-      }
-      .janal-cita-eliminado .fc-content .fc-time {
-        color: #000000;
-      }
-      .janal-cita-eliminado .fc-content .fc-title {
-        color: #000000;
-      }
-      .janal-cita-extras .fc-content {
-        display: flex;
-        color: #000;
-        background-color: #FEF9E7;
-        border: solid 1px #FEF9E7;
-      }
-      .janal-cita-extras .fc-content .fc-time {
-        color: #000000;
-      }
-      .janal-cita-extras .fc-content .fc-title {
-        color: #000000;
-      }
+      .fc-view-container .fc-event {background-color: transparent;border: solid 1px #2E86C1;}
+      .janal-cita-programado .fc-content {display: flex;color: #000;background-color: #D1F2EB;border: solid 1px #D1F2EB;}
+      .janal-cita-programado .fc-content .fc-time {color: #148F77;}
+      .janal-cita-programado .fc-content .fc-title {color: #148F77;}
+      .janal-cita-atendido .fc-content {display: flex;color: #000;background-color: #E8DAEF;border: solid 1px #E8DAEF;}
+      .janal-cita-atendido .fc-content .fc-time {color: #7D3C98;}
+      .janal-cita-atendido .fc-content .fc-title {color: #7D3C98;}
+      .janal-cita-cancelado .fc-content {display: flex;color: #fff;background-color: #CB4335;border: solid 1px #CB4335;}
+      .janal-cita-suspendido .fc-content {display: flex;color: #000;background-color: #EAEDED;border: solid 1px #EAEDED;}
+      .janal-cita-suspendido .fc-content .fc-time {color: #000000;}
+      .janal-cita-suspendido .fc-content .fc-title {color: #000000;}
+      .janal-cita-reprogramado .fc-content {display: flex;color: #000;background-color: #D6EAF8;border: solid 1px #D6EAF8;}
+      .janal-cita-reprogramado .fc-content .fc-time {color: #2874A6;}
+      .janal-cita-reprogramado .fc-content .fc-title {color: #2874A6;}
+      .janal-cita-eliminado .fc-content {display: flex;color: #fff;background-color: #C0392B;border: solid 1px #C0392B;}
+      .janal-cita-eliminado .fc-content .fc-time {color: #000000;}
+      .janal-cita-eliminado .fc-content .fc-title {color: #000000;}
+      .janal-cita-extras .fc-content {display: flex;color: #000;background-color: #FEF9E7;border: solid 1px #FEF9E7;}
+      .janal-cita-extras .fc-content .fc-time {color: #000000;}
+      .janal-cita-extras .fc-content .fc-title {color: #000000;}
     </style>
   </ui:define>
   <ui:define name="contenido">

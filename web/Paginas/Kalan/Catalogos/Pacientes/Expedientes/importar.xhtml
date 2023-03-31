@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+	<ui:param name="titulo" value="Expediente digital del cliente"/>
+	<ui:define name="librerias">
+		<script type="text/javascript">
+			Janal.Control.fields = {				 				
+				'contenedorGrupos\\:idTipoDocumento': {validaciones: 'requerido', mascara: 'libre'},
+				'contenedorGrupos\\:documento'      : {validaciones: 'requerido', mascara: 'libre'},
+				'contenedorGrupos\\:observaciones'  : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true}
+			};	
+			
+			function start() {
+        PF('statusDialog').show();
+      };
+ 
+      function stop() {
+        PF('statusDialog').hide();
+      };
+			
+			function load() {
+			  SyntaxHighlighter.highlight();	
+			}
+		</script>
+		<style>
+			.janal-upload-frame {
+        border: solid 1px #D1D3D4;
+        margin-bottom: 6px;
+        border-radius: 5px;				
+			}
+			.syntaxhighlighter {
+					overflow-y: auto !important;
+					overflow-x: auto !important;
+					max-height: 470px;
+			}			
+		</style>
+	</ui:define>
+	<ui:define name="contenido">
+		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">
+					<p:tabView id="contenedorGrupos">
+            <p:ajax event="tabChange" listener="#{kalanCatalogosPacientesExpedientesImportar.doTabChange}" process="@this" update="@(.importado)"/>						
+            <p:tab title="General">							
+							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">		
+								<p:outputLabel for="clave" value="Clave:"/>
+								<p:inputText id="clave" styleClass="janal-wid-100-txt" value="#{kalanCatalogosPacientesExpedientesImportar.cliente.clave}" readonly="true"/>
+								<p:outputLabel for="razonSocial" value="Razón social:"/>
+								<p:inputText id="razonSocial" styleClass="janal-wid-100-txt" value="#{kalanCatalogosPacientesExpedientesImportar.cliente.razonSocial} #{kalanCatalogosPacientesExpedientesImportar.cliente.paterno} #{kalanCatalogosPacientesExpedientesImportar.cliente.materno}" readonly="true"/>								
+								<p:spacer width="1px"/>
+								<p:outputLabel for="rfc" value="RFC:"/>
+								<p:inputText id="rfc" styleClass="janal-wid-100-txt" value="#{kalanCatalogosPacientesExpedientesImportar.cliente.rfc}" readonly="true"/>
+                <p:outputLabel for="cita" value="Última cita:"/>
+                <p:inputText id="cita" value="#{kalanCatalogosPacientesExpedientesImportar.cliente.servicios.toString() eq ''? 'SIN CITA': kalanCatalogosPacientesExpedientesImportar.cliente.inicio}#{kalanCatalogosPacientesExpedientesImportar.cliente.servicios.toString() eq ''? '': ' HRS'}" styleClass="janal-wid-100-txt janal-color-orange FontBold" readonly="true"/>
+                <p:outputLabel for="servicios" value="Servicio(s):"/>
+                <p:inputText id="servicios" value="#{kalanCatalogosPacientesExpedientesImportar.cliente.servicios.toString() eq ''? 'SIN SERVICIOS': kalanCatalogosPacientesExpedientesImportar.cliente.servicios}" styleClass="janal-wid-100-txt" readonly="true"/>
+              </p:panelGrid>
+						</p:tab>				
+						<p:tab title="Importar">
+							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100-txt"  columnClasses="janal-wid-95, janal-wid-5 janal-column-right">		
+							  <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100-txt">		
+                  <p:outputLabel for="idTipoDocumento" value="Tipo de documento:" styleClass="janal-wid-100-txt"/>
+                  <p:selectOneMenu id="idTipoDocumento" value="#{kalanCatalogosPacientesExpedientesImportar.documento.idComodin}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                    <p:ajax event="change" process="@this" update="@(.janal-upload-frame)" listener="#{kalanCatalogosPacientesExpedientesImportar.doUpdateDocumento}"/>
+                    <f:selectItems value="#{kalanCatalogosPacientesExpedientesImportar.attrs.documentos}"/>
+                  </p:selectOneMenu>    
+                </p:panelGrid>  
+							  <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100-txt">		
+                  <p:spacer height="3px"/>
+                  <p:commandButton actionListener="#{kalanCatalogosPacientesExpedientesImportar.doAddDocumento}" process="@this idTipoDocumento documento observaciones" update="tablaDocumentos idTipoDocumento documento observaciones" icon="fa fa-plus" oncomplete="janal.refresh();"/>
+                </p:panelGrid>  
+              </p:panelGrid>  
+              <p:inputTextarea id="observaciones" placeholder="ESCRIBA SI EXISTEN OBSERVACIONES" rows="2" cols="33" styleClass="janal-wid-100-txt" value="#{kalanCatalogosPacientesExpedientesImportar.documento.observaciones}"/>
+							<p:spacer height="5px"/>
+              <p:fileUpload fileUploadListener="#{kalanCatalogosPacientesExpedientesImportar.doFileUpload}" 
+							  mode="advanced" process="@this observaciones" update="@(.importado) documento" label="Selecciona archivo" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="3145728"
+								multiple="false" allowTypes="#{kalanCatalogosPacientesExpedientesImportar.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100 janal-upload-frame"
+								invalidSizeMessage="El tamaño máximo permitido del archivo es de 3 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{kalanCatalogosPacientesExpedientesImportar.attrs.formatos}"/>
+              <p:outputLabel for="documento" value="Documento digital:" styleClass="janal-wid-100-txt janal-display-none"/>
+              <p:inputText id="documento" placeholder="NOMBRE DEL DOCUMENTO IMPORTADO" value="#{kalanCatalogosPacientesExpedientesImportar.documento.original}" styleClass="janal-wid-100-txt importado" readonly="true"/>
+              <p:spacer height="3px"/>
+              <p:dataTable id="tablaDocumentos" rowIndexVar="index" var="item" value="#{kalanCatalogosPacientesExpedientesImportar.documentos}" rows="#{Constantes.REGISTROS_LOTE_TOPE}" paginator="false" reflow="true" rowKey="#{row.id}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="paginated" editable="true" editMode="cell">	
+								<p:column styleClass="MarAuto Responsive janal-wid-col-30" headerText="No.">
+                  <p:outputLabel value="#{index+ 1}.-"/>
+                </p:column>  
+								<p:column styleClass="MarAuto Responsive" headerText="Nombre">
+                  <p:outputLabel value="#{item.original}"/>
+                </p:column>	
+								<p:column styleClass="MarAuto Responsive janal-wid-15" headerText="Tipo">
+                  <p:cellEditor>
+                    <f:facet name="output">
+                      <h:outputText value="#{item.comodin}" title="DblClic para cambiar"/>
+                    </f:facet>
+                    <f:facet name="input">
+                      <h:selectOneMenu value="#{item.comodin}" style="width:100%" valueChangeListener="#{kalanCatalogosPacientesExpedientesImportar.doValueChangeTipo}">
+                        <p:ajax event="blur" process="@this" listener="#{kalanCatalogosPacientesExpedientesImportar.doChangeTipo(item)}"/>
+                        <f:selectItems value="#{kalanCatalogosPacientesExpedientesImportar.attrs.tipos}" var="item" itemLabel="#{item}" itemValue="#{item}" />
+                      </h:selectOneMenu>
+                    </f:facet>
+                  </p:cellEditor>              
+                </p:column>	
+								<p:column styleClass="MarAuto Responsive janal-wid-20" headerText="Observaciones">
+                  <p:cellEditor>
+                    <f:facet name="output">
+                      <h:outputText value="#{item.observaciones}" title="DblClic para cambiar"/>
+                    </f:facet>
+                    <f:facet name="input">
+                      <p:inputText placeholder="ESCRIBA SI EXISTEN OBSERVACIONES" onblur="$(this).val($(this).val().toUpperCase())" styleClass="janal-wid-100-txt" value="#{item.observaciones}">
+                        <p:ajax event="blur" process="@this" listener="#{kalanCatalogosPacientesExpedientesImportar.doChangeDescripcion(item)}"/>
+                      </p:inputText>  
+                    </f:facet>
+                  </p:cellEditor>              
+                </p:column>	
+								<p:column styleClass="MarAuto Responsive janal-wid-6 janal-column-right" headerText="Tamaño">
+                  <p:outputLabel value="#{item.size}"/>
+                </p:column>	
+								<p:column styleClass="MarAuto Responsive janal-wid-col-38 janal-column-center">
+                  <p:commandButton actionListener="#{kalanCatalogosPacientesExpedientesImportar.doRemoveDocumento(item)}" process="@this" update="tablaDocumentos" icon="fa fa-trash" title="Eliminar" rendered="#{item.idEstatus eq 1}"/>
+                  <p:commandButton actionListener="#{kalanCatalogosPacientesExpedientesImportar.doRecoverDocumento(item)}" process="@this" update="tablaDocumentos" icon="fa fa-recycle" title="Recuperar" rendered="#{item.idEstatus eq 2}"/>
+                </p:column>	
+              </p:dataTable>               
+						</p:tab>            
+						<p:tab title="Documentos">
+							<p:dataTable id="importados" var="row" value="#{kalanCatalogosPacientesExpedientesImportar.attrs.importados}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_TOPE_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.key}" styleClass="importado paginated" rowIndexVar="index">
+								<p:column styleClass="MarAuto Responsive janal-wid-col-30" headerText="No.">
+									<h:outputText value="#{index+ 1}.-"/>
+								</p:column>   								
+								<p:column styleClass="MarAuto Responsive" headerText="Nombre">
+									<h:outputText value="#{row.original}"/>
+								</p:column>   
+								<p:column styleClass="MarAuto Responsive janal-wid-15" headerText="Tipo">
+									<h:outputText value="#{row.tipo}"/>
+								</p:column>   
+								<p:column  styleClass="MarAuto Responsive janal-wid-20" headerText="Observaciones">
+									<h:outputText value="#{row.observaciones}"/>
+								</p:column>   
+								<p:column styleClass="MarAuto Responsive janal-wid-15" headerText="Fecha">
+									<h:outputText value="#{row.registro}"/>
+								</p:column>   
+								<p:column style="text-align: center" styleClass="janal-wid-col-90 janal-column-center">
+                  <p:commandButton actionListener="#{kalanCatalogosPacientesExpedientesImportar.doCleanDocumento(item)}" process="@this" update="importados" icon="fa fa-trash" title="Eliminar"/>
+									<p:commandButton icon="fa fa-download" title="Descargar archivo" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
+										<p:fileDownload value="#{kalanCatalogosPacientesExpedientesImportar.doFileDownload(row)}" />
+									</p:commandButton>
+								</p:column>
+							</p:dataTable>
+						</p:tab>						            						            																																																
+					</p:tabView>
+				</div>
+			</div>
+		</div>		
+		<p:dialog modal="true" widgetVar="statusDialog" header="Estatus de la descarga del archivo" draggable="false" closable="false" resizable="false">
+			<p:graphicImage library="janal" name="/img/sistema/ajaxloadingbar.gif" />
+		</p:dialog>		
+	</ui:define>    
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{kalanCatalogosPacientesExpedientesImportar.doAceptar}" onstart="return janal.execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-reply" process="@this" action="#{kalanCatalogosPacientesExpedientesImportar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{kalanCatalogosPacientesExpedientesImportar.doAceptar}" onstart="return janal.execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-reply" process="@this" action="#{kalanCatalogosPacientesExpedientesImportar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+	</ui:define>
+</ui:composition>

@@ -99,11 +99,10 @@ public abstract class IBaseTnx {
   }
   
   protected boolean toCheckDeleteFile(Session sesion, String nombre) throws Exception {
-    boolean regresar= false;
-    Long idEliminado= 1L;
-    Map<String, Object> params = null;
+    boolean regresar          = false;
+    Long idEliminado          = 1L;
+    Map<String, Object> params= new HashMap<>();
     try {      
-      params = new HashMap<>();      
       params.put("nombre", nombre);      
       TcManticArchivosDto documento= (TcManticArchivosDto)DaoFactory.getInstance().toEntity(sesion, TcManticArchivosDto.class, "TcManticArchivosDto", "identically", params);
       if(documento!= null) {
@@ -150,11 +149,10 @@ public abstract class IBaseTnx {
   }
   
   protected boolean toCheckFile(Session sesion, String nombre, String alias) throws Exception {
-    boolean regresar= false;
-    Long idEliminado= 1L;
-    Map<String, Object> params = null;
+    boolean regresar          = Boolean.FALSE;
+    Long idEliminado          = 1L;
+    Map<String, Object> params= new HashMap<>();
     try {      
-      params = new HashMap<>();      
       params.put("nombre", nombre);      
       TcManticArchivosDto documento= (TcManticArchivosDto)DaoFactory.getInstance().toEntity(sesion, TcManticArchivosDto.class, "TcManticArchivosDto", "identically", params);
       if(documento!= null) {

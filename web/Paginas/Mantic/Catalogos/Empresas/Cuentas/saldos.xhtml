@@ -92,9 +92,9 @@
 								<f:selectItem itemLabel="SI" itemValue="1"/>
 							</p:selectOneMenu>
 							<p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
-							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticCatalogosEmpresasCuentasSaldos.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticCatalogosEmpresasCuentasSaldos.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario"/>
 							<p:outputLabel for="fechaTermino" value="Fecha termino:"/>
-							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticCatalogosEmpresasCuentasSaldos.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticCatalogosEmpresasCuentasSaldos.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario"/>
 							<p:outputLabel for="idEmpresaEstatus" value="Estatus:"/>
               <p:selectOneMenu id="idEmpresaEstatus" value="#{manticCatalogosEmpresasCuentasSaldos.attrs.idEmpresaEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                 <f:selectItems value="#{manticCatalogosEmpresasCuentasSaldos.attrs.allEstatus}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
@@ -437,7 +437,7 @@
         </p:panelGrid>
         <p:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">
           <p:outputLabel for="limite" value="Vencimiento:" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosEmpresasCuentasSaldos.attrs.limitePago eq 'limitePago'}"/>
-          <p:calendar id="limite" styleClass="Wid100" inputStyleClass="janal-wid-94 janal-color-blue" value="#{manticCatalogosEmpresasCuentasSaldos.attrs.limite}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="false" locale="es" converter="janal.convertidor.Calendario" rendered="#{manticCatalogosEmpresasCuentasSaldos.attrs.limitePago eq 'limitePago'}"/>
+          <p:calendar id="limite" styleClass="Wid100" inputStyleClass="janal-wid-94 janal-color-blue" value="#{manticCatalogosEmpresasCuentasSaldos.attrs.limite}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="false" locale="mx" converter="janal.convertidor.Calendario" rendered="#{manticCatalogosEmpresasCuentasSaldos.attrs.limitePago eq 'limitePago'}"/>
         </p:panelGrid>   
         <p:outputLabel for="justificacion" value="Justificación:" styleClass="janal-wid-100-txt"/>
         <p:inputTextarea id="justificacion" rows="2" value="#{manticCatalogosEmpresasCuentasSaldos.attrs.justificacion}" styleClass="event-keydown-enter janal-wid-100-txt janal-name-verificar"/>	

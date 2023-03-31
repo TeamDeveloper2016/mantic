@@ -39,11 +39,11 @@
                 </h:panelGrid>
               </f:facet>
             </p:autoComplete>	
-            <p:calendar id="fecha" inputStyleClass="janal-wid-100-txt janal-column-center" styleClass="janal-wid-100-txt" value="#{kalanCatalogosPacientesCitasPersonas.attrs.fecha}" pattern="dd/MM/yyyy" readonlyInput="false" locale="es" converter="janal.convertidor.Calendario"/>
+            <p:calendar id="fecha" inputStyleClass="janal-wid-100-txt janal-column-center" styleClass="janal-wid-100-txt" value="#{kalanCatalogosPacientesCitasPersonas.attrs.fecha}" pattern="dd/MM/yyyy" readonlyInput="false" locale="mx" converter="janal.convertidor.Calendario"/>
           </p:panelGrid>
           <div class="janal-align-right janal-wid-100">
-            <p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute();" process="@this razonSocial" actionListener="#{kalanCatalogosPacientesCitasPersonas.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
-            <p:commandButton id="buscarIcon" value="Buscar" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.execute();" process="@this razonSocial" actionListener="#{kalanCatalogosPacientesCitasPersonas.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
+            <p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute();" process="@this razonSocial fecha" actionListener="#{kalanCatalogosPacientesCitasPersonas.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
+            <p:commandButton id="buscarIcon" value="Buscar" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.execute();" process="@this razonSocial fecha" actionListener="#{kalanCatalogosPacientesCitasPersonas.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
           </div>
           <p:spacer width="5px"/>
           <center>
@@ -51,7 +51,7 @@
               <f:facet name="header">
                 E M P L E A D O S
               </f:facet>
-              <p:panel header="Agendados para hoy #{kalanCatalogosPacientesCitasPersonas.attrs.registro} [ #{row.citados} ]" style="width:100%;" >
+              <p:panel header="Agendados para #{kalanCatalogosPacientesCitasPersonas.attrs.registro} [ #{row.citados} ]" style="width:100%;" >
                 <p:panelGrid columns="1" columnClasses="janal-column-center" style="width:100%;">
                   <p:commandLink action="#{kalanCatalogosPacientesCitasPersonas.doCitados}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" title="Clic para agendar">
                     <p:graphicImage width="100px" height="65px" library="janal" name="img/sistema/#{kajoolUtilAplicacion.logoAyudaEmpresa}"/>

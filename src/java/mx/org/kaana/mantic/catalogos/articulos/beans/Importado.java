@@ -20,6 +20,9 @@ public class Importado implements IBaseDto, Serializable {
 	private String ruta;
 	private String observaciones;
   private Long idTipoDocumento;
+  private Long idComodin;
+  private String comodin;
+  private Long idEstatus;
 
   public Importado() {
 		this("", "", EFormatos.FREE, 0L, 0L, "", "", "");
@@ -47,6 +50,9 @@ public class Importado implements IBaseDto, Serializable {
     this.id= new Random().nextLong();
     if(this.id> 0)
       this.id*= -1L;
+    this.idComodin= -1L;
+    this.comodin  = "";
+    this.idEstatus= 1L;
   }
 
   public Long getId() {
@@ -135,6 +141,30 @@ public class Importado implements IBaseDto, Serializable {
 
   public void setIdTipoDocumento(Long idTipoDocumento) {
     this.idTipoDocumento = idTipoDocumento;
+  }
+
+  public Long getIdComodin() {
+    return idComodin;
+  }
+
+  public void setIdComodin(Long idComodin) {
+    this.idComodin = idComodin;
+  }
+
+  public String getComodin() {
+    return comodin;
+  }
+
+  public void setComodin(String comodin) {
+    this.comodin = comodin;
+  }
+
+  public Long getIdEstatus() {
+    return idEstatus;
+  }
+
+  public void setIdEstatus(Long idEstatus) {
+    this.idEstatus = idEstatus;
   }
 	
   @Override

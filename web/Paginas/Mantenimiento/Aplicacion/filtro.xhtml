@@ -58,7 +58,7 @@
       <p:panelGrid columns="2" layout="grid" columnClasses="janal-wid-col-150">
         <p:outputLabel for="hour" value="Inicia mantenimiento:"/>
         <p:panelGrid columns="2" columnClasses="janal-wid-col-100">
-          <p:calendar id="hour" pattern="HH:mm:ss" timeOnly="true" locale="es" size="10" value="#{kajoolMantenimientoAplicacionFiltro.attrs.hour}" converter="janal.convertidor.Hora" minHour="#{kajoolMantenimientoAplicacionFiltro.attrs.hours}">
+          <p:calendar id="hour" pattern="HH:mm:ss" timeOnly="true" locale="mx" size="10" value="#{kajoolMantenimientoAplicacionFiltro.attrs.hour}" converter="janal.convertidor.Hora" minHour="#{kajoolMantenimientoAplicacionFiltro.attrs.hours}">
             <p:ajax event="blur" listener="#{kajoolMantenimientoAplicacionFiltro.doCalculate}" process="@this" update="estimate"/>
           </p:calendar>  
           <p:outputLabel value=" hora(s)"/>

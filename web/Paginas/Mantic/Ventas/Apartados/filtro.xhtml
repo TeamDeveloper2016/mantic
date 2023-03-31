@@ -81,9 +81,9 @@
 							<p:outputLabel for="dias" value="Días de apartado:"/>
 							<p:inputText id="dias" value="#{manticVentasApartados.attrs.dias}" styleClass="janal-wid-100-txt janal-column-right"/> 
 							<p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
-							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticVentasApartados.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticVentasApartados.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario"/>
               <p:outputLabel for="fechaTermino" value="Fecha termino:"/>
-							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticVentasApartados.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticVentasApartados.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario"/>
               <p:outputLabel for="montoInicio" value="Monto inicio:"/>
 							<p:inputText id="montoInicio" styleClass="janal-wid-100-txt" value="#{manticVentasApartados.attrs.montoInicio}" converter="javax.faces.Double">
 								<p:ajax event="blur" listener="#{manticVentasApartados.doMontoUpdate}" process="@this" update="montoTermino"/>

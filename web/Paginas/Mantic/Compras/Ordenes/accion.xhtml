@@ -187,7 +187,7 @@
 									</p:column>   
 								</p:selectOneMenu>
 								<p:outputLabel for="entregaEstimada" value="Entrega estimada:"/>
-								<p:calendar id="entregaEstimada" inputStyleClass="janal-wid-94" styleClass="janal-wid-100" value="#{manticComprasOrdendesAccion.adminOrden.orden.entregaEstimada}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+								<p:calendar id="entregaEstimada" inputStyleClass="janal-wid-94" styleClass="janal-wid-100" value="#{manticComprasOrdendesAccion.adminOrden.orden.entregaEstimada}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario"/>
 								<p:outputLabel for="idCargar" value="Precargar articulos:"/>
 								<p:selectOneMenu id="idCargar" value="#{manticComprasOrdendesAccion.attrs.idCargar}" styleClass="janal-wid-99" converter="javax.faces.Long" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">   
 									<p:ajax event="change" listener="#{manticComprasOrdendesAccion.doLoadArticulos}" update="datosProveedor datosArticulos tabla @(.filas) @(.recalculo)" process="@this"/>

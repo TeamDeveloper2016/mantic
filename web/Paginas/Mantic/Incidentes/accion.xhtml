@@ -30,8 +30,8 @@
 						<p:outputLabel for="vigenciaFin" value="Vigencia fin:"/>
 						<p:outputLabel for="tipoIncidente" value="Tipo incidente:"/>												
 						<p:inputText id="orden" styleClass="janal-wid-100-txt" value="#{manticIncidentesAccion.attrs.orden}" disabled="true" readonly="true"/>                    												
-						<p:calendar id="vigenciaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticIncidentesAccion.incidente.vigenciaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
-						<p:calendar id="vigenciaFin" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticIncidentesAccion.incidente.vigenciaFin}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+						<p:calendar id="vigenciaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticIncidentesAccion.incidente.vigenciaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario"/>
+						<p:calendar id="vigenciaFin" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticIncidentesAccion.incidente.vigenciaFin}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario"/>
 						<p:selectOneMenu id="tipoIncidente" value="#{manticIncidentesAccion.incidente.idTipoIncidente}" styleClass="janal-wid-100-txt">
 							<f:selectItems value="#{manticIncidentesAccion.attrs.tiposIncidentes}"/>
 						</p:selectOneMenu>																		

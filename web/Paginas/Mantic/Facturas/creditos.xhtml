@@ -98,9 +98,9 @@
                 <f:selectItems value="#{manticFacturasCreditos.folios}"/>
               </p:selectOneMenu>
 							<p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
-							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticFacturasCreditos.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>              
+							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticFacturasCreditos.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario"/>              
 							<p:outputLabel for="fechaTermino" value="Fecha termino:"/>
-							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticFacturasCreditos.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>							
+							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticFacturasCreditos.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario"/>							
 							<p:outputLabel for="articulo" value="Articulo:"/>
 							<p:autoComplete id="articulo" var="custom" placeholder="ejemplo: AU125" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt key-down-articulo filas" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticFacturasCreditos.attrs.articulo}" completeMethod="#{manticFacturasCreditos.doCompleteArticulo}" maxResults="10" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
 								<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this" listener="#{manticFacturasCreditos.doAsignaArticulo}" oncomplete="janal.desbloquear();"/>

@@ -57,9 +57,9 @@
       <h:form id="formDialogoInsumo" prependId="false">
 				<p:panelGrid columns="2" layout="grid" styleClass="Container96" columnClasses="ColWid20, TexAlLeft">
 					<p:outputLabel for="vigenciaIni" value="Vigencia inicial:"/>
-					<p:calendar id="vigenciaIni" styleClass="Wid100" value="#{kajoolMensajesUsuariosDetalleUsuario.attrs.vigenciaIni}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+					<p:calendar id="vigenciaIni" styleClass="Wid100" value="#{kajoolMensajesUsuariosDetalleUsuario.attrs.vigenciaIni}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario"/>
 					<p:outputLabel for="vigenciaFin" value="Vigencia final:"/>
-					<p:calendar id="vigenciaFin" styleClass="Wid100" value="#{kajoolMensajesUsuariosDetalleUsuario.attrs.vigenciaFin}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+					<p:calendar id="vigenciaFin" styleClass="Wid100" value="#{kajoolMensajesUsuariosDetalleUsuario.attrs.vigenciaFin}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario"/>
 				</p:panelGrid>
 				<div class="Fright">
 					<p:commandButton value="Guardar" actionListener="#{kajoolMensajesUsuariosDetalleUsuario.doMofificar}" onstart="return janal.execute(true);" oncomplete="PF('dialogoModificar').hide();" process="@this dialogoModificar" update=":datos:tabla"/>

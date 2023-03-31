@@ -39,7 +39,7 @@
                   </p:column>   
                 </p:selectOneMenu>
 								<p:outputLabel for="fecha" value="Fecha:"/>
-                <p:calendar id="fecha" inputStyleClass="janal-wid-98" styleClass="janal-wid-100" value="#{manticEgresosAccion.egreso.fecha}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="false" locale="es" converter="janal.convertidor.Calendario" readonly="#{manticEgresosAccion.eliminar}" disabled="#{manticEgresosAccion.eliminar}"/>
+                <p:calendar id="fecha" inputStyleClass="janal-wid-98" styleClass="janal-wid-100" value="#{manticEgresosAccion.egreso.fecha}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="false" locale="mx" converter="janal.convertidor.Calendario" readonly="#{manticEgresosAccion.eliminar}" disabled="#{manticEgresosAccion.eliminar}"/>
 								<p:outputLabel for="descripcion" value="Descripcion:"/>
                 <p:inputText id="descripcion" styleClass="janal-wid-100-txt" value="#{manticEgresosAccion.egreso.descripcion}" readonly="#{manticEgresosAccion.eliminar}" disabled="#{manticEgresosAccion.eliminar}"/>
 								<p:outputLabel for="importe" value="Importe:"/>

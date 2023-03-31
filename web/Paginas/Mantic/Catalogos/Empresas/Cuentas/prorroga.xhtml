@@ -73,7 +73,7 @@
 								<p:outputLabel value="Saldo:"/>																								
 								<p:inputNumber value="#{manticCatalogosEmpresasCuentasProrroga.attrs.deuda.saldo}" inputStyleClass="janal-wid-100-txt janal-column-right" disabled="true" decimalPlaces="2"/>
 								<p:outputLabel for="fecha" value="Fecha limite:"/>																		
-								<p:calendar id="fecha" value="#{manticCatalogosEmpresasCuentasProrroga.prorroga}" locale="es" pattern="dd/MM/yyyy" styleClass="janal-wid-100-txt janal-column-right" converter="janal.convertidor.Calendario"/>																	
+								<p:calendar id="fecha" value="#{manticCatalogosEmpresasCuentasProrroga.prorroga}" locale="mx" pattern="dd/MM/yyyy" styleClass="janal-wid-100-txt janal-column-right" converter="janal.convertidor.Calendario"/>																	
 								<p:outputLabel for="idRevisado" value="Doc. revisado:"/>																		
                 <p:selectOneMenu id="idRevisado" value="#{manticCatalogosEmpresasCuentasProrroga.attrs.idRevisado}" converter="javax.faces.Long" styleClass="janal-wid-100-txt">									
                   <f:selectItem itemLabel="SI" itemValue="1"/>
