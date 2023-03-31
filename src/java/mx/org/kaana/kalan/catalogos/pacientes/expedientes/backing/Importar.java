@@ -61,6 +61,7 @@ public class Importar extends IBaseImportar implements Serializable {
 	private Long idCliente;	
 	private Importado documento;	
 	private List<Importado> documentos;	
+  private String path;
   
 	
 	public Importado getDocumento() {
@@ -73,6 +74,10 @@ public class Importar extends IBaseImportar implements Serializable {
 
   public List<Importado> getDocumentos() {
     return documentos;
+  }
+
+  public String getPath() {
+    return path;
   }
 	
 	@PostConstruct
@@ -89,6 +94,9 @@ public class Importar extends IBaseImportar implements Serializable {
 			this.documento = new Importado();
       this.documentos= new ArrayList();
       this.toLoadDocumentos();
+      this.attrs.put("elementos", this.documentos.size());
+      String dns= Configuracion.getInstance().getPropiedadServidor("sistema.dns");
+      this.path = dns.substring(0, dns.lastIndexOf("/")+ 1).concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/expedientes/");      
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -193,11 +201,11 @@ public class Importar extends IBaseImportar implements Serializable {
   	Map<String, Object> params= new HashMap<>();
 		try {
       params.put("idCliente", this.cliente.toLong("idCliente"));
-      columns.add(new Columna("original", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("archivo", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("tipo", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("observaciones", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
-		  this.attrs.put("importados", UIEntity.build("VistaClientesRepresentantesDto", "importados", params, columns));
+		  this.attrs.put("importados", UIEntity.build("VistaExpedientesDto", "lazy", params, columns));
 		} // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -245,14 +253,18 @@ public class Importar extends IBaseImportar implements Serializable {
 		String regresar        = null;
 		Transaccion transaccion= null;
 		try {
-			transaccion= new Transaccion(this.cliente, this.documento);
-      if(transaccion.ejecutar(EAccion.REGISTRAR)) {
-      	JsfBase.addMessage("Documento", "Se importó el documento de forma correcta !", ETipoMensaje.INFORMACION);
-        this.doLoadImportados();
-				regresar= this.doCancelar();
-			} // if
+      if(this.documentos.size()> 0) {
+        transaccion= new Transaccion(this.cliente, this.documentos);
+        if(transaccion.ejecutar(EAccion.REGISTRAR)) {
+          JsfBase.addMessage("Documento", "Se importó el documento de forma correcta !", ETipoMensaje.INFORMACION);
+          this.doLoadImportados();
+          regresar= this.doCancelar();
+        } // if
+        else
+          JsfBase.addMessage("Documento", "Ocurrio un error al importar los documentos, intente de nueva cuenta !", ETipoMensaje.INFORMACION);
+      } // if
       else
-      	JsfBase.addMessage("Documento", "Ocurrio un error al importar los documentos, intente de nueva cuenta !", ETipoMensaje.INFORMACION);
+        JsfBase.addMessage("Documento", "No exiten documentos que importar !", ETipoMensaje.INFORMACION);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -273,6 +285,7 @@ public class Importar extends IBaseImportar implements Serializable {
   public void doAddDocumento() {
     this.documentos.add(this.documento);
     this.documento= new Importado();
+    this.attrs.put("elementos", this.documentos.size());
   }
   
   public void doRemoveDocumento(Importado item) {
@@ -319,7 +332,6 @@ public class Importar extends IBaseImportar implements Serializable {
   }
   
   public void doChangeTipo(Importado row) {
-    Map<String, Object> params= new HashMap<>();
     try {      
       if(!Cadena.isVacio(this.attrs.get("ikComodin"))) {
         row.setIdComodin((Long)this.attrs.get("ikComodin"));
@@ -332,9 +344,6 @@ public class Importar extends IBaseImportar implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessageError(e);      
     } // catch	
-    finally {
-      Methods.clean(params);
-    } // finally
   }  
 
   public void doChangeDescripcion(Importado row) {

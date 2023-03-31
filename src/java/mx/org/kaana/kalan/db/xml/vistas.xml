@@ -9,7 +9,6 @@
 select      
   tc_kalan_expedientes.id_expediente as id_key,
   tc_kalan_expedientes.*,
-  tc_kalan_citas.id_cita,
   tc_kalan_citas.consecutivo,
   tc_mantic_tipos_archivos.nombre as tipo
 from      

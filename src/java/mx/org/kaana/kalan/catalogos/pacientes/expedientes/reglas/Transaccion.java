@@ -1,5 +1,8 @@
 package mx.org.kaana.kalan.catalogos.pacientes.expedientes.reglas;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
@@ -8,6 +11,7 @@ import mx.org.kaana.kalan.db.dto.TcKalanExpedientesBitacoraDto;
 import mx.org.kaana.kalan.db.dto.TcKalanExpedientesDto;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
+import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 import org.hibernate.Session;
 import org.apache.commons.logging.Log;
@@ -19,16 +23,16 @@ public class Transaccion extends IBaseTnx {
 	
 	private Entity cliente;
   private Long idExpediente;
-	private Importado documento;
+	private List<Importado> documentos;
   private String messageError;
 
 	public Transaccion(Long idExpediente) {
     this.idExpediente= idExpediente;
   }
   
-	public Transaccion(Entity cliente, Importado documento) {
-		this.cliente  = cliente;
-		this.documento= documento;
+	public Transaccion(Entity cliente, List<Importado> documentos) {
+		this.cliente   = cliente;
+		this.documentos= documentos;
 	}
 
   @Override
@@ -54,36 +58,46 @@ public class Transaccion extends IBaseTnx {
   } // ejecutar
 
 	protected Boolean toUpdateDeleteFile(Session sesion) throws Exception {
-    Boolean regresar         = Boolean.FALSE;
-		TcKalanExpedientesDto tmp= null;
-		if(this.cliente.toLong("idCliente")!= -1L) {			
-			if(this.documento!= null) {
-				tmp= new TcKalanExpedientesDto(
-          this.cliente.toLong("idCliente"), // Long idCliente, 
-          this.documento.getOriginal(), // String archivo, 
-          this.documento.getRuta(), // String ruta, 
-          -1L, // Long idExpediente, 
-          null, // Long idCita, 
-          this.documento.getName(), // String nombre, 
-          this.documento.getFileSize(), // Long tamanio, 
-          JsfBase.getIdUsuario(), // Long idUsuario, 
-          this.documento.getIdComodin(), // Long idTipoArchivo, 
-          1L, // Long idExpedienteEstatus, 
-          this.documento.getObservaciones(), // String observaciones,
-          Configuracion.getInstance().getPropiedadSistemaServidor("path.expedientes").concat(this.documento.getRuta()).concat(this.documento.getName()) // String alias     
-        );
-        TcKalanExpedientesDto exists= (TcKalanExpedientesDto)DaoFactory.getInstance().toEntity(TcKalanExpedientesDto.class, "TcKalanExpedientesDto", "identically", tmp.toMap());
-				if(exists== null) 
-					DaoFactory.getInstance().insert(sesion, tmp);
-        else {
-          tmp.setIdExpediente(exists.getIdExpediente());
-					DaoFactory.getInstance().update(sesion, tmp);
-        } // if  
-				sesion.flush();
-        this.toCheckDeleteFile(sesion, this.documento.getName());
+    Boolean regresar          = Boolean.FALSE;
+		TcKalanExpedientesDto tmp = null;
+    Map<String, Object> params= new HashMap<>();
+    try {
+      if(this.cliente.toLong("idCliente")!= -1L) {			
+        for (Importado documento: this.documentos) {
+          tmp= new TcKalanExpedientesDto(
+            this.cliente.toLong("idCliente"), // Long idCliente, 
+            documento.getOriginal(), // String archivo, 
+            documento.getRuta(), // String ruta, 
+            -1L, // Long idExpediente, 
+            null, // Long idCita, 
+            documento.getName(), // String nombre, 
+            documento.getFileSize(), // Long tamanio, 
+            JsfBase.getIdUsuario(), // Long idUsuario, 
+            documento.getIdComodin(), // Long idTipoArchivo, 
+            1L, // Long idExpedienteEstatus, 
+            documento.getObservaciones(), // String observaciones,
+            Configuracion.getInstance().getPropiedadSistemaServidor("path.expedientes").concat(documento.getRuta()).concat(documento.getName()) // String alias     
+          );
+          params.put("nombre", documento.getName());
+          TcKalanExpedientesDto exists= (TcKalanExpedientesDto)DaoFactory.getInstance().toEntity(TcKalanExpedientesDto.class, "TcKalanExpedientesDto", "identically", tmp.toMap());
+          if(exists== null) 
+            DaoFactory.getInstance().insert(sesion, tmp);
+          else {
+            tmp.setIdExpediente(exists.getIdExpediente());
+            DaoFactory.getInstance().update(sesion, tmp);
+          } // if  
+          sesion.flush();
+          this.toCheckDeleteFile(sesion, documento.getName());
+        } // for
         regresar= Boolean.TRUE;
-			} // if	
-  	} // if	
+      } // if
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	      
+    finally {
+      Methods.clean(params);
+    } // finally
     return regresar;
 	} // toUpdateDeleteXml
  

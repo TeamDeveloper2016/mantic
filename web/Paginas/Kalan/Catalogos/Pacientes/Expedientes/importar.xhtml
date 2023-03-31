@@ -11,9 +11,10 @@
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
-				'contenedorGrupos\\:idTipoDocumento': {validaciones: 'requerido', mascara: 'libre'},
-				'contenedorGrupos\\:documento'      : {validaciones: 'requerido', mascara: 'libre'},
-				'contenedorGrupos\\:observaciones'  : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true}
+				'contenedorGrupos\\:idTipoDocumento': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:documento'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:observaciones'  : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true},
+				'contenedorGrupos\\:total'          : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'entero', grupo: 'documentos'}
 			};	
 			
 			function start() {
@@ -73,7 +74,7 @@
                 </p:panelGrid>  
 							  <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100-txt">		
                   <p:spacer height="3px"/>
-                  <p:commandButton actionListener="#{kalanCatalogosPacientesExpedientesImportar.doAddDocumento}" process="@this idTipoDocumento documento observaciones" update="tablaDocumentos idTipoDocumento documento observaciones" icon="fa fa-plus" oncomplete="janal.refresh();"/>
+                  <p:commandButton actionListener="#{kalanCatalogosPacientesExpedientesImportar.doAddDocumento}" process="@this idTipoDocumento documento observaciones" update="contenedorGrupos:total contenedorGrupos:idTipoDocumento contenedorGrupos:documento contenedorGrupos:observaciones tablaDocumentos" icon="fa fa-plus" onstart="return janal.partial('general')" oncomplete="janal.refresh();"/>
                 </p:panelGrid>  
               </p:panelGrid>  
               <p:inputTextarea id="observaciones" placeholder="ESCRIBA SI EXISTEN OBSERVACIONES" rows="2" cols="33" styleClass="janal-wid-100-txt" value="#{kalanCatalogosPacientesExpedientesImportar.documento.observaciones}"/>
@@ -124,7 +125,9 @@
                   <p:commandButton actionListener="#{kalanCatalogosPacientesExpedientesImportar.doRemoveDocumento(item)}" process="@this" update="tablaDocumentos" icon="fa fa-trash" title="Eliminar" rendered="#{item.idEstatus eq 1}"/>
                   <p:commandButton actionListener="#{kalanCatalogosPacientesExpedientesImportar.doRecoverDocumento(item)}" process="@this" update="tablaDocumentos" icon="fa fa-recycle" title="Recuperar" rendered="#{item.idEstatus eq 2}"/>
                 </p:column>	
-              </p:dataTable>               
+              </p:dataTable>          
+              <p:outputLabel for="total" value="Documentos:" styleClass="janal-display-none"/>
+              <p:inputText id="total" styleClass="janal-wid-100-txt janal-display-none" value="#{kalanCatalogosPacientesExpedientesImportar.attrs.elementos}"/>
 						</p:tab>            
 						<p:tab title="Documentos">
 							<p:dataTable id="importados" var="row" value="#{kalanCatalogosPacientesExpedientesImportar.attrs.importados}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_TOPE_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.key}" styleClass="importado paginated" rowIndexVar="index">
@@ -132,7 +135,7 @@
 									<h:outputText value="#{index+ 1}.-"/>
 								</p:column>   								
 								<p:column styleClass="MarAuto Responsive" headerText="Nombre">
-									<h:outputText value="#{row.original}"/>
+									<h:outputText value="#{row.archivo}"/>
 								</p:column>   
 								<p:column styleClass="MarAuto Responsive janal-wid-15" headerText="Tipo">
 									<h:outputText value="#{row.tipo}"/>
@@ -142,6 +145,11 @@
 								</p:column>   
 								<p:column styleClass="MarAuto Responsive janal-wid-15" headerText="Fecha">
 									<h:outputText value="#{row.registro}"/>
+								</p:column>   
+								<p:column styleClass="MarAuto Responsive janal-column-center janal-wid-5" headerText="Doc">
+                  <a data-magnify="gallery" href="#{kalanCatalogosPacientesExpedientesImportar.path}#{row.ruta}#{row.nombre}" data-caption="#{row.archivo}" data-group="icon-image" class="icon" style="display: #{empty row.nombre? 'none': ''}">
+                    <p:graphicImage url="#{kalanCatalogosPacientesExpedientesImportar.path}#{row.ruta}#{row.nombre}" style="cursor:zoom-in; display: #{empty row.nombre? 'none': ''}" width="30px" height="25px" title="#{row.archivo}"/>
+                  </a>  
 								</p:column>   
 								<p:column style="text-align: center" styleClass="janal-wid-col-90 janal-column-center">
                   <p:commandButton actionListener="#{kalanCatalogosPacientesExpedientesImportar.doCleanDocumento(item)}" process="@this" update="importados" icon="fa fa-trash" title="Eliminar"/>
@@ -161,11 +169,11 @@
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{kalanCatalogosPacientesExpedientesImportar.doAceptar}" onstart="return janal.execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{kalanCatalogosPacientesExpedientesImportar.doAceptar}" onstart="return janal.partial('documentos');" oncomplete="janal.desbloquear()"/>
 			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-reply" process="@this" action="#{kalanCatalogosPacientesExpedientesImportar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{kalanCatalogosPacientesExpedientesImportar.doAceptar}" onstart="return janal.execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{kalanCatalogosPacientesExpedientesImportar.doAceptar}" onstart="return janal.partial('documentos');" oncomplete="janal.desbloquear()"/>
 			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-reply" process="@this" action="#{kalanCatalogosPacientesExpedientesImportar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 	</ui:define>
