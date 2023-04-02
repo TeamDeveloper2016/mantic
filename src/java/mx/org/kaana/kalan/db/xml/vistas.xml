@@ -19,8 +19,9 @@ left join
  tc_kalan_citas on tc_kalan_expedientes.id_cita= tc_kalan_citas.id_cita
 where
   tc_kalan_expedientes.id_cliente= {idCliente}
-order by
-  tc_kalan_expedientes.registro desc 
+  and tc_kalan_expedientes.id_expediente_estatus in (1, 3)
+  and {condicion}
+{sortOrder}        
       </select>
     </unit>    
     <unit id="VistaClientesCitasDto">

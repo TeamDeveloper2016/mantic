@@ -89,6 +89,7 @@ public class Nuevo extends IBaseFilter implements Serializable {
       this.attrs.put("fecha", JsfBase.getFlashAttribute("fecha")== null? new Timestamp(Calendar.getInstance().getTimeInMillis()): JsfBase.getFlashAttribute("fecha"));
       this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "agenda": JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("activeIndex", Objects.equals(this.accion, EAccion.AGREGAR) && Objects.equals(this.attrs.get("idCliente"), -1L)? 0: 1);
+      this.attrs.put("trabajos", 0);
       this.seleccionados= new Entity[]{};      
       this.toLoadPersonal();
       this.toLoadServicios();
@@ -263,6 +264,7 @@ public class Nuevo extends IBaseFilter implements Serializable {
 
   public void doRowSeleccionado() {
     LOG.info(this.seleccionados.length);
+    this.attrs.put("trabajos", this.seleccionados.length);
   }
  
   public void doUpdateInicio() {

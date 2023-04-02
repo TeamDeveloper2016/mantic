@@ -24,10 +24,6 @@
       function stop() {
         PF('statusDialog').hide();
       };
-			
-			function load() {
-			  SyntaxHighlighter.highlight();	
-			}
 		</script>
 		<style>
 			.janal-upload-frame {
@@ -35,11 +31,6 @@
         margin-bottom: 6px;
         border-radius: 5px;				
 			}
-			.syntaxhighlighter {
-					overflow-y: auto !important;
-					overflow-x: auto !important;
-					max-height: 470px;
-			}			
 		</style>
 	</ui:define>
 	<ui:define name="contenido">
@@ -64,7 +55,7 @@
               </p:panelGrid>
 						</p:tab>				
 						<p:tab title="Importar">
-							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100-txt"  columnClasses="janal-wid-95, janal-wid-5 janal-column-right">		
+							<p:panelGrid columns="2" styleClass="janal-wid-100-txt"  columnClasses="janal-wid-95, janal-wid-5 janal-column-right">		
 							  <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100-txt">		
                   <p:outputLabel for="idTipoDocumento" value="Tipo de documento:" styleClass="janal-wid-100-txt"/>
                   <p:selectOneMenu id="idTipoDocumento" value="#{kalanCatalogosPacientesExpedientesImportar.documento.idComodin}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
@@ -134,16 +125,16 @@
 								<p:column styleClass="MarAuto Responsive janal-wid-col-30" headerText="No.">
 									<h:outputText value="#{index+ 1}.-"/>
 								</p:column>   								
-								<p:column styleClass="MarAuto Responsive" headerText="Nombre">
+								<p:column styleClass="MarAuto Responsive janal-wid-15" headerText="Nombre">
 									<h:outputText value="#{row.archivo}"/>
 								</p:column>   
 								<p:column styleClass="MarAuto Responsive janal-wid-15" headerText="Tipo">
 									<h:outputText value="#{row.tipo}"/>
 								</p:column>   
-								<p:column  styleClass="MarAuto Responsive janal-wid-20" headerText="Observaciones">
+								<p:column styleClass="MarAuto Responsive" headerText="Observaciones">
 									<h:outputText value="#{row.observaciones}"/>
 								</p:column>   
-								<p:column styleClass="MarAuto Responsive janal-wid-15" headerText="Fecha">
+								<p:column styleClass="MarAuto Responsive janal-wid-12 janal-column-center" headerText="Fecha">
 									<h:outputText value="#{row.registro}"/>
 								</p:column>   
 								<p:column styleClass="MarAuto Responsive janal-column-center janal-wid-5" headerText="Doc">
@@ -152,7 +143,7 @@
                   </a>  
 								</p:column>   
 								<p:column style="text-align: center" styleClass="janal-wid-col-90 janal-column-center">
-                  <p:commandButton actionListener="#{kalanCatalogosPacientesExpedientesImportar.doCleanDocumento(item)}" process="@this" update="importados" icon="fa fa-trash" title="Eliminar"/>
+                  <p:commandButton actionListener="#{kalanCatalogosPacientesExpedientesImportar.doCleanDocumento(row)}" process="@this" update="importados" icon="fa fa-trash" title="Eliminar"/>
 									<p:commandButton icon="fa fa-download" title="Descargar archivo" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
 										<p:fileDownload value="#{kalanCatalogosPacientesExpedientesImportar.doFileDownload(row)}" />
 									</p:commandButton>

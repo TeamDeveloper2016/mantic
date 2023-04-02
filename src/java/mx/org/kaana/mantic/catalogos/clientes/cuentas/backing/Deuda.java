@@ -361,7 +361,7 @@ public class Deuda extends IBaseFilter implements Serializable {
 		try {
 			this.attrs.put("registroSeleccionado", (Entity) event.getData());
 			if (!event.getVisibility().equals(Visibility.HIDDEN)) 
-				loadHistorialPagos();			
+				this.loadHistorialPagos();			
 		} // try
 		catch (Exception e) {			
 			JsfBase.addMessageError(e);

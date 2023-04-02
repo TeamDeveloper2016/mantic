@@ -55,7 +55,7 @@
               </div>  
               <div class="lg-pantalla">
                 <p:menuButton value="Opciones">
-                  <p:menuitem value="Agendar" action="#{kalanCatalogosPacientesCitasCitas.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
+                  <p:menuitem value="Agendar" action="#{kalanCatalogosPacientesCitasCitas.doAccion('AGREGAR')}" icon="fa fa-calendar-o" title="Agregar" onstart="return janal.bloquear()"/>						
 									<p:separator/>
                   <p:menuitem value="Exportar PDF" icon="fa fa-file-pdf-o" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:menuitem value="Exportar XLS" icon="fa fa-file-excel-o" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>

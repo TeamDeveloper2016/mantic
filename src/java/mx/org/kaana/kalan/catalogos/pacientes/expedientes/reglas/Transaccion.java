@@ -7,12 +7,12 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
+import mx.org.kaana.kalan.catalogos.pacientes.expedientes.beans.Expediente;
 import mx.org.kaana.kalan.db.dto.TcKalanExpedientesBitacoraDto;
 import mx.org.kaana.kalan.db.dto.TcKalanExpedientesDto;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 import org.hibernate.Session;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -23,14 +23,14 @@ public class Transaccion extends IBaseTnx {
 	
 	private Entity cliente;
   private Long idExpediente;
-	private List<Importado> documentos;
+	private List<Expediente> documentos;
   private String messageError;
 
 	public Transaccion(Long idExpediente) {
     this.idExpediente= idExpediente;
   }
   
-	public Transaccion(Entity cliente, List<Importado> documentos) {
+	public Transaccion(Entity cliente, List<Expediente> documentos) {
 		this.cliente   = cliente;
 		this.documentos= documentos;
 	}
@@ -63,7 +63,7 @@ public class Transaccion extends IBaseTnx {
     Map<String, Object> params= new HashMap<>();
     try {
       if(this.cliente.toLong("idCliente")!= -1L) {			
-        for (Importado documento: this.documentos) {
+        for (Expediente documento: this.documentos) {
           tmp= new TcKalanExpedientesDto(
             this.cliente.toLong("idCliente"), // Long idCliente, 
             documento.getOriginal(), // String archivo, 
@@ -106,7 +106,7 @@ public class Transaccion extends IBaseTnx {
     try {
       TcKalanExpedientesDto item= (TcKalanExpedientesDto)DaoFactory.getInstance().findById(TcKalanExpedientesDto.class, this.idExpediente);
       if(item!= null) {
-        item.setIdExpedienteEstatus(2L);
+        item.setIdExpedienteEstatus(2L); // ELIMINADA
         DaoFactory.getInstance().update(item);
         TcKalanExpedientesBitacoraDto bitacora= new TcKalanExpedientesBitacoraDto(
           JsfBase.getIdUsuario(), // Long idUsuario, 

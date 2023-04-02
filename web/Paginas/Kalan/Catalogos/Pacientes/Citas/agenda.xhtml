@@ -47,46 +47,43 @@
 					<p:tabView id="contenedorGrupos">
             <p:ajax event="tabChange" listener="#{kalanCatalogosPacientesCitasAgenda.doTabChange}" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
             <p:tab title="Cliente">
-              <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
-                <p:outputLabel for="razonSocial" value="Clientes:"/>
-                <p:autoComplete id="razonSocial" var="custom" placeholder="ejemplo: JUAN PEREZ LOPEZ" itemLabel="#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{kalanCatalogosPacientesCitasAgenda.attrs.cliente}" completeMethod="#{kalanCatalogosPacientesCitasAgenda.doCompleteCliente}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
-                  <f:facet name="itemtip">
-                    <h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
-                      <h:outputText value="Nombre:" />
-                      <h:outputText value="#{custom.cliente}" />
-                      <h:outputText value="Última cita:" styleClass="janal-color-orange" />
-                      <h:outputText value="#{empty(custom.servicios.toString())? 'SIN CITA': custom.inicio}" styleClass="janal-color-orange FsBold"/>
-                      <h:outputText value="Servicios:" />
-                      <h:outputText value="#{empty(custom.servicios.toString())? 'SIN SERVICIOS': custom.servicios}" />
-                    </h:panelGrid>
-                  </f:facet>
-                </p:autoComplete>	
-              </p:panelGrid>
+              <p:autoComplete id="razonSocial" var="custom" placeholder="BUSCAR Ej. JUAN PEREZ LOPEZ" itemLabel="#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{kalanCatalogosPacientesCitasAgenda.attrs.cliente}" completeMethod="#{kalanCatalogosPacientesCitasAgenda.doCompleteCliente}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+                <f:facet name="itemtip">
+                  <h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
+                    <h:outputText value="Nombre:" />
+                    <h:outputText value="#{custom.cliente}" />
+                    <h:outputText value="Última cita:" styleClass="janal-color-orange" />
+                    <h:outputText value="#{empty(custom.servicios.toString())? 'SIN CITA': custom.inicio}" styleClass="janal-color-orange FsBold"/>
+                    <h:outputText value="Servicios:" />
+                    <h:outputText value="#{empty(custom.servicios.toString())? 'SIN SERVICIOS': custom.servicios}" />
+                  </h:panelGrid>
+                </f:facet>
+              </p:autoComplete>	
             </p:tab>
             <p:tab title="Servicio">
-              <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
-                <p:outputLabel for="idServicio" value="Servicio:"/>
-								<p:selectOneMenu id="idServicio" value="#{kalanCatalogosPacientesCitasAgenda.attrs.idServicio}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-									<f:selectItems value="#{kalanCatalogosPacientesCitasAgenda.attrs.servicios}" var="element" itemValue="#{element.key}" itemLabel="#{element.codigo} #{empty(element.nombre.toString())? '': '|'} #{element.nombre}"/>
-									<p:column headerText="Código">
-										<h:outputText value="#{item.codigo}"/>
-									</p:column>   
-									<p:column headerText="Nombre">
-										<h:outputText value="#{item.nombre}"/>
-									</p:column>   
-								</p:selectOneMenu>
-              </p:panelGrid>
+              <p:selectOneMenu id="idServicio" value="#{kalanCatalogosPacientesCitasAgenda.attrs.idServicio}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <f:selectItems value="#{kalanCatalogosPacientesCitasAgenda.attrs.servicios}" var="element" itemValue="#{element.key}" itemLabel="#{element.codigo} #{empty(element.nombre.toString())? '': '|'} #{element.nombre}"/>
+                <p:column headerText="Código">
+                  <h:outputText value="#{item.codigo}"/>
+                </p:column>   
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombre}"/>
+                </p:column>   
+              </p:selectOneMenu>
             </p:tab>
             <p:tab title="Atiende">
-              <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
-                <p:outputLabel for="idPersona" value="Doctor:"/>
-								<p:selectOneMenu id="idPersona" value="#{kalanCatalogosPacientesCitasAgenda.attrs.idPersona}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-									<f:selectItems value="#{kalanCatalogosPacientesCitasAgenda.attrs.personas}" var="element" itemValue="#{element.key}" itemLabel="#{element.empleado}"/>
-									<p:column headerText="Nombre">
-										<h:outputText value="#{item.empleado}"/>
-									</p:column>   
-								</p:selectOneMenu>
-              </p:panelGrid>
+              <p:selectOneMenu id="idPersona" value="#{kalanCatalogosPacientesCitasAgenda.attrs.idPersona}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <f:selectItems value="#{kalanCatalogosPacientesCitasAgenda.attrs.personas}" var="element" itemValue="#{element.key}" itemLabel="#{element.empleado}"/>
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.empleado}"/>
+                </p:column>   
+                <p:column headerText="Celular">
+                  <h:outputText value="#{item.celular}"/>
+                </p:column>   
+                <p:column headerText="Correo">
+                  <h:outputText value="#{item.correo}"/>
+                </p:column>   
+              </p:selectOneMenu>
             </p:tab>
           </p:tabView>
           <div class="janal-align-right janal-wid-100">

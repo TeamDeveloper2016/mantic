@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+	<ui:param name="titulo" value="Galeria del expediente digital"/>
+	<ui:define name="librerias">
+		<script type="text/javascript">
+			Janal.Control.fields = {				 				
+				'contenedorGrupos\\:nombre': {validaciones: 'libre', mascara: 'libre', formatos: 'mayusculas', grupo: 'general'},
+				'contenedorGrupos\\:idTipoDocumento': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:inicio': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:termino': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:idCita': {validaciones: 'libre', mascara: 'libre', grupo: 'general'}
+			};	
+			
+			function start() {
+        PF('statusDialog').show();
+      };
+ 
+      function stop() {
+        PF('statusDialog').hide();
+      };
+		</script>
+		<style>
+			.janal-upload-frame {
+        border: solid 1px #D1D3D4;
+        margin-bottom: 6px;
+        border-radius: 5px;				
+			}
+			.janal-content-vertical {
+			  vertical-align: top;
+			}			
+		</style>
+	</ui:define>
+	<ui:define name="contenido">
+		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">
+					<p:tabView id="contenedorGrupos">
+            <p:ajax event="tabChange" listener="#{kalanCatalogosPacientesExpedientesGaleria.doTabChange}" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+            <p:tab title="Nombre">							
+              <p:inputText id="nombre" placeholder="BUSCAR DOCUMENTO Ej. PANORAMICA" styleClass="janal-wid-100-txt" value="#{kalanCatalogosPacientesExpedientesGaleria.attrs.nombre}"/>
+						</p:tab>				
+						<p:tab title="Tipo">
+              <p:selectOneMenu id="idTipoDocumento" value="#{kalanCatalogosPacientesExpedientesGaleria.attrs.idTipoDocumento}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <f:selectItems value="#{kalanCatalogosPacientesExpedientesGaleria.attrs.documentos}"/>
+              </p:selectOneMenu>    
+						</p:tab>            
+						<p:tab title="Fecha">
+              <p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-45, janal-wid-10 janal-column-center, janal-wid-45">
+                <p:calendar id="inicio" inputStyleClass="janal-wid-100-txt janal-column-center" styleClass="janal-wid-100 generales" value="#{kalanCatalogosPacientesExpedientesGaleria.attrs.inicio}" pattern="dd/MM/yyyy" readonlyInput="false" locale="mx" converter="janal.convertidor.Calendario">
+                  <p:ajax event="dateSelect" listener="#{kalanCatalogosPacientesExpedientesGaleria.doUpdateInicio}" process="@this contenedorGrupos:termino" update="contenedorGrupos:termino"/>
+                </p:calendar>  
+                <p:outputLabel value=" A " styleClass="janal-color-black FsBold"/>
+                <p:calendar id="termino" inputStyleClass="janal-wid-100-txt janal-column-center" styleClass="janal-wid-100 generales" value="#{kalanCatalogosPacientesExpedientesGaleria.attrs.termino}" pattern="dd/MM/yyyy" readonlyInput="false" locale="mx" converter="janal.convertidor.Calendario">
+                  <p:ajax event="dateSelect" listener="#{kalanCatalogosPacientesExpedientesGaleria.doUpdateTermino}" process="@this contenedorGrupos:inicio" update="contenedorGrupos:inicio"/>
+                </p:calendar>                    
+              </p:panelGrid>  
+						</p:tab>						            						            																																																
+						<p:tab title="Cita">
+							<p:selectOneMenu id="idCita" value="#{kalanCatalogosPacientesExpedientesGaleria.attrs.idCita}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
+								<f:selectItems value="#{kalanCatalogosPacientesExpedientesGaleria.attrs.citas}" var="element" itemValue="#{element}" itemLabel="#{element.consecutivo} #{element.inicio.toString() eq ''? '': '|'} #{element.inicio}"/>
+								<p:column headerText="Folio">
+									<h:outputText value="#{item.consecutivo}"/>
+								</p:column>   
+								<p:column headerText="Inicio">
+									<h:outputText value="#{item.inicio}"/>
+								</p:column>   
+								<p:column headerText="Termino">
+                  <h:outputText value="#{item.termino}" styleClass="janal-color-orange FsBold"/>
+								</p:column>   
+								<p:column headerText="Servicios">
+                  <h:outputText value="#{empty(item.servicios.toString())? 'SIN SERVICIOS': item.servicios}" />
+								</p:column>   
+							</p:selectOneMenu>
+						</p:tab>						            						            																																																
+					</p:tabView>
+          <div class="janal-align-right janal-wid-100">
+            <p:commandButton id="buscar" value="Buscar" styleClass="janal-text-white lg-pantalla" icon="fa fa-filter" accesskey="b" onstart="return janal.execute();" process="@this contenedorGrupos:nombre contenedorGrupos:idTipoDocumento" actionListener="#{kalanCatalogosPacientesExpedientesGaleria.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
+            <p:commandButton id="buscarIcon" value="Buscar" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.execute();" process="@this contenedorGrupos:nombre contenedorGrupos:idTipoDocumento" actionListener="#{kalanCatalogosPacientesExpedientesGaleria.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
+          </div>
+          <p:spacer width="5px"/>
+          <p:dataGrid lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{kalanCatalogosPacientesExpedientesGaleria.lazyModel}" columns="2" layout="grid" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="2" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="2,4,#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{kalanCatalogosPacientesExpedientesGaleria.lazyModel.rowCount gt kalanCatalogosPacientesExpedientesGaleria.lazyModel.pageSize}" rowIndexVar="index" paginatorPosition="bottom" styleClass="janal-wid-99 janal-column-center"> 
+            <f:facet name="header">
+              <div class="janal-column-right">
+                <h:outputText value="#{kalanCatalogosPacientesExpedientesGaleria.cliente.razonSocial} #{kalanCatalogosPacientesExpedientesGaleria.cliente.paterno} #{kalanCatalogosPacientesExpedientesGaleria.cliente.materno}" styleClass="janal-align-left" style="font-weight: normal;"/>
+                <div class="lg-pantalla">
+                  <p:menuButton value="Opciones">
+                    <p:menuitem value="Agregar" action="#{kalanCatalogosPacientesExpedientesGaleria.doAccion()}" icon="fa fa-calendar-o" title="Agregar" onstart="return janal.bloquear()"/>						
+                  </p:menuButton>
+                </div>  
+                <div class="xs-pantalla">              
+                  <p:commandButton action="#{kalanCatalogosPacientesExpedientesGaleria.doAccion()}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
+                </div>  
+              </div>  
+            </f:facet>		
+              <p:panel styleClass="janal-wid-100">
+                <f:facet name="header">
+                  <h:outputText value="Documento [ #{row.archivo} ]" styleClass="janal-align-left"/>
+                  <h:outputText value="Fecha: #{row['registro']} hrs." styleClass="janal-align-right"/>
+                </f:facet>  
+                <p:panelGrid columns="1" styleClass="janal-wid-100">
+                  <p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-40 janal-column-center, janal-wid-60 janal-column-left janal-content-vertical">
+                    <p:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-column-center">
+                      <p:graphicImage url="#{kalanCatalogosPacientesExpedientesGaleria.path}#{row.ruta}#{row.nombre}" style="cursor:zoom-in; display: #{empty row.nombre? 'none': ''}" width="460px" height="350px" title="Clic para ver" onclick="$('#janal\\:view\\:#{index}').click();" />
+                    </p:panelGrid>   
+                    <h:outputText value="Observaciones: #{row['observaciones']}"/>  
+                  </p:panelGrid>  
+                </p:panelGrid>
+                <f:facet name="footer">
+                  <div class="janal-line-button">
+                    <h:outputText value="#{row['tipo']}" styleClass="janal-color-blue janal-align-left"/>
+                    <a id="janal:view:#{index}" data-magnify="gallery" href="#{kalanCatalogosPacientesExpedientesGaleria.path}#{row.ruta}#{row.nombre}" data-caption="#{row.archivo}" data-group="icon-image" class="icon" style="display: #{empty row.nombre? 'none': ''}">
+                      <p:commandButton iconPos="left" title="Ver" styleClass="janal-text-white" accesskey="r" icon="fa fa-image" type="button"/>
+                    </a>  
+  									<p:commandButton icon="fa fa-download" title="Descargar archivo" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
+                      <p:fileDownload value="#{kalanCatalogosPacientesExpedientesGaleria.doFileDownload(row)}" />
+                    </p:commandButton>
+                  </div>
+                </f:facet>
+              </p:panel>  
+            <f:facet name="footer">
+              <p:outputLabel value="Total [#{kalanCatalogosPacientesExpedientesGaleria.lazyModel== null? 0: kalanCatalogosPacientesExpedientesGaleria.lazyModel.rowCount}] registros"/>
+            </f:facet>
+          </p:dataGrid>
+				</div>
+			</div>
+		</div>		
+		<p:dialog modal="true" widgetVar="statusDialog" header="Estatus de la descarga del archivo" draggable="false" closable="false" resizable="false">
+			<p:graphicImage library="janal" name="/img/sistema/ajaxloadingbar.gif" />
+		</p:dialog>		
+	</ui:define>    
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-reply" process="@this" action="#{kalanCatalogosPacientesExpedientesGaleria.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-reply" process="@this" action="#{kalanCatalogosPacientesExpedientesGaleria.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+	</ui:define>
+</ui:composition>

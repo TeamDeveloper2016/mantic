@@ -84,7 +84,7 @@
 					<p:tabView id="contenedorGrupos">
             <p:ajax event="tabChange" listener="#{manticCatalogosClientesCuentasAbono.doTabChange}" process="@this" update="@(.importado)"/>						
             <p:tab title="Pagos">							
-							<p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticCatalogosClientesCuentasAbono.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosClientesCuentasAbono.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosClientesCuentasAbono.lazyModel.rowCount gt manticCatalogosClientesCuentasAbono.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+							<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticCatalogosClientesCuentasAbono.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosClientesCuentasAbono.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosClientesCuentasAbono.lazyModel.rowCount gt manticCatalogosClientesCuentasAbono.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
 								<f:facet name="header" >
 									<div class="lg-pantalla">
 										<p:menuButton value="Opciones">

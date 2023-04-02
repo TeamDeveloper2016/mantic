@@ -64,13 +64,13 @@
                 </p:panelGrid>
                 <f:facet name="footer" >
                   <div class="janal-line-button">
-                    <p:commandButton iconPos="left" title="Expediente digital" styleClass="janal-text-white" accesskey="x" icon="fa fa-image" action="#{kalanCatalogosPacientesCitasClientes.doGaleria}">
+                    <p:commandButton iconPos="left" title="Expediente digital" styleClass="janal-text-white" accesskey="r" icon="fa fa-image" action="#{kalanCatalogosPacientesCitasClientes.doGaleria}">
                       <f:setPropertyActionListener value="#{row}" target="#{kalanCatalogosPacientesCitasClientes.seleccionado}"  />
                     </p:commandButton>
                     <p:commandButton iconPos="left" title="Importar documento" styleClass="janal-text-white" accesskey="x" icon="fa fa-cloud-upload" action="#{kalanCatalogosPacientesCitasClientes.doExpediente}">
                       <f:setPropertyActionListener value="#{row}" target="#{kalanCatalogosPacientesCitasClientes.seleccionado}"  />
                     </p:commandButton>
-                    <p:commandButton iconPos="left" title="Agendar una cita" styleClass="janal-text-white" accesskey="y" icon="fa fa-plus" action="#{kalanCatalogosPacientesCitasClientes.doAgendar}">
+                    <p:commandButton iconPos="left" title="Agendar una cita" styleClass="janal-text-white" accesskey="y" icon="fa fa-calendar-o" action="#{kalanCatalogosPacientesCitasClientes.doAgendar}">
                       <f:setPropertyActionListener value="#{row}" target="#{kalanCatalogosPacientesCitasClientes.seleccionado}"  />
                     </p:commandButton>
                     <p:commandButton iconPos="left" title="Citas registradas" styleClass="janal-text-white" accesskey="z" icon="fa fa-calendar" action="#{kalanCatalogosPacientesCitasClientes.doCitas}">

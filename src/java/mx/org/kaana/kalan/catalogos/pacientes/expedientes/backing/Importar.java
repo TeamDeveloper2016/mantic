@@ -29,6 +29,7 @@ import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.kalan.catalogos.pacientes.expedientes.beans.Expediente;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.libs.formato.Fecha;
@@ -59,8 +60,8 @@ public class Importar extends IBaseImportar implements Serializable {
   private static final long serialVersionUID= 327353388565639367L;
 	private Entity cliente;
 	private Long idCliente;	
-	private Importado documento;	
-	private List<Importado> documentos;	
+	private Expediente documento;	
+	private List<Expediente> documentos;	
   private String path;
   
 	
@@ -72,7 +73,7 @@ public class Importar extends IBaseImportar implements Serializable {
 		return cliente;
 	}
 
-  public List<Importado> getDocumentos() {
+  public List<Expediente> getDocumentos() {
     return documentos;
   }
 
@@ -84,14 +85,13 @@ public class Importar extends IBaseImportar implements Serializable {
   @Override
   protected void init() {		
     try {
-//			if(JsfBase.getFlashAttribute("idCliente")== null)
-//				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
-//      this.idCliente= JsfBase.getFlashAttribute("idCliente")== null? -1L: (Long)JsfBase.getFlashAttribute("idCliente");
-      this.idCliente= 1L;
+			if(JsfBase.getFlashAttribute("idCliente")== null)
+				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
+      this.idCliente= JsfBase.getFlashAttribute("idCliente")== null? -1L: (Long)JsfBase.getFlashAttribute("idCliente");
       this.toLoad();
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "/Paginas/Kalan/Catalogos/Pacientes/Citas/clientes": JsfBase.getFlashAttribute("retorno"));
 			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_LOGOTIPOS);
-			this.documento = new Importado();
+			this.documento = new Expediente();
       this.documentos= new ArrayList();
       this.toLoadDocumentos();
       this.attrs.put("elementos", this.documentos.size());
@@ -201,6 +201,8 @@ public class Importar extends IBaseImportar implements Serializable {
   	Map<String, Object> params= new HashMap<>();
 		try {
       params.put("idCliente", this.cliente.toLong("idCliente"));
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      params.put("sortOrder", "order by tc_kalan_expedientes.registro desc ");
       columns.add(new Columna("archivo", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("tipo", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("observaciones", EFormatoDinamicos.MAYUSCULAS));
@@ -244,11 +246,6 @@ public class Importar extends IBaseImportar implements Serializable {
     return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   } // doCancelar
 
-  @Override
-	public void doViewFileDocument(UISelectEntity item) {
-		
-	} // doViewPdfDocument
-	
 	public String doAceptar() {
 		String regresar        = null;
 		Transaccion transaccion= null;
@@ -258,7 +255,6 @@ public class Importar extends IBaseImportar implements Serializable {
         if(transaccion.ejecutar(EAccion.REGISTRAR)) {
           JsfBase.addMessage("Documento", "Se importó el documento de forma correcta !", ETipoMensaje.INFORMACION);
           this.doLoadImportados();
-          regresar= this.doCancelar();
         } // if
         else
           JsfBase.addMessage("Documento", "Ocurrio un error al importar los documentos, intente de nueva cuenta !", ETipoMensaje.INFORMACION);
@@ -284,15 +280,15 @@ public class Importar extends IBaseImportar implements Serializable {
   
   public void doAddDocumento() {
     this.documentos.add(this.documento);
-    this.documento= new Importado();
+    this.documento= new Expediente();
     this.attrs.put("elementos", this.documentos.size());
   }
   
-  public void doRemoveDocumento(Importado item) {
+  public void doRemoveDocumento(Expediente item) {
     item.setIdEstatus(2L);
   }
   
-  public void doRecoverDocumento(Importado item) {
+  public void doRecoverDocumento(Expediente item) {
     item.setIdEstatus(1L);
   }
   
@@ -331,7 +327,7 @@ public class Importar extends IBaseImportar implements Serializable {
     } // catch	
   }
   
-  public void doChangeTipo(Importado row) {
+  public void doChangeTipo(Expediente row) {
     try {      
       if(!Cadena.isVacio(this.attrs.get("ikComodin"))) {
         row.setIdComodin((Long)this.attrs.get("ikComodin"));
