@@ -56,6 +56,10 @@ public final class Saras implements Serializable {
   private static final String AGENDA_MESSAGE_KALAN = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te enviamos las citas por atender el día de hoy *{fecha}*\\n\\n{clientes}En caso de no poder atender al cliente en el horario indicado, favor de notificar de inmediato al teléfono *{notifica}*\\n\\nAtentamente *_{empresa}_*.\\n\\nchatbot *IMOX* _Soluciones web_ (4492090586)\"";
   private static final String AGENDA_MESSAGE_TSAAK = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te enviamos las citas por atender el día de hoy *{fecha}*\\n\\n{clientes}En caso de no poder atender al cliente en el horario indicado, favor de notificar de inmediato al teléfono *{notifica}*\\n\\nAtentamente *_{empresa}_*.\\n\\nchatbot *IMOX* _Soluciones web_ (4492090586)\"";
   
+  private static final String PROMOCION_MESSAGE_MANTIC= "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, {mensaje}\\n\\nCualquier duda con respecto al mensaje favor de notificarlos al teléfono *{notifica}*\\n\\nAtentamente *_{empresa}_*.\\n\\nchatbot *IMOX* _Soluciones web_ (4492090586)\"";
+  private static final String PROMOCION_MESSAGE_KALAN = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, {mensaje}\\n\\nCualquier duda con respecto al mensaje favor de notificarlos al teléfono *{notifica}*\\n\\nAtentamente *_{empresa}_*.\\n\\nchatbot *IMOX* _Soluciones web_ (4492090586)\"";
+  private static final String PROMOCION_MESSAGE_TSAAK = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, {mensaje}\\n\\nCualquier duda con respecto al mensaje favor de notificarlos al teléfono *{notifica}*\\n\\nAtentamente *_{empresa}_*.\\n\\nchatbot *IMOX* _Soluciones web_ (4492090586)\"";
+  
   private static final String PATH_REPORT   = "{numero}.- {documento}; https://{host}/Temporal/Pdf/{reporte}\\n";
   private static final int LENGTH_CELL_PHONE= 10;
 
@@ -396,6 +400,80 @@ public final class Saras implements Serializable {
     } // if
     else 
       LOG.error("[doSendAgenda] No se envio el mensaje por whatsapp  ["+ this.celular+ "]");
+  }  
+  
+  public void doSendPromocion(String texto) {
+    this.doSendPromocion(null, texto);
+  }
+  
+  public void doSendPromocion(Session sesion, String texto) {
+    if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE) || this.celular.contains("@")) {
+      Message message= null;
+      String mensaje = PROMOCION_MESSAGE_MANTIC;
+      Map<String, Object> params = new HashMap<>();   
+      switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+        case "mantic":
+          mensaje= PROMOCION_MESSAGE_MANTIC;
+          break;
+        case "kalan":
+          mensaje= PROMOCION_MESSAGE_KALAN;
+          break;
+        case "tsaak":
+          mensaje= PROMOCION_MESSAGE_TSAAK;
+          break;
+      } // swtich
+      try {
+        params.put("nombre", this.nombre);
+        params.put("celular", this.celular);
+        params.put("fecha", Fecha.formatear(Fecha.FECHA_CORTA, this.fecha));
+        params.put("mensaje", texto);
+        params.put("empresa", Cadena.nombrePersona(Configuracion.getInstance().getEmpresa("titulo")));
+        params.put("host", Configuracion.getInstance().getEmpresa("host"));
+        params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
+        params.put("saludo", this.toSaludo());
+        params.put("idTipoMensaje", ETypeMessage.CITAS.getId());
+        if(!Configuracion.getInstance().isEtapaProduccion())
+          LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(mensaje, params, true)+ "}");
+        else {  
+          HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
+          .header("Content-Type", "application/json")
+          .header("Token", this.token)
+          .body("{"+ Cadena.replaceParams(mensaje, params, true)+ "}")
+          .asString();
+          LOG.error("Enviado: "+ response.getBody());
+          if(Objects.equals(response.getStatus(), 201)) {
+            Gson gson= new Gson();
+            message  = gson.fromJson(response.getBody(), Message.class);
+            if(message!= null)
+              message.init();
+            else
+              message= new Message();
+          } // if  
+          else {
+            LOG.error("[doSendPromocion] No se envio el mensaje whatsapp  ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            message= new Message();
+            message.setMessage(" {"+ Cadena.replaceParams(mensaje, params, true)+ "}");
+          } // else  
+          message.setTelefono(this.celular);
+          message.setIdSendStatus(new Long(response.getStatus()));
+          message.setSendStatus(response.getStatusText());
+          message.setIdTipoMensaje((Long)params.get("idTipoMensaje"));
+          message.setIdUsuario(JsfBase.getIdUsuario());
+          if(sesion!= null)
+            DaoFactory.getInstance().insert(sesion, message);
+          else
+            DaoFactory.getInstance().insert(message);
+        } // else  
+      } // try
+      catch(Exception e) {
+        Error.mensaje(e);
+      } // catch
+      finally {
+        Methods.clean(params);
+      } // finally
+    } // if
+    else 
+      LOG.error("[doSendPromocion] No se envio el mensaje por whatsapp  ["+ this.celular+ "]");
   }  
   
   private String toClientes(Map<Long, Citado> clientes) throws Exception {

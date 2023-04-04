@@ -136,6 +136,7 @@ public class Diagnostico extends IBaseFilter implements Serializable {
     String regresar= null;
     try {
 			JsfBase.setFlashAttribute("idCita", this.attrs.get("idCita"));
+			JsfBase.setFlashAttribute("idCliente", this.attrs.get("idCliente"));
 			JsfBase.setFlashAttribute("idClienteProcess", this.attrs.get("idCliente"));
 			regresar= ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);			
 		} // try

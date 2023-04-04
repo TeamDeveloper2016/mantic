@@ -196,7 +196,8 @@
     <unit id="TcKalanMensajesDto">
       <select id="row">
         select      
-          *
+          tc_kalan_mensajes.id_mensaje as id_key,
+          tc_kalan_mensajes.*
         from      
           tc_kalan_mensajes
         where 
@@ -210,6 +211,26 @@
         where      
           consecutivo = {consecutivo}
       </select>
+      <select id="vigentes">
+        select      
+          tc_kalan_mensajes.id_mensaje as id_key,
+          tc_kalan_mensajes.*
+        from      
+          tc_kalan_mensajes
+        where 
+          date_format(cuando, '%Y%m%d%H%i%S')&gt;= '{fecha}'
+        order by  
+          cuando
+      </select>
+			<select id="siguiente">
+        select
+					max(orden)+ 1 as siguiente
+				from 
+					tc_kalan_mensajes
+				where
+				  ejercicio= {ejercicio} 
+				  and orden{operador} 900000			
+			</select>
     </unit> 
     <unit id="TcKalanMensajesDetalleDto">
       <select id="row">

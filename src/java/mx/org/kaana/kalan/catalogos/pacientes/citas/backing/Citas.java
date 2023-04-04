@@ -135,34 +135,6 @@ public class Citas extends IBaseFilter implements Serializable {
 		return "nuevo".concat(Constantes.REDIRECIONAR);
   } // doAccion
 
-	public List<UISelectEntity> doCompleteCliente(String codigo) {
- 		List<Columna> columns     = new ArrayList<>();
-    Map<String, Object> params= new HashMap<>();
-    try {
-      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
-  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-			if(!Cadena.isVacio(codigo)) {
-  			codigo= codigo.replaceAll(Constantes.CLEAN_SQL, "").trim();
-				codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
-			} // if	
-			else
-				codigo= "WXYZ";
-  		params.put("codigo", codigo);
-      this.attrs.put("clientes", UIEntity.build("VistaClientesCitasDto", "nombre", params, columns, 40L));
-		} // try
-	  catch (Exception e) {
-      Error.mensaje(e);
-			JsfBase.addMessageError(e);
-    } // catch   
-    finally {
-      Methods.clean(columns);
-      Methods.clean(params);
-    }// finally
-		return (List<UISelectEntity>)this.attrs.get("clientes");
-	}	
-
   public String doCancelar() {
     String regresar= null;
     try {
@@ -280,7 +252,6 @@ public class Citas extends IBaseFilter implements Serializable {
     Entity seleccionado= null;
     try {
       seleccionado     = (Entity)this.attrs.get("seleccionado");
-			JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);		
       JsfBase.setFlashAttribute("idCita", seleccionado.toLong("idCita"));
       JsfBase.setFlashAttribute("idCliente", seleccionado.toLong("idCliente"));
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Catalogos/Pacientes/Citas/citas.jsf");

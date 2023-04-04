@@ -42,6 +42,8 @@ public class TcKalanMensajesDetalleDto implements IBaseDto, Serializable {
   private Long idCliente;
   @Column (name="id_mensaje")
   private Long idMensaje;
+  @Column (name="celular")
+  private String celular;
   @Column (name="registro")
   private Timestamp registro;
 
@@ -50,14 +52,15 @@ public class TcKalanMensajesDetalleDto implements IBaseDto, Serializable {
   }
 
   public TcKalanMensajesDetalleDto(Long key) {
-    this(new Long(-1L), null, null);
+    this(new Long(-1L), null, null, null);
     setKey(key);
   }
 
-  public TcKalanMensajesDetalleDto(Long idMensajeDetalle, Long idCliente, Long idMensaje) {
+  public TcKalanMensajesDetalleDto(Long idMensajeDetalle, Long idCliente, Long idMensaje, String celular) {
     setIdMensajeDetalle(idMensajeDetalle);
     setIdCliente(idCliente);
     setIdMensaje(idMensaje);
+    setCelular(celular);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
 	
@@ -83,6 +86,14 @@ public class TcKalanMensajesDetalleDto implements IBaseDto, Serializable {
 
   public Long getIdMensaje() {
     return idMensaje;
+  }
+
+  public void setCelular(String celular) {
+    this.celular = celular;
+  }
+
+  public String getCelular() {
+    return celular;
   }
 
   public void setRegistro(Timestamp registro) {
@@ -114,6 +125,8 @@ public class TcKalanMensajesDetalleDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdMensaje());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getCelular());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
   	return regresar.toString();
@@ -125,6 +138,7 @@ public class TcKalanMensajesDetalleDto implements IBaseDto, Serializable {
 		regresar.put("idMensajeDetalle", getIdMensajeDetalle());
 		regresar.put("idCliente", getIdCliente());
 		regresar.put("idMensaje", getIdMensaje());
+		regresar.put("celular", getCelular());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
@@ -132,7 +146,7 @@ public class TcKalanMensajesDetalleDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdMensajeDetalle(), getIdCliente(), getIdMensaje(), getRegistro()
+    getIdMensajeDetalle(), getIdCliente(), getIdMensaje(), getCelular(), getRegistro()
     };
     return regresar;
   }

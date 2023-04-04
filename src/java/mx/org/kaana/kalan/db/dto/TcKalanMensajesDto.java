@@ -1,9 +1,6 @@
 package mx.org.kaana.kalan.db.dto;
 
 import java.io.Serializable;
-import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -13,9 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -35,7 +29,7 @@ public class TcKalanMensajesDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
   @Column (name="consecutivo")
-  private Long consecutivo;
+  private String consecutivo;
   @Column (name="descripcion")
   private String descripcion;
   @Column (name="cuando")
@@ -64,7 +58,7 @@ public class TcKalanMensajesDto implements IBaseDto, Serializable {
     setKey(key);
   }
 
-  public TcKalanMensajesDto(Long consecutivo, String descripcion, Timestamp cuando, Long idMensaje, Long idUsuario, Timestamp aplicado, Long orden, Long ejercicio) {
+  public TcKalanMensajesDto(String consecutivo, String descripcion, Timestamp cuando, Long idMensaje, Long idUsuario, Timestamp aplicado, Long orden, Long ejercicio) {
     setConsecutivo(consecutivo);
     setDescripcion(descripcion);
     setCuando(cuando);
@@ -76,11 +70,11 @@ public class TcKalanMensajesDto implements IBaseDto, Serializable {
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
 	
-  public void setConsecutivo(Long consecutivo) {
+  public void setConsecutivo(String consecutivo) {
     this.consecutivo = consecutivo;
   }
 
-  public Long getConsecutivo() {
+  public String getConsecutivo() {
     return consecutivo;
   }
 

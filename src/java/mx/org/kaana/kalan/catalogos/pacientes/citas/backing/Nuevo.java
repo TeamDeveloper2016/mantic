@@ -154,7 +154,7 @@ public class Nuevo extends IBaseFilter implements Serializable {
 		List<Columna> columns     = new ArrayList<>();    
     Map<String, Object> params= new HashMap<>();
     try {      
-			params.put("idArticuloTipo", 4L);			
+			params.put("idArticuloTipo", "4,5");			
       columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       this.lazyModel = new FormatCustomLazy("VistaClientesCitasDto", "servicios", params, columns);

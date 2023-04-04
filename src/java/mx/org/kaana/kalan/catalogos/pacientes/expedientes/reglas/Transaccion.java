@@ -1,20 +1,27 @@
 package mx.org.kaana.kalan.catalogos.pacientes.expedientes.reglas;
 
+import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
+import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.kalan.catalogos.pacientes.expedientes.beans.Expediente;
 import mx.org.kaana.kalan.db.dto.TcKalanDiagnosticosDto;
 import mx.org.kaana.kalan.db.dto.TcKalanExpedientesBitacoraDto;
 import mx.org.kaana.kalan.db.dto.TcKalanExpedientesDto;
+import mx.org.kaana.kalan.db.dto.TcKalanMensajesDetalleDto;
+import mx.org.kaana.kalan.db.dto.TcKalanMensajesDto;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.libs.wassenger.Saras;
 import org.hibernate.Session;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -28,6 +35,8 @@ public class Transaccion extends IBaseTnx {
 	private List<Expediente> documentos;
   private TcKalanDiagnosticosDto diagnostico;
   private String messageError;
+  private List<Entity> clientes;
+  private TcKalanMensajesDto mensaje;
 
 	public Transaccion(Long idExpediente) {
     this.idExpediente= idExpediente;
@@ -35,6 +44,11 @@ public class Transaccion extends IBaseTnx {
   
 	public Transaccion(TcKalanDiagnosticosDto diagnostico) {
     this.diagnostico= diagnostico;
+  }
+  
+	public Transaccion(List<Entity> clientes, TcKalanMensajesDto mensaje) {
+    this.clientes= clientes;
+    this.mensaje = mensaje;
   }
   
 	public Transaccion(Entity cliente, List<Expediente> documentos) {
@@ -55,6 +69,12 @@ public class Transaccion extends IBaseTnx {
 					break;
 				case ACTIVAR:
 					regresar= this.toDiagnostico(sesion);
+					break;
+				case PROCESAR:
+					regresar= this.toNotificar(sesion);
+					break;
+				case REPROCESAR:
+					regresar= this.toProgramado(sesion);
 					break;
       } // switch
       if (!regresar) {
@@ -154,5 +174,95 @@ public class Transaccion extends IBaseTnx {
     } // catch		
     return regresar;
   }
+ 
+  private boolean toNotificar(Session sesion) throws Exception {
+    Boolean regresar= Boolean.FALSE;
+    try {
+      Siguiente consecutivo= this.toSiguiente(sesion);
+      this.mensaje.setConsecutivo(consecutivo.getConsecutivo());
+      this.mensaje.setEjercicio(consecutivo.getEjercicio());
+      this.mensaje.setOrden(consecutivo.getOrden());
+      this.mensaje.setIdUsuario(JsfBase.getIdUsuario());
+      this.mensaje.setCuando(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+      this.mensaje.setAplicado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+      DaoFactory.getInstance().insert(sesion, this.mensaje);
+      Saras notificar= new Saras();
+      for (Entity item: this.clientes) {
+        if(!Objects.equals(item.toString("celular"), null)) {
+          notificar.setNombre(item.toString("cliente"));
+          notificar.setCelular(item.toString("celular"));
+          String descripcion= this.mensaje.getDescripcion().replaceAll("<p>", "").replaceAll("</p>", "").replaceAll("<br>", "\\\\n").replaceAll("<strong>", "*").replaceAll("</strong>", "*").replaceAll("<em>", "_").replaceAll("</em>", "_").replaceAll("<u>", "~").replaceAll("</u>", "~");
+          notificar.doSendPromocion(descripcion.replaceAll("\n", "\\n"));
+        } // if
+        TcKalanMensajesDetalleDto detalle= new TcKalanMensajesDetalleDto(
+          -1L, // Long idMensajeDetalle, 
+          item.toLong("idCliente"), // Long idCliente, 
+          this.mensaje.getIdMensaje(), // Long idMensaje
+          item.toString("celular") // String celular
+        );
+        DaoFactory.getInstance().insert(sesion, detalle);
+      } // for
+      regresar= Boolean.TRUE;
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch		
+    return regresar;
+  }
+  
+  private boolean toProgramado(Session sesion) throws Exception {
+    Boolean regresar= Boolean.FALSE;
+    try {
+      if(this.mensaje.isValid()) {
+        this.mensaje.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+        this.mensaje.setIdUsuario(JsfBase.getIdUsuario());
+        regresar= DaoFactory.getInstance().update(sesion, this.mensaje)> 0L;
+      } // if
+      else {
+        Siguiente consecutivo= this.toSiguiente(sesion);
+        this.mensaje.setConsecutivo(consecutivo.getConsecutivo());
+        this.mensaje.setEjercicio(consecutivo.getEjercicio());
+        this.mensaje.setOrden(consecutivo.getOrden());
+        this.mensaje.setIdUsuario(JsfBase.getIdUsuario());
+        this.mensaje.setCuando(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+        DaoFactory.getInstance().insert(sesion, this.mensaje);
+        for (Entity item: this.clientes) {
+          TcKalanMensajesDetalleDto detalle= new TcKalanMensajesDetalleDto(
+            -1L, // Long idMensajeDetalle, 
+            item.toLong("idCliente"), // Long idCliente, 
+            this.mensaje.getIdMensaje(), // Long idMensaje
+            item.toString("celular") // String celular
+          );
+          DaoFactory.getInstance().insert(sesion, detalle);
+        } // for
+        regresar= Boolean.TRUE;
+      } // else
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch		
+    return regresar;
+  }
+  
+	private Siguiente toSiguiente(Session sesion) throws Exception {
+		Siguiente regresar        = null;
+		Map<String, Object> params= new HashMap<>();
+		try {
+			params.put("ejercicio", this.getCurrentYear());
+			params.put("operador", this.getCurrentSign());
+			Value next= DaoFactory.getInstance().toField(sesion, "TcKalanMensajesDto", "siguiente", params, "siguiente");
+			if(next.getData()!= null)
+			  regresar= new Siguiente(next.toLong());
+			else
+			  regresar= new Siguiente(Configuracion.getInstance().isEtapaDesarrollo()? 900001L: 1L);
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	}  
   
 }
