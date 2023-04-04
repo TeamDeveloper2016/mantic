@@ -2,6 +2,7 @@ package mx.org.kaana.kalan.catalogos.pacientes.expedientes.beans;
 
 import java.io.Serializable;
 import mx.org.kaana.kajool.enums.EFormatos;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 
 /**
@@ -20,6 +21,7 @@ public class Expediente extends Importado implements Serializable {
   private String comodin;
   private Long idEstatus;
   private Long idCita;
+  private UISelectEntity ikCita;
 
   public Expediente() {
     this("", "", EFormatos.FREE, 0L, 0L, "", "", "", "", 13L);
@@ -30,7 +32,7 @@ public class Expediente extends Importado implements Serializable {
     this.idComodin= -1L;
     this.comodin  = "";
     this.idEstatus= 1L;
-    this.idCita   = -1L;
+    this.ikCita   = new UISelectEntity(-1L);
   }  
   
   public Long getIdComodin() {
@@ -63,6 +65,16 @@ public class Expediente extends Importado implements Serializable {
 
   public void setIdCita(Long idCita) {
     this.idCita = idCita;
+  }
+
+  public UISelectEntity getIkCita() {
+    return ikCita;
+  }
+
+  public void setIkCita(UISelectEntity ikCita) {
+    this.ikCita = ikCita;
+    if(ikCita!= null)
+      this.idCita= ikCita.getKey();
   }
 
   @Override

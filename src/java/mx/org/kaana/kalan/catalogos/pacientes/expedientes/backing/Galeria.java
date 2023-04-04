@@ -189,12 +189,12 @@ public class Galeria extends IBaseFilter implements Serializable {
       columns.add(new Columna("inicio", EFormatoDinamicos.DIA_FECHA_HORA_CORTA));    
       columns.add(new Columna("termino", EFormatoDinamicos.DIA_FECHA_HORA_CORTA));    
       columns.add(new Columna("servicios", EFormatoDinamicos.MAYUSCULAS));    
-      List<UISelectEntity> citas= (List<UISelectEntity>) UIEntity.build("VistaClientesCitasDto", "lazy", params, columns);
+      List<UISelectEntity> citas= (List<UISelectEntity>) UIEntity.seleccione("VistaClientesCitasDto", "lazy", params, columns, "consecutivo");
       this.attrs.put("citas", citas);    
       if(citas!= null && !citas.isEmpty())
-        this.attrs.put("idCitas", UIBackingUtilities.toFirstKeySelectEntity(citas));    
+        this.attrs.put("idCita", UIBackingUtilities.toFirstKeySelectEntity(citas));    
       else
-        this.attrs.put("idCitas", new UISelectEntity(-1L));    
+        this.attrs.put("idCita", new UISelectEntity(-1L));    
     } // try
     catch (Exception e) {
       throw e;

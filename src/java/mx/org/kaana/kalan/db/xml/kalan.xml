@@ -7,6 +7,42 @@
   </model>
 
   <dml>
+    <unit id="TcKalanDiagnosticosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_kalan_diagnosticos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_kalan_diagnosticos
+        where      
+          id_cita = {idCita}
+      </select>
+    </unit>    
+    <unit id="TcKalanDiagnosticosDetallesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_kalan_diagnosticos_detalles
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_kalan_diagnosticos_detalles
+        where      
+          id_diagnostico = {idDiagnostico} and medicamento = '{medicamento}'
+      </select>
+    </unit>    
     <unit id="TcKalanExpedientesDto">
       <select id="row">
         select      

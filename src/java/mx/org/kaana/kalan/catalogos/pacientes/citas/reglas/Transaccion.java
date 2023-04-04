@@ -30,14 +30,18 @@ import org.mozilla.javascript.edu.emory.mathcs.backport.java.util.Arrays;
 public class Transaccion extends IBaseTnx {
 
   private Paciente paciente;
-  private Entity[] servicios;
+  private List<Entity> servicios;
 	private String messageError;
 
 	public Transaccion(Paciente paciente, Entity[] servicios) {
+    this(paciente, new ArrayList<>(Arrays.asList(servicios)));
+	}
+
+	public Transaccion(Paciente paciente, List<Entity> servicios) {
     this.paciente = paciente;
     this.servicios= servicios;
 	}
-
+  
 	public String getMessageError() {
 		return messageError;
 	}
@@ -186,7 +190,7 @@ public class Transaccion extends IBaseTnx {
         this.paciente.setIdCita(cita.getIdCita());
         regresar= DaoFactory.getInstance().insert(sesion, bitacora)> 0L;
         // NOTIFICAR POR WHASTAPP AL CLIENTE
-        Saras notificar= new Saras(this.paciente.getRazonSocial().concat(" ").concat(this.paciente.getPaterno()), this.paciente.getCelular(), this.paciente.getInicio(), "agendada", new ArrayList<>(Arrays.asList(this.servicios)));
+        Saras notificar= new Saras(this.paciente.getRazonSocial().concat(" ").concat(this.paciente.getPaterno()), this.paciente.getCelular(), this.paciente.getInicio(), "agendada", this.servicios);
         notificar.doSendCitaCliente(sesion);
 
         // NOTIFICAR POR WHASTAPP A LA PERSONA QUE LO VA ATENDER
@@ -308,7 +312,7 @@ public class Transaccion extends IBaseTnx {
       regresar= DaoFactory.getInstance().insert(sesion, bitacora)> 0L;
       
       // NOTIFICAR POR WHASTAPP AL CLIENTE
-      Saras notificar= new Saras(this.paciente.getRazonSocial().concat(" ").concat(this.paciente.getPaterno()), this.paciente.getCelular(), this.paciente.getInicio(), "agendado", new ArrayList<>(Arrays.asList(this.servicios)));
+      Saras notificar= new Saras(this.paciente.getRazonSocial().concat(" ").concat(this.paciente.getPaterno()), this.paciente.getCelular(), this.paciente.getInicio(), "agendado", this.servicios);
       notificar.doSendCitaCliente(sesion);
       // NOTIFICAR POR WHASTAPP A LA PERSONA QUE LO VA ATENDER
       if(this.paciente.getIkAtendio()!= null && !Objects.equals(this.paciente.getIkAtendio().getKey(), -1L)) {
@@ -364,7 +368,7 @@ public class Transaccion extends IBaseTnx {
           cita.setIdCitaEstatus(5L);
 
           // NOTIFICAR POR WHASTAPP AL CLIENTE
-          Saras notificar= new Saras(this.paciente.getRazonSocial().concat(" ").concat(this.paciente.getPaterno()), this.paciente.getCelular(), this.paciente.getInicio(), "reprogramo", new ArrayList<>(Arrays.asList(this.servicios)));
+          Saras notificar= new Saras(this.paciente.getRazonSocial().concat(" ").concat(this.paciente.getPaterno()), this.paciente.getCelular(), this.paciente.getInicio(), "reprogramo", this.servicios);
           notificar.doSendCitaCliente(sesion);
           // NOTIFICAR POR WHASTAPP A LA PERSONA QUE LO VA ATENDER
           if(this.paciente.getIkAtendio()!= null && !Objects.equals(this.paciente.getIkAtendio().getKey(), -1L)) {
@@ -436,14 +440,14 @@ public class Transaccion extends IBaseTnx {
   
   private int toIndexOf(TcKalanCitasDetallesDto articulo) {
     int regresar= -1;
-    if(this.servicios!= null && this.servicios.length> 0) {
+    if(this.servicios!= null && !this.servicios.isEmpty()) {
       regresar= 0;
-      while (regresar< this.servicios.length) {
-        if(Objects.equals(this.servicios[regresar].toLong("idArticulo"), articulo.getIdArticulo()))
+      while (regresar< this.servicios.size()) {
+        if(Objects.equals(this.servicios.get(regresar).toLong("idArticulo"), articulo.getIdArticulo()))
           break;
         regresar++;
       } // while 
-      regresar= regresar>= this.servicios.length? -1: regresar;
+      regresar= regresar>= this.servicios.size()? -1: regresar;
     } // if
     return regresar;
   }  
@@ -479,7 +483,7 @@ public class Transaccion extends IBaseTnx {
         DaoFactory.getInstance().insert(sesion, bitacora);
 
         // NOTIFICAR POR WHASTAPP AL CLIENTE
-        Saras notificar= new Saras(this.paciente.getRazonSocial().concat(" ").concat(this.paciente.getPaterno()), this.paciente.getCelular(), this.paciente.getInicio(), estatus, new ArrayList<>(Arrays.asList(this.servicios)));
+        Saras notificar= new Saras(this.paciente.getRazonSocial().concat(" ").concat(this.paciente.getPaterno()), this.paciente.getCelular(), this.paciente.getInicio(), estatus, this.servicios);
         notificar.doSendCitaCliente(sesion);
         // NOTIFICAR POR WHASTAPP A LA PERSONA QUE LO VA ATENDER
         if(this.paciente.getIkAtendio()!= null && !Objects.equals(this.paciente.getIkAtendio().getKey(), -1L)) {

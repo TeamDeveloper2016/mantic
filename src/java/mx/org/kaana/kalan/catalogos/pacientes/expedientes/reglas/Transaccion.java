@@ -3,11 +3,13 @@ package mx.org.kaana.kalan.catalogos.pacientes.expedientes.reglas;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.kalan.catalogos.pacientes.expedientes.beans.Expediente;
+import mx.org.kaana.kalan.db.dto.TcKalanDiagnosticosDto;
 import mx.org.kaana.kalan.db.dto.TcKalanExpedientesBitacoraDto;
 import mx.org.kaana.kalan.db.dto.TcKalanExpedientesDto;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -24,10 +26,15 @@ public class Transaccion extends IBaseTnx {
 	private Entity cliente;
   private Long idExpediente;
 	private List<Expediente> documentos;
+  private TcKalanDiagnosticosDto diagnostico;
   private String messageError;
 
 	public Transaccion(Long idExpediente) {
     this.idExpediente= idExpediente;
+  }
+  
+	public Transaccion(TcKalanDiagnosticosDto diagnostico) {
+    this.diagnostico= diagnostico;
   }
   
 	public Transaccion(Entity cliente, List<Expediente> documentos) {
@@ -45,6 +52,9 @@ public class Transaccion extends IBaseTnx {
 					break;
 				case ELIMINAR:
 					regresar= this.toDeleteFile(sesion);
+					break;
+				case ACTIVAR:
+					regresar= this.toDiagnostico(sesion);
 					break;
       } // switch
       if (!regresar) {
@@ -69,7 +79,7 @@ public class Transaccion extends IBaseTnx {
             documento.getOriginal(), // String archivo, 
             documento.getRuta(), // String ruta, 
             -1L, // Long idExpediente, 
-            null, // Long idCita, 
+            Objects.equals(documento.getIdCita(), -1L)? null: documento.getIdCita(), // Long idCita, 
             documento.getName(), // String nombre, 
             documento.getFileSize(), // Long tamanio, 
             JsfBase.getIdUsuario(), // Long idUsuario, 
@@ -83,6 +93,7 @@ public class Transaccion extends IBaseTnx {
           if(exists== null) 
             DaoFactory.getInstance().insert(sesion, tmp);
           else {
+            tmp.setIdCita(Objects.equals(documento.getIdCita(), -1L)? null: documento.getIdCita());
             tmp.setIdExpediente(exists.getIdExpediente());
             DaoFactory.getInstance().update(sesion, tmp);
           } // if  
@@ -124,5 +135,24 @@ public class Transaccion extends IBaseTnx {
     } // catch		
     return regresar;
   }  
+
+  private boolean toDiagnostico(Session sesion) throws Exception {
+    Boolean regresar= Boolean.FALSE;
+    try {
+      if(this.diagnostico!= null) {
+        this.diagnostico.setIdUsuario(JsfBase.getIdUsuario());
+        if(this.diagnostico.isValid())
+          regresar= DaoFactory.getInstance().update(sesion, this.diagnostico)> 0L;
+        else
+          regresar= DaoFactory.getInstance().insert(sesion, this.diagnostico)> 0L;
+      } // if
+      else
+        regresar= Boolean.TRUE;
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch		
+    return regresar;
+  }
   
 }

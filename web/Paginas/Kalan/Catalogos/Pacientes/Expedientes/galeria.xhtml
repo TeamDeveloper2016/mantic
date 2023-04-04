@@ -64,8 +64,7 @@
 						</p:tab>						            						            																																																
 						<p:tab title="Cita">
 							<p:selectOneMenu id="idCita" value="#{kalanCatalogosPacientesExpedientesGaleria.attrs.idCita}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
-								<f:selectItems value="#{kalanCatalogosPacientesExpedientesGaleria.attrs.citas}" var="element" itemValue="#{element}" itemLabel="#{element.consecutivo} #{element.inicio.toString() eq ''? '': '|'} #{element.inicio}"/>
+								<f:selectItems value="#{kalanCatalogosPacientesExpedientesGaleria.attrs.citas}" var="element" itemValue="#{element}" itemLabel="#{element.consecutivo} #{element.inicio.toString() eq '-1'? '': '|'} #{element.inicio.toString() eq '-1'? '': element.inicio.toString()}"/>
 								<p:column headerText="Folio">
 									<h:outputText value="#{item.consecutivo}"/>
 								</p:column>   
@@ -82,8 +81,8 @@
 						</p:tab>						            						            																																																
 					</p:tabView>
           <div class="janal-align-right janal-wid-100">
-            <p:commandButton id="buscar" value="Buscar" styleClass="janal-text-white lg-pantalla" icon="fa fa-filter" accesskey="b" onstart="return janal.execute();" process="@this contenedorGrupos:nombre contenedorGrupos:idTipoDocumento" actionListener="#{kalanCatalogosPacientesExpedientesGaleria.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
-            <p:commandButton id="buscarIcon" value="Buscar" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.execute();" process="@this contenedorGrupos:nombre contenedorGrupos:idTipoDocumento" actionListener="#{kalanCatalogosPacientesExpedientesGaleria.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
+            <p:commandButton id="buscar" value="Buscar" styleClass="janal-text-white lg-pantalla" icon="fa fa-filter" accesskey="b" onstart="return janal.execute();" process="@this contenedorGrupos:nombre contenedorGrupos:idTipoDocumento contenedorGrupos:inicio contenedorGrupos:termino contenedorGrupos:idCita" actionListener="#{kalanCatalogosPacientesExpedientesGaleria.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
+            <p:commandButton id="buscarIcon" value="Buscar" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.execute();" process="@this contenedorGrupos:nombre contenedorGrupos:idTipoDocumento contenedorGrupos:inicio contenedorGrupos:termino contenedorGrupos:idCita" actionListener="#{kalanCatalogosPacientesExpedientesGaleria.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
           </div>
           <p:spacer width="5px"/>
           <p:dataGrid lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{kalanCatalogosPacientesExpedientesGaleria.lazyModel}" columns="2" layout="grid" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="2" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="2,4,#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{kalanCatalogosPacientesExpedientesGaleria.lazyModel.rowCount gt kalanCatalogosPacientesExpedientesGaleria.lazyModel.pageSize}" rowIndexVar="index" paginatorPosition="bottom" styleClass="janal-wid-99 janal-column-center"> 

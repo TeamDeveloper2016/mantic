@@ -18,6 +18,7 @@
         'contenedorGrupos\\:idAtendio':{validaciones: 'libre', mascara: 'libre'},
         'servicios': {validaciones: 'requerido|mayor({\"cuanto\":1})', mascara: 'libre', mensaje: 'Se tiene que seleccionar al menos 1 servicio'}
       };
+			$(document).ready(function(){janal.readingMode('#{kalanCatalogosPacientesCitasNuevo.attrs.nombreAccion}');});
     </script>		
   </ui:define>
   <ui:define name="contenido">

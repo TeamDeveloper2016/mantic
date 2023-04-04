@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+  <ui:param name="titulo" value="Dignostico de la cita" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      Janal.Control.fields = {
+        'contenedorGrupos\\:panelBusqueda\\:idCita': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', mensaje: 'Se requiere tener una cita seleccionada'},
+        'contenedorGrupos\\:diagnostico': {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+        'contenedorGrupos\\:tratamiento': {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+        'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'}
+      };
+    </script>		
+  </ui:define>
+  <ui:define name="contenido">
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+      <div class="ui-grid-row janal-grid-row">
+        <div id="collapse-find" class="ui-grid-col-12">
+					<p:tabView id="contenedorGrupos">
+            <p:ajax event="tabChange" listener="#{kalanCatalogosPacientesExpedientesDiagnostico.doTabChange}" process="@this" update="contenedorGrupos:tabla"/>						
+            <p:tab title="Diagnostico">							
+              <p:accordionPanel id="panelBusqueda" activeIndex="1" multiple="true">
+                <p:tab title="Cliente [ #{kalanCatalogosPacientesExpedientesDiagnostico.cliente.cliente} ]">
+                  <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                    <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-50, janal-wid-50">
+                      <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                        <p:outputLabel for="clave" value="Clave:"/>
+                        <p:inputText id="clave" value="#{kalanCatalogosPacientesExpedientesDiagnostico.cliente.clave}" styleClass="janal-wid-100-txt" readonly="true"/>
+                      </p:panelGrid>  
+                      <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                        <p:outputLabel for="rfc" value="RFC:"/>
+                        <p:inputText id="rfc" value="#{kalanCatalogosPacientesExpedientesDiagnostico.cliente.rfc}" styleClass="janal-wid-100-txt" readonly="true"/>
+                      </p:panelGrid>                     
+                    </p:panelGrid>  
+                    <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                      <p:outputLabel for="razonSocial" value="Cliente:"/>
+                      <p:inputText id="razonSocial" value="#{kalanCatalogosPacientesExpedientesDiagnostico.cliente.cliente}" styleClass="janal-wid-100-txt" readonly="true"/>
+                    </p:panelGrid>  
+                  </p:panelGrid>
+                </p:tab>
+                <p:tab title="Citas">
+                  <p:outputLabel for="idCita" value="Cita:" styleClass="janal-display-none"/>
+                  <p:selectOneMenu id="idCita" value="#{kalanCatalogosPacientesExpedientesDiagnostico.attrs.ikCita}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                    <p:ajax event="change" process="@this" update="@(.diagnostico)" listener="#{kalanCatalogosPacientesExpedientesDiagnostico.doLoadDiagnostico()}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
+                    <f:selectItems value="#{kalanCatalogosPacientesExpedientesDiagnostico.attrs.citas}" var="element" itemValue="#{element}" itemLabel="#{element.consecutivo} #{element.inicio.toString() eq '-1'? '': '|'} #{element.inicio.toString() eq '-1'? '': element.inicio.toString()}"/>
+                    <p:column headerText="Folio">
+                      <h:outputText value="#{item.consecutivo}"/>
+                    </p:column>   
+                    <p:column headerText="Inicio">
+                      <h:outputText value="#{item.inicio}"/>
+                    </p:column>   
+                    <p:column headerText="Termino">
+                      <h:outputText value="#{item.termino}" styleClass="janal-color-orange FsBold"/>
+                    </p:column>   
+                    <p:column headerText="Servicios">
+                      <h:outputText value="#{empty(item.servicios.toString())? 'SIN SERVICIOS': item.servicios}" />
+                    </p:column>   
+                  </p:selectOneMenu>
+                </p:tab>
+              </p:accordionPanel>  
+              <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                <p:outputLabel for="diagnostico" value="Diagnostico:"/>
+                <p:inputTextarea id="diagnostico" placeholder="ESCRIBA EL DIAGNOSTICO" rows="3" cols="33" styleClass="janal-wid-100-txt diagnostico" value="#{kalanCatalogosPacientesExpedientesDiagnostico.diagnostico.diagnostico}"/>                
+                <p:outputLabel for="tratamiento" value="Tratamiento:"/>
+                <p:inputTextarea id="tratamiento" placeholder="ESCRIBA EL TRATAMIENTO" rows="3" cols="33" styleClass="janal-wid-100-txt diagnostico" value="#{kalanCatalogosPacientesExpedientesDiagnostico.diagnostico.tratamiento}"/>                
+                <p:outputLabel for="observaciones" value="Observaciones:"/>
+                <p:inputTextarea id="observaciones" placeholder="ESCRIBA SI EXISTEN OBSERVACIONES" rows="2" cols="33" styleClass="janal-wid-100-txt diagnostico" value="#{kalanCatalogosPacientesExpedientesDiagnostico.diagnostico.observaciones}"/>                
+              </p:panelGrid>
+            </p:tab>
+            <p:tab title="Historial">							
+              <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{kalanCatalogosPacientesExpedientesDiagnostico.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{kalanCatalogosPacientesExpedientesDiagnostico.attrs.seleccionado}" selectionMode="single" paginator="#{kalanCatalogosPacientesExpedientesDiagnostico.lazyModel.rowCount gt kalanCatalogosPacientesExpedientesDiagnostico.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+                <p:ajax event="rowSelect" oncomplete="PF('kajoolTable').writeSelections()" process="contenedorGrupos:tabla" skipChildren="false"/>
+                <f:facet name="header" >
+                  <div style="float: left;">
+                    <p:outputLabel value="D I A G N O S T I C O S" styleClass="janal-color-white"/>
+                  </div>  
+                  <div class="lg-pantalla">
+                    <p:menuButton value="Opciones">
+                      <p:menuitem value="Exportar PDF" icon="fa fa-file-pdf-o" onstart="return janal.exportTable('localPdf', 'contenedorGrupos\\\\:tabla')" oncomplete="janal.desbloquear()"/>
+                      <p:menuitem value="Exportar XLS" icon="fa fa-file-excel-o" onstart="return janal.exportTable('localXls', 'contenedorGrupos\\\\:tabla')" oncomplete="janal.desbloquear()"/>
+                    </p:menuButton>
+                  </div>  
+                  <div class="xs-pantalla">              
+                    <p:commandButton title="Exportar PDF" icon="fa fa-file-pdf-o" onstart="return janal.exportTable('localPdf', 'contenedorGrupos\\\\:tabla')" oncomplete="janal.desbloquear()"/>
+                    <p:commandButton title="Exportar XLS" icon="fa fa-file-excel-o" onstart="return janal.exportTable('localXls', 'contenedorGrupos\\\\:tabla')" oncomplete="janal.desbloquear()"/>
+                  </div>  
+                </f:facet>												
+                <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.consecutivo}">
+                  <f:facet name="header">
+                    <h:outputText value="Folio"/>
+                  </f:facet>
+                  <h:outputText value="#{row['consecutivo']}"/>
+                </p:column>
+                <p:column styleClass="MarAuto Responsive" sortBy="#{row.diagnostico}">
+                  <f:facet name="header">
+                    <h:outputText value="Diagnostico"/>
+                  </f:facet>
+                  <h:outputText value="#{row['diagnostico']}"/>
+                </p:column>
+                <p:column styleClass="MarAuto Responsive" sortBy="#{row.tratamiento}">
+                  <f:facet name="header">
+                    <h:outputText value="Tratamiento"/>
+                  </f:facet>
+                  <h:outputText value="#{row['tratamiento']}"/>
+                </p:column>
+                <p:column class="MarAuto Responsive janal-wid-13 janal-column-center" sortBy="#{row.registro}">
+                  <f:facet name="header">
+                    <h:outputText value="Fecha"/>
+                  </f:facet>
+                  <h:outputText value="#{row['inicio']}"/>
+                </p:column>
+                <f:facet name="footer">
+                  <p:outputLabel value="Total [#{kalanCatalogosPacientesExpedientesDiagnostico.lazyModel== null? 0: kalanCatalogosPacientesExpedientesDiagnostico.lazyModel.rowCount}] registros"/>
+                </f:facet>
+              </p:dataTable>
+            </p:tab>
+          </p:tabView>
+          <h:commandLink id="localPdf">
+            <pe:exporter type="pdf"  skipComponents="org.primefaces.component.outputpanel.OutputPanel,com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="contenedorGrupos:tabla" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
+          </h:commandLink>
+          <h:commandLink id="localXls">
+            <pe:exporter type="xlsx" skipComponents="javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="contenedorGrupos:tabla" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/> 
+          </h:commandLink>			
+        </div>
+      </div>
+    </div>		    
+  </ui:define>    
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" update="@form" action="#{kalanCatalogosPacientesExpedientesDiagnostico.doAccion()}" onstart="return janal.partial('general');" oncomplete="janal.desbloquear(); janal.refresh();"/>
+			<p:commandButton id="regresar" value="Regresar" icon="fa fa-undo" process="@this" action="#{kalanCatalogosPacientesExpedientesDiagnostico.doCancelar}" immediate="true"/>
+		</div>	
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" update="@form" action="#{kalanCatalogosPacientesExpedientesDiagnostico.doAccion()}" onstart="return janal.partial('general');" oncomplete="janal.desbloquear(); janal.refresh();"/>
+			<p:commandButton id="regresarIcon" title="Regresar" icon="fa fa-undo" process="@this" action="#{kalanCatalogosPacientesExpedientesDiagnostico.doCancelar}" immediate="true"/>
+		</div>	
+	</ui:define>	
+  <ui:param name="componenteBloqueo" value="contenedorGrupos:tabla" />
+</ui:composition>

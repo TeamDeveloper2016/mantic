@@ -4,6 +4,27 @@
 -->
 <process>
 	<dml> 
+    <unit id="VistaCitasDiagnosticosDto">
+      <select id="lazy">
+select      
+  tc_kalan_citas.id_cita as id_key,
+  tc_kalan_citas.id_cita,
+  tc_kalan_citas.consecutivo,
+  tc_kalan_citas.inicio,
+  tc_kalan_citas.termino,
+  tc_kalan_diagnosticos.diagnostico,
+  tc_kalan_diagnosticos.tratamiento,
+  tc_kalan_diagnosticos.registro
+from
+  tc_kalan_citas
+left join  
+  tc_kalan_diagnosticos on tc_kalan_citas.id_cita= tc_kalan_diagnosticos.id_cita
+where
+  tc_kalan_citas.id_cliente= {idCliente}
+  and {condicion}
+{sortOrder}
+      </select>
+    </unit>  
     <unit id="VistaExpedientesDto">
       <select id="lazy">
 select      
@@ -38,6 +59,7 @@ select
   tc_kalan_citas.inicio,
   tc_kalan_citas.termino,
   tc_kalan_citas.inicio as inicia,
+  tc_kalan_citas.termino as termina,
   tc_kalan_citas.recordatorio,
   tc_mantic_clientes.limite_credito,
   tc_mantic_clientes.saldo,

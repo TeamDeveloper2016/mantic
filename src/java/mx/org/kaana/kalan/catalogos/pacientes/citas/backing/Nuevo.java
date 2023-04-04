@@ -84,6 +84,7 @@ public class Nuevo extends IBaseFilter implements Serializable {
   protected void init() {
     try {
       this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
+      this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
       this.attrs.put("idCita", JsfBase.getFlashAttribute("idCita")== null? -1L: JsfBase.getFlashAttribute("idCita"));
       this.attrs.put("idCliente", JsfBase.getFlashAttribute("idCliente")== null? -1L: JsfBase.getFlashAttribute("idCliente"));
       this.attrs.put("fecha", JsfBase.getFlashAttribute("fecha")== null? new Timestamp(Calendar.getInstance().getTimeInMillis()): JsfBase.getFlashAttribute("fecha"));
@@ -205,18 +206,18 @@ public class Nuevo extends IBaseFilter implements Serializable {
   } // doAccion
 
   public String doDepuerar() {  
-    return doDepuerar(EAccion.DEPURAR);
+    return doDepuerar(EAccion.DEPURAR, "eliminó");
   }
   
   public String doEliminar() {  
-    return doDepuerar(EAccion.ELIMINAR);
+    return doDepuerar(EAccion.ELIMINAR, "canceló");
   }
   
   public String doRecuperar() {  
-    return doDepuerar(EAccion.RESTAURAR);
+    return doDepuerar(EAccion.RESTAURAR, "recuperó");
   }
   
-  public String doDepuerar(EAccion ejecuta) {  
+  public String doDepuerar(EAccion ejecuta, String mensaje) {  
     String regresar        = null;
     Transaccion transaccion= null;
     try {
@@ -234,18 +235,18 @@ public class Nuevo extends IBaseFilter implements Serializable {
       if (transaccion.ejecutar(ejecuta)) {
         JsfBase.setFlashAttribute("idCita", this.paciente.getIdCita());
         JsfBase.setFlashAttribute("idCliente", this.paciente.getIdCliente());
-        JsfBase.addMessage("Se registro el cliente de forma correcta", ETipoMensaje.INFORMACION);
+        JsfBase.addMessage("Se ".concat(mensaje).concat(" la cita de forma correcta"), ETipoMensaje.INFORMACION);
         regresar= this.doCancelar();
       } // if
       else 
-        JsfBase.addMessage("Ocurrió un error al registrar el cliente", ETipoMensaje.ERROR);
+        JsfBase.addMessage("Ocurrió un error al ".concat(mensaje.substring(0, mensaje.length()- 2)).concat("ar la cita"), ETipoMensaje.ERROR);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch
     return regresar;
-  } // doAccion
+  } // doDepurar
 
   public String doCancelar() {   
     String regresar= null;

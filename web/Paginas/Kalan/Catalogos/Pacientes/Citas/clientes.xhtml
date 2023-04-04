@@ -64,6 +64,10 @@
                 </p:panelGrid>
                 <f:facet name="footer" >
                   <div class="janal-line-button">
+                    <p:commandButton iconPos="left" title="Ver diagnosticos" styleClass="janal-align-left janal-text-white" accesskey="r" icon="fa fa-edit" action="#{kalanCatalogosPacientesCitasClientes.doDiagnostico}">
+                      <f:setPropertyActionListener value="#{row}" target="#{kalanCatalogosPacientesCitasClientes.seleccionado}"  />
+                    </p:commandButton>
+                    
                     <p:commandButton iconPos="left" title="Expediente digital" styleClass="janal-text-white" accesskey="r" icon="fa fa-image" action="#{kalanCatalogosPacientesCitasClientes.doGaleria}">
                       <f:setPropertyActionListener value="#{row}" target="#{kalanCatalogosPacientesCitasClientes.seleccionado}"  />
                     </p:commandButton>

@@ -212,4 +212,20 @@ public class Clientes extends IBaseFilter implements Serializable {
     return regresar;
   }
   
+  public String doDiagnostico() {
+    String regresar= null;
+    try {
+			JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);		
+			JsfBase.setFlashAttribute("idCita", -1L);
+			JsfBase.setFlashAttribute("idCliente", this.seleccionado.toLong("idCliente"));
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Catalogos/Pacientes/Citas/clientes.jsf");
+			regresar= "/Paginas/Kalan/Catalogos/Pacientes/Expedientes/diagnostico".concat(Constantes.REDIRECIONAR);			
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+    return regresar;
+  }
+  
 }

@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -94,6 +95,7 @@ public class Importar extends IBaseImportar implements Serializable {
 			this.documento = new Expediente();
       this.documentos= new ArrayList();
       this.toLoadDocumentos();
+      this.toLoadCitas();
       this.attrs.put("elementos", this.documentos.size());
       String dns= Configuracion.getInstance().getPropiedadServidor("sistema.dns");
       this.path = dns.substring(0, dns.lastIndexOf("/")+ 1).concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/expedientes/");      
@@ -145,6 +147,35 @@ public class Importar extends IBaseImportar implements Serializable {
       Error.mensaje(e);
     } // catch
     finally {
+      Methods.clean(params);
+    } // finally
+  }
+  
+  private void toLoadCitas() {
+		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
+    try {
+      Calendar inicio = Calendar.getInstance();
+      inicio.add(Calendar.DATE, -360);
+      params.put("idCliente", this.cliente.toLong("idCliente"));
+      params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());			
+      params.put(Constantes.SQL_CONDICION, "(date_format(tc_kalan_citas.inicio, '%Y%m%d')>= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, inicio)).concat("')"));
+      params.put("sortOrder", "order by tc_kalan_citas.inicio desc");
+      columns.add(new Columna("inicio", EFormatoDinamicos.DIA_FECHA_HORA_CORTA));    
+      columns.add(new Columna("termino", EFormatoDinamicos.DIA_FECHA_HORA_CORTA));    
+      columns.add(new Columna("servicios", EFormatoDinamicos.MAYUSCULAS));    
+      List<UISelectEntity> citas= (List<UISelectEntity>) UIEntity.seleccione("VistaClientesCitasDto", "lazy", params, columns, "consecutivo");
+      this.attrs.put("citas", citas);    
+      if(citas!= null && !citas.isEmpty())
+        this.documento.setIkCita(UIBackingUtilities.toFirstKeySelectEntity(citas));    
+      else
+        this.documento.setIkCita(new UISelectEntity(-1L));    
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch   
+    finally {
+      Methods.clean(columns);
       Methods.clean(params);
     } // finally
   }
@@ -255,6 +286,9 @@ public class Importar extends IBaseImportar implements Serializable {
         if(transaccion.ejecutar(EAccion.REGISTRAR)) {
           JsfBase.addMessage("Documento", "Se importó el documento de forma correcta !", ETipoMensaje.INFORMACION);
           this.doLoadImportados();
+          this.documentos.clear();
+          this.documento= new Expediente();
+          this.attrs.put("elementos", this.documentos.size());
         } // if
         else
           JsfBase.addMessage("Documento", "Ocurrio un error al importar los documentos, intente de nueva cuenta !", ETipoMensaje.INFORMACION);

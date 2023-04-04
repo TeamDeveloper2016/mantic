@@ -19,6 +19,8 @@ import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.kalan.catalogos.pacientes.citas.beans.Paciente;
+import mx.org.kaana.kalan.catalogos.pacientes.citas.reglas.Transaccion;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseFilter;
@@ -48,8 +50,11 @@ public class Citas extends IBaseFilter implements Serializable {
   @Override
   protected void init() {
     try {
+			if(JsfBase.getFlashAttribute("idCliente")== null)
+				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       this.attrs.put("idCliente", JsfBase.getFlashAttribute("idCliente"));
-      this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "clientes": JsfBase.getFlashAttribute("retorno"));
+      // this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "clientes": JsfBase.getFlashAttribute("retorno"));
+      this.attrs.put("retorno", "clientes");
       this.doLoad();
     } // try
     catch (Exception e) {
@@ -110,9 +115,17 @@ public class Citas extends IBaseFilter implements Serializable {
     EAccion eaccion= null;
 		try {
 			eaccion= EAccion.valueOf(accion.toUpperCase());
-			JsfBase.setFlashAttribute("accion", eaccion);		
-			JsfBase.setFlashAttribute("idCliente", this.attrs.get("idCliente"));		
-			JsfBase.setFlashAttribute("fecha", new Timestamp(Calendar.getInstance().getTimeInMillis()));		
+      if(Objects.equals(eaccion, EAccion.AGREGAR)) {
+			  JsfBase.setFlashAttribute("accion", eaccion);		
+			  JsfBase.setFlashAttribute("idCliente", this.attrs.get("idCliente"));		
+			  JsfBase.setFlashAttribute("fecha", new Timestamp(Calendar.getInstance().getTimeInMillis()));		
+      } // if
+      else {
+        Entity seleccionado= (Entity)this.attrs.get("seleccionado");
+        JsfBase.setFlashAttribute("idCita", seleccionado.toLong("idCita"));		
+        JsfBase.setFlashAttribute("idCliente", seleccionado.toLong("idCliente"));		
+        JsfBase.setFlashAttribute("fecha", seleccionado.toTimestamp("inicia"));
+      } // else  
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Catalogos/Pacientes/Citas/citas.jsf");		
 		} // try
 		catch (Exception e) {
@@ -163,12 +176,6 @@ public class Citas extends IBaseFilter implements Serializable {
     return regresar;
   }
   
-  public void doAjustar(Entity item) {
-		JsfBase.setFlashAttribute("idCita", item.toLong("idCita"));		
-		JsfBase.setFlashAttribute("idCliente", item.toLong("idCliente"));		
-    JsfBase.setFlashAttribute("fecha", item.toTimestamp("inicia"));
-  }
-  
   public void doMensaje(Entity item) {
     Map<String, Object> params= new HashMap<>();
     try {
@@ -198,5 +205,92 @@ public class Citas extends IBaseFilter implements Serializable {
       Methods.clean(params);
     } // finally
   }
+
+  public String doEliminar() {  
+    String regresar        = null;
+    Transaccion transaccion= null;
+    Entity seleccionado    = null;
+    Map<String, Object> params= new HashMap<>();
+    try {
+      seleccionado     = (Entity)this.attrs.get("seleccionado");
+      Paciente paciente= new Paciente(
+        seleccionado.toLong("idCliente"), // Long idCliente, 
+        seleccionado.toTimestamp("inicia"), // Timestamp inicio, 
+        seleccionado.toTimestamp("termina"), // Timestamp termino, 
+        this.cliente.toString("celular"), // String celular, 
+        this.cliente.toString("correo"), // String correo, 
+        seleccionado.toLong("idCliente") // Long idCita
+      );
+      paciente.setRazonSocial(this.cliente.toString("razonSocial"));
+      paciente.setPaterno(this.cliente.toString("paterno"));
+      paciente.setMaterno(this.cliente.toString("materno"));
+      params.put("idCita", seleccionado.toLong("idCita"));      
+      // RECUPERA LOS SERVICIOS DE LA CITA
+      List<Entity> servicios= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaClientesCitasDto", "detalle", params);
+      if(servicios== null || servicios.isEmpty()) 
+        servicios= new ArrayList<>();
+      // RECUPERA LOS DATOS DE LA PERSONA QUE LO VA ATENDER
+      if(!Objects.equals(seleccionado.toLong("idAtendio"), null) && !Objects.equals(seleccionado.toLong("idAtendio"), -1L)) {
+        params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());			
+        params.put(Constantes.SQL_CONDICION, "(tr_mantic_empresa_personal.id_empresa_persona="+ seleccionado.toLong("idAtendio")+ ")");			
+        Entity persona= (Entity)DaoFactory.getInstance().toEntity("VistaClientesCitasDto", "personas", params);
+        paciente.setIkAtendio(new UISelectEntity(persona));
+      } // if
+      if(!Objects.equals(this.attrs.get("justificacion"), null))
+        paciente.setComentarios((String)this.attrs.get("justificacion"));
+      transaccion= new Transaccion(paciente, servicios);
+      if (transaccion.ejecutar(EAccion.ELIMINAR)) {
+        JsfBase.setFlashAttribute("idCita", seleccionado.toLong("idCita"));
+        JsfBase.setFlashAttribute("idCliente", seleccionado.toLong("idCliente"));
+        JsfBase.addMessage("Se eliminó la cita de forma correcta", ETipoMensaje.INFORMACION);
+      } // if
+      else 
+        JsfBase.addMessage("Ocurrió un error al registrar eliminar la cita", ETipoMensaje.ERROR);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  }
+
+  public String doImportar() {  
+    String regresar    = null;
+    Entity seleccionado= null;
+    try {
+      seleccionado     = (Entity)this.attrs.get("seleccionado");
+			JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);		
+      JsfBase.setFlashAttribute("idCita", seleccionado.toLong("idCita"));
+      JsfBase.setFlashAttribute("idCliente", seleccionado.toLong("idCliente"));
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Catalogos/Pacientes/Citas/citas.jsf");
+			regresar= "/Paginas/Kalan/Catalogos/Pacientes/Expedientes/importar".concat(Constantes.REDIRECIONAR);			
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    return regresar;
+  }  
+  
+  public String doDiagnostico() {  
+    String regresar    = null;
+    Entity seleccionado= null;
+    try {
+      seleccionado     = (Entity)this.attrs.get("seleccionado");
+			JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);		
+      JsfBase.setFlashAttribute("idCita", seleccionado.toLong("idCita"));
+      JsfBase.setFlashAttribute("idCliente", seleccionado.toLong("idCliente"));
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Catalogos/Pacientes/Citas/citas.jsf");
+			regresar= "/Paginas/Kalan/Catalogos/Pacientes/Expedientes/diagnostico".concat(Constantes.REDIRECIONAR);			
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    return regresar;
+  }  
   
 }

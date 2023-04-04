@@ -10,7 +10,6 @@
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
-        'razonSocial': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}
       };
     </script>		
   </ui:define>
@@ -48,7 +47,8 @@
           </p:accordionPanel>  
           <p:spacer width="5px"/>
           <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{kalanCatalogosPacientesCitasCitas.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{kalanCatalogosPacientesCitasCitas.attrs.seleccionado}" selectionMode="single" paginator="#{kalanCatalogosPacientesCitasCitas.lazyModel.rowCount gt kalanCatalogosPacientesCitasCitas.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
-            <p:ajax event="rowSelect" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
+            <p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
+						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
 						<f:facet name="header" >
               <div style="float: left;">
                 <p:outputLabel value="C I T A S" styleClass="janal-color-white"/>
@@ -109,10 +109,7 @@
 							</f:facet>
 							<h:outputText value="#{row['estatus']}"/>
 						</p:column>
-            <p:column styleClass="MarAuto Responsive janal-column-center janal-wid-col-90" exportable="false">
-              <p:commandLink action="#{kalanCatalogosPacientesCitasCitas.doAccion('MODIFICAR')}" actionListener="#{kalanCatalogosPacientesCitasCitas.doAjustar(row)}" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" rendered="#{not(row.idCitaEstatus.toLong() eq 2)}" >
-                <p:commandButton icon="fa fa-calendar" title="Modificar" ajax="false" type="button"/>
-              </p:commandLink>										
+            <p:column styleClass="MarAuto Responsive janal-column-center janal-wid-col-38" exportable="false">
               <p:commandLink actionListener="#{kalanCatalogosPacientesCitasCitas.doMensaje(row)}" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" rendered="#{(row.idCitaEstatus.toLong() eq 1) or (row.idCitaEstatus.toLong() eq 3) or (row.idCitaEstatus.toLong() eq 4) or (row.idCitaEstatus.toLong() eq 5)}" >
                 <p:commandButton icon="fa fa-whatsapp" title="Notificar" type="button"/>
               </p:commandLink>										
@@ -121,19 +118,45 @@
               <p:outputLabel value="Total [#{kalanCatalogosPacientesCitasCitas.lazyModel== null? 0: kalanCatalogosPacientesCitasCitas.lazyModel.rowCount}] registros"/>
             </f:facet>
           </p:dataTable>
+          <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
+            <p:menuitem id="consultar" icon="fa fa-search" value="Consultar" action="#{kalanCatalogosPacientesCitasCitas.doAccion('CONSULTAR')}" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{not(kalanCatalogosPacientesCitasCitas.attrs.seleccionado.idCitaEstatus.toLong() eq 2)}"/>					
+						<p:separator rendered="#{not(kalanCatalogosPacientesCitasCitas.attrs.seleccionado.idCitaEstatus.toLong() eq 2)}"/>
+            <p:menuitem id="modificar" icon="fa fa-edit" value="Modificar" action="#{kalanCatalogosPacientesCitasCitas.doAccion('MODIFICAR')}" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{not(kalanCatalogosPacientesCitasCitas.attrs.seleccionado.idCitaEstatus.toLong() eq 2)}"/>
+            <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{not(kalanCatalogosPacientesCitasCitas.attrs.seleccionado.idCitaEstatus.toLong() eq 2)}"/>					
+						<p:separator rendered="#{not(kalanCatalogosPacientesCitasCitas.attrs.seleccionado.idCitaEstatus.toLong() eq 2)}"/>
+						<p:menuitem id="importar" icon="fa fa-cloud-upload" value="Importar" title="Importar documento" onstart="return janal.bloquear()" process="@this tabla" action="#{kalanCatalogosPacientesCitasCitas.doImportar}"/>
+						<p:menuitem id="diagnostico" icon="fa fa-calendar" value="Diagnostico" title="Registrar diagnostico" onstart="return janal.bloquear()" process="@this tabla" oncomplete="janal.desbloquear()" action="#{kalanCatalogosPacientesCitasCitas.doDiagnostico}"/>
+          </p:contextMenu>
         </div>
       </div>
     </div>		    
   </ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Agendar" icon="fa fa-calendar" accesskey="a" process="@form" update="@form" action="#{kalanCatalogosPacientesCitasCitas.doAccion('AGREGAR')}" onstart="return janal.partial('general');" oncomplete="janal.desbloquear(); janal.refresh();"/>
+			<p:commandButton id="aceptar" value="Agendar" icon="fa fa-calendar-o" accesskey="a" process="@form" update="@form" action="#{kalanCatalogosPacientesCitasCitas.doAccion('AGREGAR')}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear(); janal.refresh();"/>
 			<p:commandButton id="regresar" value="Regresar" icon="fa fa-undo" process="@this" action="#{kalanCatalogosPacientesCitasCitas.doCancelar}" immediate="true"/>
 		</div>	
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" title="Agendar" icon="fa fa-calendar" process="@form" update="@form" action="#{kalanCatalogosPacientesCitasCitas.doAccion('AGREGAR')}" onstart="return janal.partial('general');" oncomplete="janal.desbloquear(); janal.refresh();"/>
+			<p:commandButton id="aceptarIcon" title="Agendar" icon="fa fa-calendar-o" process="@form" update="@form" action="#{kalanCatalogosPacientesCitasCitas.doAccion('AGREGAR')}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear(); janal.refresh();"/>
 			<p:commandButton id="regresarIcon" title="Regresar" icon="fa fa-undo" process="@this" action="#{kalanCatalogosPacientesCitasCitas.doCancelar}" immediate="true"/>
 		</div>	
 	</ui:define>	
   <ui:param name="componenteBloqueo" value="tabla" />
+  <ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar la cita ?" />
+  <ui:param name="accionConfirmacion" value="#{kalanCatalogosPacientesCitasCitas}"/>
+  <ui:param name="updateComponent" value="tabla"/>
+  <ui:param name="eventoConfirmacion" value="doEliminar"	/>	
+  <ui:param name="renderedConfirmacion" value="true"/>	
+  <ui:define name="detalleConfirmacion">
+    <h:panelGrid columns="2">
+      <p:outputLabel value="Folio: "/>
+      <p:outputLabel value="#{kalanCatalogosPacientesCitasCitas.attrs.seleccionado.consecutivo}"/>
+      <p:outputLabel value="Horario: "/>
+      <p:outputLabel value="#{kalanCatalogosPacientesCitasCitas.attrs.seleccionado.inicio}"/>
+      <p:outputLabel value="Servicio(s): "/>
+      <p:outputLabel value="#{kalanCatalogosPacientesCitasCitas.attrs.seleccionado.servicios}"/>
+      <p:outputLabel value="Justificación: "/>
+      <p:inputTextarea placeholder="ESCRIBA SI EXISTEN OBSERVACIONES" value="#{kalanCatalogosPacientesCitasCitas.attrs.justificacion}" rows="2" cols="33" styleClass="janal-win-100-txt" onblur="$(this).val($(this).val().toUpperCase())"/>
+    </h:panelGrid>			
+  </ui:define>  
 </ui:composition>

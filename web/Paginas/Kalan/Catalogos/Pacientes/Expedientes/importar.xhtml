@@ -14,6 +14,7 @@
 				'contenedorGrupos\\:idTipoDocumento': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:documento'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:observaciones'  : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true},
+				'contenedorGrupos\\:idCita'         : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:total'          : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'entero', grupo: 'documentos'}
 			};	
 			
@@ -65,10 +66,25 @@
                 </p:panelGrid>  
 							  <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100-txt">		
                   <p:spacer height="3px"/>
-                  <p:commandButton actionListener="#{kalanCatalogosPacientesExpedientesImportar.doAddDocumento}" process="@this idTipoDocumento documento observaciones" update="contenedorGrupos:total contenedorGrupos:idTipoDocumento contenedorGrupos:documento contenedorGrupos:observaciones tablaDocumentos" icon="fa fa-plus" onstart="return janal.partial('general')" oncomplete="janal.refresh();"/>
+                  <p:commandButton actionListener="#{kalanCatalogosPacientesExpedientesImportar.doAddDocumento}" process="@this idTipoDocumento documento observaciones" update="contenedorGrupos:total contenedorGrupos:idTipoDocumento contenedorGrupos:documento contenedorGrupos:observaciones contenedorGrupos:idCita tablaDocumentos" icon="fa fa-plus" onstart="return janal.partial('general')" oncomplete="janal.refresh();"/>
                 </p:panelGrid>  
               </p:panelGrid>  
               <p:inputTextarea id="observaciones" placeholder="ESCRIBA SI EXISTEN OBSERVACIONES" rows="2" cols="33" styleClass="janal-wid-100-txt" value="#{kalanCatalogosPacientesExpedientesImportar.documento.observaciones}"/>
+							<p:selectOneMenu id="idCita" value="#{kalanCatalogosPacientesExpedientesImportar.documento.ikCita}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+								<f:selectItems value="#{kalanCatalogosPacientesExpedientesImportar.attrs.citas}" var="element" itemValue="#{element}" itemLabel="#{element.consecutivo} #{element.servicios.toString() eq ''? '': '|'} #{element.servicios}"/>
+								<p:column headerText="Folio">
+									<h:outputText value="#{item.consecutivo}"/>
+								</p:column>   
+								<p:column headerText="Inicio">
+									<h:outputText value="#{item.inicio}"/>
+								</p:column>   
+								<p:column headerText="Termino">
+                  <h:outputText value="#{item.termino}" styleClass="janal-color-orange FsBold"/>
+								</p:column>   
+								<p:column headerText="Servicios">
+                  <h:outputText value="#{empty(item.servicios.toString())? 'SIN SERVICIOS': item.servicios}" />
+								</p:column>   
+							</p:selectOneMenu>
 							<p:spacer height="5px"/>
               <p:fileUpload fileUploadListener="#{kalanCatalogosPacientesExpedientesImportar.doFileUpload}" 
 							  mode="advanced" process="@this observaciones" update="@(.importado) documento" label="Selecciona archivo" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="3145728"
@@ -160,11 +176,11 @@
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{kalanCatalogosPacientesExpedientesImportar.doAceptar}" onstart="return janal.partial('documentos');" oncomplete="janal.desbloquear()"/>
+      <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" update="contenedorGrupos:tablaDocumentos" action="#{kalanCatalogosPacientesExpedientesImportar.doAceptar}" onstart="return janal.partial('documentos');" oncomplete="janal.desbloquear()"/>
 			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-reply" process="@this" action="#{kalanCatalogosPacientesExpedientesImportar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{kalanCatalogosPacientesExpedientesImportar.doAceptar}" onstart="return janal.partial('documentos');" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form"  update="contenedorGrupos:tablaDocumentos" action="#{kalanCatalogosPacientesExpedientesImportar.doAceptar}" onstart="return janal.partial('documentos');" oncomplete="janal.desbloquear()"/>
 			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-reply" process="@this" action="#{kalanCatalogosPacientesExpedientesImportar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 	</ui:define>
