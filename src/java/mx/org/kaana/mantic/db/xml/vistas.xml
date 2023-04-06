@@ -6781,6 +6781,7 @@
           tc_mantic_proveedores.id_proveedor,
 					tc_mantic_ordenes_compras.consecutivo as orden_compra,
 					tc_mantic_notas_entradas.consecutivo,
+          tc_mantic_notas_entradas.consecutivo as nota_entrada,
 					tc_mantic_empresas.nombre as empresa,
 					tc_mantic_notas_tipos.nombre as directa,
 					tc_mantic_notas_entradas.id_nota_tipo,

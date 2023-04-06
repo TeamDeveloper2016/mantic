@@ -299,7 +299,7 @@ public class Galeria extends IBaseFilter implements Serializable {
     try {
 			JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);		
 			JsfBase.setFlashAttribute("idCliente", this.cliente.toLong("idCliente"));
-			JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Catalogos/Pacientes/Citas/galeria.jsf");
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Catalogos/Pacientes/Citas/galeria");
 			regresar= "/Paginas/Kalan/Catalogos/Pacientes/Expedientes/importar".concat(Constantes.REDIRECIONAR);			
 		} // try
 		catch (Exception e) {

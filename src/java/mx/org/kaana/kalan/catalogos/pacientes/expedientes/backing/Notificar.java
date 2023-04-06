@@ -47,20 +47,26 @@ public class Notificar extends IBaseFilter implements Serializable {
     this.mensaje = mensaje;
   }
 
+  public Boolean getAceptar() {
+    return !(Objects.equals(this.mensaje.getIdMensajeEstatus(), 1L) || Objects.equals(this.mensaje.getIdMensajeEstatus(), 4L));
+  }
+  
+  public Boolean getEliminar() {
+    return !(this.mensaje.isValid() && (Objects.equals(this.mensaje.getIdMensajeEstatus(), 1L) || Objects.equals(this.mensaje.getIdMensajeEstatus(), 4L)));
+  }
+  
   @PostConstruct
   @Override
   protected void init() {
     try {
-//			if(JsfBase.getFlashAttribute("criterio")== null)
-//				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
-//      this.criterio= (Map<String, Object>)JsfBase.getFlashAttribute("criterio");
-      this.criterio= new HashMap<>();
-      this.criterio.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());			
-      this.criterio.put(Constantes.SQL_CONDICION, "(tc_mantic_clientes.id_cliente!= 1)");			
-      this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "clientes": JsfBase.getFlashAttribute("retorno"));
-			this.attrs.put("fecha", new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			if(JsfBase.getFlashAttribute("criterio")== null)
+				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
+      this.criterio= (Map<String, Object>)JsfBase.getFlashAttribute("criterio");
+//      this.criterio= new HashMap<>();
+//      this.criterio.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());			
+//      this.criterio.put(Constantes.SQL_CONDICION, "(tc_mantic_clientes.id_cliente!= 1)");			
+      this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "/Paginas/Kalan/Catalogos/Pacientes/Citas/clientes": JsfBase.getFlashAttribute("retorno"));
 			this.attrs.put("idProgramar", 2);
-      this.doLoad();
       this.toLoadMensajes();
     } // try
     catch (Exception e) {
@@ -79,8 +85,13 @@ public class Notificar extends IBaseFilter implements Serializable {
       columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));      
       columns.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));      
       columns.add(new Columna("inicio", EFormatoDinamicos.DIA_FECHA_HORA_CORTA));      
-      this.lazyModel = new FormatCustomLazy("VistaClientesCitasDto", "notificar", params, columns);
-      UIBackingUtilities.resetDataGrid();
+      if(this.mensaje.isValid()) {
+        params.put("idMensaje", this.mensaje.getIdMensaje());
+        this.lazyModel = new FormatCustomLazy("VistaClientesCitasDto", "mensajes", params, columns);
+      } // if  
+      else
+        this.lazyModel = new FormatCustomLazy("VistaClientesCitasDto", "notificar", params, columns);
+      UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -98,22 +109,26 @@ public class Notificar extends IBaseFilter implements Serializable {
     try {
       params.put("sortOrder", "order by tc_mantic_clientes.razon_social, tc_mantic_clientes.paterno, tc_mantic_clientes.materno");
       List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaClientesCitasDto", "notificar", params);
-      mensaje.setDescripcion((String)this.attrs.get("mensaje"));
-      transaccion= new Transaccion(items, mensaje);
+      transaccion= new Transaccion(items, this.mensaje);
       switch((Integer)this.attrs.get("idProgramar")) {
         case 1:
-          mensaje.setCuando(new Timestamp(Calendar.getInstance().getTimeInMillis()));
-          if(transaccion.ejecutar(EAccion.PROCESAR)) 
-            JsfBase.addMessage("WhatsApp", "Se envió el mensaje a "+ items.size()+ " clientes !", ETipoMensaje.INFORMACION);
-          else
-            JsfBase.addMessage("WhatsApp", "Ocurrió un error en el envio del mensaje !", ETipoMensaje.INFORMACION);
-          break;
-        case 2:
-          mensaje.setCuando((Timestamp)this.attrs.get("fecha"));
-          if(transaccion.ejecutar(EAccion.REPROCESAR)) 
+          if(transaccion.ejecutar(EAccion.REPROCESAR)) {
+            this.attrs.put("idMensaje", new UISelectEntity(-1L));
+            this.toLoadMensajes();
             JsfBase.addMessage("WhatsApp", "Se registró el mensaje con "+ items.size()+ " clientes !", ETipoMensaje.INFORMACION);
+          } // if  
           else
             JsfBase.addMessage("WhatsApp", "Ocurrió un error en el registro del mensaje !", ETipoMensaje.INFORMACION);
+          break;
+        case 2:
+          mensaje.setCuando(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+          if(transaccion.ejecutar(EAccion.PROCESAR)) {
+            this.attrs.put("idMensaje", new UISelectEntity(-1L));
+            this.doFindMensaje();
+            JsfBase.addMessage("WhatsApp", "Se envió el mensaje a "+ items.size()+ " clientes !", ETipoMensaje.INFORMACION);
+          } // if  
+          else
+            JsfBase.addMessage("WhatsApp", "Ocurrió un error en el envio del mensaje !", ETipoMensaje.INFORMACION);
           break;
       } // switch
 		} // try
@@ -125,11 +140,29 @@ public class Notificar extends IBaseFilter implements Serializable {
       Methods.clean(params);
     } // finally		
   } // doAceptar
+  
+  public void doEliminar() {
+		Transaccion transaccion= null;
+    try {
+      transaccion= new Transaccion(this.mensaje);
+      if(transaccion.ejecutar(EAccion.DEPURAR)) {
+        this.attrs.put("idMensaje", new UISelectEntity(-1L));
+        this.toLoadMensajes();
+        JsfBase.addMessage("WhatsApp", "Se eliminó el mensaje con éxito!", ETipoMensaje.INFORMACION);
+      } // if  
+      else
+        JsfBase.addMessage("WhatsApp", "Ocurrió un error al eliminar el mensaje !", ETipoMensaje.INFORMACION);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+  } // doEliminar
 
   public String doCancelar() {
     String regresar= null;
     try {
-			JsfBase.setFlashAttribute("citerio", this.attrs.get("citerio"));
+			JsfBase.setFlashAttribute("criterio", new HashMap(this.criterio));
 			regresar= ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);			
 		} // try
 		catch (Exception e) {
@@ -150,14 +183,14 @@ public class Notificar extends IBaseFilter implements Serializable {
     // "<br> enter ////n
 //    String mensaje= (String)this.attrs.get("mensaje");
 //    if(!Cadena.isVacio(mensaje))
-//      mensaje= mensaje.replaceAll("<p>", "").replaceAll("</p>", "").replaceAll("<br>", "\\\\n").replaceAll("<strong>", "*").replaceAll("</strong>", "*").replaceAll("<em>", "_").replaceAll("</em>", "_").replaceAll("<u>", "~").replaceAll("</u>", "~");
+//      mensaje= mensaje.replaceAll("<p>", "").replaceAll("</p>", "").replaceAll("<br>", "\\\\n").replaceAll("<strong>", "*").replaceAll("</strong>", "*").replaceAll("<em>", "_").replaceAll("</em>", "_").replaceAll("<u>", "~").replaceAll("</u>", "~").replaceAll("\n", "\\n");
 //    this.attrs.put("mensaje", mensaje.replaceAll("\n", "\\n"));
   }
 
   public void doUpdateFecha() {
     Calendar inicio = Calendar.getInstance();
     Calendar termino= Calendar.getInstance();
-    inicio.setTimeInMillis(((Timestamp)this.attrs.get("fecha")).getTime());
+    inicio.setTimeInMillis(this.mensaje.getCuando().getTime());
     if(inicio.before(termino)) {
       this.attrs.put("fecha", new Timestamp(termino.getTimeInMillis()));
       JsfBase.addMessage("Fecha", "La fecha y hora tienen que ser mayor que la actual !", ETipoMensaje.INFORMACION);
@@ -169,19 +202,24 @@ public class Notificar extends IBaseFilter implements Serializable {
     Map<String, Object> params= new HashMap<>();
     List<UISelectEntity> programados= null;
     try {      
-			params.put("fecha", Fecha.formatear(Fecha.FECHA_HORA_LARGA));			
-      columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      Calendar fecha= Calendar.getInstance();
+      fecha.set(Calendar.MONTH, -3);
+			params.put("fecha", Fecha.formatear(Fecha.FECHA_HORA_LARGA, fecha));			
+      columns.add(new Columna("cuando", EFormatoDinamicos.DIA_FECHA_HORA));
+      columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
       programados= UIEntity.seleccione("TcKalanMensajesDto", "vigentes", params, columns, "consecutivo");
       if(programados!= null && !programados.isEmpty()) {
         this.attrs.put("idMensaje", UIBackingUtilities.toFirstKeySelectEntity(programados));         
         for (UISelectEntity item : programados) {
-          if(!Objects.equals(item.toString("descrpcion"), null) && item.toString("descrpcion").length()> 40) {
-            String descripcion= item.toString("descrpcion");
-            item.get("descripcion").setData(descripcion.substring(0, 40).concat(" ..."));
-          } // if  
+          String descripcion= Cadena.isVacio(item.toString("descripcion"))? "": item.toString("descripcion");
+          if(!Objects.equals(descripcion, null) && descripcion.length()> 60) 
+            descripcion= descripcion.substring(0, 60).concat(" ...");
+          descripcion= descripcion.replaceAll("<p>", " ").replaceAll("</p>", " ").replaceAll("<br>", " ").replaceAll("<strong>", " ").replaceAll("</strong>", " ").replaceAll("<em>", " ").replaceAll("</em>", " ").replaceAll("<u>", " ").replaceAll("</u>", " ");
+          if(descripcion.contains("<"))
+            item.get("descripcion").setData(descripcion.substring(0, descripcion.lastIndexOf('<')));
+          else
+            item.get("descripcion").setData(descripcion);
         } // for
-        this.doFindMensaje();
       } // if
       this.attrs.put("programados", programados); 
       this.doFindMensaje();
@@ -210,8 +248,8 @@ public class Notificar extends IBaseFilter implements Serializable {
           if(programados!= null && !programados.isEmpty()) {
             int index  = programados.indexOf(idMensaje);
             if(index>= 0) {
-              key= programados.get(0).getKey();
-              this.attrs.put("idMensaje", programados.get(0));
+              key= programados.get(index).getKey();
+              this.attrs.put("idMensaje", programados.get(index));
             } // if  
             else {
               idMensaje= UIBackingUtilities.toFirstKeySelectEntity(programados);
@@ -230,7 +268,8 @@ public class Notificar extends IBaseFilter implements Serializable {
       } // if  
       else
         this.mensaje= new TcKalanMensajesDto();
-      this.attrs.put("idProgramar", this.mensaje.isValid()? 2L: 1L);
+      this.attrs.put("idProgramar", this.mensaje.isValid()? 1: 2);
+      this.doLoad();
     } // try
     catch (Exception e) {
 			JsfBase.addMessageError(e);

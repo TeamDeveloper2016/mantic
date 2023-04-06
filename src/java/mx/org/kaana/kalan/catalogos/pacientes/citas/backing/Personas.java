@@ -166,7 +166,7 @@ public class Personas extends IBaseFilter implements Serializable {
 			JsfBase.setFlashAttribute("persona", this.seleccionado);
 			JsfBase.setFlashAttribute("idPersona", this.seleccionado.getKey());
 			JsfBase.setFlashAttribute("fecha", new Date(Calendar.getInstance().getTimeInMillis()));		
-			JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Catalogos/Pacientes/Citas/personas.jsf");
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Catalogos/Pacientes/Citas/personas");
 			regresar= "citados".concat(Constantes.REDIRECIONAR);			
 		} // try
 		catch (Exception e) {

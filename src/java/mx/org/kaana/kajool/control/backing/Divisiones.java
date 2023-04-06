@@ -103,7 +103,7 @@ public class Divisiones extends BaseMenu implements Serializable {
     Entity row= (Entity)this.attrs.get("seleccionado");
     JsfBase.setFlashAttribute("codigo", row.toString("nombre"));
     JsfBase.setFlashAttribute("busqueda", EBusqueda.CATEGORIA);
-    return "/Control/galeria.jsf".concat(Constantes.REDIRECIONAR);
+    return "/Control/galeria".concat(Constantes.REDIRECIONAR);
   }
   
   private String toProcessLinks(String categoria) {

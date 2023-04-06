@@ -126,7 +126,7 @@ public final class Portal implements Serializable {
       this.menu = new DefaultMenuModel();
       DefaultMenuItem item = new DefaultMenuItem("Inicio");
       item.setIcon("fa fa-home");
-      item.setUrl("/indice.jsf".concat(Constantes.REDIRECIONAR));
+      item.setUrl("/indice".concat(Constantes.REDIRECIONAR));
       this.menu.addElement(item);      
       DefaultSubMenu sub= new DefaultSubMenu("Categorías");
       sub.setIcon("fa fa-language");
@@ -147,11 +147,11 @@ public final class Portal implements Serializable {
       sub.setIcon("fa fa-qrcode");
       item = new DefaultMenuItem("Descargar");
       item.setIcon("fa fa-download");
-      item.setUrl("/Control/descargar.jsf".concat(Constantes.REDIRECIONAR));
+      item.setUrl("/Control/descargar".concat(Constantes.REDIRECIONAR));
       sub.addElement(item);      
       item = new DefaultMenuItem("Generar");
       item.setIcon("fa fa-print");
-      item.setUrl("/Control/generar.jsf".concat(Constantes.REDIRECIONAR));
+      item.setUrl("/Control/generar".concat(Constantes.REDIRECIONAR));
       sub.addElement(item);      
       this.menu.addElement(sub);      
       LOG.error("Menu del portal: "+ this.images);

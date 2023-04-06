@@ -61,7 +61,6 @@ public class Filtro extends Comun implements Serializable {
   @Override
   protected void init() {
     try {
-    	this.attrs.put("buscaPorCodigo", false);
       this.attrs.put("codigo", "");
       //this.attrs.put("nombre", "");
       this.attrs.put("idTipoArticulo", 1L);
@@ -250,45 +249,6 @@ public class Filtro extends Comun implements Serializable {
 	
 	public void doUpdateArticulos() {
 		List<Columna> columns         = null;
-    Map<String, Object> params    = new HashMap<>();
-		List<UISelectEntity> articulos= null;
-		boolean buscaPorCodigo        = false;
-    try {
-			columns= new ArrayList<>();
-      columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-			params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
-  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-  		params.put("idProveedor", -1L);
-			String search= new String((String)this.attrs.get("codigo")); 
-			if(!Cadena.isVacio(search)) {
-  			search= search.replaceAll(Constantes.CLEAN_SQL, "").trim();
-				buscaPorCodigo= search.startsWith(".");
-				if(buscaPorCodigo)
-					search= search.trim().substring(1);
-				search= search.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
-			} // if	
-			else
-				search= "WXYZ";
-  		params.put("codigo", search);
-			if((boolean)this.attrs.get("buscaPorCodigo") || buscaPorCodigo)
-        articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porCodigo", params, columns, 40L);
-			else
-        articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porNombre", params, columns, 40L);
-      this.attrs.put("articulos", articulos);
-		} // try
-	  catch (Exception e) {
-      Error.mensaje(e);
-			JsfBase.addMessageError(e);
-    } // catch   
-    finally {
-      Methods.clean(columns);
-      Methods.clean(params);
-    }// finally
-	}	// doUpdateArticulos
-	
-	public void doUpdateArticulosFiltro() {
-		List<Columna> columns         = null;
     Map<String, Object> params    = null;
 		List<UISelectEntity> articulos= null;
     try {
@@ -305,7 +265,7 @@ public class Filtro extends Comun implements Serializable {
 				search= "WXYZ";
   		params.put("codigo", search);			        
       articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porNombreTipoArticulo", params, columns, 40L);
-      this.attrs.put("articulosFiltro", articulos);
+      this.attrs.put("articulos", articulos);
 		} // try
 	  catch (Exception e) {
       Error.mensaje(e);
@@ -318,17 +278,10 @@ public class Filtro extends Comun implements Serializable {
 	}	// doUpdateArticulos
 
 	public List<UISelectEntity> doCompleteArticulo(String query) {
-		this.attrs.put("existe", null);
-		this.attrs.put("codigo", query);
-    this.doUpdateArticulos();		
-		return (List<UISelectEntity>)this.attrs.get("articulos");
-	}	// doCompleteArticulo
-	
-	public List<UISelectEntity> doCompleteArticuloFiltro(String query) {
 		this.attrs.put("existeFiltro", null);
 		this.attrs.put("codigoFiltro", query);
-    this.doUpdateArticulosFiltro();
-		return (List<UISelectEntity>)this.attrs.get("articulosFiltro");
+    this.doUpdateArticulos();
+		return (List<UISelectEntity>)this.attrs.get("articulos");
 	}	// doCompleteArticulo
 
   public void doFindArticulo() {

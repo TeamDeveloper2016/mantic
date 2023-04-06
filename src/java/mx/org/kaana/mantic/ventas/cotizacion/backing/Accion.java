@@ -578,7 +578,7 @@ public class Accion extends IBaseVenta implements Serializable {
 	} // doAsignaClienteTicketAbierto
 	
 	public String doClientes() {
-		return "cliente.jsf".concat(Constantes.REDIRECIONAR);
+		return "cliente".concat(Constantes.REDIRECIONAR);
 	} // doClientes
 	
 	public void doLoadUsers() {

@@ -12,7 +12,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.primefaces.model.SortOrder;
 import mx.org.kaana.libs.formato.Error;
-import mx.org.kaana.libs.pagina.UIBackingUtilities;
 
 /**
  *@company Instituto Nacional de Estadistica y Geografia
@@ -65,7 +64,6 @@ public class FormatCustomLazy extends FormatLazyModel<IBaseDto> {
     if(filters!= null && filters.size()> 0)
       this.getParams().put("filters", " and (".concat(toFilters(filters)).concat(")"));
     LOG.info("Lazy params: "+ this.getParams());
-		UIBackingUtilities.execute("janal.onLoadCallBack();");
     return super.load(first, pageSize, sortField, sortOrder, filters);
   }
 

@@ -214,13 +214,16 @@
       <select id="vigentes">
         select      
           tc_kalan_mensajes.id_mensaje as id_key,
-          tc_kalan_mensajes.*
+          tc_kalan_mensajes.*,
+          tc_kalan_mensajes_estatus.nombre as estatus
         from      
           tc_kalan_mensajes
+        inner join
+          tc_kalan_mensajes_estatus on tc_kalan_mensajes.id_mensaje_estatus= tc_kalan_mensajes_estatus.id_mensaje_estatus
         where 
-          date_format(cuando, '%Y%m%d%H%i%S')&gt;= '{fecha}'
+          date_format(tc_kalan_mensajes.cuando, '%Y%m%d%H%i%S')&gt;= '{fecha}'
         order by  
-          cuando
+          tc_kalan_mensajes.cuando
       </select>
 			<select id="siguiente">
         select
@@ -232,12 +235,12 @@
 				  and orden{operador} 900000			
 			</select>
     </unit> 
-    <unit id="TcKalanMensajesDetalleDto">
+    <unit id="TcKalanMensajesDetallesDto">
       <select id="row">
         select      
           *
         from      
-          tc_kalan_mensajes_detalle
+          tc_kalan_mensajes_detalles
         where 
           {condicion} 
       </select>
@@ -245,10 +248,47 @@
         select      
           *
         from      
-          tc_kalan_mensajes_detalle
+          tc_kalan_mensajes_detalles
         where      
           id_cliente = {idCliente} and id_mensaje = {idMensaje}
       </select>
-    </unit>         
+    </unit>    
+    <unit id="TcKalanMensajesBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_kalan_mensajes_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_kalan_mensajes_bitacora
+        where      
+          id_mensaje_bitacora = {idMensajeBitacora}
+      </select>
+    </unit>    
+    <unit id="TcKalanMensajesEstatusDto">
+      <select id="row">
+        select      
+          tc_kalan_mensajes_estatus.id_mensaje_estatus as id_key,
+          tc_kalan_mensajes_estatus.*
+        from      
+          tc_kalan_mensajes_estatus
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_kalan_mensajes_estatus
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>    
   </dml>    
 </process>

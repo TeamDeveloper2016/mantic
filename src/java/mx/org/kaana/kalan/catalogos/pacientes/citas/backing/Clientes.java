@@ -46,6 +46,7 @@ public class Clientes extends IBaseFilter implements Serializable {
   protected void init() {
     try {
       this.idCriterio= 0;
+      this.attrs.put("criterio", JsfBase.getFlashAttribute("criterio"));
       this.attrs.put("idCliente", JsfBase.getFlashAttribute("idClienteProcess"));
       this.attrs.put("idClienteProcess", JsfBase.getFlashAttribute("idClienteProcess"));
       this.doLoad();
@@ -101,43 +102,49 @@ public class Clientes extends IBaseFilter implements Serializable {
 		UISelectEntity cliente      = null;
 		List<UISelectEntity>clientes= null;
 		try {
-			cliente = (UISelectEntity)this.attrs.get("cliente");
-			clientes= (List<UISelectEntity>)this.attrs.get("clientes");
-			if(!Cadena.isVacio(this.attrs.get("idClienteProcess"))) 
-        sb.append("(tc_mantic_clientes.id_cliente= ").append(this.attrs.get("idClienteProcess")).append(") and");
-      switch(this.idCriterio) {
-        case 0: // BUSCAR POR CLIENTE
-          if(clientes!= null && cliente!= null && clientes.indexOf(cliente)>= 0) 
-            sb.append("(tc_mantic_clientes.id_cliente= ").append(clientes.get(clientes.indexOf(cliente)).toLong("idCliente")).append(") and");
-          else 
-            if(!Cadena.isVacio(JsfBase.getParametro("contenedorGrupos:razonSocial_input"))) {
-              String codigo= JsfBase.getParametro("contenedorGrupos:razonSocial_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
-              sb.append("(upper(concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, ''))) regexp '.*").append(codigo).append(".*' or upper(tc_mantic_clientes.rfc) regexp '.*").append(codigo).append(".*') and");
+			if(!Objects.equals(this.attrs.get("criterio"), null)) {
+        regresar.putAll((Map)this.attrs.get("criterio"));
+        this.attrs.put("criterio", null);
+      } // if
+      else {
+        cliente = (UISelectEntity)this.attrs.get("cliente");
+        clientes= (List<UISelectEntity>)this.attrs.get("clientes");
+        if(!Cadena.isVacio(this.attrs.get("idClienteProcess"))) 
+          sb.append("(tc_mantic_clientes.id_cliente= ").append(this.attrs.get("idClienteProcess")).append(") and");
+        switch(this.idCriterio) {
+          case 0: // BUSCAR POR CLIENTE
+            if(clientes!= null && cliente!= null && clientes.indexOf(cliente)>= 0) 
+              sb.append("(tc_mantic_clientes.id_cliente= ").append(clientes.get(clientes.indexOf(cliente)).toLong("idCliente")).append(") and");
+            else 
+              if(!Cadena.isVacio(JsfBase.getParametro("contenedorGrupos:razonSocial_input"))) {
+                String codigo= JsfBase.getParametro("contenedorGrupos:razonSocial_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
+                sb.append("(upper(concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, ''))) regexp '.*").append(codigo).append(".*' or upper(tc_mantic_clientes.rfc) regexp '.*").append(codigo).append(".*') and");
+              } // if  
+            break;  
+          case 1: // BUSCAR POR SERVICIO
+            Object[] idServicio= (Object[])this.attrs.get("idServicio");
+            if(idServicio.length> 0) {
+              StringBuilder servicios= new StringBuilder();
+              for (Object item: idServicio) {
+                servicios.append(((UISelectEntity)item).getKey()).append(",");
+              } // for
+              sb.append("(tc_kalan_citas_detalles.id_articulo in (").append(servicios.substring(0, servicios.length()-1)).append(")) and ");
             } // if  
-          break;  
-        case 1: // BUSCAR POR SERVICIO
-          Object[] idServicio= (Object[])this.attrs.get("idServicio");
-          if(idServicio.length> 0) {
-            StringBuilder servicios= new StringBuilder();
-            for (Object item: idServicio) {
-              servicios.append(((UISelectEntity)item).getKey()).append(",");
-            } // for
-            sb.append("(tc_kalan_citas_detalles.id_articulo in (").append(servicios.substring(0, servicios.length()-1)).append(")) and ");
-          } // if  
-          break;  
-        case 2: // BUSCAR POR PERIODO
-          sb.append("(date_format(tc_kalan_citas.inicio, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("inicio"))).append("') and ");
-          sb.append("(date_format(tc_kalan_citas.inicio, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("termino"))).append("') and ");
-          break;  
-        case 3: // BUSCAR POR CUMPLEAÑOS
-          sb.append("(substring(tc_mantic_clientes.rfc, 6, 2)= '").append((String)this.attrs.get("idMes")).append("' or substring(tc_mantic_clientes.rfc, 7, 2)= '").append((String)this.attrs.get("idMes")).append("') and ");
-          break;  
-      } // swtich  
-			regresar.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());			
-			if(Objects.equals(sb.length(), 0))
-        regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-      else
-        regresar.put(Constantes.SQL_CONDICION, sb.substring(0, sb.length()- 4));
+            break;  
+          case 2: // BUSCAR POR PERIODO
+            sb.append("(date_format(tc_kalan_citas.inicio, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("inicio"))).append("') and ");
+            sb.append("(date_format(tc_kalan_citas.inicio, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("termino"))).append("') and ");
+            break;  
+          case 3: // BUSCAR POR CUMPLEAÑOS
+            sb.append("(substring(tc_mantic_clientes.rfc, 6, 2)= '").append((String)this.attrs.get("idMes")).append("' or substring(tc_mantic_clientes.rfc, 7, 2)= '").append((String)this.attrs.get("idMes")).append("') and ");
+            break;  
+        } // swtich  
+        regresar.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());			
+        if(Objects.equals(sb.length(), 0))
+          regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+        else
+          regresar.put(Constantes.SQL_CONDICION, sb.substring(0, sb.length()- 4));
+  		} // else
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -194,7 +201,7 @@ public class Clientes extends IBaseFilter implements Serializable {
 			JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);		
 			JsfBase.setFlashAttribute("idCliente", this.seleccionado.getKey());
 			JsfBase.setFlashAttribute("fecha", new Timestamp(Calendar.getInstance().getTimeInMillis()));		
-			JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Catalogos/Pacientes/Citas/clientes.jsf");
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Catalogos/Pacientes/Citas/clientes");
 			regresar= "nuevo".concat(Constantes.REDIRECIONAR);			
 		} // try
 		catch (Exception e) {
@@ -208,7 +215,7 @@ public class Clientes extends IBaseFilter implements Serializable {
     String regresar= null;
     try {
 			JsfBase.setFlashAttribute("idCliente", this.seleccionado.getKey());
-			JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Catalogos/Pacientes/Citas/clientes.jsf");
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Catalogos/Pacientes/Citas/clientes");
 			regresar= "citas".concat(Constantes.REDIRECIONAR);			
 		} // try
 		catch (Exception e) {
@@ -223,7 +230,7 @@ public class Clientes extends IBaseFilter implements Serializable {
     try {
 			JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);		
 			JsfBase.setFlashAttribute("idCliente", this.seleccionado.getKey());
-			JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Catalogos/Pacientes/Citas/clientes.jsf");
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Catalogos/Pacientes/Citas/clientes");
 			regresar= "/Paginas/Kalan/Catalogos/Pacientes/Expedientes/importar".concat(Constantes.REDIRECIONAR);			
 		} // try
 		catch (Exception e) {
@@ -238,7 +245,7 @@ public class Clientes extends IBaseFilter implements Serializable {
     try {
 			JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);		
 			JsfBase.setFlashAttribute("idCliente", this.seleccionado.getKey());
-			JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Catalogos/Pacientes/Citas/clientes.jsf");
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Catalogos/Pacientes/Citas/clientes");
 			regresar= "/Paginas/Kalan/Catalogos/Pacientes/Expedientes/galeria".concat(Constantes.REDIRECIONAR);			
 		} // try
 		catch (Exception e) {
@@ -254,7 +261,7 @@ public class Clientes extends IBaseFilter implements Serializable {
 			JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);		
 			JsfBase.setFlashAttribute("idCita", -1L);
 			JsfBase.setFlashAttribute("idCliente", this.seleccionado.toLong("idCliente"));
-			JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Catalogos/Pacientes/Citas/clientes.jsf");
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Catalogos/Pacientes/Citas/clientes");
 			regresar= "/Paginas/Kalan/Catalogos/Pacientes/Expedientes/diagnostico".concat(Constantes.REDIRECIONAR);			
 		} // try
 		catch (Exception e) {
@@ -324,5 +331,21 @@ public class Clientes extends IBaseFilter implements Serializable {
       Methods.clean(columns);
     } // finally        
   }
-  
+
+  public String doNotificar() {
+    String regresar          = null;
+		Map<String, Object>params= this.toPrepare();
+    try {
+      params.put("idCliente", -1L);
+			JsfBase.setFlashAttribute("criterio", params);		
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Catalogos/Pacientes/Citas/clientes");
+			regresar= "/Paginas/Kalan/Catalogos/Pacientes/Expedientes/notificar".concat(Constantes.REDIRECIONAR);			
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+    return regresar;
+  }
+
 }

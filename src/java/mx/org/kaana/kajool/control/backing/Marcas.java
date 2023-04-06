@@ -105,7 +105,7 @@ public class Marcas extends BaseMenu implements Serializable {
     JsfBase.setFlashAttribute("codigo", row.toString("marca"));
     JsfBase.setFlashAttribute("categoria", row.toString("padre"));
     JsfBase.setFlashAttribute("busqueda", EBusqueda.MARCA);
-    return "/Control/galeria.jsf".concat(Constantes.REDIRECIONAR);
+    return "/Control/galeria".concat(Constantes.REDIRECIONAR);
   }
   
   private String toProcessLinks(String categoria) {

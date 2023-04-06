@@ -16,7 +16,8 @@ import mx.org.kaana.kalan.catalogos.pacientes.expedientes.beans.Expediente;
 import mx.org.kaana.kalan.db.dto.TcKalanDiagnosticosDto;
 import mx.org.kaana.kalan.db.dto.TcKalanExpedientesBitacoraDto;
 import mx.org.kaana.kalan.db.dto.TcKalanExpedientesDto;
-import mx.org.kaana.kalan.db.dto.TcKalanMensajesDetalleDto;
+import mx.org.kaana.kalan.db.dto.TcKalanMensajesBitacoraDto;
+import mx.org.kaana.kalan.db.dto.TcKalanMensajesDetallesDto;
 import mx.org.kaana.kalan.db.dto.TcKalanMensajesDto;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
@@ -28,7 +29,7 @@ import org.apache.commons.logging.LogFactory;
 
 public class Transaccion extends IBaseTnx {
 
-	private static final Log LOG=LogFactory.getLog(Transaccion.class);
+	private static final Log LOG= LogFactory.getLog(Transaccion.class);
 	
 	private Entity cliente;
   private Long idExpediente;
@@ -44,6 +45,10 @@ public class Transaccion extends IBaseTnx {
   
 	public Transaccion(TcKalanDiagnosticosDto diagnostico) {
     this.diagnostico= diagnostico;
+  }
+  
+	public Transaccion(TcKalanMensajesDto mensaje) {
+    this.mensaje = mensaje;
   }
   
 	public Transaccion(List<Entity> clientes, TcKalanMensajesDto mensaje) {
@@ -75,6 +80,9 @@ public class Transaccion extends IBaseTnx {
 					break;
 				case REPROCESAR:
 					regresar= this.toProgramado(sesion);
+					break;
+				case DEPURAR:
+					regresar= this.toCancelar(sesion);
 					break;
       } // switch
       if (!regresar) {
@@ -185,6 +193,7 @@ public class Transaccion extends IBaseTnx {
       this.mensaje.setIdUsuario(JsfBase.getIdUsuario());
       this.mensaje.setCuando(new Timestamp(Calendar.getInstance().getTimeInMillis()));
       this.mensaje.setAplicado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+      this.mensaje.setIdMensajeEstatus(2L);
       DaoFactory.getInstance().insert(sesion, this.mensaje);
       Saras notificar= new Saras();
       for (Entity item: this.clientes) {
@@ -194,7 +203,7 @@ public class Transaccion extends IBaseTnx {
           String descripcion= this.mensaje.getDescripcion().replaceAll("<p>", "").replaceAll("</p>", "").replaceAll("<br>", "\\\\n").replaceAll("<strong>", "*").replaceAll("</strong>", "*").replaceAll("<em>", "_").replaceAll("</em>", "_").replaceAll("<u>", "~").replaceAll("</u>", "~");
           notificar.doSendPromocion(descripcion.replaceAll("\n", "\\n"));
         } // if
-        TcKalanMensajesDetalleDto detalle= new TcKalanMensajesDetalleDto(
+        TcKalanMensajesDetallesDto detalle= new TcKalanMensajesDetallesDto(
           -1L, // Long idMensajeDetalle, 
           item.toLong("idCliente"), // Long idCliente, 
           this.mensaje.getIdMensaje(), // Long idMensaje
@@ -202,8 +211,15 @@ public class Transaccion extends IBaseTnx {
         );
         DaoFactory.getInstance().insert(sesion, detalle);
       } // for
-      regresar= Boolean.TRUE;
-    } // try
+      TcKalanMensajesBitacoraDto bitacora= new TcKalanMensajesBitacoraDto(
+        -1L, // Long idMensajeBitacora, 
+        this.mensaje.getIdMensaje(), // Long idMensaje, 
+        JsfBase.getIdUsuario(), // Long idUsuario, 
+        this.mensaje.getIdMensajeEstatus(), // Long idMensajeEstatus, 
+        null // String observaciones
+      );
+      regresar= DaoFactory.getInstance().insert(sesion, bitacora)> 0L;
+    } // try // try
     catch (Exception e) {
       throw e;
     } // catch		
@@ -214,9 +230,18 @@ public class Transaccion extends IBaseTnx {
     Boolean regresar= Boolean.FALSE;
     try {
       if(this.mensaje.isValid()) {
+        this.mensaje.setIdMensajeEstatus(4L);
         this.mensaje.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
         this.mensaje.setIdUsuario(JsfBase.getIdUsuario());
         regresar= DaoFactory.getInstance().update(sesion, this.mensaje)> 0L;
+        TcKalanMensajesBitacoraDto bitacora= new TcKalanMensajesBitacoraDto(
+          -1L, // Long idMensajeBitacora, 
+          this.mensaje.getIdMensaje(), // Long idMensaje, 
+          JsfBase.getIdUsuario(), // Long idUsuario, 
+          this.mensaje.getIdMensajeEstatus(), // Long idMensajeEstatus, 
+          null // String observaciones
+        );
+        regresar= DaoFactory.getInstance().insert(sesion, bitacora)> 0L;
       } // if
       else {
         Siguiente consecutivo= this.toSiguiente(sesion);
@@ -224,10 +249,10 @@ public class Transaccion extends IBaseTnx {
         this.mensaje.setEjercicio(consecutivo.getEjercicio());
         this.mensaje.setOrden(consecutivo.getOrden());
         this.mensaje.setIdUsuario(JsfBase.getIdUsuario());
-        this.mensaje.setCuando(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+        this.mensaje.setAplicado(null);
         DaoFactory.getInstance().insert(sesion, this.mensaje);
         for (Entity item: this.clientes) {
-          TcKalanMensajesDetalleDto detalle= new TcKalanMensajesDetalleDto(
+          TcKalanMensajesDetallesDto detalle= new TcKalanMensajesDetallesDto(
             -1L, // Long idMensajeDetalle, 
             item.toLong("idCliente"), // Long idCliente, 
             this.mensaje.getIdMensaje(), // Long idMensaje
@@ -235,15 +260,42 @@ public class Transaccion extends IBaseTnx {
           );
           DaoFactory.getInstance().insert(sesion, detalle);
         } // for
-        regresar= Boolean.TRUE;
+        TcKalanMensajesBitacoraDto bitacora= new TcKalanMensajesBitacoraDto(
+          -1L, // Long idMensajeBitacora, 
+          this.mensaje.getIdMensaje(), // Long idMensaje, 
+          JsfBase.getIdUsuario(), // Long idUsuario, 
+          this.mensaje.getIdMensajeEstatus(), // Long idMensajeEstatus, 
+          null // String observaciones
+        );
+        regresar= DaoFactory.getInstance().insert(sesion, bitacora)> 0L;
       } // else
-    } // try
+    } // try // try
     catch (Exception e) {
       throw e;
     } // catch		
     return regresar;
   }
   
+  private boolean toCancelar(Session sesion) throws Exception {
+    Boolean regresar= Boolean.FALSE;
+    try {
+      this.mensaje.setIdMensajeEstatus(3L);
+      DaoFactory.getInstance().update(sesion, this.mensaje);
+      TcKalanMensajesBitacoraDto bitacora= new TcKalanMensajesBitacoraDto(
+        -1L, // Long idMensajeBitacora, 
+        this.mensaje.getIdMensaje(), // Long idMensaje, 
+        JsfBase.getIdUsuario(), // Long idUsuario, 
+        this.mensaje.getIdMensajeEstatus(), // Long idMensajeEstatus, 
+        null // String observaciones
+      );
+      regresar= DaoFactory.getInstance().insert(sesion, bitacora)> 0L;
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch		
+    return regresar;
+  }
+    
 	private Siguiente toSiguiente(Session sesion) throws Exception {
 		Siguiente regresar        = null;
 		Map<String, Object> params= new HashMap<>();

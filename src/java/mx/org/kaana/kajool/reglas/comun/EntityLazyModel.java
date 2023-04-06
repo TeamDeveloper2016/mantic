@@ -115,13 +115,13 @@ public class EntityLazyModel<T extends IBaseDto> extends LazyDataModel<T> {
           if(filters!=null && filters.size()> 0)
             this.params.put("filters", " and (".concat(this.toFilters(filters)).concat(")"));
           LOG.info("Lazy params: "+ this.getParams());
-          UIBackingUtilities.execute("janal.onLoadCallBack();");
           page=DaoFactory.getInstance().toEntityPage(this.idFuenteDato, this.proceso, this.idXml, this.params, first, pageSize);
           this.setWrappedData((List<T>) page.getList());
           this.setRowCount(page.getCount());
           if(this.getRowCount()>0) {
             this.keyName=((Entity)((List<T>)this.getWrappedData()).get(0)).getKeyName();					
           } // if
+          UIBackingUtilities.execute("janal.onLoadCallBack();");
         } // if
       } // try
       catch(Exception e) {

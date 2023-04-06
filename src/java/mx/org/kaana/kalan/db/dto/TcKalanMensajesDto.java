@@ -46,6 +46,8 @@ public class TcKalanMensajesDto implements IBaseDto, Serializable {
   private Long orden;
   @Column (name="ejercicio")
   private Long ejercicio;
+  @Column (name="id_mensaje_estatus")
+  private Long idMensajeEstatus;
   @Column (name="registro")
   private Timestamp registro;
 
@@ -54,11 +56,11 @@ public class TcKalanMensajesDto implements IBaseDto, Serializable {
   }
 
   public TcKalanMensajesDto(Long key) {
-    this(null, null, new Timestamp(Calendar.getInstance().getTimeInMillis()), new Long(-1L), null, new Timestamp(Calendar.getInstance().getTimeInMillis()), null, null);
+    this(null, null, new Timestamp(Calendar.getInstance().getTimeInMillis()), new Long(-1L), null, new Timestamp(Calendar.getInstance().getTimeInMillis()), null, null, 1L);
     setKey(key);
   }
 
-  public TcKalanMensajesDto(String consecutivo, String descripcion, Timestamp cuando, Long idMensaje, Long idUsuario, Timestamp aplicado, Long orden, Long ejercicio) {
+  public TcKalanMensajesDto(String consecutivo, String descripcion, Timestamp cuando, Long idMensaje, Long idUsuario, Timestamp aplicado, Long orden, Long ejercicio, Long idMensajeEstatus) {
     setConsecutivo(consecutivo);
     setDescripcion(descripcion);
     setCuando(cuando);
@@ -67,6 +69,7 @@ public class TcKalanMensajesDto implements IBaseDto, Serializable {
     setAplicado(aplicado);
     setOrden(orden);
     setEjercicio(ejercicio);
+    setIdMensajeEstatus(idMensajeEstatus);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
 	
@@ -134,6 +137,14 @@ public class TcKalanMensajesDto implements IBaseDto, Serializable {
     return ejercicio;
   }
 
+  public Long getIdMensajeEstatus() {
+    return idMensajeEstatus;
+  }
+
+  public void setIdMensajeEstatus(Long idMensajeEstatus) {
+    this.idMensajeEstatus = idMensajeEstatus;
+  }
+
   public void setRegistro(Timestamp registro) {
     this.registro = registro;
   }
@@ -173,6 +184,8 @@ public class TcKalanMensajesDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getEjercicio());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdMensajeEstatus());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
   	return regresar.toString();
@@ -189,6 +202,7 @@ public class TcKalanMensajesDto implements IBaseDto, Serializable {
 		regresar.put("aplicado", getAplicado());
 		regresar.put("orden", getOrden());
 		regresar.put("ejercicio", getEjercicio());
+		regresar.put("idMensajeEstatus", getIdMensajeEstatus());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
@@ -196,7 +210,7 @@ public class TcKalanMensajesDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getConsecutivo(), getDescripcion(), getCuando(), getIdMensaje(), getIdUsuario(), getAplicado(), getOrden(), getEjercicio(), getRegistro()
+    getConsecutivo(), getDescripcion(), getCuando(), getIdMensaje(), getIdUsuario(), getAplicado(), getOrden(), getEjercicio(), getIdMensajeEstatus(), getRegistro()
     };
     return regresar;
   }

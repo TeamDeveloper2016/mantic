@@ -86,7 +86,7 @@ public class Articulos extends BaseMenu implements Serializable {
     Entity row= (Entity)this.attrs.get("seleccionado");
     JsfBase.setFlashAttribute("idProducto", row.toLong("idProducto"));
     JsfBase.setFlashAttribute("codigo", this.attrs.get("codigo"));
-    return "/Control/individual.jsf".concat(Constantes.REDIRECIONAR);
+    return "/Control/individual".concat(Constantes.REDIRECIONAR);
   }
   
 }

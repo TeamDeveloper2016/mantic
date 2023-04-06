@@ -146,7 +146,7 @@ public class Citados extends IBaseFilter implements Serializable {
 		try {
 			eaccion= EAccion.valueOf(accion.toUpperCase());
 			JsfBase.setFlashAttribute("accion", eaccion);		
-			JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Catalogos/Pacientes/Citas/personas.jsf");		
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Catalogos/Pacientes/Citas/personas");		
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

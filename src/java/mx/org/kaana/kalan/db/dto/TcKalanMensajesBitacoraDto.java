@@ -30,54 +30,49 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
  */
 
 @Entity
-@Table(name="tc_kalan_mensajes_detalle")
-public class TcKalanMensajesDetalleDto implements IBaseDto, Serializable {
+@Table(name="tc_kalan_mensajes_bitacora")
+public class TcKalanMensajesBitacoraDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
-	@Column (name="id_mensaje_detalle")
-  private Long idMensajeDetalle;
-  @Column (name="id_cliente")
-  private Long idCliente;
+	@Column (name="id_mensaje_bitacora")
+  private Long idMensajeBitacora;
   @Column (name="id_mensaje")
   private Long idMensaje;
-  @Column (name="celular")
-  private String celular;
+  @Column (name="id_usuario")
+  private Long idUsuario;
+  @Column (name="id_mensaje_estatus")
+  private Long idMensajeEstatus;
+  @Column (name="observaciones")
+  private String observaciones;
   @Column (name="registro")
   private Timestamp registro;
 
-  public TcKalanMensajesDetalleDto() {
+  public TcKalanMensajesBitacoraDto() {
     this(new Long(-1L));
   }
 
-  public TcKalanMensajesDetalleDto(Long key) {
-    this(new Long(-1L), null, null, null);
+  public TcKalanMensajesBitacoraDto(Long key) {
+    this(new Long(-1L), null, null, null, null);
     setKey(key);
   }
 
-  public TcKalanMensajesDetalleDto(Long idMensajeDetalle, Long idCliente, Long idMensaje, String celular) {
-    setIdMensajeDetalle(idMensajeDetalle);
-    setIdCliente(idCliente);
+  public TcKalanMensajesBitacoraDto(Long idMensajeBitacora, Long idMensaje, Long idUsuario, Long idMensajeEstatus, String observaciones) {
+    setIdMensajeBitacora(idMensajeBitacora);
     setIdMensaje(idMensaje);
-    setCelular(celular);
+    setIdUsuario(idUsuario);
+    setIdMensajeEstatus(idMensajeEstatus);
+    setObservaciones(observaciones);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
 	
-  public void setIdMensajeDetalle(Long idMensajeDetalle) {
-    this.idMensajeDetalle = idMensajeDetalle;
+  public void setIdMensajeBitacora(Long idMensajeBitacora) {
+    this.idMensajeBitacora = idMensajeBitacora;
   }
 
-  public Long getIdMensajeDetalle() {
-    return idMensajeDetalle;
-  }
-
-  public void setIdCliente(Long idCliente) {
-    this.idCliente = idCliente;
-  }
-
-  public Long getIdCliente() {
-    return idCliente;
+  public Long getIdMensajeBitacora() {
+    return idMensajeBitacora;
   }
 
   public void setIdMensaje(Long idMensaje) {
@@ -88,12 +83,28 @@ public class TcKalanMensajesDetalleDto implements IBaseDto, Serializable {
     return idMensaje;
   }
 
-  public void setCelular(String celular) {
-    this.celular = celular;
+  public void setIdUsuario(Long idUsuario) {
+    this.idUsuario = idUsuario;
   }
 
-  public String getCelular() {
-    return celular;
+  public Long getIdUsuario() {
+    return idUsuario;
+  }
+
+  public void setIdMensajeEstatus(Long idMensajeEstatus) {
+    this.idMensajeEstatus = idMensajeEstatus;
+  }
+
+  public Long getIdMensajeEstatus() {
+    return idMensajeEstatus;
+  }
+
+  public void setObservaciones(String observaciones) {
+    this.observaciones = observaciones;
+  }
+
+  public String getObservaciones() {
+    return observaciones;
   }
 
   public void setRegistro(Timestamp registro) {
@@ -107,25 +118,27 @@ public class TcKalanMensajesDetalleDto implements IBaseDto, Serializable {
   @Transient
   @Override
   public Long getKey() {
-  	return getIdMensajeDetalle();
+  	return getIdMensajeBitacora();
   }
 
   @Override
   public void setKey(Long key) {
-  	this.idMensajeDetalle = key;
+  	this.idMensajeBitacora = key;
   }
 
   @Override
   public String toString() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("[");
-		regresar.append(getIdMensajeDetalle());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdCliente());
+		regresar.append(getIdMensajeBitacora());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdMensaje());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getCelular());
+		regresar.append(getIdUsuario());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdMensajeEstatus());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getObservaciones());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
@@ -135,10 +148,11 @@ public class TcKalanMensajesDetalleDto implements IBaseDto, Serializable {
   @Override
   public Map toMap() {
     Map regresar = new HashMap();
-		regresar.put("idMensajeDetalle", getIdMensajeDetalle());
-		regresar.put("idCliente", getIdCliente());
+		regresar.put("idMensajeBitacora", getIdMensajeBitacora());
 		regresar.put("idMensaje", getIdMensaje());
-		regresar.put("celular", getCelular());
+		regresar.put("idUsuario", getIdUsuario());
+		regresar.put("idMensajeEstatus", getIdMensajeEstatus());
+		regresar.put("observaciones", getObservaciones());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
@@ -146,7 +160,7 @@ public class TcKalanMensajesDetalleDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdMensajeDetalle(), getIdCliente(), getIdMensaje(), getCelular(), getRegistro()
+    getIdMensajeBitacora(), getIdMensaje(), getIdUsuario(), getIdMensajeEstatus(), getObservaciones(), getRegistro()
     };
     return regresar;
   }
@@ -160,8 +174,8 @@ public class TcKalanMensajesDetalleDto implements IBaseDto, Serializable {
   public String toAllKeys() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("|");
-    regresar.append("idMensajeDetalle~");
-    regresar.append(getIdMensajeDetalle());
+    regresar.append("idMensajeBitacora~");
+    regresar.append(getIdMensajeBitacora());
     regresar.append("|");
     return regresar.toString();
   }
@@ -169,18 +183,18 @@ public class TcKalanMensajesDetalleDto implements IBaseDto, Serializable {
   @Override
   public String toKeys() {
     StringBuilder regresar= new StringBuilder();
-    regresar.append(getIdMensajeDetalle());
+    regresar.append(getIdMensajeBitacora());
     return regresar.toString();
   }
 
   @Override
   public Class toHbmClass() {
-    return TcKalanMensajesDetalleDto.class;
+    return TcKalanMensajesBitacoraDto.class;
   }
 
   @Override
   public boolean isValid() {
-  	return getIdMensajeDetalle()!= null && getIdMensajeDetalle()!=-1L;
+  	return getIdMensajeBitacora()!= null && getIdMensajeBitacora()!=-1L;
   }
 
   @Override
@@ -191,8 +205,8 @@ public class TcKalanMensajesDetalleDto implements IBaseDto, Serializable {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    final TcKalanMensajesDetalleDto other = (TcKalanMensajesDetalleDto) obj;
-    if (getIdMensajeDetalle() != other.idMensajeDetalle && (getIdMensajeDetalle() == null || !getIdMensajeDetalle().equals(other.idMensajeDetalle))) {
+    final TcKalanMensajesBitacoraDto other = (TcKalanMensajesBitacoraDto) obj;
+    if (getIdMensajeBitacora() != other.idMensajeBitacora && (getIdMensajeBitacora() == null || !getIdMensajeBitacora().equals(other.idMensajeBitacora))) {
       return false;
     }
     return true;
@@ -201,7 +215,7 @@ public class TcKalanMensajesDetalleDto implements IBaseDto, Serializable {
   @Override
   public int hashCode() {
     int hash = 7;
-    hash = 67 * hash + (getIdMensajeDetalle() != null ? getIdMensajeDetalle().hashCode() : 0);
+    hash = 67 * hash + (getIdMensajeBitacora() != null ? getIdMensajeBitacora().hashCode() : 0);
     return hash;
   }
 

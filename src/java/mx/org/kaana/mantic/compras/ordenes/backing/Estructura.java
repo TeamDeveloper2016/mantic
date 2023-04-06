@@ -210,7 +210,7 @@ public class Estructura extends IBaseFilter implements Serializable {
     				JsfBase.setFlashAttribute("idNotaEntrada", seleccionado.getIdNotaEntrada());
 						break;
 				} // switch
-				JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Compras/Ordenes/estructura.jsf".concat(Constantes.REDIRECIONAR));
+				JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Compras/Ordenes/estructura".concat(Constantes.REDIRECIONAR));
 				JsfBase.setFlashAttribute(seleccionado.getTipo().getIdKey(), seleccionado.getId());
 				JsfBase.setFlashAttribute("accion", EAccion.CONSULTAR);
 				regresar= seleccionado.getTipo().getRuta();

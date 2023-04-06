@@ -191,7 +191,7 @@ public class Agenda extends IBaseFilter implements Serializable {
           JsfBase.setFlashAttribute("idCita", -1L);
           JsfBase.setFlashAttribute("idCliente", -1L);
           JsfBase.setFlashAttribute("fecha", new Timestamp(fecha.getTime()));
-          JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Catalogos/Pacientes/Citas/agenda.jsf");
+          JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Catalogos/Pacientes/Citas/agenda");
           regresar= "nuevo".concat(Constantes.REDIRECIONAR);
         } // if
       } // if  
@@ -213,7 +213,7 @@ public class Agenda extends IBaseFilter implements Serializable {
 			  JsfBase.setFlashAttribute("idCita", cliente.toLong("idCita"));
 			  JsfBase.setFlashAttribute("idCliente", cliente.toLong("idCliente"));
 			  JsfBase.setFlashAttribute("fecha", cliente.toTimestamp("inicio"));
-			  JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Catalogos/Pacientes/Citas/agenda.jsf");
+			  JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Catalogos/Pacientes/Citas/agenda");
         regresar= "nuevo".concat(Constantes.REDIRECIONAR);
       } // if  
 		} // try

@@ -65,7 +65,7 @@ public class PageFilter extends HttpServlet implements Filter {
   public void setPaginaExclusion(String paginaExclusion) {
     if (paginaExclusion == null) {
       //this.paginaExclusion = "/Librerias/Funciones/errorPage.jsp?error=Favor de autenticarse";
-      this.paginaExclusion = "/Exclusiones/error.jsf";
+      this.paginaExclusion = "/Exclusiones/error";
     } else {
       this.paginaExclusion = paginaExclusion;
     }
@@ -78,7 +78,7 @@ public class PageFilter extends HttpServlet implements Filter {
   public void setPaginaSesion(String paginaSesion) {
     if (paginaSesion == null) {
       //this.paginaSesion = "/Librerias/Funciones/errorPage.jsf?error=Error&loginError=kajool.admin";
-      this.paginaSesion = "/Exclusiones/error.jsf";
+      this.paginaSesion = "/Exclusiones/error";
     } else {
       this.paginaSesion = paginaSesion;
     }
@@ -90,7 +90,7 @@ public class PageFilter extends HttpServlet implements Filter {
 
   public void setPaginaBloqueo(String paginaBloqueo) {
     if (paginaBloqueo == null) {
-      this.paginaBloqueo = "/Exclusiones/bloqueo.jsf";
+      this.paginaBloqueo = "/Exclusiones/bloqueo";
     } else {
       this.paginaBloqueo = paginaBloqueo;
     }

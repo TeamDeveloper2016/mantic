@@ -969,8 +969,8 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 				JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);
 			} // else
 			JsfBase.setFlashAttribute("observaciones", this.attrs.get("observaciones"));								
-			JsfBase.setFlashAttribute("regreso", "/Paginas/Mantic/Ventas/Facturas/accion.jsf");								
-			regresar= "/Paginas/Mantic/Ventas/cliente.jsf".concat(Constantes.REDIRECIONAR);
+			JsfBase.setFlashAttribute("regreso", "/Paginas/Mantic/Ventas/Facturas/accion");								
+			regresar= "/Paginas/Mantic/Ventas/cliente".concat(Constantes.REDIRECIONAR);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

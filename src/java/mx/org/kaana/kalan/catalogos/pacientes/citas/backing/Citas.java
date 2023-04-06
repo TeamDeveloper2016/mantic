@@ -53,7 +53,7 @@ public class Citas extends IBaseFilter implements Serializable {
 			if(JsfBase.getFlashAttribute("idCliente")== null)
 				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       this.attrs.put("idCliente", JsfBase.getFlashAttribute("idCliente"));
-      // this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "clientes": JsfBase.getFlashAttribute("retorno"));
+      // this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "/Paginas/Kalan/Catalogos/Pacientes/Citas/clientes": JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("retorno", "clientes");
       this.doLoad();
     } // try
@@ -126,7 +126,7 @@ public class Citas extends IBaseFilter implements Serializable {
         JsfBase.setFlashAttribute("idCliente", seleccionado.toLong("idCliente"));		
         JsfBase.setFlashAttribute("fecha", seleccionado.toTimestamp("inicia"));
       } // else  
-			JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Catalogos/Pacientes/Citas/citas.jsf");		
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Catalogos/Pacientes/Citas/citas");		
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -237,7 +237,7 @@ public class Citas extends IBaseFilter implements Serializable {
 			JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);		
       JsfBase.setFlashAttribute("idCita", seleccionado.toLong("idCita"));
       JsfBase.setFlashAttribute("idCliente", seleccionado.toLong("idCliente"));
-			JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Catalogos/Pacientes/Citas/citas.jsf");
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Catalogos/Pacientes/Citas/citas");
 			regresar= "/Paginas/Kalan/Catalogos/Pacientes/Expedientes/importar".concat(Constantes.REDIRECIONAR);			
     } // try
     catch (Exception e) {
@@ -254,7 +254,7 @@ public class Citas extends IBaseFilter implements Serializable {
       seleccionado     = (Entity)this.attrs.get("seleccionado");
       JsfBase.setFlashAttribute("idCita", seleccionado.toLong("idCita"));
       JsfBase.setFlashAttribute("idCliente", seleccionado.toLong("idCliente"));
-			JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Catalogos/Pacientes/Citas/citas.jsf");
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Catalogos/Pacientes/Citas/citas");
 			regresar= "/Paginas/Kalan/Catalogos/Pacientes/Expedientes/diagnostico".concat(Constantes.REDIRECIONAR);			
     } // try
     catch (Exception e) {

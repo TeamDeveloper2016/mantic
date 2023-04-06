@@ -245,7 +245,7 @@ public class General extends DatosDelega implements Serializable {
   public String doCancelar() {
     String regresar = null;
     try {
-      regresar = "/Paginas/Usuarios/Delegar/filtro.jsf".concat(Constantes.REDIRECIONAR);
+      regresar = "/Paginas/Usuarios/Delegar/filtro".concat(Constantes.REDIRECIONAR);
     } // try
     catch (Exception e) {
       JsfBase.addMessageError(e);

@@ -47,7 +47,7 @@ public class Acceso implements Serializable {
       params.put(Constantes.SQL_CONDICION, "cuenta='".concat(getCliente().getCuenta()).concat("'"));
       value= DaoFactory.getInstance().toField("TcManticPersonasDto", "row", params, "rfc");
       if ((value.getData() != null) && (getCliente().getContrasenia().equals(value.toString().substring(0, 10)))) {
-        regresar = "/Exclusiones/confirmacion.jsf".concat(Constantes.REDIRECIONAR);
+        regresar = "/Exclusiones/confirmacion".concat(Constantes.REDIRECIONAR);
       } // if
       else {
         temaActivo = JsfBase.getAutentifica().getPersona().getEstilo();

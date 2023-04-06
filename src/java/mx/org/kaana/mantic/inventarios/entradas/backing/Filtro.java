@@ -235,7 +235,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
       parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			
       this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));		
-      doVerificarReporte();
+      this.doVerificarReporte();
       this.reporte.doAceptar();			
     } // try
     catch(Exception e) {

@@ -208,7 +208,7 @@ select
   tc_mantic_personas.rfc,
   concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as empleado,
   tt_mantic_persona_celular.celular,
-  tt_mantic_persona_corrreo.correo
+  tt_mantic_persona_correo.correo
 from
   tr_mantic_empresa_personal
 left join (
@@ -234,7 +234,7 @@ left join (
     and tr_mantic_persona_tipo_contacto.id_preferido= 1
   order by
     tr_mantic_persona_tipo_contacto.orden      
-) as tt_mantic_persona_corrreo on tr_mantic_empresa_personal.id_persona= tt_mantic_persona_corrreo.id_persona
+) as tt_mantic_persona_correo on tr_mantic_empresa_personal.id_persona= tt_mantic_persona_correo.id_persona
 inner join
   tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
 where
@@ -255,7 +255,7 @@ select
   tc_mantic_personas.rfc,
   concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as empleado,
   tt_mantic_persona_celular.celular,
-  tt_mantic_persona_corrreo.correo,
+  tt_mantic_persona_correo.correo,
   ifnull((select count(*) from tc_kalan_citas where tc_kalan_citas.id_atendio= tr_mantic_empresa_personal.id_empresa_persona and date_format(tc_kalan_citas.inicio, '%Y%m%d')= '{fecha}' group by tc_kalan_citas.id_cliente), 0) as citados
 from
   tr_mantic_empresa_personal
@@ -282,7 +282,7 @@ left join (
     and tr_mantic_persona_tipo_contacto.id_preferido= 1
   order by
     tr_mantic_persona_tipo_contacto.orden      
-) as tt_mantic_persona_corrreo on tr_mantic_empresa_personal.id_persona= tt_mantic_persona_corrreo.id_persona
+) as tt_mantic_persona_correo on tr_mantic_empresa_personal.id_persona= tt_mantic_persona_correo.id_persona
 inner join
   tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
 where
@@ -364,7 +364,7 @@ select
   tc_mantic_clientes.*,
   concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, '')) as cliente,
   tt_mantic_cliente_celular.celular,
-  tt_mantic_cliente_corrreo.correo,
+  tt_mantic_cliente_correo.correo,
   if(tc_kalan_citas.inicio is null, now(), tc_kalan_citas.inicio) as inicio,
   if(tc_kalan_citas.termino is null, now(), tc_kalan_citas.termino) as termino,
   if(tc_kalan_citas.recordatorio is null, 24, tc_kalan_citas.recordatorio) as recordatorio,
@@ -405,7 +405,7 @@ left join (
   order by
     tr_mantic_cliente_tipo_contacto.orden      
   limit 1  
-) as tt_mantic_cliente_corrreo on tc_mantic_clientes.id_cliente= tt_mantic_cliente_corrreo.id_cliente
+) as tt_mantic_cliente_correo on tc_mantic_clientes.id_cliente= tt_mantic_cliente_correo.id_cliente
 left join
   tc_kalan_citas_estatus on tc_kalan_citas.id_cita_estatus= tc_kalan_citas_estatus.id_cita_estatus
 where
@@ -417,7 +417,7 @@ select
   tc_mantic_clientes.*,
   concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, '')) as cliente,
   tt_mantic_cliente_celular.celular,
-  tt_mantic_cliente_corrreo.correo,
+  tt_mantic_cliente_correo.correo,
   if(tc_kalan_citas.inicio is null, now(), tc_kalan_citas.inicio) as inicio,
   if(tc_kalan_citas.termino is null, now(), tc_kalan_citas.termino) as termino,
   if(tc_kalan_citas.recordatorio is null, 24, tc_kalan_citas.recordatorio) as recordatorio,
@@ -459,7 +459,7 @@ left join (
     tr_mantic_cliente_tipo_contacto.id_cliente              
   order by
     tr_mantic_cliente_tipo_contacto.orden      
-) as tt_mantic_cliente_corrreo on tc_mantic_clientes.id_cliente= tt_mantic_cliente_corrreo.id_cliente
+) as tt_mantic_cliente_correo on tc_mantic_clientes.id_cliente= tt_mantic_cliente_correo.id_cliente
 left join
   tc_kalan_citas_detalles on tc_kalan_citas.id_cita= tc_kalan_citas_detalles.id_cita
 left join
@@ -470,6 +470,58 @@ where
   tc_mantic_clientes.id_empresa in ({sucursales})
   and tt_mantic_cliente_celular.celular is not null
   and {condicion}
+group by
+  tc_mantic_clientes.id_cliente        
+{sortOrder}        
+      </select>  
+      <select id="mensajes">
+select
+  tc_mantic_clientes.id_cliente as id_key,
+  tc_mantic_clientes.*,
+  concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, '')) as cliente,
+  tc_kalan_mensajes_detalles.celular,
+  tt_mantic_cliente_correo.correo,
+  if(tc_kalan_citas.inicio is null, now(), tc_kalan_citas.inicio) as inicio,
+  if(tc_kalan_citas.termino is null, now(), tc_kalan_citas.termino) as termino,
+  if(tc_kalan_citas.recordatorio is null, 24, tc_kalan_citas.recordatorio) as recordatorio,
+  if(tc_kalan_citas.notificacion is null, 2, tc_kalan_citas.notificacion) as notificacion,
+  tc_kalan_citas.id_cita,
+  tc_kalan_citas.consecutivo,
+  ifnull(tc_kalan_citas.id_atendio, '-1') as id_atendio,
+  ifnull(tc_kalan_citas.id_cita_estatus, '-1') as id_cita_estatus,
+  tc_kalan_citas_estatus.nombre as estatus,
+  ifnull(group_concat(tc_mantic_articulos.nombre separator ', '), '') as servicios
+from
+  tc_mantic_clientes
+inner join        
+  tc_kalan_mensajes_detalles on tc_kalan_mensajes_detalles.id_cliente= tc_mantic_clientes.id_cliente
+inner join        
+  tc_kalan_mensajes on tc_kalan_mensajes_detalles.id_mensaje= tc_kalan_mensajes.id_mensaje
+left join
+  tc_kalan_citas on tc_kalan_citas.id_cliente= tc_mantic_clientes.id_cliente
+left join (
+  select
+    tr_mantic_cliente_tipo_contacto.id_cliente,
+    tr_mantic_cliente_tipo_contacto.valor as correo
+  from
+    tr_mantic_cliente_tipo_contacto
+  where
+    tr_mantic_cliente_tipo_contacto.id_tipo_contacto in (9, 10, 11)
+    and tr_mantic_cliente_tipo_contacto.id_preferido= 1
+  group by
+    tr_mantic_cliente_tipo_contacto.id_cliente              
+  order by
+    tr_mantic_cliente_tipo_contacto.orden      
+) as tt_mantic_cliente_correo on tc_mantic_clientes.id_cliente= tt_mantic_cliente_correo.id_cliente
+left join
+  tc_kalan_citas_detalles on tc_kalan_citas.id_cita= tc_kalan_citas_detalles.id_cita
+left join
+  tc_mantic_articulos on tc_kalan_citas_detalles.id_articulo= tc_mantic_articulos.id_articulo
+left join
+  tc_kalan_citas_estatus on tc_kalan_citas.id_cita_estatus= tc_kalan_citas_estatus.id_cita_estatus
+where
+  tc_mantic_clientes.id_empresa in ({sucursales})
+  and tc_kalan_mensajes.id_mensaje= {idMensaje}
 group by
   tc_mantic_clientes.id_cliente        
 {sortOrder}        

@@ -127,7 +127,7 @@ public class Galeria extends BaseMenu implements Serializable {
     JsfBase.setFlashAttribute("idProducto", row.toLong("idProducto"));
     JsfBase.setFlashAttribute("codigo", this.codigo);
     JsfBase.setFlashAttribute("busqueda", this.busqueda);
-    return "/Control/individual.jsf".concat(Constantes.REDIRECIONAR);
+    return "/Control/individual".concat(Constantes.REDIRECIONAR);
   }
   
   private String toProcessLinks(String categoria) {
