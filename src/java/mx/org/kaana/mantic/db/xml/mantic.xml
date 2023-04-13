@@ -7,6 +7,25 @@
   </model>
 
   <dml>
+    <unit id="TcManticTiposClientesDto">
+      <select id="row">
+select      
+  tc_mantic_tipos_clientes.id_tipo_cliente as id_key,
+  tc_mantic_tipos_clientes.*
+from      
+  tc_mantic_tipos_clientes
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_mantic_tipos_clientes
+where      
+  id_tipo_cliente = {idTipoCliente} and nombre = '{nombre}'
+      </select>
+    </unit>    
     <unit id="TcManticArticulosImpuestosDto">
       <select id="row">
         select      

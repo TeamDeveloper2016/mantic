@@ -124,13 +124,11 @@ public class Diarias extends IBaseTicket implements Serializable {
  
   @Override
   public void doLoad() {
-    List<Columna> columns       = null;
-		Map<String, Object> params  = null;
+    List<Columna> columns       = new ArrayList<>();
+		Map<String, Object> params  = this.toPrepare();
 		Map<String, Object> credito = null;
 		Map<String, Object> apartado= null;
     try {
-			params = this.toPrepare();
-      columns= new ArrayList<>();      
       columns.add(new Columna("nombreEmpresa", EFormatoDinamicos.MAYUSCULAS));      
       columns.add(new Columna("importe", EFormatoDinamicos.MILES_SAT_DECIMALES));      
       this.lazyModel = new FormatCustomLazy("VistaConsultasDto", "ventas", params, columns);
@@ -266,21 +264,19 @@ public class Diarias extends IBaseTicket implements Serializable {
 	} // doLoadMediosPagos
 	
 	public void doReporte() throws Exception {
-		Map<String, Object>params    = null;
-		Map<String, Object>parametros= null;
+		Map<String, Object>params    = new HashMap<>();
+		Map<String, Object>parametros= new HashMap<>();
 		EReportes reporteSeleccion   = null;
 		try{				
 			reporteSeleccion= EReportes.ORDEN_COMPRA;
 			this.reporte= JsfBase.toReporte();
-			params= new HashMap<>();
 			params.put("idVenta", ((Entity)this.attrs.get("seleccionado")).getKey());			
-			parametros= new HashMap<>();
 			parametros.put("REPORTE_EMPRESA", JsfBase.getAutentifica().getEmpresa().getNombreCorto());
 		  parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
 			parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
 			parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			
 			this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));		
-			doVerificarReporte();
+			this.doVerificarReporte();
 			this.reporte.doAceptar();			
 		} // try
 		catch(Exception e) {
@@ -301,12 +297,11 @@ public class Diarias extends IBaseTicket implements Serializable {
   
   public void doLoadDisponibleCaja() {
     Entity caja               = (Entity)this.attrs.get("caja");      
-    List<Columna> columns     = null;
+    List<Columna> columns     = new ArrayList<>();
 		Map<String, Object> params= new HashMap<>();
     try {
 			params.put("idCaja", caja.toLong("idCaja"));
 			params.put("dia", Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio")));
-      columns= new ArrayList<>();      
       columns.add(new Columna("medioPago", EFormatoDinamicos.MAYUSCULAS));      
       columns.add(new Columna("disponible", EFormatoDinamicos.MILES_SAT_DECIMALES));      
       columns.add(new Columna("acumulado", EFormatoDinamicos.MILES_SAT_DECIMALES));      

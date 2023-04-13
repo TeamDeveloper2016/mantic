@@ -41,7 +41,7 @@ public class KajoolExceptionHandler extends ExceptionHandlerWrapper {
 			NavigationHandler navHandler    = context.getApplication().getNavigationHandler();
 			if((eqec.getException() instanceof ViewExpiredException)) {
 				try {
-					//navHandler.handleNavigation(context, null, "/indice?faces-redirect=true&expired=true");
+					//navHandler.handleNavigation(context, null, "/indice.jsf?faces-redirect=true&expired=true");
 				} // try
 				finally {
 					it.remove();

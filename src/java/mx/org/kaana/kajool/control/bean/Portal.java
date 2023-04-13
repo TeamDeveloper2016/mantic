@@ -117,8 +117,22 @@ public final class Portal implements Serializable {
 	private void toLoadMenu() {
     List<Entity> marcas       = null;
     Map<String, Object> params= new HashMap<>();
+    DefaultSubMenu sub        = null;
+    Boolean menus             = Boolean.TRUE;
     try {      
       this.nombres       = new ArrayList<>();
+      switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+        case "mantic":
+          menus= Boolean.TRUE;
+          break;
+        case "kalan":
+          menus= Boolean.FALSE;
+          break;
+        case "tsaak":
+          menus= Boolean.FALSE;
+          break;
+      } // swtich
+      
       params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);      
       params.put("sortOrder", "order by tc_mantic_productos_marcas.nombre");
       marcas = (List<Entity>)DaoFactory.getInstance().toEntitySet("TcManticProductosMarcasDto", "lazy", params);
@@ -126,32 +140,34 @@ public final class Portal implements Serializable {
       this.menu = new DefaultMenuModel();
       DefaultMenuItem item = new DefaultMenuItem("Inicio");
       item.setIcon("fa fa-home");
-      item.setUrl("/indice".concat(Constantes.REDIRECIONAR));
+      item.setUrl("/indice.jsf".concat(Constantes.REDIRECIONAR));
       this.menu.addElement(item);      
-      DefaultSubMenu sub= new DefaultSubMenu("Categorías");
-      sub.setIcon("fa fa-language");
-      this.toLoadCategorias(sub, "null", 2, "galeriaPrincipal");
-      this.menu.addElement(sub);
-      sub= new DefaultSubMenu("Marcas");
-      sub.setIcon("fa fa-picture-o");
-      if(marcas!= null && !marcas.isEmpty()) {
-        for (Entity entity: marcas) {
-          item= new DefaultMenuItem(entity.toString("descripcion"));
-          item.setIcon("fa fa-picture-o");
-          item.setOncomplete("galeriaPrincipal('".concat(entity.toString("descripcion")).concat("', 'MARCA');"));
-          sub.addElement(item);      
-        } // for
+      if(menus) {
+        sub= new DefaultSubMenu("Categorías");
+        sub.setIcon("fa fa-language");
+        this.toLoadCategorias(sub, "null", 2, "galeriaPrincipal");
+        this.menu.addElement(sub);
+        sub= new DefaultSubMenu("Marcas");
+        sub.setIcon("fa fa-picture-o");
+        if(marcas!= null && !marcas.isEmpty()) {
+          for (Entity entity: marcas) {
+            item= new DefaultMenuItem(entity.toString("descripcion"));
+            item.setIcon("fa fa-picture-o");
+            item.setOncomplete("galeriaPrincipal('".concat(entity.toString("descripcion")).concat("', 'MARCA');"));
+            sub.addElement(item);      
+          } // for
+        } // if  
+        this.menu.addElement(sub);
       } // if  
-      this.menu.addElement(sub);
       sub= new DefaultSubMenu("Facturación");
       sub.setIcon("fa fa-qrcode");
       item = new DefaultMenuItem("Descargar");
       item.setIcon("fa fa-download");
-      item.setUrl("/Control/descargar".concat(Constantes.REDIRECIONAR));
+      item.setUrl("/Control/descargar.jsf".concat(Constantes.REDIRECIONAR));
       sub.addElement(item);      
       item = new DefaultMenuItem("Generar");
       item.setIcon("fa fa-print");
-      item.setUrl("/Control/generar".concat(Constantes.REDIRECIONAR));
+      item.setUrl("/Control/generar.jsf".concat(Constantes.REDIRECIONAR));
       sub.addElement(item);      
       this.menu.addElement(sub);      
       LOG.error("Menu del portal: "+ this.images);

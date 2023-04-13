@@ -35,7 +35,7 @@
 	<ui:define name="contenido">  	
     <div id="janal-opcion-4" class="opciones">
       <center style="margin: 2px">
-        <p:imageSwitch id="galeria" effect="shuffle" slideshowAuto="true">
+        <p:imageSwitch id="galeria" effect="shuffle" slideshowAuto="true" styleClass="display: #{kajoolAccesoIndice.activar? '': 'janal-display-none'}">
           <ui:repeat value="#{kajoolAccesoIndice.images}" var="image">
             <p:graphicImage styleClass="galeria" url="#{kajoolAccesoIndice.path}#{image}" width="1022px" height="575px"/>
           </ui:repeat>

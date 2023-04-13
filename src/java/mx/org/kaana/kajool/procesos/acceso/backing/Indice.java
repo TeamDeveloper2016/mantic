@@ -32,6 +32,22 @@ public class Indice extends BaseMenu implements Serializable {
     return Portal.getInstance().getImages();
   }
   
+  public Boolean getActivar() {
+    Boolean regresar= Boolean.TRUE;
+    switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+      case "mantic":
+        regresar= Boolean.TRUE;
+        break;
+      case "kalan":
+        regresar= Boolean.FALSE;
+        break;
+      case "tsaak":
+        regresar= Boolean.FALSE;
+        break;
+    } // swtich
+    return regresar;
+  }
+  
   @Override
   @PostConstruct
   protected void init() {

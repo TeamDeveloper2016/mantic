@@ -17,17 +17,13 @@
 			//<![CDATA[
       function callWindowSize() {
         var height= Number.parseInt(screen.height* 60/ 100);
-        //var porcentaje= Number.parseFloat(height* 100/ 1440).toFixed(2)- 5;
-        //height= Number.parseInt(porcentaje* 1440/ 100);
-        //width= Number.parseInt(porcentaje* 2560/ 100);
         $('div.mapa').attr('style', 'width: '+ (view? '50': '100')+ '%; height: '+ height+ 'px;');
         $('div.view').attr('style', 'width: 50%; height: '+ height+ 'px;');
       }
       
       // 
       var locations = [
-        ['<span class=\"janal-font-bold\">Ferretería Bonanza (Pilar Blanco)</span><br\><br\>Telefono:(449)913-10-28<br\>Whatsapp:(449)508-75-05<br/><br/>Canario 8602, Pilar Blanco, C.P. 20289<br/>Aguascalientes, Ags.', 21.8472519, -102.2994786, 1],
-        ['<span class=\"janal-font-bold\">Ferretería Bonanza (Jesús María)</span><br\><br\>Telefono:(449)146-06-45<br\>Whatsapp:(449)508-75-05<br/><br/>C. Hidalgo 112, Zona Centro, C.P. 20900<br/>Jesús María, Ags.', 21.960195, -102.3437393, 2]
+        #{kajoolAccesoUbicacion.locate}
       ];
     
       const view= false;

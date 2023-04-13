@@ -223,9 +223,10 @@ public class Filtro extends IBaseFilter implements Serializable {
 		else
 		  regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
 		if(sb.length()== 0) {
-      Periodo periodo= new Periodo();
-      periodo.addMeses(-2);
-		  regresar.put(Constantes.SQL_CONDICION, "date_format(tc_mantic_ordenes_compras.registro, '%Y%m%d')>= '".concat(periodo.toString()).concat("'"));
+//      Periodo periodo= new Periodo();
+//      periodo.addMeses(-2);
+//		  regresar.put(Constantes.SQL_CONDICION, "date_format(tc_mantic_ordenes_compras.registro, '%Y%m%d')>= '".concat(periodo.toString()).concat("'"));
+		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
     } // if  
 		else	
 		  regresar.put(Constantes.SQL_CONDICION, sb.substring(0, sb.length()- 4));
@@ -276,7 +277,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		try{		
       params= this.toPrepare();	
       seleccionado = ((Entity)this.attrs.get("seleccionado"));
-      params.put("idEmpresa", seleccionado.toLong("idEmpresa"));	
+      params.put("idEmpresa", this.attrs.get("idEmpresa").toString());	
       params.put("sortOrder", "order by tc_mantic_ordenes_compras.id_empresa, tc_mantic_ordenes_compras.ejercicio, tc_mantic_ordenes_compras.orden");
       reporteSeleccion= EReportes.valueOf(nombre);
       if(!reporteSeleccion.equals(EReportes.ORDENES_COMPRA)) {

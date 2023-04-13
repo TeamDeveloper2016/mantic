@@ -69,8 +69,8 @@
     <p:contextMenu for="tabla" id="menuTabla">       			
       <p:menuitem value="Eliminar" icon="fa fa-trash" update=":datos:confirmacion :datos:tabla" oncomplete="janal.bloquear();PF('dialogoConfirmacion').show();" process="@this tabla"/>
       <p:menuitem value="Modificar" icon="fa fa-edit" actionListener="#{kajoolMantenimientoGruposperfilesPerfilesFiltro.doSeleccion}" update="modificar" oncomplete="janal.bloquear();PF('wModificar').show();" process="@this tabla"/>
-      <p:menuitem value="Opciones de menú" action="#{kajoolMantenimientoGruposperfilesPerfilesFiltro.doIrOpcionesMenu}"  icon="fa fa-th-list" ajax="false"  />
-      <p:menuitem value="Opciones de encabezado" action="#{kajoolMantenimientoGruposperfilesPerfilesFiltro.doIrOpcionesEncabezado}"  icon="fa fa-th-list" ajax="false"  />
+      <p:menuitem value="Menú" action="#{kajoolMantenimientoGruposperfilesPerfilesFiltro.doIrOpcionesMenu}"  icon="fa fa-th-list" ajax="false"  />
+      <p:menuitem value="Encabezado" action="#{kajoolMantenimientoGruposperfilesPerfilesFiltro.doIrOpcionesEncabezado}"  icon="fa fa-th-list" ajax="false"  />
       <p:separator/>
 			<p:menuitem value="Pagina inicial" action="#{kajoolMantenimientoGruposperfilesPerfilesFiltro.doIrPaginaInicial}"  icon="fa fa-home" ajax="false"  />
 			<p:separator/>

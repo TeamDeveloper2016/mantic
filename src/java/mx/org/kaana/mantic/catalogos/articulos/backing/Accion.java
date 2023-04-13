@@ -277,10 +277,10 @@ public class Accion extends IBaseAttribute implements Serializable {
 			this.registroArticulo.getArticulo().setMedioMayoreo(Numero.toAjustarDecimales(calculo* Constantes.PORCENTAJE_MEDIO_MAYOREO, redondear));
 			this.registroArticulo.getArticulo().setMayoreo(Numero.toAjustarDecimales(calculo* Constantes.PORCENTAJE_MAYOREO, redondear));
 			this.registroArticulo.getArticulo().setEspecial(Numero.toAjustarDecimales(calculo* Constantes.PORCENTAJE_ESPECIAL, redondear));
-			this.attrs.put("menudeo", (Constantes.PORCENTAJE_MENUDEO- 1D)* 100D);
-			this.attrs.put("medioMayoreo", (Constantes.PORCENTAJE_MEDIO_MAYOREO- 1D)* 100D);
-			this.attrs.put("mayoreo", (Constantes.PORCENTAJE_MAYOREO- 1D)* 100D);
-			this.attrs.put("especial", (Constantes.PORCENTAJE_ESPECIAL- 1D)* 100D);
+			this.attrs.put("menudeo", Numero.toRedondearSat((Constantes.PORCENTAJE_MENUDEO- 1D)* 100D));
+			this.attrs.put("medioMayoreo", Numero.toRedondearSat((Constantes.PORCENTAJE_MEDIO_MAYOREO- 1D)* 100D));
+			this.attrs.put("mayoreo", Numero.toRedondearSat((Constantes.PORCENTAJE_MAYOREO- 1D)* 100D));
+			this.attrs.put("especial", Numero.toRedondearSat((Constantes.PORCENTAJE_ESPECIAL- 1D)* 100D));
 		} // if	
 		else 
       this.doUpdatePreciosVenta();

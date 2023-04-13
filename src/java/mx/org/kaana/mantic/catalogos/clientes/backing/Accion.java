@@ -92,6 +92,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 		this.loadTiposContactos();
 		this.loadTiposDomicilios();	
 		this.toLoadRegimenesFiscales();
+    this.loadTiposClientes();
 		this.loadTiposVentas();
 		this.loadDomicilios();
 		this.loadEntidades();
@@ -777,6 +778,22 @@ public class Accion extends IBaseAttribute implements Serializable {
       Methods.clean(columns);
     } // finally
 	} // loadRegimenesFiscales
+	
+	private void loadTiposClientes() {
+		List<UISelectItem> tiposClientes= null;
+    Map<String, Object> params      = new HashMap<>();
+		try {
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			tiposClientes= UISelect.build("TcManticTiposClientesDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS);
+			this.attrs.put("tiposClientes", tiposClientes);
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch		
+    finally {
+      Methods.clean(params);
+    } // finally
+	} // loadTiposClientes
 	
 	private void loadTiposVentas() {
 		List<UISelectItem> tiposVentas= null;

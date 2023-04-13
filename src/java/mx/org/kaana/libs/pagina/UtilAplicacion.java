@@ -85,6 +85,18 @@ public class UtilAplicacion {
     return Configuracion.getInstance().getEmpresa("icon");
   }
 
+  public String getCelular() {
+    return Configuracion.getInstance().getEmpresa("celular");
+  }
+  
+  public String getTelefono() {
+    return Configuracion.getInstance().getEmpresa("telefono");
+  }
+  
+  public String getCorreo() {
+    return Configuracion.getInstance().getEmpresa("correo");
+  }
+  
   public String getLogoWidth() {
     String regresar= "width: 35px !important;";
     switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {

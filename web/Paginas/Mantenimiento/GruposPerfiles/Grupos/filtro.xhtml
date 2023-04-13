@@ -55,7 +55,7 @@
       <p:menuitem value="Eliminar"  icon="fa fa-trash" update=":datos:confirmacion tabla" oncomplete="janal.bloquear();PF('dialogoConfirmacion').show()" process="@this tabla"/>
       <p:menuitem value="Modificar" icon="fa fa-edit" action="#{kajoolMantenimientoGruposperfilesGruposFiltro.doEvento('MODIFICAR')}" update=":datos:tabla" process="@this tabla"/>
       <p:menuitem value="Perfiles del grupo" icon="fa fa-group" action="#{kajoolMantenimientoGruposperfilesGruposFiltro.doIrPerfiles}" process="@this tabla"/>
-      <p:menuitem value="Opciones menú" icon="fa fa-th-list" action="#{kajoolMantenimientoGruposperfilesGruposFiltro.doIrOpcionesMenu}" update=":datos:tabla" process="@this tabla"/>
+      <p:menuitem value="Menú" icon="fa fa-th-list" action="#{kajoolMantenimientoGruposperfilesGruposFiltro.doIrOpcionesMenu}" update=":datos:tabla" process="@this tabla"/>
     </p:contextMenu>
   </ui:define>
   <ui:param name="componenteBloqueo" value="tabla,buscar"/>

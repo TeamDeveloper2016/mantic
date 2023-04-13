@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context path="/KAANA">
-    <Resource name="BeanManager" auth="Container" type="javax.enterprise.inject.spi.BeanManager" factory="org.jboss.weld.resources.ManagerObjectFactory"/>
-
+  <Resource name="BeanManager" auth="Container" type="javax.enterprise.inject.spi.BeanManager" factory="org.jboss.weld.resources.ManagerObjectFactory"/>
   <!-- KAANA
     <Resource auth="Container" driverClassName="org.mariadb.jdbc.Driver" maxActive="100" maxIdle="30" maxWait="10000" name="jdbc/manticDS" username="kalan_super" password="20super23" type="javax.sql.DataSource" url="jdbc:mysql://kalan.com:3306/kalan_production?zeroDateTimeBehavior=convertToNull&amp;useUnicode=true&amp;characterEncoding=utf8mb4&amp;connectionCollation=utf8mb4_spanish_ci"/>
    -->

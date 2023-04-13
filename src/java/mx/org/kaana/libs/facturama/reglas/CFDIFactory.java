@@ -22,6 +22,7 @@ import mx.org.kaana.libs.facturama.models.response.CancelationStatus;
 import mx.org.kaana.libs.facturama.services.CfdiService;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Numero;
+import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.mantic.facturas.beans.ArticuloFactura;
 import mx.org.kaana.mantic.facturas.beans.ClienteFactura;
@@ -41,10 +42,22 @@ public class CFDIFactory implements Serializable {
 	
 	private static final Log LOG=LogFactory.getLog(CFDIFactory.class);
 	private static final long serialVersionUID =-5361573067043698091L;
-  private static final String USER           = "FERRBONANZA";
-  private static final String PASSWORD       = "ZABONAN2018";
-  private static final String USER_PU        = "FERRBONANZASANDBOX";
-  private static final String PASSWORD_PU    = "zabonan2018sandbox";
+  
+  private static final String MANTIC_USER_PO    = "FERRBONANZA";
+  private static final String MANTIC_PASSWORD_PO= "ZABONAN2018";
+  private static final String MANTIC_USER_PU    = "FERRBONANZASANDBOX";
+  private static final String MANTIC_PASSWORD_PU= "zabonan2018sandbox";
+  
+  private static final String KALAN_USER_PO    = "KALAN_USER";
+  private static final String KALAN_PASSWORD_PO= "KALAN2018";
+  private static final String KALAN_USER_PU    = "KALANSANDBOX";
+  private static final String KALAN_PASSWORD_PU= "kalan2018sandbox";
+  
+  private static final String TSAAK_USER_PO    = "TSAAK_USER";
+  private static final String TSAAK_PASSWORD_PO= "TSAAK2018";
+  private static final String TSAAK_USER_PU    = "TSAAKSANDBOX";
+  private static final String TSAAK_PASSWORD_PU= "tsaak2018sandbox";
+  
   private static final String DESCRIPCION_IVA= "IVA";
   private static final String CURRENCY       = "MXN";  
 	
@@ -63,14 +76,43 @@ public class CFDIFactory implements Serializable {
    * Contructor default
    */
   private CFDIFactory() {		
-//  	this.facturama= new FacturamaApi(this.USER, this.PASSWORD, false);
-		if (Configuracion.getInstance().isEtapaProduccion())
-			this.facturama= new FacturamaApi(this.USER, this.PASSWORD, false);
-		else 
-			if (Configuracion.getInstance().isEtapaPruebas())
-			  this.facturama= new FacturamaApi(this.USER_PU, this.PASSWORD_PU, true);
-		  else
-			  this.facturama= new FacturamaApi(this.USER_PU, this.PASSWORD_PU, true);
+    String user_po= MANTIC_USER_PO;
+    String user_pu= MANTIC_USER_PU;
+    String password_po= MANTIC_PASSWORD_PO;
+    String password_pu= MANTIC_PASSWORD_PU;
+    switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+      case "mantic":
+        user_po    = MANTIC_USER_PO;
+        user_pu    = MANTIC_USER_PU;
+        password_po= MANTIC_PASSWORD_PO;
+        password_pu= MANTIC_PASSWORD_PU;
+        break;
+      case "kalan":
+        user_po    = KALAN_USER_PO;
+        user_pu    = KALAN_USER_PU;
+        password_po= KALAN_PASSWORD_PO;
+        password_pu= KALAN_PASSWORD_PU;
+        break;
+      case "tsaak":
+        user_po    = TSAAK_USER_PO;
+        user_pu    = TSAAK_USER_PU;
+        password_po= TSAAK_PASSWORD_PO;
+        password_pu= TSAAK_PASSWORD_PU;
+        break;
+    } // swtich
+    try {
+      if (Configuracion.getInstance().isEtapaProduccion())
+        this.facturama= new FacturamaApi(user_po, password_po, false);
+      else 
+        if (Configuracion.getInstance().isEtapaPruebas())
+          this.facturama= new FacturamaApi(user_pu, password_pu, true);
+        else
+          this.facturama= new FacturamaApi(user_pu, password_pu, true);
+    } // try 
+    catch(Exception e) {
+      LOG.error("NO SE PUDO CREAR LA CONEXION HACIA FACTURAMA");
+      Error.mensaje(e);
+    } // catch
   } // CFDIFactory
 
   /**
@@ -82,7 +124,7 @@ public class CFDIFactory implements Serializable {
     synchronized (mutex) {
       if (instance == null) {
         instance = new CFDIFactory();
-      }
+      } // if
     } // if
     return instance;
   }
