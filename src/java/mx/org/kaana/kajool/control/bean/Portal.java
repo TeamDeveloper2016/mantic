@@ -120,7 +120,7 @@ public final class Portal implements Serializable {
     DefaultSubMenu sub        = null;
     Boolean menus             = Boolean.TRUE;
     try {      
-      this.nombres       = new ArrayList<>();
+      this.nombres= new ArrayList<>();
       switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
         case "mantic":
           menus= Boolean.TRUE;
@@ -132,7 +132,6 @@ public final class Portal implements Serializable {
           menus= Boolean.FALSE;
           break;
       } // swtich
-      
       params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);      
       params.put("sortOrder", "order by tc_mantic_productos_marcas.nombre");
       marcas = (List<Entity>)DaoFactory.getInstance().toEntitySet("TcManticProductosMarcasDto", "lazy", params);

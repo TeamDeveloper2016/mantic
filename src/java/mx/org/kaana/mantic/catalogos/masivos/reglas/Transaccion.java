@@ -1360,7 +1360,10 @@ public class Transaccion extends IBaseTnx {
 										1L, // Long idTipoVenta, 
 										null, // String idFacturama
                     0D, // Double especial 
-                    null // Long idRegimenFiscal
+                    null, // Long idRegimenFiscal
+                    1L, // Long idTipoCliente
+                    null, // String paterno
+                    null // String materno
 									);
 									DaoFactory.getInstance().insert(sesion, cliente);
 

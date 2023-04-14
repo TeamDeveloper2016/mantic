@@ -91,8 +91,8 @@ public class Accion extends IBaseAttribute implements Serializable {
 		this.loadRepresentantes();
 		this.loadTiposContactos();
 		this.loadTiposDomicilios();	
+    this.toLoadTiposClientes();
 		this.toLoadRegimenesFiscales();
-    this.loadTiposClientes();
 		this.loadTiposVentas();
 		this.loadDomicilios();
 		this.loadEntidades();
@@ -779,7 +779,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // finally
 	} // loadRegimenesFiscales
 	
-	private void loadTiposClientes() {
+	private void toLoadTiposClientes() {
 		List<UISelectItem> tiposClientes= null;
     Map<String, Object> params      = new HashMap<>();
 		try {

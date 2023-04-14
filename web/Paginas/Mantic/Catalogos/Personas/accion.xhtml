@@ -54,7 +54,7 @@
 					<p:tabView id="contenedorGrupos" onTabChange="simpleProcess();">
 						<p:ajax event="tabChange" process="@this" update="tablaContactos" oncomplete="janal.refresh();"/>
             <p:tab title="General">							
-							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-15, janal-wid-100">		
+							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">		
 								<p:outputLabel for="empresa" value="Sucursal:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarEmpresas}"/>
 								<p:selectOneMenu id="empresa" value="#{manticCatalogosPersonasAccion.attrs.idEmpresa}" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarEmpresas}" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
 									<p:ajax event="change" listener="#{manticCatalogosPersonasAccion.doActualizaClientesProveedores}" process="@this" update="cliente proveedores" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
@@ -66,9 +66,9 @@
 								</p:selectOneMenu>								
 								<p:outputLabel for="nombre" value="Nombre:"/>
 								<p:inputText id="nombre" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.persona.nombres}" />                    
-								<p:outputLabel for="paterno" value="Apellido paterno:"/>
+								<p:outputLabel for="paterno" value="1er apellido:"/>
 								<p:inputText id="paterno" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.persona.paterno}" />                    
-								<p:outputLabel for="materno" value="Apellido materno:"/>
+								<p:outputLabel for="materno" value="2do apellido:"/>
 								<p:inputText id="materno" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.persona.materno}" />                    
 								<p:outputLabel for="rfc" value="RFC:"/>
 								<p:inputText id="rfc" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.persona.rfc}" />                    
@@ -80,13 +80,13 @@
 								<p:selectOneMenu id="tipoPersona" value="#{manticCatalogosPersonasAccion.registroPersona.persona.idTipoPersona}" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosPersonasAccion.attrs.general}" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
 									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.tiposPersonas}"/>
 								</p:selectOneMenu>		
-								<p:outputLabel for="sexo" value="Sexo:"/>
+								<p:outputLabel for="sexo" value="Genero:"/>
 								<p:selectOneRadio id="sexo" value="#{manticCatalogosPersonasAccion.registroPersona.persona.idTipoSexo}">
 									<f:selectItem itemValue="1" itemLabel="Hombre"/>
 									<f:selectItem itemValue="2" itemLabel="Mujer"/>
 									<f:selectItem itemValue="3" itemLabel="No especificado"/>
 								</p:selectOneRadio>	
-								<p:spacer/><p:separator/>
+								<p:separator/>
 								<p:outputLabel for="puesto" value="Puesto:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
 								<p:selectOneMenu id="puesto" value="#{manticCatalogosPersonasAccion.registroPersona.idPuesto}" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
 									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.puestos}"/>

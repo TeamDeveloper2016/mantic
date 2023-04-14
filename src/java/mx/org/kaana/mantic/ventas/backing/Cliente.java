@@ -101,15 +101,16 @@ public class Cliente extends IBaseAttribute implements Serializable {
   } // init
 
 	private void loadCollections(){		
-		loadTiposDomicilios();	
-		loadTiposVentas();
-		loadDomicilios();
-		loadEntidades();
-		toAsignaEntidad();
-		loadMunicipios();
-		toAsignaMunicipio();
-		loadLocalidades();
-		toAsignaLocalidad();
+		this.loadTiposDomicilios();	
+		this.loadTiposVentas();
+		this.loadDomicilios();
+		this.loadEntidades();
+		this.toAsignaEntidad();
+		this.loadMunicipios();
+		this.toAsignaMunicipio();
+		this.loadLocalidades();
+		this.toAsignaLocalidad();
+    this.toLoadTiposClientes();
 		//loadCodigosPostales();      
 		//toAsignaCodigoPostal();
 	}
@@ -697,20 +698,20 @@ public class Cliente extends IBaseAttribute implements Serializable {
   } // doLoadAtributos
 
 	private void loadAtributosComplemento() throws Exception {
-		MotorBusqueda motor            = null;
-		TcManticDomiciliosDto domicilio= null;
-		TcManticClientesDto cliente    = null;
+		MotorBusqueda motor        = null;
+		TcManticDomiciliosDto item = null;
+		TcManticClientesDto cliente= null;
 		try {
 			cliente= (TcManticClientesDto) this.attrs.get("registroCliente");
 			if (!this.domicilio.getIdDomicilio().equals(-1L)) {
         motor = new MotorBusqueda(cliente.getIdCliente());
-        domicilio = motor.toDomicilio(this.domicilio.getIdDomicilio());
-        this.domicilio.setNumeroExterior(domicilio.getNumeroExterior());
-        this.domicilio.setNumeroInterior(domicilio.getNumeroInterior());
-        this.domicilio.setCalle(domicilio.getCalle());
-        this.domicilio.setAsentamiento(domicilio.getAsentamiento());
-        this.domicilio.setEntreCalle(domicilio.getEntreCalle());
-        this.domicilio.setYcalle(domicilio.getYcalle());
+        item = motor.toDomicilio(this.domicilio.getIdDomicilio());
+        this.domicilio.setNumeroExterior(item.getNumeroExterior());
+        this.domicilio.setNumeroInterior(item.getNumeroInterior());
+        this.domicilio.setCalle(item.getCalle());
+        this.domicilio.setAsentamiento(item.getAsentamiento());
+        this.domicilio.setEntreCalle(item.getEntreCalle());
+        this.domicilio.setYcalle(item.getYcalle());
       } // if
       else 
         this.clearAtributos();
@@ -831,22 +832,29 @@ public class Cliente extends IBaseAttribute implements Serializable {
 		} // catch		
 	} // doInicializaCodigo
   
+	private void toLoadTiposClientes() {
+		List<UISelectItem> tiposClientes= null;
+    Map<String, Object> params      = new HashMap<>();
+		try {
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			tiposClientes= UISelect.build("TcManticTiposClientesDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS);
+			this.attrs.put("tiposClientes", tiposClientes);
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch		
+    finally {
+      Methods.clean(params);
+    } // finally
+	} 
+  
 	public void doLoadRegimenesFiscales() {
 		List<Columna> columns     = new ArrayList<>();    
     Map<String, Object> params= new HashMap<>();
     List<UISelectEntity> regimenesFiscales= null;
-    String rfc                = null;
     try {      
       TcManticClientesDto cliente= (TcManticClientesDto)this.attrs.get("registroCliente");
-      if(cliente!= null && cliente.getRfc()!= null)
-        rfc= cliente.getRfc();
-//      if(rfc!= null && !Cadena.isVacio(rfc) && rfc.trim().length()== 13)
-//        params.put("idTipoRegimenPersona", "1");      
-//      else 
-//        if(rfc!= null && !Cadena.isVacio(rfc) && rfc.trim().length()== 12)
-//          params.put("idTipoRegimenPersona", "2");      
-//        else
-          params.put("idTipoRegimenPersona", "1, 2");                  
+      params.put("idTipoRegimenPersona", "1, 2");                  
       columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       regimenesFiscales= (List<UISelectEntity>) UIEntity.seleccione("TcManticRegimenesFiscalesDto", "tipo", params, columns, "codigo");

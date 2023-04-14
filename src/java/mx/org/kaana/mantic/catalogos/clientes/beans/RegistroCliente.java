@@ -345,8 +345,10 @@ public class RegistroCliente implements Serializable {
 				for(ClienteDomicilio record: this.clientesDomicilio)
 					record.setIdPrincipal(0L);
 			} // if
-  		clienteDomicilio.setIdDomicilio(idDomicilio);
-			clienteDomicilio.setIdPrincipal(this.domicilio.getPrincipal()? 1L: 2L);
+			if(this.domicilio.getDomicilio()!= null){
+    		clienteDomicilio.setIdDomicilio(idDomicilio);
+	  		clienteDomicilio.setIdPrincipal(this.domicilio.getPrincipal()? 1L: 2L);
+			} // if	
 			clienteDomicilio.setDomicilio(new Entity(idDomicilio));
 			clienteDomicilio.setIdUsuario(JsfBase.getIdUsuario());
 			clienteDomicilio.setIdTipoDomicilio(this.domicilio.getIdTipoDomicilio());

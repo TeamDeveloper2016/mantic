@@ -13,7 +13,10 @@
       Janal.Control.fields = {
         'clave': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
         'rfc': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'idTipoCliente': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
         'razonSocial': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'paterno': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'materno': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
         'tipoVenta': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'idRegimenFiscal': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'entidad': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
@@ -49,16 +52,25 @@
       <div class="ui-grid-row janal-grid-row">
         <div class="ui-grid-col-12">          
 					<p:fieldset id="fielGenerales" legend="Generales">
-            <p:panelGrid id="panelGenerales" columns="#{manticVentasCliente.attrs.admin? 4: 3}" layout="grid" styleClass="janal-wid-100" columnClasses="#{manticVentasCliente.attrs.admin? 'janal-wid-20, janal-wid-30, janal-wid-40, janal-wid-30': 'janal-wid-20, janal-wid-30, janal-wid-50'}">
+            <p:panelGrid id="panelGenerales" columns="#{manticVentasCliente.attrs.admin? 7: 6}" layout="grid" styleClass="janal-wid-100" columnClasses="#{manticVentasCliente.attrs.admin? 'janal-wid-8, janal-wid-12, janal-wid-15, janal-wid-20, janal-wid-15, janal-wid-15, janal-wid-15': 'janal-wid-8, janal-wid-12, janal-wid-15, janal-wid-30, janal-wid-20, janal-wid-15'}">
               <p:outputLabel for="clave" value="Clave:"/>
+              <p:outputLabel for="tipoCliente" value="Tipo cliente:"/>
               <p:outputLabel for="rfc" value="RFC:"/>
-              <p:outputLabel for="razonSocial" value="Razon social:"/>
+              <p:outputLabel for="razonSocial" styleClass="cliente" value="#{manticVentasCliente.attrs.registroCliente.idTipoCliente eq 2? 'Nombre(s)': 'Razón social'}:"/>
+              <p:outputLabel for="paterno" value="1er apellido:" styleClass="cliente #{manticVentasCliente.attrs.registroCliente.idTipoCliente eq 2? '': 'janal-display-none'}"/>
+              <p:outputLabel for="materno" value="2do apellido:" styleClass="cliente #{manticVentasCliente.attrs.registroCliente.idTipoCliente eq 2? '': 'janal-display-none'}"/>
               <p:outputLabel for="tipoVenta" value="Tipo de venta:" rendered="#{manticVentasCliente.attrs.admin}"/>
-              <p:inputText id="clave" styleClass="janal-wid-100-txt" value="#{manticVentasCliente.attrs.registroCliente.clave}"/>                    						
+              <p:inputText id="clave" styleClass="janal-wid-100-txt" value="#{manticVentasCliente.attrs.registroCliente.clave}"/>
+              <p:selectOneMenu id="tipoCliente" value="#{manticVentasCliente.attrs.registroCliente.idTipoCliente}" styleClass="janal-wid-100-txt" converter="javax.faces.Long">
+                <p:ajax event="change" process="@this" update="@(.cliente)" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
+                <f:selectItems value="#{manticVentasCliente.attrs.tiposClientes}"/>
+              </p:selectOneMenu>
               <p:inputText id="rfc" styleClass="janal-wid-100-txt" value="#{manticVentasCliente.attrs.registroCliente.rfc}">
                 <p:ajax event="blur" listener="#{manticVentasCliente.doLoadRegimenesFiscales}" process="@this" update="idRegimenFiscal" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
               </p:inputText>   
-              <p:inputText id="razonSocial" styleClass="janal-wid-100-txt" value="#{manticVentasCliente.attrs.registroCliente.razonSocial}"/>                                    						
+              <p:inputText id="razonSocial" styleClass="cliente janal-wid-100-txt" value="#{manticVentasCliente.attrs.registroCliente.razonSocial}"/>                                    
+              <p:inputText id="paterno" styleClass="cliente janal-wid-100-txt #{manticVentasCliente.attrs.registroCliente.idTipoCliente eq 2? '': 'janal-display-none'}" value="#{manticVentasCliente.attrs.registroCliente.paterno}"/>
+              <p:inputText id="materno" styleClass="cliente janal-wid-100-txt #{manticVentasCliente.attrs.registroCliente.idTipoCliente eq 2? '': 'janal-display-none'}" value="#{manticVentasCliente.attrs.registroCliente.materno}"/>
               <p:selectOneMenu id="tipoVenta" value="#{manticVentasCliente.attrs.registroCliente.idTipoVenta}" styleClass="janal-wid-100-txt" rendered="#{manticVentasCliente.attrs.admin}">
                 <f:selectItems value="#{manticVentasCliente.attrs.tiposVentas}"/>
               </p:selectOneMenu>						

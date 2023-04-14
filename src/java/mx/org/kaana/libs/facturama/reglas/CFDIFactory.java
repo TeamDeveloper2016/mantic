@@ -278,7 +278,7 @@ public class CFDIFactory implements Serializable {
 			throw e;
 		} // catch	
 		return regresar;
-	} // createCfdi
+	} 
 	
 	private Cfdi loadCfdi(ClienteFactura encabezado, List<ArticuloFactura> detalle) {		
 		Cfdi regresar= null;
@@ -304,7 +304,7 @@ public class CFDIFactory implements Serializable {
 		try {
 			regresar= new Receiver();
 			regresar.setRfc(encabezado.getRfc());
-			regresar.setName(encabezado.getNombre());
+			regresar.setName(encabezado.getNombre().trim());
 			regresar.setCfdiUse(encabezado.getUsoCfdi().substring(0, 3));
       if(Objects.equals(Configuracion.getInstance().getPropiedad("sistema.nivel.facturacion"), "4.0")) {
 		    regresar.setFiscalRegime(encabezado.getRegimenFiscal());

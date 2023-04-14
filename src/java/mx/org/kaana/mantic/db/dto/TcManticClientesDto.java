@@ -76,11 +76,11 @@ public class TcManticClientesDto implements IBaseDto, Serializable {
   }
 
   public TcManticClientesDto(Long key) {
-    this(null, 0L, new Long(-1L), 100000D, null, null, 0.0D, null, null, 3L, null, null, null, null, 0.00D, -1L, 1L);
+    this(null, 0L, new Long(-1L), 100000D, null, null, 0.0D, null, null, 3L, null, null, null, null, 0.00D, -1L, 1L, null, null);
     setKey(key);
   }
 
-  public TcManticClientesDto(String clave, Long plazoDias, Long idCliente, Double limiteCredito, Long idCredito, String razonSocial, Double saldo, String rfc, Long idUsuario, Long idUsoCfdi, String observaciones, Long idEmpresa, Long idTipoVenta, String idFacturama, Double especial, Long idRegimenFiscal, Long idTipoCliente) {
+  public TcManticClientesDto(String clave, Long plazoDias, Long idCliente, Double limiteCredito, Long idCredito, String razonSocial, Double saldo, String rfc, Long idUsuario, Long idUsoCfdi, String observaciones, Long idEmpresa, Long idTipoVenta, String idFacturama, Double especial, Long idRegimenFiscal, Long idTipoCliente, String paterno, String materno) {
     setClave(clave);
     setPlazoDias(plazoDias);
     setIdCliente(idCliente);
@@ -99,6 +99,8 @@ public class TcManticClientesDto implements IBaseDto, Serializable {
 		this.especial= especial;
     this.idRegimenFiscal=  idRegimenFiscal;
     this.idTipoCliente= idTipoCliente;
+    this.paterno= paterno;
+    this.materno= materno;
   }
 	
   public void setClave(String clave) {
