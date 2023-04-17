@@ -143,11 +143,10 @@ public class Filtro extends IBaseTicket implements Serializable {
  
   @Override
   public void doLoad() {
-    List<Columna> columns     = null;
+    List<Columna> columns     = new ArrayList<>();
 		Map<String, Object> params= this.toPrepare();
     try {
 			params.put("sortOrder", this.attrs.get("sortOrder"));
-      columns = new ArrayList<>();
       columns.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));

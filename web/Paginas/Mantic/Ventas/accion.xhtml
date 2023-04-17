@@ -245,7 +245,7 @@
                     </div>	
                   </div>	
                 </p:column>
-                <p:column  class="MarAuto Responsive">
+                <p:column class="MarAuto Responsive">
                   <f:facet name="header">
                     <h:outputText value="Articulo"/>
                   </f:facet>
@@ -657,6 +657,7 @@
 			</div>		
 		</div>	
 	</ui:define>	
+  <ui:param name="componenteBloqueo" value="tabla"/>
 	<ui:define name="dialogos">
     <p:dialog id="dialogoCorreos" widgetVar="dlgCorreos" header="Correos para factura" resizable="false" closable="true" minimizable="false" maximizable="false" responsive="true" width="60%" onHide="janal.desbloquear();" appendTo="@(body)">
 			<h:form id="formDialogoCorreos" prependId="false">				

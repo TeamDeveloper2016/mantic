@@ -70,7 +70,12 @@ public class Accion extends IBaseVenta implements Serializable {
 	public StreamedContent getImage() {
 		return image;
 	}
-	
+
+  @Override
+  public int getRows() {
+	  return this.attrs.get("paginator")== null || this.getAdminOrden()== null || !(boolean)this.attrs.get("paginator") || this.getAdminOrden().getTotales().getArticulos()<= Constantes.REGISTROS_PARTIDAS? Constantes.REGISTROS_MAX_TABLA: Constantes.REGISTROS_PARTIDAS;
+  }
+  
 	@PostConstruct
   @Override
   protected void init() {		
@@ -160,7 +165,8 @@ public class Accion extends IBaseVenta implements Serializable {
       } // switch
 			this.attrs.put("consecutivo", "");
       this.attrs.put("paginator", Boolean.FALSE);
-			this.doResetDataTable();      
+      this.attrs.put("indexPaginator", 0);
+			// this.doResetDataTable();      
 			this.toLoadCatalogos();
     } // try
     catch (Exception e) {
@@ -225,10 +231,9 @@ public class Accion extends IBaseVenta implements Serializable {
   } // doAccion  
 
 	private void toLoadCatalogos() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
 			params.put("sucursales", this.attrs.get("idEmpresa"));
@@ -517,17 +522,15 @@ public class Accion extends IBaseVenta implements Serializable {
 	
 	public void doLoadUsers() {
 		List<UISelectEntity> vendedores= null;
-		Map<String, Object>params      = null;
-		List<Columna> campos           = null;
+		Map<String, Object>params      = new HashMap<>();
+		List<Columna> columns          = new ArrayList<>();
 		RequestContext rc              = null;
 		try {
-			campos= new ArrayList<>();
-			params= new HashMap<>();
 			params.put("idGrupo", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			params.put("perfil", VENDEDOR_PERFIL);
 			params.put("idUsuario", JsfBase.getIdUsuario());
-			campos.add(new Columna("nombreCompleto", EFormatoDinamicos.MAYUSCULAS));
-			vendedores= UIEntity.build("VistaTcJanalUsuariosDto", "cambioUsuario", params, campos, Constantes.SQL_TODOS_REGISTROS);
+			columns.add(new Columna("nombreCompleto", EFormatoDinamicos.MAYUSCULAS));
+			vendedores= UIEntity.build("VistaTcJanalUsuariosDto", "cambioUsuario", params, columns, Constantes.SQL_TODOS_REGISTROS);
 			rc= UIBackingUtilities.getCurrentInstance();
 			if(!vendedores.isEmpty()) {
 				this.attrs.put("vendedores", vendedores);
@@ -545,7 +548,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		} // catch
 		finally {
 			Methods.clean(params);
-			Methods.clean(campos);
+			Methods.clean(columns);
 		} // finally
 	} // doLoadUsers	
 	
@@ -557,10 +560,14 @@ public class Accion extends IBaseVenta implements Serializable {
 				this.image= LoadImages.getImage(Long.valueOf(idImage));
 				this.attrs.put("imagePivote", idImage);
 			} // if
-			else if (getAdminOrden().getArticulos().isEmpty() || (getAdminOrden().getArticulos().size()== 1 && getAdminOrden().getArticulos().get(0).getIdArticulo().equals(-1L)))
-				this.image= LoadImages.getImage(Long.valueOf(idImage));
-			else
-				this.image= LoadImages.getImage(Long.valueOf(this.attrs.get("imagePivote").toString()));
+			else 
+        if (getAdminOrden().getArticulos().isEmpty() || (getAdminOrden().getArticulos().size()== 1 && getAdminOrden().getArticulos().get(0).getIdArticulo().equals(-1L)))
+				  this.image= LoadImages.getImage(Long.valueOf(idImage));
+			  else
+          if(Cadena.isVacio(this.attrs.get("imagePivote")))
+            LOG.error("VERIFICAR POR QUE ESTA VACIO [".concat(idImage).concat("] -> ").concat(descripcion));
+          else  
+				    this.image= LoadImages.getImage(Long.valueOf((String)this.attrs.get("imagePivote")));
 			this.attrs.put("idArticulo", idImage);
 		} // try
 		catch (Exception e) {
@@ -589,15 +596,13 @@ public class Accion extends IBaseVenta implements Serializable {
 	} // loadClienteDefault	
 	
 	public void doUpdateForEmpresa(){
-		Map<String, Object>params= null;
-		List<Columna> columns     = null;    
+		Map<String, Object>params = new HashMap<>();
+		List<Columna> columns     = new ArrayList<>();    
 		try {
 			loadClienteDefault();
 			doActualizaPrecioCliente();			    
-			columns= new ArrayList<>();
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
-			params= new HashMap<>();
 			params.put("sucursales", this.attrs.get("idEmpresa"));
       this.attrs.put("almacenes", UIEntity.build("TcManticAlmacenesDto", "almacenPrincipal", params, columns));
  			List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
@@ -648,31 +653,32 @@ public class Accion extends IBaseVenta implements Serializable {
 		this.attrs.put("idAlmacen", ((TicketVenta)this.getAdminOrden().getOrden()).getIkAlmacen().getKey());
 		super.doSearchArticulo(idArticulo, index);
 	}
-
+  
   public void doResetDataTable(int index) {
+    if(Objects.equals(((index+ 1)% Constantes.REGISTROS_PARTIDAS), 0))
+      this.attrs.put("indexPaginator", index+ 1);
     this.doResetDataTable();
-    DataTable dataTable= (DataTable)JsfUtilities.findComponent("tabla");
-    if(dataTable!= null && Objects.equals(((index+ 1)% Constantes.REGISTROS_PARTIDAS), 0))
-      dataTable.setFirst(index+ 1);
   }
   
   @Override
 	public void doResetDataTable() {
     DataTable dataTable= (DataTable)JsfUtilities.findComponent("tabla");
-    if (dataTable!= null)
+    if (dataTable!= null) {
+      Integer index= (Integer)this.attrs.get("indexPaginator");
       if(!((boolean)this.attrs.get("paginator")) && this.getAdminOrden().getTotales().getArticulos()> Constantes.REGISTROS_PARTIDAS) {
 			  dataTable.reset();
-        dataTable.setFirst(Constantes.REGISTROS_PARTIDAS);		
+        dataTable.setFirst(index);		
         dataTable.setRows(Constantes.REGISTROS_PARTIDAS);		
         this.attrs.put("paginator", Boolean.TRUE);
 		  }	// if
       else
         if((boolean)this.attrs.get("paginator") && this.getAdminOrden().getTotales().getArticulos()<= Constantes.REGISTROS_PARTIDAS) {
           dataTable.reset();
-          dataTable.setFirst(0);		
-          dataTable.setRows(10000);		
+          dataTable.setFirst(index);		
+          dataTable.setRows(Constantes.REGISTROS_MAX_TABLA);		
           this.attrs.put("paginator", Boolean.FALSE);
         } // if
+    } // if
 	}
   
   @Override  
@@ -687,18 +693,9 @@ public class Accion extends IBaseVenta implements Serializable {
 		List<Columna> columns     = new ArrayList<>();    
     Map<String, Object> params= new HashMap<>();
     List<UISelectEntity> regimenesFiscales= null;
-    String rfc                = null;
     try {      
       UISelectEntity cliente= (UISelectEntity)this.attrs.get("clienteSeleccion");
-      if(cliente!= null && cliente.toString("rfc")!= null)
-        rfc= cliente.toString("rfc");
-//      if(rfc!= null && !Cadena.isVacio(rfc) && rfc.trim().length()== 13)
-//        params.put("idTipoRegimenPersona", "1");      
-//      else 
-//        if(rfc!= null && !Cadena.isVacio(rfc) && rfc.trim().length()== 12)
-//          params.put("idTipoRegimenPersona", "2");      
-//        else
-          params.put("idTipoRegimenPersona", "1, 2");                  
+      params.put("idTipoRegimenPersona", "1, 2");                  
       columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       regimenesFiscales= (List<UISelectEntity>) UIEntity.seleccione("TcManticRegimenesFiscalesDto", "tipo", params, columns, "codigo");

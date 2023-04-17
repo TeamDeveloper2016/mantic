@@ -11,8 +11,8 @@
     <!-- INICIO: Problemas con la codificación de caracteres Ñ tildes -->
     <property name="hibernate.connection.defaultNChar">true</property>
     <!-- FIN: Problemas con la codificación de caracteres Ñ tildes -->
-    <property name="show_sql">false</property>
-    <property name="format_sql">false</property>
+    <property name="show_sql">true</property>
+    <property name="format_sql">true</property>
     <property name="use_sql_comments">false</property>
     <property name="hibernate.jdbc.batch_size">20</property>    
   </session-factory>

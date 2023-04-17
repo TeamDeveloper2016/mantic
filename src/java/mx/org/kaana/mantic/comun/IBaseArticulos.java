@@ -679,7 +679,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
       this.attrs.put("paginator", this.getAdminOrden().getArticulos().size()> Constantes.REGISTROS_LOTE_TOPE);
 			DataTable dataTable= (DataTable)JsfUtilities.findComponent("contenedorGrupos:tabla");
 			if (dataTable!= null) 
-				dataTable.setRows((boolean)this.attrs.get("paginator") || this.getAdminOrden().getTotales().getArticulos()>  Constantes.REGISTROS_LOTE_TOPE? Constantes.REGISTROS_POR_LOTE: 10000);		
+				dataTable.setRows((boolean)this.attrs.get("paginator") || this.getAdminOrden().getTotales().getArticulos()>  Constantes.REGISTROS_LOTE_TOPE? Constantes.REGISTROS_POR_LOTE: Constantes.REGISTROS_MAX_TABLA);		
 		} // try
 	  catch (Exception e) {
 			Error.mensaje(e);
@@ -698,7 +698,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 	}
 
 	public void toAddArticulo(UISelectEntity seleccionado) throws Exception {
-		Long idOrdenDetalle= new Long((int)(Math.random()*10000));
+		Long idOrdenDetalle= new Long((int)(Math.random()* Constantes.REGISTROS_MAX_TABLA));
   	this.doSearchArticulo(seleccionado.toLong("idArticulo"), 0);
 		Map<String, Object> params= new HashMap<>();
 		Value stock               = null;
@@ -762,7 +762,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 	}
 	
 	public void toAddFaltante(Articulo seleccionado) throws Exception {
-		Long idOrdenDetalle= new Long((int)(Math.random()*10000));
+		Long idOrdenDetalle= new Long((int)(Math.random()* Constantes.REGISTROS_MAX_TABLA));
   	this.doSearchArticulo(seleccionado.getIdArticulo(), 0);
 		Map<String, Object> params= null;
 		Value stock               = null;
@@ -982,12 +982,12 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
     if (dataTable!= null) {
 			dataTable.reset();
       dataTable.setFirst(0);		
-      dataTable.setRows((boolean)this.attrs.get("paginator") || this.getAdminOrden().getTotales().getArticulos()>  Constantes.REGISTROS_LOTE_TOPE? Constantes.REGISTROS_POR_LOTE: 10000);		
+      dataTable.setRows((boolean)this.attrs.get("paginator") || this.getAdminOrden().getTotales().getArticulos()>  Constantes.REGISTROS_LOTE_TOPE? Constantes.REGISTROS_POR_LOTE: Constantes.REGISTROS_MAX_TABLA);		
 		}	// if
 	}
 	
   public int getRows() {
-	  return this.attrs.get("paginator")== null || this.getAdminOrden()== null || (boolean)this.attrs.get("paginator") || this.getAdminOrden().getTotales().getArticulos()> Constantes.REGISTROS_LOTE_TOPE? 10000: Constantes.REGISTROS_POR_LOTE;
+	  return this.attrs.get("paginator")== null || this.getAdminOrden()== null || (boolean)this.attrs.get("paginator") || this.getAdminOrden().getTotales().getArticulos()> Constantes.REGISTROS_LOTE_TOPE? Constantes.REGISTROS_MAX_TABLA: Constantes.REGISTROS_POR_LOTE;
   }
 	
 	public String getRecordCount() {

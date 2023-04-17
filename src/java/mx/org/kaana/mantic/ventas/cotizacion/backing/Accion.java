@@ -38,6 +38,8 @@ import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.ventas.beans.SaldoCliente;
 import mx.org.kaana.mantic.ventas.comun.IBaseVenta;
 import mx.org.kaana.mantic.ventas.reglas.CambioUsuario;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.TabChangeEvent;
@@ -47,6 +49,7 @@ import org.primefaces.model.StreamedContent;
 @ViewScoped
 public class Accion extends IBaseVenta implements Serializable {
 
+  private static final Log LOG = LogFactory.getLog(Accion.class);
   private static final long serialVersionUID = 327393488565639367L;
 	private static final String VENDEDOR_PERFIL= "VENDEDOR DE PISO";
 	private EOrdenes tipoOrden;	
@@ -627,7 +630,10 @@ public class Accion extends IBaseVenta implements Serializable {
         if (getAdminOrden().getArticulos().isEmpty() || (getAdminOrden().getArticulos().size()== 1 && getAdminOrden().getArticulos().get(0).getIdArticulo().equals(-1L)))
 				  this.image= LoadImages.getImage(idEmpresa, idImage);
 			  else
-  				this.image= LoadImages.getImage(idEmpresa, this.attrs.get("imagePivote").toString());
+          if(Cadena.isVacio((String)this.attrs.get("imagePivote")))
+            LOG.error("VERIFICAR POR QUE ESTA VACIO ESTE ARTICULO ".concat(idImage).concat("->").concat(descripcion));
+          else  
+  				  this.image= LoadImages.getImage(idEmpresa, (String)this.attrs.get("imagePivote"));
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
