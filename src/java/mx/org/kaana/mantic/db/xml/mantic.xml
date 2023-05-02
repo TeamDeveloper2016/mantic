@@ -174,7 +174,7 @@ where
         from      
           tc_mantic_regimenes_fiscales
         where      
-          id_tipo_regimen_persona = {idTipoRegimenPersona} and codigo = '{codigo}'
+          id_tipo_cliente = {idTipoCliente} and codigo = '{codigo}'
       </select>
       <select id="tipo">
         select      

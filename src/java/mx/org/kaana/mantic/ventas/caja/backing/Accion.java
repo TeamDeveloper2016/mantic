@@ -1492,7 +1492,7 @@ public class Accion extends IBaseVenta implements Serializable {
     } // if
     if(title.equals("Pagar")) 
       UIBackingUtilities.execute("jsArticulos.focusCobro();");			
-    if(title.equals("Articulos"))
+    if(title.equals("Artículos"))
       this.attrs.put("observaciones", ((TicketVenta)this.getAdminOrden().getOrden()).getObservaciones());
 		this.attrs.put("titleTab", title);		
 	} // doTabChange

@@ -30,7 +30,7 @@
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
       <div class="ui-grid-row janal-grid-row">
         <div id="collapse-find" class="ui-grid-col-3">
-          <p:panel id="panelBusqueda" header="Busqueda:" styleClass="lg-pantalla" toggleable="true" toggleOrientation="horizontal">
+          <p:panel id="panelBusqueda" header="Búsqueda:" styleClass="lg-pantalla" toggleable="true" toggleOrientation="horizontal">
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" >
               <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticVentasEspecialesFiltro.attrs.isMatriz}"/>
@@ -64,7 +64,7 @@
 							<p:inputText id="montoInicio" styleClass="janal-wid-100-txt" value="#{manticVentasEspecialesFiltro.attrs.montoInicio}" converter="javax.faces.Double">
 								<p:ajax event="blur" listener="#{manticVentasEspecialesFiltro.doMontoUpdate}" process="@this" update="montoTermino"/>
 							</p:inputText>	
-							<p:outputLabel for="montoTermino" value="Monto termino:"/>
+							<p:outputLabel for="montoTermino" value="Monto término:"/>
 							<p:inputText id="montoTermino" styleClass="janal-wid-100-txt" value="#{manticVentasEspecialesFiltro.attrs.montoTermino}" converter="javax.faces.Double">							
 								<p:ajax event="blur" listener="#{manticVentasEspecialesFiltro.doMontoUpdate}" process="@this" update="montoInicio"/>
 							</p:inputText>	

@@ -204,7 +204,7 @@
 		<p:remoteCommand name="clean" actionListener="#{manticVentasCajaAccion.doCleanArticulos}" process="@this codigo" update="buscados localizado"/>		
 		<p:tabView id="contenedorGrupos" widgetVar="contenedorCaja" activeIndex="#{manticVentasCajaAccion.attrs.tabIndex}">		
 			<p:ajax event="tabChange" process="@this contenedorGrupos contenedorGrupos:observacionesFactura" listener="#{manticVentasCajaAccion.doTabChange}" update="@(.cotizar) @(.janal-abono)" oncomplete="janal.refresh();"/>
-			<p:tab title="Articulos">
+			<p:tab title="Artículos">
 				<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 					<div class="ui-grid-row janal-grid-row">
 						<div class="ui-grid-col-12">					
@@ -327,9 +327,9 @@
 												</div>	
 											</div>	
 										</p:column>
-										<p:column  class="MarAuto Responsive">
+										<p:column class="MarAuto Responsive">
 											<f:facet name="header">
-												<h:outputText value="Articulo"/>
+												<h:outputText value="Artículo"/>
 											</f:facet>
 											<h:outputText id="nombres" value="[#{row['stock']}] [#{row['propio']}] #{row['nombre']}" title="Código propio: #{row['propio']}, Fabricante: #{row['fabricante']}, Existencias almacen: #{row['stock']}" escape="false" styleClass="#{row['idAutomatico'] eq 1? 'janal-color-red': 'janal-color-green'}"/>
 										</p:column>		
@@ -384,7 +384,7 @@
 									  <p:outputLabel value="#{manticVentasCajaAccion.attrs.tipo}" styleClass="janal-color-black janal-total-compra"/>	
 									</p:panelGrid>
 									<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-30, janal-wid-100 janal-column-right">										
-										<p:outputLabel for="articulos" value="Articulos:"/>
+										<p:outputLabel for="articulos" value="Artículos:"/>
 										<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasCajaAccion.adminOrden.totales.articulos}"/>
 										<p:outputLabel value="Descuento:"/>
 										<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasCajaAccion.adminOrden.totales.descuentoDosDecimales$}"/>
@@ -466,7 +466,7 @@
                     </p:inputSwitch>
                   </p:panelGrid>  
                   <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
-                    <p:outputLabel value="Credito:"/>
+                    <p:outputLabel value="Crédito:"/>
                     <p:inputSwitch id="creditoCliente" value="#{manticVentasCajaAccion.attrs.creditoVenta}" onLabel="SI" offLabel="NO" styleClass="janal-wid-100-txt cambio-cliente janal-abono" disabled="#{!manticVentasCajaAccion.attrs.creditoCliente}">
                       <p:ajax process="@this contenedorGrupos:observacionesFactura" update="contenedorGrupos:panelSumatoria" onstart="janal.bloquear();" oncomplete="jsArticulos.applyValidacionesCredito();" />
                     </p:inputSwitch>
@@ -535,7 +535,7 @@
                 <p:outputLabel value="#{manticVentasCajaAccion.saldoCliente.mensaje}" styleClass="janal-column-center janal-color-orange" style="font-weight: bold !important"/>
               </p:panelGrid>
               <p:panelGrid id="facturacionSinCorreo" columns="1" layout="grid" styleClass="janal-wid-100 janal-column-center" columnClasses="janal-wid-100" rendered="#{!manticVentasCajaAccion.attrs.facturacionSinCorreo}">
-                <p:outputLabel value="El cliente no cuenta con un correo electronico registrado" styleClass="janal-column-center janal-color-orange" style="font-weight: bold !important"/>
+                <p:outputLabel value="El cliente no cuenta con un correo electrónico registrado" styleClass="janal-column-center janal-color-orange" style="font-weight: bold !important"/>
               </p:panelGrid>
 							<p:panelGrid id="panelTotales" layout="grid" columns="3" styleClass="janal-wid-99" columnClasses="janal-wid-80, janal-wid-20">
 								<p:panelGrid id="panelPago" columns="6" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-13, janal-wid-1, janal-wid-20, janal-wid-5, janal-wid-30, janal-wid-30">																											
@@ -552,7 +552,7 @@
 									</p:inputNumber>
 									<p:outputLabel id="difEfectivo" value="$#{manticVentasCajaAccion.attrs.pago.difEfectivo}" styleClass="janal-color-diferencia janal-column-right"/>
 									<p:spacer/><p:spacer/>																										
-									<p:outputLabel for="debito" value="T. de debito:"/>
+									<p:outputLabel for="debito" value="T. de débito:"/>
 									<p:outputLabel value="$"/>									
 									<p:inputNumber id="debito" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticVentasCajaAccion.attrs.pago.debito}" styleClass="key-caja-debito">
 										<p:ajax event="blur" process="@this" update="contenedorGrupos:panelSumatoria @(.janal-color-diferencia)"/>
@@ -569,7 +569,7 @@
 										</p:column>   
 									</p:selectOneMenu>
 									<p:inputText id="referenciaDebito" value="#{manticVentasCajaAccion.attrs.pago.referenciaDebito}" styleClass="janal-wid-100-txt janal-select-type" placeholder="Ej. Referencia 4564"/>																		
-									<p:outputLabel for="credito" value="T. de credito:"/>
+									<p:outputLabel for="credito" value="T. de crédito:"/>
 									<p:outputLabel value="$"/>									
 									<p:inputNumber id="credito" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticVentasCajaAccion.attrs.pago.credito}" styleClass="key-caja-credito">
 										<p:ajax event="blur" process="@this" update="contenedorGrupos:panelSumatoria @(.janal-color-diferencia)"/>
@@ -628,7 +628,7 @@
 									<p:panelGrid id="panelSumatoria" columns="2" layout="grid" styleClass="janal-wid-100 janal-line-button" columnClasses="janal-wid-40 janal-column-left, janal-wid-60 janal-column-right">																	
 										<p:outputLabel value="Pago minimo:" styleClass="janal-total-compra-minus janal-color-orange" rendered="#{manticVentasCajaAccion.attrs.apartado}"/>
 										<p:outputLabel styleClass="janal-wid-100-txt recalculo janal-total-compra-minus janal-color-orange" value="$ #{manticVentasCajaAccion.attrs.pagoMinimo}" rendered="#{manticVentasCajaAccion.attrs.apartado}"/>
-										<p:outputLabel for="articulos" value="Articulos:"/>
+										<p:outputLabel for="articulos" value="Artículos:"/>
 										<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasCajaAccion.attrs.pago.totales.articulos}"/>
 										<p:outputLabel value="Descuento:"/>
 										<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasCajaAccion.attrs.pago.totales.descuentoDosDecimales$}"/>
@@ -780,7 +780,7 @@
 								
 								<p:panelGrid id="panelTablaCorreos" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
 									<p:dataTable id="tablaCorreos" rowIndexVar="index" var="contacto" value="#{manticVentasCajaAccion.clientesTiposContacto}" rows="6" paginator="false" reflow="true" rowKey="#{contacto.key}" emptyMessage=" " styleClass="paginated">																															
-										<p:column headerText="Correo electronico" styleClass="valor">		
+										<p:column headerText="Correo electrónico" styleClass="valor">		
 											<p:inputText id="valor#{contacto.key}" styleClass="janal-wid-100-txt" placeholder="Ej. nombre.apellido@empresa.com.mx" value="#{contacto.valor}" disabled="#{!contacto.nuevo}"  />                    																																			
 										</p:column>
                     <p:column styleClass="janal-wid-col-38 janal-column-center">
@@ -789,7 +789,7 @@
 											</p:commandButton>
 										</p:column>
 										<f:facet name="footer">
-											<p:commandButton actionListener="#{manticVentasCajaAccion.doAgregarClienteTipoContacto}" process="@this tablaCorreos" update="tablaCorreos" icon="fa fa-plus" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado or manticVentasCajaAccion.attrs.disabledFacturar}"/>
+											<p:commandButton actionListener="#{manticVentasCajaAccion.doAgregarClienteTipoContacto}" styleClass="cotizar" process="@this tablaCorreos" update="tablaCorreos" icon="fa fa-plus" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado or manticVentasCajaAccion.attrs.disabledFacturar}"/>
 										</f:facet>
 									</p:dataTable>										
 								</p:panelGrid>								
@@ -831,7 +831,7 @@
 							<p:panelGrid id="panelTickets" columns="6" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-15,janal-wid-26,janal-wid-20,janal-wid-20,janal-wid-15,janal-wid-4 janal-column-right">
 								<p:outputLabel for="noTicket" value="No. ticket:" title="No. ticket de venta"/>
 								<p:outputLabel for="productoTicket" value="Producto:" title="Producto en la venta "/>
-								<p:outputLabel for="fechaApartirTicket" value="Fecha apartir:" title="Fecha de inicio"/>
+								<p:outputLabel for="fechaApartirTicket" value="Fecha a partir de:" title="Fecha de inicio"/>
 								<p:outputLabel for="fechaHastaTicket" value="Hasta:" title="Fecha de fin"/>
 								<p:outputLabel for="importeTicket" value="Importe:" title="Importe de la venta"/>								
 								<p:spacer/>
@@ -918,7 +918,7 @@
 								</p:column>		
 								<p:column class="MarAuto Responsive janal-wid-13">
 									<f:facet name="header">
-										<h:outputText value="Medio pago"/>
+										<h:outputText value="Medio de pago"/>
 									</f:facet>
 									<h:outputText value="#{manticVentasCajaAccion.doTipoMedioPago(filtro)}"/>
 								</p:column>										
@@ -934,9 +934,9 @@
 									</p:commandButton>
 								</p:column>
 								<f:facet name="footer">
-                  <p:outputLabel value="Las filas en color verde claro tienen asociada una devolución, colocar el raton sobre el icono del carrito" styleClass="janal-color-blue janal-icons-header"/>
+                  <p:outputLabel value="Las filas en color verde claro tienen asociada una devolución, colocar el ratón sobre el ícono del carrito" styleClass="janal-color-blue janal-icons-header"/>
                   <br/>
-                  <p:outputLabel value="Las filas en color morado claro son cotizaciones que se convirtieron en una venta, colocar el raton sobre el icono del monitor" styleClass="janal-color-blue janal-icons-header"/>
+                  <p:outputLabel value="Las filas en color morado claro son cotizaciones que se convirtieron en una venta, colocar el ratón sobre el ícono del monitor" styleClass="janal-color-blue janal-icons-header"/>
 									<p:outputLabel value="Total [#{manticVentasCajaAccion.lazyModelTicket== null? 0: manticVentasCajaAccion.lazyModelTicket.rowCount}] registros"/>
 								</f:facet>
 							</p:dataTable>	
@@ -958,7 +958,7 @@
 				<p:outputLabel value="Cliente" styleClass="font-resume-venta-detail"/>
 				<p:outputLabel value="Descuento" styleClass="font-resume-venta-detail"/>
 				<p:outputLabel value="Facturar" styleClass="font-resume-venta-detail"/>
-				<p:outputLabel value="Credito" styleClass="font-resume-venta-detail"/>				
+				<p:outputLabel value="Crédito" styleClass="font-resume-venta-detail"/>				
 				<p:outputLabel value="#{manticVentasCajaAccion.attrs.nombreCliente}"/>				
 				<p:outputLabel value="#{manticVentasCajaAccion.attrs.pago.totales.descuentoDosDecimales$}"/>				
 				<p:outputLabel value="#{manticVentasCajaAccion.attrs.facturarVenta ? 'SI' : 'NO'}"/>				
@@ -972,9 +972,9 @@
 				<p:outputLabel value="#{manticVentasCajaAccion.attrs.pago.pago$}" styleClass="janal-color-green"/>
 				<p:outputLabel value="Efectivo:" styleClass="font-resume-venta-detail"/><p:outputLabel value="$"/>
 				<p:outputLabel value="#{manticVentasCajaAccion.attrs.pago.efectivo}"/>
-				<p:outputLabel value="T. de debito:" styleClass="font-resume-venta-detail"/><p:outputLabel value="$"/>
+				<p:outputLabel value="T. de débito:" styleClass="font-resume-venta-detail"/><p:outputLabel value="$"/>
 				<p:outputLabel value="#{manticVentasCajaAccion.attrs.pago.debito}"/>				
-				<p:outputLabel value="T. de credito:" styleClass="font-resume-venta-detail"/><p:outputLabel value="$"/>
+				<p:outputLabel value="T. de crédito:" styleClass="font-resume-venta-detail"/><p:outputLabel value="$"/>
 				<p:outputLabel value="#{manticVentasCajaAccion.attrs.pago.credito}"/>				
 				<p:outputLabel value="Transferencia:" styleClass="font-resume-venta-detail"/><p:outputLabel value="$"/>
 				<p:outputLabel value="#{manticVentasCajaAccion.attrs.pago.transferencia}"/>
@@ -1534,7 +1534,7 @@
     <p:dialog id="dialogoDescuentos" widgetVar="dlgDescuentos" dynamic="true" header="Aplicar descuento" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="true" onShow="updateDescuentos();janal.change('dialogosVenta', fieldsDialogDescuento); jsCaja.doFocusCuenta();" width="50%" onHide="janal.desbloquear();janal.restore();janal.refresh();jsArticulos.restoreCursorAt();" appendTo="@(body)">
 			<h:form id="dialogosVenta" prependId="false">
         <h:panelGrid columns="1" styleClass="janal-wid-100 janal-column-center">
-          <p:outputLabel value="El cliente tiene un precio especial en todos los articulos, por lo tanto no se puede aplicar un descuento !" styleClass="janal-font-bold janal-color-red" style="display:#{empty manticVentasCajaAccion.attrs.registroCliente.especial or manticVentasCajaAccion.attrs.registroCliente.especial eq 0.0? 'none': ''}"/>
+          <p:outputLabel value="El cliente tiene un precio especial en todos los artículos, por lo tanto no se puede aplicar un descuento !" styleClass="janal-font-bold janal-color-red" style="display:#{empty manticVentasCajaAccion.attrs.registroCliente.especial or manticVentasCajaAccion.attrs.registroCliente.especial eq 0.0? 'none': ''}"/>
           <p:spacer height="5px"/>
           <p:outputLabel value="[ #{manticVentasCajaAccion.attrs.registroCliente.razonSocial} ]" styleClass="janal-font-bold janal-color-blue" style="display:#{empty manticVentasCajaAccion.attrs.registroCliente.especial or manticVentasCajaAccion.attrs.registroCliente.especial eq 0.0? 'none': ''}"/>
         </h:panelGrid>  

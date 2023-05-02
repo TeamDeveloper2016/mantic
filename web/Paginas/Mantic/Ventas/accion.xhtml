@@ -305,7 +305,7 @@
 							</p:panel>
 							<p:spacer height="1px"/>
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-30, janal-wid-100 janal-column-right">
-								<p:outputLabel for="articulos" value="Articulos:"/>
+								<p:outputLabel for="articulos" value="Artículos:"/>
 								<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasAccion.adminOrden.totales.reales}"/>
 								<p:outputLabel value="Descuento:"/>
 								<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasAccion.adminOrden.totales.descuentoDosDecimales$}"/>
@@ -755,7 +755,7 @@
 			<h:form id="dialogosVenta" prependId="false">
 				<p:defaultCommand target="tipoDescuento"/>
         <h:panelGrid columns="1" styleClass="janal-wid-100 janal-column-center" style="display:#{empty manticVentasAccion.attrs.clienteSeleccion.especial or manticVentasAccion.attrs.clienteSeleccion.especial.toDouble() eq 0.0? 'none': ''}">
-          <p:outputLabel value="El cliente tiene un precio especial en todos los articulos, por lo tanto no se puede aplicar un descuento !" styleClass="janal-font-bold janal-color-red" style="display:#{empty manticVentasAccion.attrs.clienteSeleccion.especial or manticVentasAccion.attrs.clienteSeleccion.especial.toDouble() eq 0.0? 'none': ''}"/>
+          <p:outputLabel value="El cliente tiene un precio especial en todos los artículos, por lo tanto no se puede aplicar un descuento !" styleClass="janal-font-bold janal-color-red" style="display:#{empty manticVentasAccion.attrs.clienteSeleccion.especial or manticVentasAccion.attrs.clienteSeleccion.especial.toDouble() eq 0.0? 'none': ''}"/>
           <p:spacer height="5px"/>
           <p:outputLabel value="[ #{manticVentasAccion.attrs.clienteSeleccion.razonSocial} ]" styleClass="janal-font-bold janal-color-blue" style="display:#{empty manticVentasAccion.attrs.clienteSeleccion.especial or manticVentasAccion.attrs.clienteSeleccion.especial.toDouble() eq 0.0? 'none': ''}"/>
         </h:panelGrid>  

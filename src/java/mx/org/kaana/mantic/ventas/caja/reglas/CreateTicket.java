@@ -122,7 +122,7 @@ public class CreateTicket implements Serializable {
 			params= new HashMap<>();
 			params.put("idEmpresa", ((TicketVenta)this.ticket.getOrden()).getIdEmpresa());
 			domicilio= (Entity) DaoFactory.getInstance().toEntity("VistaInformacionEmpresas", "datosEmpresa", params);
-			regresar= domicilio.toString("empresaDireccion").concat(" C.P. ").concat(domicilio.toString("codigoPostal")).concat("<br> COLONIA. ").concat(domicilio.toString("colonia")).concat("<br> TEL.").concat(this.toTelefono()).concat("<br> WHATSUP ").concat(this.toCelular());
+			regresar= domicilio.toString("empresaDireccion").concat(" C.P. ").concat(domicilio.toString("codigoPostal")).concat("<br> COLONIA. ").concat(domicilio.toString("colonia")).concat("<br> TEL.").concat(this.toTelefono()).concat("<br> WHATSAPP ").concat(this.toCelular());
 		} // try
 		finally{
 			Methods.clean(params);

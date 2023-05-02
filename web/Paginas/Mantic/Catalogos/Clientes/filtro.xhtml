@@ -6,7 +6,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/filtro.xhtml">
-  <ui:param name="titulo" value="Catalogo de clientes" />
+  <ui:param name="titulo" value="Catálogo de clientes" />
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
@@ -23,7 +23,7 @@
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
       <div class="ui-grid-row janal-grid-row">
         <div id="collapse-find" class="ui-grid-col-3">
-          <p:panel id="panelBusqueda" header="Busqueda:" styleClass="lg-pantalla" toggleable="true" toggleOrientation="horizontal">
+          <p:panel id="panelBusqueda" header="Búsqueda:" styleClass="lg-pantalla" toggleable="true" toggleOrientation="horizontal">
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
               <p:outputLabel for="clave" value="Clave:"/>
@@ -43,7 +43,7 @@
 									</h:panelGrid>
 								</f:facet>
 							</p:autoComplete>	
-							<p:outputLabel for="credito" value="Credito:"/>
+							<p:outputLabel for="credito" value="Crédito:"/>
 							<p:selectOneMenu id="credito" value="#{manticCatalogosClientesFiltro.attrs.credito}" styleClass="janal-wid-100-txt">
 								<f:selectItems value="#{manticCatalogosClientesFiltro.attrs.creditos}"/>
 							</p:selectOneMenu>
