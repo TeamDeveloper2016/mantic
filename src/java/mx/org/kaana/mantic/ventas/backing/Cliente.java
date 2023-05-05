@@ -100,7 +100,7 @@ public class Cliente extends IBaseAttribute implements Serializable {
     } // catch		
   } // init
 
-	private void loadCollections(){		
+	private void loadCollections() {		
 		this.loadTiposDomicilios();	
 		this.loadTiposVentas();
 		this.loadDomicilios();
@@ -110,7 +110,6 @@ public class Cliente extends IBaseAttribute implements Serializable {
 		this.toAsignaMunicipio();
 		this.loadLocalidades();
 		this.toAsignaLocalidad();
-    this.toLoadTiposClientes();
 		//loadCodigosPostales();      
 		//toAsignaCodigoPostal();
 	}
@@ -136,7 +135,8 @@ public class Cliente extends IBaseAttribute implements Serializable {
 					this.domicilio= new Domicilio();					
 					this.loadCollections();
 					break;
-			} // switch			
+			} // switch
+      this.toLoadTiposClientes();
 			this.attrs.put("registroCliente", registroCliente);
     } // try
     catch (Exception e) {

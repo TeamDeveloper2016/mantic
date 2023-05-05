@@ -417,6 +417,8 @@ public class Accion extends IBaseVenta implements Serializable {
 				validarCredito= this.doValidaCreditoVenta();
 			if(validarCredito) {
 				ventaFinalizada= this.loadVentaFinalizada();
+				// ACTUALIZAR EL REGIMEN FISCAL DEL CLIENTE 
+        DaoFactory.getInstance().update(ventaFinalizada.getCliente());				
 				transaccion = new Transaccion(ventaFinalizada);
 				if (transaccion.ejecutar(EAccion.REPROCESAR)) {
 					if(ventaFinalizada.isFacturar() && !ventaFinalizada.getApartado()) {
@@ -1129,8 +1131,10 @@ public class Accion extends IBaseVenta implements Serializable {
 				this.attrs.put("celular", movil);
 				this.attrs.put("clienteRegistrado", ((Boolean)this.attrs.get("facturarVenta")));
 			} // else				
-      if(cliente!= null && !Objects.equals(cliente.getKey(), -1L) && !Objects.equals(cliente.getKey(), Constantes.VENTA_AL_PUBLICO_GENERAL_ID_KEY) && this.getIkRegimenFiscal()!= null && Objects.equals(this.getIkRegimenFiscal().getKey(), -1L)) 
+      if(cliente!= null && !Objects.equals(cliente.getKey(), -1L) && !Objects.equals(cliente.getKey(), Constantes.VENTA_AL_PUBLICO_GENERAL_ID_KEY) && this.getIkRegimenFiscal()!= null && Objects.equals(this.getIkRegimenFiscal().getKey(), -1L)) {
         UIBackingUtilities.execute("janal.alert('¡ Por favor solicite el Regimen Fiscal al cliente !\\n\\n Y capture la información donde corresponde ...');");
+        UIBackingUtilities.execute("janal.refresh();");
+      } // if  
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

@@ -386,6 +386,9 @@
 				) as tt_mantic_temporal	on tt_mantic_temporal.id_venta = tc_mantic_ventas.id_venta
         where
           tc_mantic_ventas.id_venta = {idVenta}
+        group by
+          tc_mantic_ventas.id_venta,
+          tc_mantic_ventas_detalles.id_venta_detalle
         order by 
           tc_mantic_ventas.id_venta,
           tc_mantic_ventas_detalles.id_venta_detalle asc

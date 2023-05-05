@@ -5330,7 +5330,7 @@ from (
 					tc_mantic_clientes.id_cliente,
 					tc_mantic_clientes.clave,
 					tc_mantic_clientes.rfc,
-					tc_mantic_clientes.razon_social,
+					concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, '')) as razon_social,
 					tc_mantic_clientes.limite_credito,
 					tc_mantic_clientes.plazo_dias,
 					tc_mantic_domicilios.calle,
@@ -5364,7 +5364,7 @@ from (
           tr_mantic_cliente_domicilio.id_cliente_domicilio,
 					tc_mantic_clientes.clave,
 					tc_mantic_clientes.rfc,
-					tc_mantic_clientes.razon_social,
+					concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, '')) as razon_social,
 					tc_mantic_clientes.limite_credito,
 					tc_mantic_clientes.plazo_dias,
 					tc_mantic_domicilios.calle,
@@ -5393,7 +5393,7 @@ from (
           tr_mantic_cliente_domicilio.id_cliente_domicilio,
 					tc_mantic_clientes.clave,
 					tc_mantic_clientes.rfc,
-					tc_mantic_clientes.razon_social,
+					concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, '')) as razon_social,
 					tc_mantic_clientes.limite_credito,
 					tc_mantic_clientes.plazo_dias,
 					tc_mantic_domicilios.calle,
@@ -5428,7 +5428,7 @@ from (
 					tc_mantic_clientes_deudas.limite,
 					tc_mantic_clientes_deudas.registro,
 					(datediff(tc_mantic_clientes_deudas.limite, now())* -1) as dias,
-					tc_mantic_clientes.razon_social,
+					concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, '')) as razon_social,
 					tc_mantic_clientes_deudas.id_cliente_estatus,
 					tc_mantic_ventas.id_venta,
 					tc_mantic_clientes_estatus.nombre as estatus
@@ -5453,7 +5453,7 @@ from (
 				select
 					tc_mantic_clientes_deudas.id_cliente_deuda as id_key,
 					tc_mantic_clientes_deudas.id_cliente,
-					tc_mantic_clientes.razon_social,
+					concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, '')) as razon_social,
 					count(*) as cuentas,
 					sum(tc_mantic_clientes_deudas.importe) as importe,
 					sum(tc_mantic_clientes_deudas.saldo) as saldo,
@@ -5490,7 +5490,7 @@ from (
 					tc_mantic_clientes_deudas.limite,
 					tc_mantic_clientes_deudas.registro,
 					(datediff(tc_mantic_clientes_deudas.limite, now())* -1) as dias,
-					tc_mantic_clientes.razon_social,
+					concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, '')) as razon_social,
 					tc_mantic_ventas.id_venta,
           tc_mantic_clientes_estatus.id_cliente_estatus,
           tc_mantic_ventas.observaciones,
@@ -5524,7 +5524,7 @@ from (
 					tc_mantic_clientes_deudas.limite,
 					tc_mantic_clientes_deudas.registro,
 					datediff(tc_mantic_clientes_deudas.limite, now()) as dias,
-					tc_mantic_clientes.razon_social,
+					concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, '')) as razon_social,
 					tc_mantic_clientes_deudas.id_cliente_estatus,
 					tc_mantic_ventas.id_venta,
 					tc_mantic_clientes_estatus.nombre as estatus
@@ -5560,7 +5560,7 @@ from (
           tc_mantic_clientes_deudas.limite,
           tc_mantic_clientes_deudas.registro,
           (datediff(tc_mantic_clientes_deudas.limite, now())* -1) as dias,
-          tc_mantic_clientes.razon_social,
+					concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, '')) as razon_social,
           tc_mantic_ventas.id_venta,
           tc_mantic_clientes_estatus.nombre estatus,
           tc_mantic_clientes_pagos_controles.registro as fecha
@@ -5600,7 +5600,7 @@ from (
 					tc_mantic_clientes_deudas.limite,
 					tc_mantic_clientes_deudas.registro,
 					(datediff(tc_mantic_clientes_deudas.limite, now())* -1) as dias,
-					tc_mantic_clientes.razon_social,
+					concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, '')) as razon_social,
 					tc_mantic_ventas.id_venta,
 					tc_mantic_clientes_estatus.nombre as estatus,
           null as fecha
@@ -5624,7 +5624,7 @@ from (
 			<select id="deuda">
 				select
 					tc_mantic_clientes.id_cliente as id_key,
-					tc_mantic_clientes.razon_social,															
+					concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, '')) as razon_social,
           sum(ifnull(tc_mantic_clientes_deudas.importe, 0)) as importe,
           sum(ifnull(tc_mantic_clientes_deudas.saldo, 0)) as saldo     
 				from
@@ -5728,8 +5728,8 @@ from (
 					tc_mantic_clientes_deudas.saldo,
 					tc_mantic_clientes_pagos.pago,
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as persona,
+					concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, '')) as razon_social,
 					tc_mantic_clientes_pagos.registro,
-					tc_mantic_clientes.razon_social
 				from
 					tc_mantic_clientes_pagos
 				inner join
@@ -5823,7 +5823,7 @@ from (
 					tc_mantic_clientes.id_cliente as id,
 					tc_mantic_clientes.id_facturama,
 					tc_mantic_clientes.rfc,
-					tc_mantic_clientes.razon_social as nombre,       
+					concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, '')) as nombre,
 					tc_mantic_domicilios.calle,
 					tc_mantic_domicilios.numero_exterior,
 					tc_mantic_domicilios.numero_interior,
@@ -5865,7 +5865,7 @@ from (
 					tc_mantic_clientes.id_cliente as id,
 					tc_mantic_clientes.id_facturama,
 					tc_mantic_clientes.rfc,
-					tc_mantic_clientes.razon_social nombre,       
+					concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, '')) as nombre,
 					tc_mantic_domicilios.calle,
 					tc_mantic_domicilios.numero_exterior,
 					tc_mantic_domicilios.numero_interior,
@@ -5909,7 +5909,7 @@ from (
 					tc_mantic_clientes.id_cliente as id,
 					tc_mantic_clientes.id_facturama,
 					tc_mantic_clientes.rfc,
-					tc_mantic_clientes.razon_social as nombre,       
+					concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, '')) as nombre,
 					tc_mantic_domicilios.calle,
 					tc_mantic_domicilios.numero_exterior,
 					tc_mantic_domicilios.numero_interior,
@@ -5950,7 +5950,7 @@ from (
 				select 
 					tc_mantic_clientes.id_cliente as id,
 					tc_mantic_clientes.rfc,
-					tc_mantic_clientes.razon_social as nombre,    
+					concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, '')) as nombre,
           tc_mantic_clientes.id_regimen_fiscal,
           tc_mantic_regimenes_fiscales.codigo as regimen_fiscal,
 					tc_mantic_usos_cfdi.clave as uso_cfdi,				
@@ -5992,7 +5992,7 @@ from (
 				select 
 					tc_mantic_clientes.id_cliente as id,
 					tc_mantic_clientes.rfc,
-					tc_mantic_clientes.razon_social nombre,       					
+					concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, '')) as nombre,
 					tc_mantic_usos_cfdi.clave uso_cfdi,				
 					tc_mantic_clientes.id_facturama,
 					tc_mantic_facturas.id_factura folio,

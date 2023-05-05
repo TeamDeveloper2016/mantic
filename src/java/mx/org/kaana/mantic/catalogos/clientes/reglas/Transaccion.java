@@ -282,7 +282,9 @@ public class Transaccion extends TransaccionFactura {
       for (ClienteDomicilio clienteDomicilio : this.registroCliente.getClientesDomicilio()) {								
 				if(clienteDomicilio.getIdPrincipal().equals(1L))
 					countPrincipal++;
-				if(countPrincipal== 0 && this.registroCliente.getClientesDomicilio().size()-1 == count)
+        else
+          clienteDomicilio.setIdPrincipal(2L);
+				if(countPrincipal== 0 && Objects.equals(this.registroCliente.getClientesDomicilio().size()-1, count))
 					clienteDomicilio.setIdPrincipal(1L);
         clienteDomicilio.setIdCliente(idCliente);
         clienteDomicilio.setIdUsuario(JsfBase.getIdUsuario());
@@ -291,7 +293,6 @@ public class Transaccion extends TransaccionFactura {
         sqlAccion = clienteDomicilio.getSqlAccion();
         switch (sqlAccion) {
           case INSERT:
-						dto.setIdPrincipal(dto.getIdPrincipal().equals(1L) ? dto.getIdPrincipal() : 2L);
             dto.setIdClienteDomicilio(-1L);
             validate = this.registrar(sesion, dto);
             break;
@@ -299,9 +300,8 @@ public class Transaccion extends TransaccionFactura {
             validate = this.actualizar(sesion, dto);
             break;
         } // switch
-        if (validate) {
+        if (validate)
           count++;
-        }
       } // for		
       regresar = count == this.registroCliente.getClientesDomicilio().size();
     } // try    
