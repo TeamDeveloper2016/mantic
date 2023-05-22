@@ -354,10 +354,9 @@ public class Filtro extends Comun implements Serializable {
 	} 
 	
 	public void doAlmacenes() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
 			if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
 				params.put("sucursales", this.attrs.get("idEmpresa"));
 			else
@@ -412,11 +411,9 @@ public class Filtro extends Comun implements Serializable {
 	}
 
 	public void doUpdateCodigos() {
-		List<Columna> columns     = null;
-    Map<String, Object> params= null;
+		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
     try {
-			params= new HashMap<>();
-			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			String search= (String)this.attrs.get("codigoCodigo"); 
@@ -462,9 +459,8 @@ public class Filtro extends Comun implements Serializable {
 
 	public String doExportarXls() {
 		String regresar          = null;		
-		Map<String, Object>params= null;
+		Map<String, Object>params= this.toPrepare();
 		try {									   
-			params= this.toPrepare();
 			params.put("sortOrder", "order by tc_mantic_articulos.nombre, tc_mantic_articulos.actualizado");
 			JsfBase.setFlashAttribute(Constantes.REPORTE_REFERENCIA, new ExportarXls(new Modelo((Map<String, Object>) ((HashMap)params).clone(), EExportacionXls.ARTICULOS.getProceso(), EExportacionXls.ARTICULOS.getIdXml(), EExportacionXls.ARTICULOS.getNombreArchivo()), EExportacionXls.ARTICULOS, "CODIGO,CODIGO AUXILIAR,NOMBRE,COSTO S/IVA,MENUDEO NETO,MEDIO NETO,MAYOREO NETO,UNIDAD MEDIDA,IVA,LIMITE MENUDEO,LIMITE MAYOREO,STOCK MINIMO,STOCK MAXIMO,SAT,CODIGO FABRICANTE"));
 			JsfBase.getAutentifica().setMonitoreo(new Monitoreo());
@@ -480,7 +476,7 @@ public class Filtro extends Comun implements Serializable {
 		return regresar;
 	} // doExportarFdDbf  
 	
-	public void doHabilitar(){
+	public void doHabilitar() {
 		Transaccion transaccion= null;
 		try {
 			transaccion= new Transaccion(new RegistroArticulo(((Entity)this.attrs.get("seleccionado")).getKey()), 0D, false);
@@ -515,4 +511,39 @@ public class Filtro extends Comun implements Serializable {
 			
 		} // finally
 	}
+ 
+	public void doUpdateArticulosFiltro() {
+		List<Columna> columns         = new ArrayList<>();
+    Map<String, Object> params    = new HashMap<>();
+		List<UISelectEntity> articulos= null;
+    try {
+      columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+  		params.put("idProveedor", -1L);
+			String search= (String) this.attrs.get("codigoFiltro"); 
+			if(!Cadena.isVacio(search)) 
+  			search= search.replaceAll(Constantes.CLEAN_SQL, "").trim().toUpperCase().replaceAll("(,| |\\t)+", ".*.*");			
+			else
+				search= "WXYZ";
+  		params.put("codigo", search);			        
+      articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porNombreTipoArticulo", params, columns, 40L);
+      this.attrs.put("articulosFiltro", articulos);
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
+	}	// doUpdateArticulos
+  
+	public List<UISelectEntity> doCompleteArticuloFiltro(String query) {
+    this.attrs.put("codigoFiltro", query);
+    this.doUpdateArticulosFiltro();
+		return (List<UISelectEntity>)this.attrs.get("articulosFiltro");
+	}	// doCompleteArticulo
+  
 }

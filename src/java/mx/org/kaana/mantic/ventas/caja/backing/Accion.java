@@ -1131,10 +1131,9 @@ public class Accion extends IBaseVenta implements Serializable {
 				this.attrs.put("celular", movil);
 				this.attrs.put("clienteRegistrado", ((Boolean)this.attrs.get("facturarVenta")));
 			} // else				
-      if(cliente!= null && !Objects.equals(cliente.getKey(), -1L) && !Objects.equals(cliente.getKey(), Constantes.VENTA_AL_PUBLICO_GENERAL_ID_KEY) && this.getIkRegimenFiscal()!= null && Objects.equals(this.getIkRegimenFiscal().getKey(), -1L)) {
+      if(cliente!= null && !Objects.equals(cliente.getKey(), -1L) && !Objects.equals(cliente.getKey(), Constantes.VENTA_AL_PUBLICO_GENERAL_ID_KEY) && this.getIkRegimenFiscal()!= null && Objects.equals(this.getIkRegimenFiscal().getKey(), -1L)) 
         UIBackingUtilities.execute("janal.alert('¡ Por favor solicite el Regimen Fiscal al cliente !\\n\\n Y capture la información donde corresponde ...');");
-        UIBackingUtilities.execute("janal.refresh();");
-      } // if  
+      UIBackingUtilities.execute("janal.refresh();");
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

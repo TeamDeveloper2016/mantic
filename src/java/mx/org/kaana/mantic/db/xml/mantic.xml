@@ -2484,6 +2484,20 @@ where
         where      
           id_caja = {idCaja}
       </select>
+      <select id="corte">
+        select      
+          distinct(tc_mantic_cierres_cajas.registro) as corte
+        from      
+          tc_mantic_cierres_cajas
+        inner join
+          tc_mantic_cajas on tc_mantic_cierres_cajas.id_caja= tc_mantic_cajas.id_caja
+        where      
+          tc_mantic_cajas.id_empresa in ({idEmpresa})
+          and date_format(tc_mantic_cierres_cajas.dia, '%Y%m%d')= '{fecha}'
+        order by
+          tc_mantic_cajas.id_empresa, 
+          tc_mantic_cierres_cajas.registro desc
+      </select>
     </unit>
     <unit id="TcManticCierresRetirosDto">
       <select id="row">

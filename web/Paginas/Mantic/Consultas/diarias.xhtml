@@ -93,7 +93,7 @@
               </f:facet>
               <h:outputText value="#{row['nombreEmpresa']}"/>
             </p:column>																
-            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.caja}">
+            <p:column class="MarAuto Responsive janal-wid-6" sortBy="#{row.caja}">
               <f:facet name="header">
                 <h:outputText value="Caja"/>
               </f:facet>
@@ -141,7 +141,7 @@
 					<h:commandLink id="creditoXls">
 						<pe:exporter type="xlsx" skipComponents="javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="tabla" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/> 
 					</h:commandLink>			
-          <p:dataTable lazy="true" id="credito" widgetVar="kajoolCredito" var="row" value="#{manticConsultasDiarias.lazyCredito}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_MAX_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_MAX_CADA_PAGINA}" selection="#{manticConsultasDiarias.attrs.credito}" selectionMode="single" paginator="#{manticConsultasDiarias.lazyCredito.rowCount gt manticConsultasDiarias.lazyCredito.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">            
+          <p:dataTable lazy="true" id="credito" widgetVar="kajoolCredito" var="row" value="#{manticConsultasDiarias.lazyCredito}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_MAX_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_MAX_CADA_PAGINA}" selection="#{manticConsultasDiarias.attrs.credito}" selectionMode="single" paginator="#{manticConsultasDiarias.lazyCredito.rowCount gt manticConsultasDiarias.lazyCredito.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" rowStyleClass="#{manticConsultasDiarias.toColor(row)}">            
             <f:facet name="header">
 							<div>
 							  <p:outputLabel value="Ventas registrada a crédito" styleClass="janal-color-white" style="float:left;"/>
@@ -167,9 +167,10 @@
               <f:facet name="header">
                 <h:outputText value="Cliente"/>
               </f:facet>
+              <i class="fa fa-fw fa-cart-plus janal-color-blue janal-font-bold janal-icons-header" style="display: #{empty row.garantia or row.garantia eq ''? 'none': ''}" title="Folio devolución: #{row.garantia} por un total de #{row.devuelto} del día #{row.cuando} hrs."></i>
               <h:outputText value="#{row['razonSocial']}"/>
             </p:column>																
-            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.caja}">
+            <p:column class="MarAuto Responsive janal-wid-6" sortBy="#{row.caja}">
               <f:facet name="header">
                 <h:outputText value="Caja"/>
               </f:facet>
@@ -187,7 +188,7 @@
               </f:facet>
               <h:outputText value="#{row['tipoMedioPago']}"/>
             </p:column>														
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.fecha}">
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{row.fecha}">
               <f:facet name="header">
                 <h:outputText value="Fecha"/>
               </f:facet>
@@ -206,6 +207,7 @@
 							</p:row>
 						</p:columnGroup>
             <f:facet name="footer">
+              <p:outputLabel value="Las filas en color verde claro tienen asociada una devolución, colocar el ratón sobre el ícono del carrito" styleClass="janal-color-blue janal-icons-header"/>
               <p:outputLabel value="Total [#{manticConsultasDiarias.lazyCredito== null? 0: manticConsultasDiarias.lazyCredito.rowCount}] registros"/>
             </f:facet>
           </p:dataTable>  					
@@ -243,7 +245,7 @@
               </f:facet>
               <h:outputText value="#{row['razonSocial']}"/>
             </p:column>																
-            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.caja}">
+            <p:column class="MarAuto Responsive janal-wid-6" sortBy="#{row.caja}">
               <f:facet name="header">
                 <h:outputText value="Caja"/>
               </f:facet>
@@ -261,7 +263,7 @@
               </f:facet>
               <h:outputText value="#{row['tipoMedioPago']}"/>
             </p:column>														
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.fecha}">
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{row.fecha}">
               <f:facet name="header">
                 <h:outputText value="Fecha"/>
               </f:facet>

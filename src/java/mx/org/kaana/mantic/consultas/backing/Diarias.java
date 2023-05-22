@@ -135,10 +135,12 @@ public class Diarias extends IBaseTicket implements Serializable {
 			this.attrs.put("total", DaoFactory.getInstance().toEntity("VistaConsultasDto", "diariasTotales", params));
       UIBackingUtilities.resetDataTable();
 			columns.remove(columns.size()- 1);
-			credito= this.toPrepare(EEstatusVentas.CREDITO);
-      this.lazyCredito = new FormatCustomLazy("VistaConsultasDto", "credito", credito, columns);
 			apartado= this.toPrepare(EEstatusVentas.APARTADOS);
       this.lazyApartado= new FormatCustomLazy("VistaConsultasDto", "apartado", apartado, columns);
+			credito= this.toPrepare(EEstatusVentas.CREDITO);
+      columns.add(new Columna("devuelto", EFormatoDinamicos.MONEDA_CON_DECIMALES));
+      columns.add(new Columna("cuando", EFormatoDinamicos.FECHA_HORA_CORTA));      
+      this.lazyCredito = new FormatCustomLazy("VistaConsultasDto", "credito", credito, columns);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -158,39 +160,65 @@ public class Diarias extends IBaseTicket implements Serializable {
 	
 	protected Map<String, Object> toPrepare(EEstatusVentas consulta) {
 	  Map<String, Object> regresar= new HashMap<>();	
+	  Map<String, Object> params  = new HashMap<>();	
 		StringBuilder sb= new StringBuilder();		
 		StringBuilder sf= new StringBuilder();		
-		sb.append("tc_mantic_ventas.id_tipo_documento=").append(ETipoDocumento.VENTAS_NORMALES.getIdTipoDocumento()).append(" and ");
-		switch(consulta) {
-			case CREDITO:
-  		  sb.append("tc_mantic_ventas.id_venta_estatus in (").append(EEstatusVentas.CREDITO.getIdEstatusVenta()).append(") and ");
-				break;
-			case APARTADOS:
-  		  sb.append("tc_mantic_ventas.id_venta_estatus in (").append(EEstatusVentas.APARTADOS.getIdEstatusVenta()).append(") and ");
-				break;
-			default:
-  		  sb.append("tc_mantic_ventas.id_venta_estatus in (").append(EEstatusVentas.PAGADA.getIdEstatusVenta()).append(",").append(EEstatusVentas.TIMBRADA.getIdEstatusVenta()).append(",").append(EEstatusVentas.TERMINADA.getIdEstatusVenta()).append(") and ");
-				break;
-		} // switch
-		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
-		  sb.append("(date_format(tc_mantic_ventas.registro, '%Y%m%d')= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");			
-		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
-		  regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
-		else
-		  regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
-		if(!Cadena.isVacio(this.attrs.get("idCaja")) && !this.attrs.get("idCaja").toString().equals("-1"))
-  		sf.append("(tc_mantic_cajas.id_caja= ").append(this.attrs.get("idCaja")).append(") and ");
-		if(!Cadena.isVacio(this.attrs.get("idMedioPago")) && !this.attrs.get("idMedioPago").toString().equals("-1"))
-  		sf.append("(tc_mantic_tipos_medios_pagos.id_tipo_medio_pago= ").append(this.attrs.get("idMedioPago")).append(") and ");
-		if(sf.length()== 0)
-		  regresar.put("apartado", Constantes.SQL_VERDADERO);
-		else	
-		  regresar.put("apartado", sf.substring(0, sf.length()- 4));
-		if(sb.length()== 0)
-		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-		else	
-		  regresar.put(Constantes.SQL_CONDICION, sb.substring(0, sb.length()- 4));
-		return regresar;		
+    try {
+      sb.append("tc_mantic_ventas.id_tipo_documento=").append(ETipoDocumento.VENTAS_NORMALES.getIdTipoDocumento()).append(" and ");
+      switch(consulta) {
+        case CREDITO:
+          sb.append("tc_mantic_ventas.id_venta_estatus in (").append(EEstatusVentas.CREDITO.getIdEstatusVenta()).append(") and ");
+          break;
+        case APARTADOS:
+          sb.append("tc_mantic_ventas.id_venta_estatus in (").append(EEstatusVentas.APARTADOS.getIdEstatusVenta()).append(") and ");
+          break;
+        default:
+          sb.append("tc_mantic_ventas.id_venta_estatus in (").append(EEstatusVentas.PAGADA.getIdEstatusVenta()).append(",").append(EEstatusVentas.TIMBRADA.getIdEstatusVenta()).append(",").append(EEstatusVentas.TERMINADA.getIdEstatusVenta()).append(") and ");
+          break;
+      } // switch
+      if(!Cadena.isVacio(this.attrs.get("fechaInicio"))) {
+        Calendar calendar= Calendar.getInstance();
+        calendar.setTimeInMillis(((Date)this.attrs.get("fechaInicio")).getTime());
+        calendar.add(Calendar.DATE, -1);
+        params.put("fecha", Fecha.formatear(Fecha.FECHA_ESTANDAR, calendar));
+        if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1")) {
+          params.put("idEmpresa", this.attrs.get("idEmpresa"));
+          Entity corte= (Entity)DaoFactory.getInstance().toEntity("TcManticCierresCajasDto", "corte", params);
+          if(corte!= null && !corte.isEmpty()) {
+            sb.append("(date_format(tc_mantic_ventas.registro, '%Y%m%d%H%i%S')> '").append(Fecha.formatear(Fecha.FECHA_HORA_LARGA, corte.toTimestamp("corte"))).append("') and ");			
+            sb.append("(date_format(tc_mantic_ventas.registro, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");			
+          } // if  
+          else 
+            sb.append("(date_format(tc_mantic_ventas.registro, '%Y%m%d')= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");			
+        } // if
+        else 
+          sb.append("(date_format(tc_mantic_ventas.registro, '%Y%m%d')= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");			
+      } // if  
+      if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
+        regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
+      else
+        regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
+      if(!Cadena.isVacio(this.attrs.get("idCaja")) && !this.attrs.get("idCaja").toString().equals("-1"))
+        sf.append("(tc_mantic_cajas.id_caja= ").append(this.attrs.get("idCaja")).append(") and ");
+      if(!Cadena.isVacio(this.attrs.get("idMedioPago")) && !this.attrs.get("idMedioPago").toString().equals("-1"))
+        sf.append("(tc_mantic_tipos_medios_pagos.id_tipo_medio_pago= ").append(this.attrs.get("idMedioPago")).append(") and ");
+      if(sf.length()== 0)
+        regresar.put("apartado", Constantes.SQL_VERDADERO);
+      else	
+        regresar.put("apartado", sf.substring(0, sf.length()- 4));
+      if(sb.length()== 0)
+        regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      else	
+        regresar.put(Constantes.SQL_CONDICION, sb.substring(0, sb.length()- 4));
+    } // try  
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;		
 	} // toPrepare
 	
 	protected void toLoadCatalog() {
@@ -319,5 +347,9 @@ public class Diarias extends IBaseTicket implements Serializable {
       Methods.clean(columns);
     } // finally		
   }
+
+	public String toColor(Entity row) {
+		return Cadena.isVacio(row.toString("garantia"))? "": "janal-tr-lime";
+	} 
   
 }

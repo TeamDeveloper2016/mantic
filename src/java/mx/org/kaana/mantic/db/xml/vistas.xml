@@ -2215,7 +2215,10 @@
 				  tc_mantic_ventas.registro as fecha,
 					tc_mantic_tipos_medios_pagos.id_tipo_medio_pago,
 					tc_mantic_tipos_medios_pagos.nombre as tipo_medio_pago,
-					tc_mantic_clientes.razon_social
+					tc_mantic_clientes.razon_social,
+          ifnull(tc_mantic_garantias.consecutivo, '') as garantia,
+          tc_mantic_garantias.total as devuelto,
+          tc_mantic_garantias.registro as cuando        
 				from
 					tc_mantic_ventas    
 				inner join (
@@ -2245,20 +2248,17 @@
           tc_mantic_cierres_cajas on tr_mantic_venta_medio_pago.id_cierre = tc_mantic_cierres_cajas.id_cierre and tc_mantic_ventas.id_venta= tr_mantic_venta_medio_pago.id_venta     
         inner join
           tc_mantic_cajas on tc_mantic_cierres_cajas.id_caja = tc_mantic_cajas.id_caja     
+				left join
+				  tc_mantic_garantias on tc_mantic_ventas.id_venta= tc_mantic_garantias.id_venta
 				where
 					tc_mantic_ventas.id_empresa in ({idEmpresa})
 				  and {apartado}     
 				group by				
 					tc_mantic_ventas.id_venta,
 					tc_mantic_empresas.id_empresa,
-					tc_mantic_empresas.clave,
-					tc_mantic_empresas.nombre,
 					tc_mantic_cajas.id_caja,					
-					tc_mantic_cajas.clave,					
 					tr_mantic_venta_medio_pago.importe,
-					tc_mantic_ventas.total,
-					tc_mantic_tipos_medios_pagos.id_tipo_medio_pago,
-					tc_mantic_tipos_medios_pagos.nombre) as deducciones
+					tc_mantic_tipos_medios_pagos.id_tipo_medio_pago) as deducciones
 				) as recalculo
 			</select>				
 			<select id="apartado">

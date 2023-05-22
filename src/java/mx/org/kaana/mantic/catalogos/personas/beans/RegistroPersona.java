@@ -3,6 +3,7 @@ package mx.org.kaana.mantic.catalogos.personas.beans;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.EAccion;
@@ -234,7 +235,7 @@ public class RegistroPersona implements Serializable {
 			pivote.setModificar(true);
 			this.domicilioPivote= new Domicilio();
 			this.domicilioPivote.setIdTipoDomicilio(pivote.getIdTipoDomicilio());
-			this.domicilioPivote.setPrincipal(pivote.getIdPrincipal().equals(1L));	
+			this.domicilioPivote.setPrincipal(Objects.equals(pivote.getIdPrincipal(), 1L) || Objects.equals(pivote.getIdPrincipal(), null));	
 			this.domicilioPivote.setIdDomicilio(pivote.getDomicilio().getKey());
 			this.domicilioPivote.setDomicilio(pivote.getDomicilio());
 			this.domicilioPivote.setIdEntidad(pivote.getIdEntidad());
@@ -275,7 +276,7 @@ public class RegistroPersona implements Serializable {
 				for(PersonaDomicilio record: this.personasDomicilio)
 					record.setIdPrincipal(0L);
 			} // if
-			personaDomicilio.setIdPrincipal(this.domicilio.getPrincipal() ? 1L : 2L);			
+			personaDomicilio.setIdPrincipal(this.domicilio.getPrincipal()? 1L : 2L);			
 			personaDomicilio.setDomicilio(this.domicilio.getDomicilio());
 			personaDomicilio.setIdDomicilio(this.domicilio.getDomicilio().getKey());
 			personaDomicilio.setIdUsuario(JsfBase.getIdUsuario());
@@ -354,4 +355,5 @@ public class RegistroPersona implements Serializable {
 		} // catch		
 		return regresar;
 	} // registrarDomicilio	
+  
 }

@@ -159,13 +159,13 @@ public final class Encriptar {
     //pass.setFijar(true);
     //                     dia,horas,minutos,segundos  
     // 2022-03-16 15:23:56 %d%H%i%S
-		// String texto= encriptado.encriptar("4494652548");
+		String texto= encriptado.encriptar("hola");
     //String texto = encriptado.encriptar("jdbc:oracle:thin:@10.1.8.41:1521:bddesa", _CLAVE);
    // String texto = encriptado.encriptar("Hola", _CLAVE);
     //LOG.debug("encriptado: " + texto);
     //LOG.debug(texto);
                                        
-     String texto= encriptado.desencriptar("vjtRYzGHEaCB5gZg5UH4Gw==");
+    // String texto= encriptado.desencriptar("vjtRYzGHEaCB5gZg5UH4Gw==");
     System.out.println(texto);
     //LOG.debug("\u0053\u0049\u0041\u004E\u004F\u004D\u0049\u004E\u0041\u0032\u0030\u0030\u0035");
     //encriptado.des
