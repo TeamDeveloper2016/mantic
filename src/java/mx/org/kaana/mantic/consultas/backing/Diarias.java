@@ -177,6 +177,8 @@ public class Diarias extends IBaseTicket implements Serializable {
           break;
       } // switch
       if(!Cadena.isVacio(this.attrs.get("fechaInicio"))) {
+/*        
+//        ESTE CODIGO ES PARA RECUPERAR LOS MOVIMIENTOS DE ACUERDO AL ULTIMO CIERRE REALIZADO
         Calendar calendar= Calendar.getInstance();
         calendar.setTimeInMillis(((Date)this.attrs.get("fechaInicio")).getTime());
         calendar.add(Calendar.DATE, -1);
@@ -193,6 +195,8 @@ public class Diarias extends IBaseTicket implements Serializable {
         } // if
         else 
           sb.append("(date_format(tc_mantic_ventas.registro, '%Y%m%d')= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");			
+*/
+        sb.append("(date_format(tc_mantic_ventas.registro, '%Y%m%d')= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");			
       } // if  
       if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
         regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
