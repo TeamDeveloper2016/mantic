@@ -219,8 +219,11 @@ public class Filtro extends IBaseTicket implements Serializable {
 //		else 
 //		  if(!Cadena.isVacio(this.attrs.get("codigo")) && !this.attrs.get("codigo").toString().equals("-1"))
 //			  sb.append("(upper(tc_mantic_ventas_detalles.codigo) like upper('%").append(((Entity)this.attrs.get("codigo")).getKey()).append("%')) and ");					
-		if(!Cadena.isVacio(JsfBase.getParametro("articulo_input")))
-  		sb.append("(upper(tc_mantic_ventas_detalles.nombre) like upper('%").append(JsfBase.getParametro("articulo_input")).append("%')) and ");
+		if(!Cadena.isVacio(this.attrs.get("articulo")) && !Objects.equals(((Entity)this.attrs.get("articulo")).getKey(), -1L))
+			sb.append("(tc_mantic_ventas_detalles.id_articulo= ").append(((Entity)this.attrs.get("articulo")).getKey()).append(") and ");					
+		else 
+  		if(!Cadena.isVacio(JsfBase.getParametro("articulo_input")))
+    		sb.append("(upper(tc_mantic_ventas_detalles.nombre) like upper('%").append(JsfBase.getParametro("articulo_input")).append("%')) and ");
 		if(!Cadena.isVacio(this.attrs.get("idVenta")) && !this.attrs.get("idVenta").toString().equals("-1"))
   		sb.append("(tc_mantic_ventas.id_venta=").append(this.attrs.get("idVenta")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("consecutivo")))

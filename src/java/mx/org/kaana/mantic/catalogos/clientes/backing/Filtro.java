@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -83,7 +84,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     try {
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));      
       columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));    
-			params.put(Constantes.SQL_CONDICION, toCondicion());
+			params.put(Constantes.SQL_CONDICION, toPrepare());
 			params.put("idPrincipal", 1L);
 			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getDependencias());			
 			params.put("credito", this.attrs.get("credito"));			
@@ -99,19 +100,16 @@ public class Filtro extends IBaseFilter implements Serializable {
     } // finally		
   } // doLoad
 
-	private String toCondicion() {
-		String regresar             = null;
-		StringBuilder condicion     = null;
-		UISelectEntity cliente      = null;
-		List<UISelectEntity>clientes= null;
+	private String toPrepare() {
+		String regresar        = null;
+		StringBuilder condicion= new StringBuilder("");
+		UISelectEntity cliente = null;
 		try {
-			condicion= new StringBuilder("");
-			cliente= (UISelectEntity)this.attrs.get("cliente");
-			clientes= (List<UISelectEntity>)this.attrs.get("clientes");
+			cliente  = (UISelectEntity)this.attrs.get("cliente");
       if(!Cadena.isVacio(this.attrs.get("idClienteProcess")) && !this.attrs.get("idClienteProcess").toString().equals("-1")) 
         condicion.append("tc_mantic_clientes.id_cliente=").append(this.attrs.get("idClienteProcess")).append(" and ");
-			if(clientes!= null && cliente!= null && clientes.indexOf(cliente)>= 0) 
-				condicion.append("concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, '')) regexp '.*").append(clientes.get(clientes.indexOf(cliente)).toString("razonSocial").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*")).append(".*' and ");				
+			if(cliente!= null && !Objects.equals(cliente.getKey(), -1L)) 
+				condicion.append("(tc_mantic_clientes.id_cliente= ").append(cliente.getKey()).append(") and ");				
 			else 
 				if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input"))) 
 					condicion.append("concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, '')) regexp '.*").append(JsfBase.getParametro("razonSocial_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*")).append(".*' and ");				
@@ -128,7 +126,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			throw e;
 		} // catch		
 		return regresar;
-	} // toPrepare
+	} 
 	
   public String doAccion(String accion) {
     EAccion eaccion= null;
