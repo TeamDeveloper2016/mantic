@@ -61,7 +61,7 @@
      								<p:outputLabel for="idEmpresas" value="Sucursal:"/>
 									</div>	
 									<div class="ui-grid-col-11">
-										<p:selectOneMenu id="idEmpresas" value="#{manticVentasCajaCierresRetiros.attrs.idEmpresas}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+										<p:selectOneMenu id="idEmpresas" value="#{manticVentasCajaCierresRetiros.attrs.idEmpresas}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 											<p:ajax event="change" listener="#{manticVentasCajaCierresRetiros.doLoadCajas}" process="@this" update="idCajas aceptar aceptarIcon"/>
 											<f:selectItems value="#{manticVentasCajaCierresRetiros.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.titulo}"/>
 											<p:column headerText="Clave">
@@ -78,7 +78,7 @@
 								    <p:outputLabel for="idCajas" value="Caja:"/>
 									</div>
 									<div class="ui-grid-col-11">
-										<p:selectOneMenu id="idCajas" value="#{manticVentasCajaCierresRetiros.attrs.idCajas}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+										<p:selectOneMenu id="idCajas" value="#{manticVentasCajaCierresRetiros.attrs.idCajas}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 											<p:ajax event="change" listener="#{manticVentasCajaCierresRetiros.doLoadCierres}" process="@this" update="aceptar aceptarIcon"/>
 											<f:selectItems value="#{manticVentasCajaCierresRetiros.attrs.cajas}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
 											<p:column headerText="Clave">

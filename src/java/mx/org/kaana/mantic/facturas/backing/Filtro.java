@@ -73,10 +73,9 @@ public class Filtro extends Factura implements Serializable {
  
   @Override
   public void doLoad() {
-    List<Columna> columns     = null;
+    List<Columna> columns     = new ArrayList<>();
 		Map<String, Object> params= this.toPrepare();
     try {
-      columns = new ArrayList<>();
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("total", EFormatoDinamicos.MONEDA_CON_DECIMALES));
@@ -134,10 +133,9 @@ public class Filtro extends Factura implements Serializable {
   } // doEliminar	
 	
 	protected void toLoadCatalog() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
         params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
 			else
@@ -167,11 +165,9 @@ public class Filtro extends Factura implements Serializable {
 	}	// doCompleteCliente
 	
 	public void doUpdateClientes() {
-		List<Columna> columns     = null;
-    Map<String, Object> params= null;
+		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
     try {
-			params= new HashMap<>();
-			columns= new ArrayList<>();
       columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
 			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
@@ -226,11 +222,10 @@ public class Filtro extends Factura implements Serializable {
 	} // doReporte	
   
   public void doReporteFacturas(String nombre) throws Exception {
-		Map<String, Object>params    = null;
+		Map<String, Object>params    = this.toPrepare();
 		EReportes reporteSeleccion   = null;
     List<Definicion> definiciones= null;
-		try{		
-      params= this.toPrepare();	
+		try {		
       //es importante este orden para los grupos en el reporte	
       definiciones = new ArrayList<>();
       params.put("sortOrder", "order by tc_mantic_ventas.id_empresa, tc_mantic_clientes.id_cliente, tc_mantic_ventas.ejercicio, tc_mantic_ventas.orden");
@@ -248,11 +243,9 @@ public class Filtro extends Factura implements Serializable {
   } // doReporte	
 	
 	public void doLoadDocumentoEstatus() {
-		List<Columna> columns     = null;
-		Map<String, Object>params= null;
+		List<Columna> columns    = new ArrayList<>();
+		Map<String, Object>params= new HashMap<>();
 		try {
-			params= new HashMap<>();
-			columns= new ArrayList<>();
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			if(this.attrs.get("idTipoDocumento")== null || (Long)this.attrs.get("idTipoDocumento")== -1L)
@@ -274,11 +267,10 @@ public class Filtro extends Factura implements Serializable {
 	
 	public void doLoadEstatus() {
 		Entity seleccionado          = null;
-		Map<String, Object>params    = null;
+		Map<String, Object>params    = new HashMap<>();
 		List<UISelectItem> allEstatus= null;
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
-			params= new HashMap<>();
 			params.put("idTipoDocumento", seleccionado.toLong("idTipoDocumento"));
 			params.put("estatusAsociados", seleccionado.toString("estatusAsociados"));
 			allEstatus= UISelect.build("TcManticVentasEstatusDto", "estatus", params, "nombre", EFormatoDinamicos.MAYUSCULAS);			
@@ -384,11 +376,9 @@ public class Filtro extends Factura implements Serializable {
 	} // doMontoUpdate
 	
 	public void doUpdateCodigos() {
-		List<Columna> columns     = null;
-    Map<String, Object> params= null;
+		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
     try {
-			params= new HashMap<>();
-			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			String search= (String)this.attrs.get("codigoCodigo"); 
@@ -433,11 +423,9 @@ public class Filtro extends Factura implements Serializable {
 	} // doAsignaCodigo
 	
 	public void doUpdateArticulos() {
-		List<Columna> columns     = null;
-    Map<String, Object> params= null;
+		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
     try {
-			params= new HashMap<>();
-			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			String search= (String)this.attrs.get("codigoArticulo"); 
@@ -510,11 +498,10 @@ public class Filtro extends Factura implements Serializable {
   } // doComplemento 
 
 	public void doMoveSection() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
 		List<UISelectEntity> documento= null;
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_CON_DECIMALES));

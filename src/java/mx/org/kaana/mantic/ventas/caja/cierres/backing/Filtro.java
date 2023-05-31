@@ -77,11 +77,10 @@ public class Filtro extends IBaseFilter implements Serializable {
  
   @Override
   public void doLoad() {
-    List<Columna> columns     = null;
+    List<Columna> columns     = new ArrayList<>();
 		Map<String, Object> params= this.toPrepare();
     try {
       params.put("sortOrder", "order by tc_mantic_empresas.id_empresa, tc_mantic_cajas.id_caja, tc_mantic_cierres.registro desc ");
-      columns = new ArrayList<>();
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombreEmpresa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
@@ -149,10 +148,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 	}
 	
 	private void toLoadCatalog() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       this.attrs.put("catalogo", (List<UISelectEntity>) UIEntity.build("TcManticCierresEstatusDto", "row", params, columns));
@@ -169,10 +167,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 	}
 	
 	private void toLoadEmpresas() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
         params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
 			else
@@ -194,10 +191,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 	}
 	
 	public void doLoadCajas() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			params.put("idEmpresa", ((UISelectEntity)this.attrs.get("idEmpresa")).getKey());
@@ -215,11 +211,10 @@ public class Filtro extends IBaseFilter implements Serializable {
 	
 	public void doReporte(String nombre) throws Exception{
     Parametros comunes = null;
-		Map<String, Object>params    = null;
+		Map<String, Object>params    = this.toPrepare();
 		Map<String, Object>parametros= null;
 		EReportes reporteSeleccion   = null;
 		try{		
-      params= toPrepare();
       params.put("sortOrder", "order by tc_mantic_cajas.registro desc");
       reporteSeleccion= EReportes.valueOf(nombre);
       if(reporteSeleccion.equals(EReportes.CIERRES_CAJA))
@@ -256,11 +251,10 @@ public class Filtro extends IBaseFilter implements Serializable {
 	
 	public void doLoadEstatus(){
 		Entity seleccionado          = null;
-		Map<String, Object>params    = null;
+		Map<String, Object>params    = new HashMap<>();
 		List<UISelectItem> allEstatus= null;
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_cierre_estatus in (".concat(seleccionado.toString("estatusAsociados")).concat(")"));
 			allEstatus= UISelect.build("TcManticCierresEstatusDto", params, "nombre", EFormatoDinamicos.MAYUSCULAS);			
 			this.attrs.put("allEstatus", allEstatus);
@@ -355,21 +349,20 @@ public class Filtro extends IBaseFilter implements Serializable {
     CreateCorteCaja corte      = null;
     Long idCierre              = -1L;
     Long idCierreNuevo         = -1L;
-    Map<String, Object> params = null;
+    Map<String, Object> params = new HashMap<>();
     Entity seleccionado        = null;
     try {		
-      if(this.attrs.get("seleccionado")!=null){
+      if(this.attrs.get("seleccionado")!=null) {
         seleccionado = (Entity)this.attrs.get("seleccionado");
         idCierre =  seleccionado.toLong("idCierre");
-        params = new HashMap<>();
         params.put("idCaja", seleccionado.toLong("idCaja"));
         params.put("orden", seleccionado.toLong("orden"));
         idCierreNuevo = ((Entity)DaoFactory.getInstance().toEntity("VistaCierresCajasDto", "cierrePosterior", params)).toLong("idCierre");
-      }
-      else{
+      } // if
+      else {
         idCierre = Long.valueOf(this.attrs.get("idCierreAnterior").toString());//por que viene de regreso de fondo
         idCierreNuevo = Long.valueOf(this.attrs.get("idCierre").toString());
-      }
+      } // else
       CorteCaja corteCaja= new CorteCaja(idCierre, idCierreNuevo);			
       corte= new CreateCorteCaja(corteCaja);
       UIBackingUtilities.execute("jsTicket.imprimirTicket('" + corte.getPrincipal().getClave() + corte.getCorte().getResumenCorte().toString("consecutivo") +"','"  + corte.toHtml() + "');");

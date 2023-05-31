@@ -16,7 +16,7 @@
 				nombre        : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
         idEmpresa     : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         consecutivo   : {validaciones: 'libre', mascara: 'libre', formatos: 'consecutivo', individual: true, grupo: 'general'},
-        idCliente     : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        razonSocial   : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
 				montoInicio   : {validaciones: 'flotante',  mascara: 'libre', grupo: 'general'},
         montoTermino  : {validaciones: 'flotante',  mascara: 'libre', grupo: 'general'},
         fechaInicio   : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
@@ -81,20 +81,20 @@
               </p:selectOneMenu>
               <p:outputLabel for="consecutivo" value="No. ticket:"/>
               <p:inputText id="consecutivo" value="#{manticVentasCajaFiltro.attrs.consecutivo}" styleClass="janal-wid-100-txt"/> 
-              <p:outputLabel for="idCliente" value="Cliente:"/>
-              <p:selectOneMenu id="idCliente" value="#{manticVentasCajaFiltro.attrs.idCliente}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
-                <f:selectItems value="#{manticVentasCajaFiltro.attrs.clientes}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
-                <p:column headerText="Clave">
-                  <h:outputText value="#{item.clave}"/>
-                </p:column>   
-                <p:column headerText="Nombre">
-                  <h:outputText value="#{item.nombre}"/>
-                </p:column>   
-                <p:column styleClass="janal-column-right" headerText="Limite credito">
-                  <h:outputText value="#{item.limiteCredito}"/>
-                </p:column>   
-              </p:selectOneMenu>
+              <p:outputLabel for="razonSocial" value="Cliente:"/>
+              <p:autoComplete id="razonSocial" placeholder="RFC o nombre" var="customCliente" itemLabel="#{customCliente.razonSocial}" inputStyleClass="janal-wid-100-txt key-down-clientes filas" itemValue="#{customCliente}" value="#{manticVentasCajaFiltro.attrs.cliente}" completeMethod="#{manticVentasCajaFiltro.doCompleteCliente}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">
+								<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this idEmpresa" listener="#{manticVentasCajaFiltro.doAsignaCliente}" oncomplete="janal.desbloquear();"/>
+								<f:facet name="itemtip">
+									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">												
+										<h:outputText value="Clave" />
+										<h:outputText value="#{customCliente.clave}"/>
+										<h:outputText value="RFC:" />
+										<h:outputText value="#{customCliente.rfc}"/>
+										<h:outputText value="Razón social:"/>
+										<h:outputText value="#{customCliente.razonSocial}"/>												
+									</h:panelGrid>
+								</f:facet>
+							</p:autoComplete>	
               <p:outputLabel for="codigo" value="Código:"/>
               <p:autoComplete id="codigo" placeholder="ej. CT123" var="customCodigo" itemLabel="#{customCodigo.propio}" inputStyleClass="janal-wid-100-txt key-down-codigos filas" itemValue="#{customCodigo}" value="#{manticVentasCajaFiltro.attrs.codigoBuscado}" completeMethod="#{manticVentasCajaFiltro.doCompleteCodigo}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">
 								<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this idEmpresa" listener="#{manticVentasCajaFiltro.doAsignaCodigo}" oncomplete="janal.desbloquear();"/>
