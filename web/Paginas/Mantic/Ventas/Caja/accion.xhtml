@@ -141,7 +141,8 @@
 			}
 		</style>
 	</ui:define>
-	<ui:define name="contenido">		
+	<ui:define name="contenido">	
+    <p:defaultCommand target="eliminar"/><p:commandButton id="eliminar" styleClass="janal-display-none"/>
 		<pe:remoteCommand name="doFacturarPendiente" process="@this @(.filas)" actionListener="#{manticVentasCajaAccion.doFacturarPendiente}">  
 			<pe:methodSignature parameters="mx.org.kaana.mantic.ventas.caja.beans.Facturacion"/>  
 			<pe:methodParam name="facturacion">

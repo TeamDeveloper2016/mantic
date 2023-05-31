@@ -61,6 +61,7 @@ public class Filtro extends Comun implements Serializable {
   @Override
   protected void init() {
     try {
+      this.attrs.put("buscaPorCodigo", false);
       this.attrs.put("codigo", "");
       //this.attrs.put("nombre", "");
       this.attrs.put("idTipoArticulo", 1L);
@@ -100,10 +101,9 @@ public class Filtro extends Comun implements Serializable {
   } // doLoad
 	
 	private void toLoadCatalog() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
         params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
 			else
@@ -227,19 +227,18 @@ public class Filtro extends Comun implements Serializable {
 	} // onReturnValues
 	
   public void doEliminar() {
-    Transaccion transaccion = null;
-    Entity seleccionado = null;
-    RegistroArticulo registro = null;
+    Transaccion transaccion  = null;
+    Entity seleccionado      = null;
+    RegistroArticulo registro= null;
     try {
       seleccionado = (Entity) this.attrs.get("seleccionado");
       registro = new RegistroArticulo();
       registro.setIdArticulo(seleccionado.getKey());
       transaccion = new Transaccion(registro, 0D, true);
-      if (transaccion.ejecutar(EAccion.ELIMINAR)) {
-        JsfBase.addMessage("Eliminar articulo", "El artículo se ha eliminado correctamente.", ETipoMensaje.ERROR);
-      } else {
-        JsfBase.addMessage("Eliminar articulo", "Ocurrió un error al eliminar la artículo.", ETipoMensaje.ERROR);
-      }
+      if (transaccion.ejecutar(EAccion.ELIMINAR)) 
+        JsfBase.addMessage("Eliminar articulo", "El artículo se ha eliminado correctamente", ETipoMensaje.ERROR);
+      else
+        JsfBase.addMessage("Eliminar articulo", "Ocurrió un error al eliminar la artículo", ETipoMensaje.ERROR);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -248,23 +247,31 @@ public class Filtro extends Comun implements Serializable {
   } // doEliminar
 	
 	public void doUpdateArticulos() {
-		List<Columna> columns         = null;
-    Map<String, Object> params    = null;
+		List<Columna> columns         = new ArrayList<>();
+    Map<String, Object> params    = new HashMap<>();
 		List<UISelectEntity> articulos= null;
+		boolean buscaPorCodigo        = false;
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-			params= new HashMap<>();
+			params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
   		params.put("idProveedor", -1L);
-			String search= (String) this.attrs.get("codigoFiltro"); 
-			if(!Cadena.isVacio(search)) 
-  			search= search.replaceAll(Constantes.CLEAN_SQL, "").trim().toUpperCase().replaceAll("(,| |\\t)+", ".*.*");			
+			String search= (String)this.attrs.get("codigo"); 
+			if(!Cadena.isVacio(search)) {
+  			search= search.replaceAll(Constantes.CLEAN_SQL, "").trim();
+				buscaPorCodigo= search.startsWith(".");
+				if(buscaPorCodigo)
+					search= search.trim().substring(1);
+				search= search.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+			} // if	
 			else
 				search= "WXYZ";
-  		params.put("codigo", search);			        
-      articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porNombreTipoArticulo", params, columns, 40L);
+  		params.put("codigo", search);
+			if((boolean)this.attrs.get("buscaPorCodigo") || buscaPorCodigo)
+        articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porCodigo", params, columns, 40L);
+			else
+        articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porNombre", params, columns, 40L);
       this.attrs.put("articulos", articulos);
 		} // try
 	  catch (Exception e) {
@@ -274,12 +281,12 @@ public class Filtro extends Comun implements Serializable {
     finally {
       Methods.clean(columns);
       Methods.clean(params);
-    }// finally
+    } // finally
 	}	// doUpdateArticulos
 
 	public List<UISelectEntity> doCompleteArticulo(String query) {
-		this.attrs.put("existeFiltro", null);
-		this.attrs.put("codigoFiltro", query);
+		this.attrs.put("existe", null);
+		this.attrs.put("codigo", query);
     this.doUpdateArticulos();
 		return (List<UISelectEntity>)this.attrs.get("articulos");
 	}	// doCompleteArticulo
@@ -303,7 +310,7 @@ public class Filtro extends Comun implements Serializable {
     } // catch   
 	} // doFindArticulo
 	
-	public void doPublicarFacturama(){
+	public void doPublicarFacturama() {
 		TransaccionFactura transaccion= null;
 		CFDIGestor gestor             = null;
 		ArticuloFactura articulo      = null;
@@ -312,9 +319,9 @@ public class Filtro extends Comun implements Serializable {
 			articulo= gestor.toArticuloFactura();			
 			transaccion= new TransaccionFactura(articulo);
 			if(transaccion.ejecutar(EAccion.AGREGAR))
-				JsfBase.addMessage("Registrar articulo en facturama", "Se registro de forma correcta.");
+				JsfBase.addMessage("Registrar articulo en facturama", "Se registro de forma correcta en facturama");
 			else
-				JsfBase.addMessage("Registrar articulo en facturama", "Ocurrio un error al registrar el articulo en facturama.");			
+				JsfBase.addMessage("Registrar articulo en facturama", "Ocurrio un error al registrar el articulo en facturama");			
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -494,22 +501,19 @@ public class Filtro extends Comun implements Serializable {
 		} // finally
 	}
 	
-	public void doDeshabilitar(){
+	public void doDeshabilitar() {
 		Transaccion transaccion= null;
 		try {
 			transaccion= new Transaccion(new RegistroArticulo(((Entity)this.attrs.get("seleccionado")).getKey()), 0D, true);			
 			if(transaccion.ejecutar(EAccion.PROCESAR))
-				JsfBase.addMessage("Deshabilitar articulo", "Se deshabilito de forma correcta el articulo.", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Deshabilitar articulo", "Se deshabilito de forma correcta el articulo", ETipoMensaje.INFORMACION);
 			else
-				JsfBase.addMessage("Deshabilitar articulo", "Ocurrió un error al deshabilitar el articulo.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Deshabilitar articulo", "Ocurrió un error al deshabilitar el articulo", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
 			Error.mensaje(e);			
 		} // catch
-		finally {
-			
-		} // finally
 	}
  
 	public void doUpdateArticulosFiltro() {
@@ -541,9 +545,10 @@ public class Filtro extends Comun implements Serializable {
 	}	// doUpdateArticulos
   
 	public List<UISelectEntity> doCompleteArticuloFiltro(String query) {
-    this.attrs.put("codigoFiltro", query);
+		this.attrs.put("existeFiltro", null);
+		this.attrs.put("codigoFiltro", query);
     this.doUpdateArticulosFiltro();
 		return (List<UISelectEntity>)this.attrs.get("articulosFiltro");
-	}	// doCompleteArticulo
+	}	
   
 }
