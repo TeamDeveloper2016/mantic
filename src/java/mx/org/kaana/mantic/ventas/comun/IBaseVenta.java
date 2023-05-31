@@ -1129,11 +1129,10 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 	}	
 	
 	public void doUpdateDialogClientes(String codigo) {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
 		boolean buscaPorCodigo    = false;
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
   		params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
@@ -1144,10 +1143,11 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 			} // if	
 			else
 				codigo= "WXYZ";
+      codigo= codigo.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");      
 			if(buscaPorCodigo)
-    		params.put(Constantes.SQL_CONDICION, "upper(tc_mantic_clientes.rfc) like '".concat(codigo.toUpperCase()).concat("%'"));			
-			else
-    		params.put(Constantes.SQL_CONDICION, "upper(tc_mantic_clientes.razon_social) like '".concat(codigo.toUpperCase()).concat("%'"));
+    		params.put(Constantes.SQL_CONDICION, "upper(tc_mantic_clientes.rfc) regexp '.*".concat(codigo.toUpperCase()).concat(".*'"));			
+      else 
+    		params.put(Constantes.SQL_CONDICION, "upper(concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, ''))) regexp '.*".concat(codigo.toUpperCase()).concat(".*'"));
       this.attrs.put("lazyModelClientes", new FormatCustomLazy("VistaClientesDto", "findRazonSocial", params, columns));
 		} // try
 	  catch (Exception e) {
@@ -1178,7 +1178,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
   		params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			String search= (String) this.attrs.get("codigoCliente"); 
 			search= !Cadena.isVacio(search) ? search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*") : "WXYZ";
-  		params.put(Constantes.SQL_CONDICION, "upper(tc_mantic_clientes.razon_social) regexp '.*".concat(search).concat(".*'").concat(" or upper(tc_mantic_clientes.rfc) regexp '.*".concat(search).concat(".*'")));			
+  		params.put(Constantes.SQL_CONDICION, "upper(concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, ''))) regexp '.*".concat(search).concat(".*'").concat(" or upper(tc_mantic_clientes.rfc) regexp '.*".concat(search).concat(".*'")));			
       this.attrs.put("clientes", (List<UISelectEntity>) UIEntity.build("VistaClientesDto", "findRazonSocial", params, columns, 20L));
 		} // try
 	  catch (Exception e) {
