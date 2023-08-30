@@ -205,15 +205,13 @@
                   <f:facet name="header">
                     <h:outputText value="Ticket"/>
                   </f:facet>
-                  <i class="fa fa-fw fa-users janal-color-blue janal-icons-header" title="Vendedor: #{row['persona']}"></i>
                   <h:outputText value="#{row['ticket']}"/>
                 </p:column>					
-                <p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.persona}" rendered="false">
+                <p:column class="janal-column-left MarAuto Responsive janal-display-none" sortBy="#{row.persona}">
                   <f:facet name="header">
-                    <h:outputText value="Vendedor"/>
+                    <h:outputText value="Cliente"/>
                   </f:facet>
-                  <i class="fa fa-fw fa-cart-plus janal-color-orange"></i>
-                  <h:outputText value="#{row['persona']}"/>
+                  <h:outputText value="#{row['razonSocial']}"/>
                 </p:column>											
                 <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.registro}">
                   <f:facet name="header">
@@ -233,11 +231,12 @@
                   </f:facet>
                   <h:outputText value="#{row['dias']}"/>
                 </p:column>
-                <p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.estatus}">
+                <p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.estatus}" exportable="false">
                   <f:facet name="header">
                     <h:outputText value="Estatus"/>
                   </f:facet>
                   <i class="fa fa-fw fa-comments janal-color-blue janal-icons-message" title="Observaciones: #{row['observaciones']}" style="display: #{row.idManual eq '1'? '': 'none'}"></i>
+                  <i class="fa fa-fw fa-users janal-color-blue janal-icons-header" title="Vendedor: #{row['persona']}"></i>
                   <h:outputText value="#{row['estatus']}"/>
                 </p:column>
                 <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.importe}">
@@ -258,7 +257,7 @@
                   </f:facet>
                   <h:outputText value="#{row['saldo']}"/>
                 </p:column>						
-                <p:column class="janal-column-center MarAuto Responsive janal-wid-3">
+                <p:column class="janal-column-center MarAuto Responsive janal-wid-3" exportable="false">
                   <h:graphicImage library="janal" name="icon/semaforos/#{row.idClienteEstatus eq '1'? 'circulo-gris.png': (row.idClienteEstatus eq '3' or row.idClienteEstatus eq '4'? 'circulo-verde.png': row.idClienteEstatus eq '5'? 'circulo-rojo.png': 'circulo-amarillo.png')}" title="#{row.idClienteEstatus eq '1'? 'Cuenta sin abonos' : (row.idClienteEstatus eq '3' or row.idClienteEstatus eq '4'? 'Cuenta con abonos': row.idClienteEstatus eq '5'? 'Cuenta cancelada': 'Cuenta con abonos pendientes')}"/>
                 </p:column>
                 <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-4" exportable="false">
@@ -286,7 +285,7 @@
                 <p:menuitem icon="fa fa-file-pdf-o" value="Cuenta por cobrar" onstart="return janal.bloquear()" process="@this detalle" actionListener="#{manticCatalogosClientesCuentasSaldos.doReporte('DEUDAS_CLIENTES_DETALLE', cliente)}" oncomplete="janal.desbloquear();" update="descargar"/>
                 <p:menuitem icon="fa fa-file-pdf-o" value="Estado de cuenta" onstart="return janal.bloquear()" process="@this detalle" oncomplete="PF('dlgPlazo').show();" update="dialogoPlazo"/>										
                 <p:separator/>					
-                <p:menuitem icon="fa fa-mail-forward" value="Enviar correo" onstart="return janal.bloquear()" process="@this detalle" actionListener="#{manticCatalogosClientesCuentasSaldos.doLoadEstatus('seleccionadoDetalle', 'DEUDAS_CLIENTES_PENDIENTES', 'CREDITO')}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos"/>
+                <p:menuitem icon="fa fa-mail-forward" value="Enviar correo" onstart="return janal.bloquear()" process="@this detalle" actionListener="#{manticCatalogosClientesCuentasSaldos.doLoadEstatus('DEUDAS_CLIENTES_PENDIENTES', 'CREDITO', cliente)}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos"/>
                 <p:separator/>
                 <p:menuitem icon="fa fa-calendar" value="Ajustar vencimiento" onstart="return janal.bloquear()" process="@this detalle" actionListener="#{manticCatalogosClientesCuentasSaldos.doUpdateFechaPago()}" update="dialogoAutorizacion"/>
               </p:contextMenu>

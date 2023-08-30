@@ -140,7 +140,7 @@ public class Express extends IBaseAttribute implements Serializable {
 			this.registroArticulo.getArticulosCodigos().clear();
 			this.registroArticulo.getArticulosCodigos().add(codigo);
       // ESTO ES PARA AGREGAR EL CODIGO AUXILIAR 
-      if(this.attrs.get("auxiliarExpress")!= null) {
+      if(!Cadena.isVacio((String)this.attrs.get("auxiliarExpress"))) {
         auxiliar= new ArticuloCodigo(-1L, ESql.INSERT, true);
         auxiliar.setCodigo((String)this.attrs.get("auxiliarExpress"));
   			auxiliar.setIdPrincipal(2L);
@@ -171,10 +171,9 @@ public class Express extends IBaseAttribute implements Serializable {
 
   private void loadEmpaques() {
     List<UISelectItem> empaques= null;
-    Map<String, Object> params = null;
-    EAccion eaccion = null;
+    Map<String, Object> params = new HashMap<>();
+    EAccion eaccion            = null;
     try {
-      params = new HashMap<>();
       params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       empaques = UISelect.build("TcManticEmpaquesDto", "row", params, "nombre", EFormatoDinamicos.LIBRE, Constantes.SQL_TODOS_REGISTROS);
       this.attrs.put("empaques", empaques);
@@ -192,10 +191,9 @@ public class Express extends IBaseAttribute implements Serializable {
 
   public void doLoadUnidadesMedidas() {
     List<UISelectItem> unidadesMedidas= null;
-    Map<String, Object> params        = null;
+    Map<String, Object> params        = new HashMap<>();
     EAccion eaccion                   = null;
     try {
-      params = new HashMap<>();
       params.put("idEmpaque", this.registroArticulo.getIdEmpaque());
       eaccion = (EAccion) this.attrs.get("accion");
       unidadesMedidas = UISelect.build("VistaEmpaqueUnidadMedidaDto", "empaqueUnidadMedida", params, "nombre", EFormatoDinamicos.LIBRE, Constantes.SQL_TODOS_REGISTROS);
@@ -213,10 +211,9 @@ public class Express extends IBaseAttribute implements Serializable {
 
   private void loadCategorias() {
     List<UISelectItem> categorias= null;
-    Map<String, Object> params   = null;
+    Map<String, Object> params   = new HashMap<>();
     EAccion eaccion              = null;
     try {
-      params = new HashMap<>();
       params.put(Constantes.SQL_CONDICION, "id_empresa=" + JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       categorias = UISelect.build("TcManticCategoriasDto", "row", params, "traza", EFormatoDinamicos.LIBRE, Constantes.SQL_TODOS_REGISTROS);
       this.attrs.put("categorias", categorias);
@@ -355,11 +352,9 @@ public class Express extends IBaseAttribute implements Serializable {
 	}	
 
 	public List<UISelectEntity> doCompleteCodigo(String query) {
-		List<Columna> columns     = null;
-    Map<String, Object> params= null;
+		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
     try {
-			params= new HashMap<>();
-			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			String search= !Cadena.isVacio(query)? query.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim(): "WXYZ";
@@ -396,11 +391,9 @@ public class Express extends IBaseAttribute implements Serializable {
 	} // doAsignaCodigo		
 	
 	public List<UISelectEntity> doCompleteNombre(String query) {
-		List<Columna> columns     = null;
-    Map<String, Object> params= null;
+		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
     try {
-			params= new HashMap<>();
-			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			boolean	buscaPorCodigo= query.startsWith(".");
@@ -453,10 +446,9 @@ public class Express extends IBaseAttribute implements Serializable {
 	} // doAsignaNombre
 
   public void doLookForCodigo() {
-	  Map<String, Object> params=null;
+	  Map<String, Object> params= new HashMap<>();
 		String codigo= JsfBase.getParametro("codigoDialog_input");
 		try {
-			params=new HashMap<>();
 			if(!Cadena.isVacio(codigo)) {
 			  params.put("codigo", codigo.toUpperCase());
 				params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);

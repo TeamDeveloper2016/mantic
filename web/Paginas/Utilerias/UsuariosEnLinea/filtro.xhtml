@@ -43,7 +43,7 @@
       </p:column>
     </p:treeTable>
     <p:spacer height="10px"/>
-    <p:dataTable lazy="true" id="tabla" reflow="true" value="#{kajoolMantenimientoUtileriasUsuarioFiltro.lazyModel}" paginator="#{kajoolMantenimientoUtileriasUsuarioFiltro.lazyModel.rowCount gt kajoolMantenimientoUtileriasUsuarioFiltro.lazyModel.pageSize}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" styleClass="tabla-filtro" var="row">
+    <p:dataTable lazy="true" id="tabla" reflow="true" value="#{kajoolMantenimientoUtileriasUsuarioFiltro.lazyModel}" paginator="#{kajoolMantenimientoUtileriasUsuarioFiltro.lazyModel.rowCount gt kajoolMantenimientoUtileriasUsuarioFiltro.lazyModel.pageSize}" rowsPerPageTemplate="#{Constantes.REGISTROS_MAX_CADA_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" styleClass="tabla-filtro" var="row">
        <p:column headerText="Cuenta" styleClass="janal-wid-col-130 TexAlLeft">
           #{row.cuenta}
        </p:column>

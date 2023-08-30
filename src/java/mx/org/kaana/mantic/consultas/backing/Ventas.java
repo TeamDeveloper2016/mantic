@@ -123,10 +123,10 @@ public class Ventas extends IBaseTicket implements Serializable {
 		if(!Cadena.isVacio(this.attrs.get("cliente"))) {
       String search= (String) this.attrs.get("cliente"); 
 			search= !Cadena.isVacio(search)? search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*"): "WXYZ";      
-			sb.append("upper(concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, ''))) regexp '.*".concat(search).concat(".*'").concat(" or upper(tc_mantic_clientes.rfc) regexp '.*".concat(search).concat(".*'")));
+			sb.append("(upper(concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, ''))) regexp '.*".concat(search).concat(".*'").concat(" or upper(tc_mantic_clientes.rfc) regexp '.*".concat(search).concat(".*') and ")));
     } // if  
 		if(!Cadena.isVacio(this.attrs.get("proveedor")))
-			sb.append("upper(tc_mantic_proveedores.razon_social) like upper('%").append(this.attrs.get("proveedor")).append("%')").append(" or upper(tc_mantic_proveedores.rfc) like upper('%").append(this.attrs.get("proveedor")).append("%') or upper(tc_mantic_proveedores.clave) like upper('%").append(this.attrs.get("proveedor")).append("%') and");									
+			sb.append("(upper(tc_mantic_proveedores.razon_social) like upper('%").append(this.attrs.get("proveedor")).append("%')").append(" or upper(tc_mantic_proveedores.rfc) like upper('%").append(this.attrs.get("proveedor")).append("%') or upper(tc_mantic_proveedores.clave) like upper('%").append(this.attrs.get("proveedor")).append("%')) and");
 		if(!Cadena.isVacio(this.attrs.get("consecutivo")))
   		sb.append("(tc_mantic_ventas.consecutivo like '%").append(this.attrs.get("consecutivo")).append("%') and ");
 		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))

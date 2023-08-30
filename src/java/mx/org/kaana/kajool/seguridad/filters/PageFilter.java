@@ -2,7 +2,6 @@ package mx.org.kaana.kajool.seguridad.filters;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.Writer;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -52,7 +51,7 @@ public class PageFilter extends HttpServlet implements Filter {
 
   public void setPaginaIndice(String paginaIndice) {
     if (paginaIndice == null) {
-      this.paginaIndice = "/acceso";
+      this.paginaIndice = "/acceso.jsf";
     } else {
       this.paginaIndice = paginaIndice;
     }
@@ -63,12 +62,11 @@ public class PageFilter extends HttpServlet implements Filter {
   }
 
   public void setPaginaExclusion(String paginaExclusion) {
-    if (paginaExclusion == null) {
-      //this.paginaExclusion = "/Librerias/Funciones/errorPage.jsp?error=Favor de autenticarse";
-      this.paginaExclusion = "/Exclusiones/error";
-    } else {
+    //this.paginaExclusion = "/Librerias/Funciones/errorPage.jsp?error=Favor de autenticarse";
+    if (paginaExclusion == null) 
+      this.paginaExclusion = "/Exclusiones/error.jsf";
+    else 
       this.paginaExclusion = paginaExclusion;
-    }
   }
 
   public String getPaginaExclusion() {
@@ -78,7 +76,7 @@ public class PageFilter extends HttpServlet implements Filter {
   public void setPaginaSesion(String paginaSesion) {
     if (paginaSesion == null) {
       //this.paginaSesion = "/Librerias/Funciones/errorPage.jsf?error=Error&loginError=kajool.admin";
-      this.paginaSesion = "/Exclusiones/error";
+      this.paginaSesion = "/Exclusiones/error.jsf";
     } else {
       this.paginaSesion = paginaSesion;
     }
@@ -90,7 +88,7 @@ public class PageFilter extends HttpServlet implements Filter {
 
   public void setPaginaBloqueo(String paginaBloqueo) {
     if (paginaBloqueo == null) {
-      this.paginaBloqueo = "/Exclusiones/bloqueo";
+      this.paginaBloqueo = "/Exclusiones/bloqueo.jsf";
     } else {
       this.paginaBloqueo = paginaBloqueo;
     }

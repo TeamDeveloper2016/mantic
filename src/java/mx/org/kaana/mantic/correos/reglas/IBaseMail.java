@@ -149,10 +149,9 @@ public class IBaseMail implements Serializable {
     MimeBodyPart body    = null;
     DataSource ds        = null;
     Multipart multipart  = null;    
-		List<BodyPart> files = null;
+		List<BodyPart> files = new ArrayList<>();
     try {
       properties= new Properties();
-			files     = new ArrayList<>();
       properties.put("mail.smtp.host", Configuracion.getInstance().getPropiedadServidor("mail.smtp.server"));
       properties.put("mail.transport.protocol", "smtp");
       properties.put("mail.smtp.auth", "true");
@@ -168,6 +167,7 @@ public class IBaseMail implements Serializable {
 			if(this.copies!= null)
         message.addRecipients(javax.mail.Message.RecipientType.BCC, this.toPrepare(this.copies));
       message.setSubject(this.subject);
+      LOG.info("Correo from:".concat(this.from).concat(" to ").concat(this.to).concat(" subject ").concat(this.subject));
       // ESTO ES PARA SOLICITA LA CONFIRMACIÓN DE LECTURA DEL CORREO
       // message.addHeader("Disposition-Notification-To", "info@deckerix.com");
 			if(this.files!= null && !this.files.isEmpty()) {
