@@ -136,11 +136,9 @@ public class Saldos extends IBaseImportar implements Serializable {
 
   @Override
   public void doLoad() {
-    List<Columna> columns     = null;
-	  Map<String, Object> params= null;	
+    List<Columna> columns     = new ArrayList<>();
+	  Map<String, Object> params= this.toPrepare();	
     try {
-  	  params = this.toPrepare();	
-      columns= new ArrayList<>();
       columns.add(new Columna("pagar", EFormatoDinamicos.MILES_CON_DECIMALES));      
       columns.add(new Columna("saldo", EFormatoDinamicos.MILES_CON_DECIMALES));    
       columns.add(new Columna("abonado", EFormatoDinamicos.MILES_CON_DECIMALES));    
@@ -347,6 +345,7 @@ public class Saldos extends IBaseImportar implements Serializable {
 		String regresar= null;
 		try {
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Empresas/Cuentas/saldos");		
+			JsfBase.setFlashAttribute("idNotaEntrada",((Entity)this.attrs.get("seleccionadoDetalle")).getKey());
 			JsfBase.setFlashAttribute("idEmpresaDeuda",((Entity)this.attrs.get("seleccionadoDetalle")).getKey());
 			JsfBase.setFlashAttribute("idEmpresa", ((Entity)this.attrs.get("seleccionadoDetalle")).toString("idEmpresa"));
 			regresar= "prorroga".concat(Constantes.REDIRECIONAR);

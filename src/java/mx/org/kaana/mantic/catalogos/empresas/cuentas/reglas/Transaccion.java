@@ -74,6 +74,9 @@ public class Transaccion extends IBaseTnx {
 	private Long idEmpresaPago;
 	private TcManticEmpresasPagosControlesDto control;
   private Long idRevisado;
+  private Date fechaRecepcion;
+  private Long idRecibio;
+  private Long proveedorPago;
 
 	public Transaccion(Long idArchivo) {
 		this.idArchivo= idArchivo;
@@ -121,10 +124,13 @@ public class Transaccion extends IBaseTnx {
 		this.fecha = fecha;
 	} // Transaccion
 
-	public Transaccion(Entity detalle, Date fecha, Long idRevisado) {
-		this.detalle= detalle;
-		this.fecha  = fecha;
+	public Transaccion(Entity detalle, Date fecha, Date fechaRecepcion, Long idRevisado, Long idRecibio, Long proveedorPago) {
+		this.detalle   = detalle;
+		this.fecha     = fecha;
+		this.fechaRecepcion= fechaRecepcion;
     this.idRevisado= idRevisado;
+		this.idRecibio = idRecibio;
+    this.proveedorPago= proveedorPago;
 	} // Transaccion	
 
 	public Transaccion(Long idEmpresaPago, String referencia) {
@@ -457,6 +463,9 @@ public class Transaccion extends IBaseTnx {
 				importe= Double.valueOf(String.valueOf(this.detalle.get("importe")));
 				item.setLimite(new java.sql.Date(this.fecha.getTime()));
         item.setIdRevisado(this.idRevisado);
+        item.setIdRecibio(this.idRecibio);
+        item.setFechaRecepcion(new java.sql.Date(this.fechaRecepcion.getTime()));
+        item.setIdProveedorPago(this.proveedorPago);
 				item.setImporte(importe);
 				item.setPagar(importe);
 				item.setSaldo(this.calculateSaldo(sesion, importe, this.detalle.getKey()));
@@ -984,6 +993,6 @@ public class Transaccion extends IBaseTnx {
 		catch (Exception e) {			
 			throw e;
 		} // catch		
-	} // actualizarSaldoCatalogoProveedor
+	} 
   
 }

@@ -286,13 +286,13 @@ public class Importar extends IBaseImportar implements Serializable {
 	} // doDetalles	
 
 	private void toLoadProveedores() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
 			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
  			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);      
   		this.attrs.put("proveedores", UIEntity.seleccione("VistaOrdenesComprasDto", "moneda", params, columns, "clave"));
     } // try
     catch (Exception e) {

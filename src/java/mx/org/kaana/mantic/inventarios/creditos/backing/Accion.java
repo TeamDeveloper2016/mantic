@@ -164,11 +164,10 @@ public class Accion extends IBaseImportar implements Serializable {
   } 
 
 	private void toLoadCatalog() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
 		Value importe             = null; 
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("total", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
@@ -228,6 +227,7 @@ public class Accion extends IBaseImportar implements Serializable {
 					params.put("idProveedor", this.attrs.get("idProveedor"));
 					this.orden.setImporte(0D);
 					columns.remove(columns.size()- 1);
+          params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);           
 					this.attrs.put("proveedores", UIEntity.build("VistaOrdenesComprasDto", "moneda", params, columns));
 					List<UISelectEntity> proveedores= (List<UISelectEntity>)this.attrs.get("proveedores");
 					if(proveedores!= null && !proveedores.isEmpty()) {

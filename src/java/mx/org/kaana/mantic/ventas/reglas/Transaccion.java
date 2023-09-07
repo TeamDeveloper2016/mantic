@@ -250,6 +250,10 @@ public class Transaccion extends TransaccionFactura {
           params.put("idVenta", this.orden.getIdVenta());
           regresar= DaoFactory.getInstance().updateAll(sesion, TcManticVentasDto.class, params, "autoriza")>= 1L;
 					break;
+				case COMPLEMENTAR:
+          this.orden.setCandado(2L);
+          regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
+          break;
 			} // switch
 			if(!regresar)
         throw new Exception("");

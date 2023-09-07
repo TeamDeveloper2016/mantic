@@ -57,17 +57,23 @@ public class TcManticEmpresasDeudasDto implements IBaseDto, Serializable {
   private Long idRevisado;
   @Column (name="id_completo")
   private Long idCompleto;
+  @Column (name="fecha_recepcion")
+  private Date fechaRecepcion;
+  @Column (name="id_recibio")
+  private Long idRecibio;
+  @Column (name="id_proveedor_pago")
+  private Long idProveedorPago;
 
   public TcManticEmpresasDeudasDto() {
     this(new Long(-1L));
   }
 
   public TcManticEmpresasDeudasDto(Long key) {
-    this(null, null, new Long(-1L), null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, 0D, 2L, 1L);
+    this(null, null, new Long(-1L), null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, 0D, 2L, 1L, new Date(Calendar.getInstance().getTimeInMillis()), null, null);
     setKey(key);
   }
 
-  public TcManticEmpresasDeudasDto(Long idEmpresaEstatus, Long idUsuario, Long idEmpresaDeuda, String observaciones, Long idEmpresa, Double saldo, Long idNotaEntrada, Date limite, Double importe, Double pagar, Long idRevisado, Long idCompleto) {
+  public TcManticEmpresasDeudasDto(Long idEmpresaEstatus, Long idUsuario, Long idEmpresaDeuda, String observaciones, Long idEmpresa, Double saldo, Long idNotaEntrada, Date limite, Double importe, Double pagar, Long idRevisado, Long idCompleto, Date fechaRecepcion, Long idRecibio, Long idProveedorPago) {
     setIdEmpresaEstatus(idEmpresaEstatus);
     setIdUsuario(idUsuario);
     setIdEmpresaDeuda(idEmpresaDeuda);
@@ -81,6 +87,9 @@ public class TcManticEmpresasDeudasDto implements IBaseDto, Serializable {
 		this.pagar= pagar;
     this.idRevisado= idRevisado;
     this.idCompleto= idCompleto;
+    this.fechaRecepcion= fechaRecepcion;
+    this.idRecibio= idRecibio;
+    this.idProveedorPago= idProveedorPago;
   }
 	
   public void setIdEmpresaEstatus(Long idEmpresaEstatus) {
@@ -187,6 +196,30 @@ public class TcManticEmpresasDeudasDto implements IBaseDto, Serializable {
     this.idCompleto = idCompleto;
   }
 
+  public Date getFechaRecepcion() {
+    return fechaRecepcion;
+  }
+
+  public void setFechaRecepcion(Date fechaRecepcion) {
+    this.fechaRecepcion = fechaRecepcion;
+  }
+
+  public Long getIdRecibio() {
+    return idRecibio;
+  }
+
+  public void setIdRecibio(Long idRecibio) {
+    this.idRecibio = idRecibio;
+  }
+
+  public Long getIdProveedorPago() {
+    return idProveedorPago;
+  }
+
+  public void setIdProveedorPago(Long idProveedorPago) {
+    this.idProveedorPago = idProveedorPago;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -226,6 +259,12 @@ public class TcManticEmpresasDeudasDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdCompleto());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getFechaRecepcion());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdRecibio());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdProveedorPago());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
   	return regresar.toString();
@@ -246,6 +285,9 @@ public class TcManticEmpresasDeudasDto implements IBaseDto, Serializable {
 		regresar.put("pagar", getPagar());
 		regresar.put("idRevisado", getIdRevisado());
 		regresar.put("idCompleto", getIdCompleto());
+		regresar.put("fechaRecepcion", getFechaRecepcion());
+		regresar.put("idRecibio", getIdRecibio());
+		regresar.put("idProveedorPago", getIdProveedorPago());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
@@ -253,7 +295,7 @@ public class TcManticEmpresasDeudasDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-      getIdEmpresaEstatus(), getIdUsuario(), getIdEmpresaDeuda(), getObservaciones(), getIdEmpresa(), getSaldo(), getIdNotaEntrada(), getLimite(), getImporte(), getPagar(), getIdRevisado(), getIdCompleto(), getRegistro()
+      getIdEmpresaEstatus(), getIdUsuario(), getIdEmpresaDeuda(), getObservaciones(), getIdEmpresa(), getSaldo(), getIdNotaEntrada(), getLimite(), getImporte(), getPagar(), getIdRevisado(), getIdCompleto(), getFechaRecepcion(), getIdRecibio(), getIdProveedorPago(), getRegistro()
     };
     return regresar;
   }

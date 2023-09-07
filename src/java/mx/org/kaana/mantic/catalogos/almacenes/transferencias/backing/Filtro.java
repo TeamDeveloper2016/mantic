@@ -119,11 +119,10 @@ public class Filtro extends Comun implements Serializable {
 
   @Override
   public void doLoad() {
-    List<Columna> campos      = null;
+    List<Columna> campos      = new ArrayList<>();
 		Map<String, Object> params= this.toPrepare();
     try {
       params.put("sortOrder", "order by tc_mantic_transferencias.registro desc");
-      campos = new ArrayList<>();
       campos.add(new Columna("nombreOrigen", EFormatoDinamicos.MAYUSCULAS));
       campos.add(new Columna("nombreDestino", EFormatoDinamicos.MAYUSCULAS));
       campos.add(new Columna("observaciones", EFormatoDinamicos.MAYUSCULAS));
@@ -177,10 +176,9 @@ public class Filtro extends Comun implements Serializable {
 	}
 
 	private void toLoadCatalog() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
         params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
 			else
@@ -196,7 +194,7 @@ public class Filtro extends Comun implements Serializable {
 			columns.remove(0);
       this.attrs.put("catalogo", (List<UISelectEntity>) UIEntity.build("TcManticTransferenciasEstatusDto", "row", params, columns));
 			this.attrs.put("idTransferenciasEstatus", new UISelectEntity("-1"));
-			this.loadPersonas();
+			this.toLoadPersonas();
     } // try
     catch (Exception e) {
       throw e;
@@ -207,22 +205,17 @@ public class Filtro extends Comun implements Serializable {
     }// finally
 	}
 
-  private void loadPersonas() {
-    List<Columna> columns     = null;
-    Map<String, Object> params= null;
+  private void toLoadPersonas() {
+    List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
     try {
-      columns= new ArrayList<>();
-      params = new HashMap<>();
       params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
       columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("materno", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("paterno", EFormatoDinamicos.MAYUSCULAS));
       List<UISelectEntity> personas= UIEntity.build("VistaAlmacenesTransferenciasDto", "solicito", params, columns);
       this.attrs.put("personas", personas);
-			if(personas!= null && !personas.isEmpty())
-			  this.attrs.put("idTransporto", personas.get(0));
-		  else	
-			  this.attrs.put("idTransporto", new UISelectEntity(-1L));
+      this.attrs.put("idTransporto", UIBackingUtilities.toFirstKeySelectEntity(personas));
     } // try
     catch (Exception e) {
       throw e;

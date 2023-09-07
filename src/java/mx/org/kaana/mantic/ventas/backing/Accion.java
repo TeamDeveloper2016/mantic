@@ -19,6 +19,7 @@ import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Cifrar;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.JsfUtilities;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -422,6 +423,9 @@ public class Accion extends IBaseVenta implements Serializable {
         ((TicketVenta)this.getAdminOrden().getOrden()).setDescuentos(this.getAdminOrden().getTotales().getDescuentos());
         ((TicketVenta)this.getAdminOrden().getOrden()).setImpuestos(this.getAdminOrden().getTotales().getIva());
         ((TicketVenta)this.getAdminOrden().getOrden()).setSubTotal(this.getAdminOrden().getTotales().getSubTotal());
+//        if(!Objects.equals(Numero.toRedondear(this.getAdminOrden().getTotales().getSubTotal()+ this.getAdminOrden().getTotales().getIva()), Numero.toRedondear(this.getAdminOrden().getTotales().getTotal())))
+//          ((TicketVenta)this.getAdminOrden().getOrden()).setTotal(Numero.toRedondear(this.getAdminOrden().getTotales().getSubTotal()+ this.getAdminOrden().getTotales().getIva()));
+//        else
         ((TicketVenta)this.getAdminOrden().getOrden()).setTotal(this.getAdminOrden().getTotales().getTotal());
         ((TicketVenta)this.getAdminOrden().getOrden()).setObservaciones((String)this.attrs.get("observaciones"));
       } // if  

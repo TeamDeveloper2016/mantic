@@ -521,7 +521,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		if(Cadena.isVacio(this.getPropio()))
 		  LOG.warn("El codigo propio esta vacio ["+ this.getNombre()+ "] corresponde a la nota de entrada");
 		return new TcManticNotasDetallesDto(
-			this.getCodigo(), 
+			this.getPropio(), 
 			this.getUnidadMedida(), 
 			this.getCosto(), 
 			this.getDescuento(), 

@@ -2,6 +2,7 @@ package mx.org.kaana.mantic.ventas.beans;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.libs.formato.Cadena;
@@ -101,8 +102,8 @@ public class ArticuloVenta extends Articulo implements Cloneable {
 		this.setDescuentoDescripcion(!Cadena.isVacio(this.getDescuento()) && !this.getDescuento().equals("0") ? this.getDescuento().concat("% [ $").concat(String.valueOf(this.getImportes().getDescuento())).concat(" ] ") : "0");
 		this.setExcedentes(this.getImportes().getExtra());
 		this.setImporte(Numero.toRedondearSat(this.getImportes().getTotal()));	
-		if(asignar)
-			this.setTotal(Numero.toRedondearSat(this.getImportes().getTotal()));
+		if(!Objects.equals(Numero.toRedondearSat(this.getSubTotal()+ this.getImpuestos()), this.getImportes().getTotal()))
+			this.setTotal(Numero.toRedondearSat(this.getSubTotal()+ this.getImpuestos()));
 		this.setUtilidad(utilidad);
 		this.toDiferencia();
 	}

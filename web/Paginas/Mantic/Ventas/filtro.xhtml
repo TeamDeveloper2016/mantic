@@ -195,8 +195,14 @@
               </f:facet>
               <h:outputText value="#{row['registro']}"/>
             </p:column>		
+            <p:column class="MarAuto Responsive janal-column-center janal-wid-col-38">
+              <f:facet name="header">
+                <h:outputText value="..."/>
+              </f:facet>
+							<p:commandButton icon="fa #{row['candado'].toLong eq 1? 'fa-lock': 'fa-unlock'}" title="Desbloquear cuenta" actionListener="#{manticVentasFiltro.doUnlock(row)}" process="@this" update="tabla" onstart="janal.bloquear();" oncomplete="janal.desbloquear();" disabled="#{row['candado'].toLong eq 2}"/>
+            </p:column>		
             <f:facet name="footer">
-              <p:outputLabel value="Total [#{manticVentasFiltro.lazyModel==null?0:manticVentasFiltro.lazyModel.rowCount}] registros"/>
+              <p:outputLabel value="Total [#{manticVentasFiltro.lazyModel== null ? 0: manticVentasFiltro.lazyModel.rowCount}] registros"/>
             </f:facet>
           </p:dataTable>
           <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">

@@ -130,7 +130,7 @@
               <p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
                 <p:outputLabel for="clientes" value="Buscar cliente:"/>							
                 <p:autoComplete id="clientes" placeholder="RFC o nombre" widgetVar="listadoClientes" var="customCliente" itemLabel="[#{empty customCliente.especial or customCliente.especial eq '0'? '': '*'}] #{customCliente.razonSocial}" inputStyleClass="janal-wid-100-txt key-down-clientes filas" itemValue="#{customCliente}" value="#{manticVentasAccion.attrs.cliente}" completeMethod="#{manticVentasAccion.doCompleteCliente}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">
-                  <p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this idEmpresa" listener="#{manticVentasAccion.doAsignaCliente}" update="cliente idRegimenFiscal contenido correosCliente spacerCorreos panelPrincipalCorreos panelCliente" oncomplete="janal.desbloquear();"/>
+                  <p:ajax event="itemSelect" onstart="return janal.bloquear()" process="@this idEmpresa" listener="#{manticVentasAccion.doAsignaCliente}" update="cliente idRegimenFiscal contenido correosCliente spacerCorreos panelPrincipalCorreos panelCliente @(.recalculo)" oncomplete="janal.desbloquear()"/>
                   <f:facet name="itemtip">
                     <h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">												
                       <h:outputText value="Clave" />
@@ -162,7 +162,7 @@
                   <p:outputLabel value="[F4] Mostrar cotizaciones" styleClass="janal-color-blue" style="float: right;"/>
                 </p:panelGrid>
                 <p:selectOneMenu id="cliente" value="#{manticVentasAccion.attrs.clienteSeleccion}" var="item" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity">								
-                  <p:ajax event="change" process="@this idEmpresa" onstart="return janal.bloquear();" listener="#{manticVentasAccion.doActualizaPrecioCliente}" oncomplete="janal.desbloquear();" update="tabla clientes correosCliente spacerCorreos panelPrincipalCorreos panelCliente"/>
+                  <p:ajax event="change" process="@this idEmpresa" onstart="return janal.bloquear();" listener="#{manticVentasAccion.doActualizaPrecioCliente}" oncomplete="janal.desbloquear();" update="tabla clientes correosCliente spacerCorreos panelPrincipalCorreos panelCliente @(.recalculo)"/>
                   <f:selectItems value="#{manticVentasAccion.attrs.clientesSeleccion}" var="element" itemValue="#{element}" itemLabel="[#{element.especial eq '0'? '': '*'}] #{element.clave} - #{element.razonSocial}"/>
                   <p:column headerText="Clave">
                     <h:outputText value="#{item.clave}"/>

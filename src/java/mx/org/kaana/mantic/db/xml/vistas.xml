@@ -3702,7 +3702,8 @@ from (
 					if(tc_mantic_facturas.folio is null, 0, 1) folio,
 					if(tc_mantic_facturas.id_facturama is null, 0, 1) facturado,
 					if(tc_mantic_facturas.id_factura_estatus is null, 1, tc_mantic_facturas.id_factura_estatus) id_factura_estatus,
-					tc_mantic_ventas.id_tipo_documento
+					tc_mantic_ventas.id_tipo_documento,
+          tc_mantic_ventas.candado
 				from 
 					tc_mantic_ventas						
 				left join 
@@ -8239,6 +8240,7 @@ order by
           tc_mantic_tipos_dias on tc_mantic_proveedores.id_tipo_dia= tc_mantic_tipos_dias.id_tipo_dia
         where 
           tc_mantic_proveedores.id_empresa in ({sucursales})
+          and {condicion}
 				order by
 				  tc_mantic_proveedores.clave
 			</select>
@@ -8816,7 +8818,8 @@ order by
 					sum(tc_mantic_empresas_deudas.importe) as importe,
 					sum(tc_mantic_empresas_deudas.pagar) as pagar,
 					abs(sum(tc_mantic_empresas_deudas.saldo)) as saldo,
-					sum(tc_mantic_empresas_deudas.pagar+ tc_mantic_empresas_deudas.saldo) as abonado
+					sum(tc_mantic_empresas_deudas.pagar+ tc_mantic_empresas_deudas.saldo) as abonado,
+          tc_mantic_empresas_deudas.id_nota_entrada
 				from
 					tc_mantic_empresas_deudas
 				inner join
@@ -9128,7 +9131,10 @@ order by
 					tc_mantic_proveedores.id_proveedor,
 					tc_mantic_proveedores.razon_social proveedor,
 					tc_mantic_almacenes.nombre almacen,
-					tc_mantic_empresas_estatus.nombre estatus
+					tc_mantic_empresas_estatus.nombre estatus,
+          tc_mantic_empresas_deudas.fecha_recepcion,
+          tc_mantic_empresas_deudas.id_recibio,
+          tc_mantic_empresas_deudas.id_proveedor_pago
 				from
 					tc_mantic_empresas_deudas
 				inner join

@@ -200,9 +200,9 @@ public class Filtro extends IBaseTicket implements Serializable {
 			seleccionado= (Entity) this.attrs.get("seleccionado");			
 			transaccion= new Transaccion(new TcManticVentasDto(seleccionado.getKey()), this.attrs.get("justificacionEliminar").toString());
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
-				JsfBase.addMessage("Eliminar", "El ticket de venta se ha eliminado correctamente.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Eliminar", "El ticket de venta se ha eliminado correctamente", ETipoMensaje.INFORMACION);
 			else
-				JsfBase.addMessage("Eliminar", "Ocurrió un error al eliminar el ticket de venta.", ETipoMensaje.ERROR);								
+				JsfBase.addMessage("Eliminar", "Ocurrió un error al eliminar el ticket de venta", ETipoMensaje.ERROR);								
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -771,6 +771,24 @@ public class Filtro extends IBaseTicket implements Serializable {
     finally {
       Methods.clean(params);
     } // finally
+  }
+
+  public void doUnlock(Entity row) {
+    Transaccion transaccion = null;
+    try {
+      if(Objects.equals(row.toLong("candado"), 1L)) {
+        TcManticVentasDto orden= (TcManticVentasDto)DaoFactory.getInstance().findById(TcManticVentasDto.class, row.getKey());        
+        transaccion= new Transaccion(orden);
+        if(transaccion.ejecutar(EAccion.COMPLEMENTAR))
+          JsfBase.addMessage("Desbloquear", "El ticket de venta se ha desbloqueado correctamente", ETipoMensaje.INFORMACION);
+        else
+          JsfBase.addMessage("Desbloquear", "Ocurrió un error al desbloquear el ticket de venta", ETipoMensaje.ERROR);								
+      } // if
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
   }
   
 	@Override
