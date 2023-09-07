@@ -83,14 +83,14 @@ public class Prorroga extends IBaseImportar implements Serializable {
   @Override
   protected void init() {
     try {			
-//			if(JsfBase.getFlashAttribute("idEmpresaDeuda")== null)
-//				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
-//      this.attrs.put("idEmpresa", Jsf'Base.getFlashAttribute("idEmpresa"));     
-//      this.attrs.put("idEmpresaDeuda", JsfBase.getFlashAttribute("idEmpresaDeuda"));     
-//      this.nota= (TcManticNotasEntradasDto)DaoFactory.getInstance().findById(TcManticNotasEntradasDto.class, (Long)JsfBase.getFlashAttribute("idNotaEntrada"));
-      this.attrs.put("idEmpresa", 1L);     
-      this.attrs.put("idEmpresaDeuda", 9045L);     
-      this.nota= (TcManticNotasEntradasDto)DaoFactory.getInstance().findById(TcManticNotasEntradasDto.class, 8932L);
+			if(JsfBase.getFlashAttribute("idEmpresaDeuda")== null)
+				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
+      this.attrs.put("idEmpresa", JsfBase.getFlashAttribute("idEmpresa"));     
+      this.attrs.put("idEmpresaDeuda", JsfBase.getFlashAttribute("idEmpresaDeuda"));     
+      this.nota= (TcManticNotasEntradasDto)DaoFactory.getInstance().findById(TcManticNotasEntradasDto.class, (Long)JsfBase.getFlashAttribute("idNotaEntrada"));
+//      this.attrs.put("idEmpresa", 1L);     
+//      this.attrs.put("idEmpresaDeuda", 9045L);     
+//      this.nota= (TcManticNotasEntradasDto)DaoFactory.getInstance().findById(TcManticNotasEntradasDto.class, 8932L);
 			this.attrs.put("xml", ""); 
 			this.attrs.put("pdf", ""); 
 			this.doLoad();
@@ -183,8 +183,17 @@ public class Prorroga extends IBaseImportar implements Serializable {
 			params.put("idProveedor", this.deuda.toLong("idProveedor"));
 			condiciones= UIEntity.build("VistaOrdenesComprasDto", "condiciones", params);
 			this.attrs.put("condiciones", condiciones);
-      if(this.deuda.toLong("idProveedorPago")== null)
-  	    this.ikProveedorPago= UIBackingUtilities.toFirstKeySelectEntity(condiciones);
+      if(this.deuda.toLong("idProveedorPago")== null) {
+        if(this.nota!= null && this.nota.getIdProveedorPago()!= null) {
+          int index= condiciones.indexOf(new UISelectEntity(this.nota.getIdProveedorPago()));
+          if(index>= 0)
+            this.ikProveedorPago= condiciones.get(index);
+          else
+    	      this.ikProveedorPago= UIBackingUtilities.toFirstKeySelectEntity(condiciones);
+        } // if
+        else
+  	      this.ikProveedorPago= UIBackingUtilities.toFirstKeySelectEntity(condiciones);
+      } // if  
       else {
         int index= condiciones.indexOf(new UISelectEntity(this.deuda.toLong("idProveedorPago")));
         if(index>= 0)
@@ -204,7 +213,6 @@ public class Prorroga extends IBaseImportar implements Serializable {
     int index= condiciones.indexOf(this.ikProveedorPago);
     if(index>= 0) {
       this.ikProveedorPago= condiciones.get(index);
-      this.nota.setDiasPlazo(this.ikProveedorPago.toLong("plazo")+ 1);
       this.doCalculateFechaPago();		
 		} // if
 		else 
