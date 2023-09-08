@@ -4,6 +4,7 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:p="http://primefaces.org/ui"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 template="/WEB-INF/plantillas/reporte.xhtml">
   <ui:param name="titulo" value="Listado de ventas generadas"/>
   <ui:define name="librerias">
@@ -199,7 +200,7 @@
               <f:facet name="header">
                 <h:outputText value="..."/>
               </f:facet>
-							<p:commandButton icon="fa #{row['candado'].toLong eq 1? 'fa-lock': 'fa-unlock'}" title="Desbloquear cuenta" actionListener="#{manticVentasFiltro.doUnlock(row)}" process="@this" update="tabla" onstart="janal.bloquear();" oncomplete="janal.desbloquear();" disabled="#{row['candado'].toLong eq 2}"/>
+              <p:commandButton icon="fa #{row['candado'].toLong eq 1? 'fa-lock': 'fa-unlock'}" title="#{row['candado'].toLong eq 2? 'Bloquear cuenta': 'Desbloquear cuenta'}" actionListener="#{manticVentasFiltro.doUnlock(row)}" process="@this" update="tabla" onstart="janal.bloquear();" oncomplete="janal.desbloquear();" disabled="#{row['candado'].toLong eq 2}" rendered="#{fn:contains('|1|2|11|', row.idVentaEstatus)}"/>
             </p:column>		
             <f:facet name="footer">
               <p:outputLabel value="Total [#{manticVentasFiltro.lazyModel== null ? 0: manticVentasFiltro.lazyModel.rowCount}] registros"/>

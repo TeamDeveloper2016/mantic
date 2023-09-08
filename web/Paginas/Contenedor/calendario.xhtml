@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ company KAANA
+ project KAJOOL (Control system polls)
+ date 14/08/2015
+ time 11:30:04 AM
+ author Team Developer 2016 <team.developer@kaana.org.mx>
+-->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+                template="/WEB-INF/plantillas/filtro.xhtml">
+  <ui:param name="titulo" value="Control de pagos" />
+  <ui:define name="librerias">
+    <h:outputScript library="janal" name="core/jquery.underscore.min-1.3.3.js"/>
+    <script type="text/javascript">			
+    </script>
+    <style type="text/css">
+      .janal-semaforo-rojo { background-color: red !important; border: solid 1px red !important; }
+      .janal-semaforo-amarillo { background-color: #c99f15 !important; border: solid 1px yellow !important; }
+      .janal-semaforo-verde { background-color: green !important; border: solid 1px green !important; }
+      .janal-semaforo-azul { background-color: blue !important; border: solid 1px blue !important; }
+    </style>
+  </ui:define>
+  <ui:define name="contenido">
+    <!-- SECTION 1 -->
+    <div class="Container100">
+      <div class="ContainerIndent">       
+        <div class="Container50 Responsive">
+          <div class="ContainerIndent">    
+            
+            <div class="Container100 Responsive">
+              <div class="ContainerIndent">
+                <p:panel style="height:505px;" class="graphic-update-cobrar">
+                  <div class="Container100">
+                    <h:form>                  			                  
+                      <p:dataTable lazy="true" id="cobrar" var="row" rowIndexVar="index" value="#{kajoolCalendario.lazyModel}" paginator="true" rowsPerPageTemplate="10" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="10" styleClass="janal-content-table" selectionMode="single" reflow="true" paginatorPosition="top">
+                        <f:facet name="header">
+                          <p:outputLabel value="&lt;i class='icon-money'&gt;&lt;/i&gt; Cuentas por cobrar" escape="false" styleClass="janal-icons-header janal-color-white"/>
+                          <p:menuButton value="Opciones">
+                            <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdfCobrar', 'cobrar')" oncomplete="janal.desbloquear()"/>
+                            <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXlsCobrar', 'cobrar')" oncomplete="janal.desbloquear()"/>
+                          </p:menuButton>
+                        </f:facet>
+                        <p:column styleClass="janal-column-left Responsive" >
+                          <f:facet name="header">
+                            <h:outputText value="Cliente"/>
+                          </f:facet>
+                          <h:outputText value="#{row.razonSocial}"/>
+                        </p:column>                    
+                        <p:column styleClass="janal-column-center ColWid15 Responsive" >
+                          <f:facet name="header">
+                            <h:outputText value="Dias por vencer"/>
+                          </f:facet>
+                          <h:outputText value="#{row.dias}"/>
+                        </p:column>        
+                        <p:column styleClass="janal-column-center ColWid15 Responsive">
+                          <f:facet name="header">
+                            <h:outputText value="Tickets"/>
+                          </f:facet>
+                          <h:outputText value="#{row.cuentas}"/>
+                          <i class="fa fa-fw fa-tags janal-color-black janal-icons-message" title="#{row.tickets}"></i>                      
+                        </p:column>                    
+                        <p:column styleClass="janal-column-right ColWid15 Responsive" >
+                          <f:facet name="header">
+                            <h:outputText value="Total"/>
+                          </f:facet>
+                          <h:outputText value="#{row.saldo}"/>
+                        </p:column>                    
+                        <f:facet name="footer">
+                          <p:outputLabel value="Total [#{kajoolCalendario.lazyModel.rowCount}] registros"/>
+                        </f:facet>
+                      </p:dataTable>
+                      <h:commandLink id="dataPdfCobrar">                    
+                        <pe:exporter type="pdf" skipComponents="com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="cobrar" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10" cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
+                      </h:commandLink>
+                      <h:commandLink id="dataXlsCobrar">
+                        <pe:exporter type="xlsx" skipComponents="org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="cobrar" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/>                
+                      </h:commandLink>	                  
+                    </h:form>
+                  </div>
+                </p:panel>          
+              </div>		  
+            </div>		  
+
+            <div class="Container100 Responsive">
+              <div class="ContainerIndent">
+                <h:form prependId="false">                  			                  
+                  <p:panel style="height:355px;" class="graphic-update-ventas">
+                    <div class="Container100 Responsive Fs20 janal-color-orange">
+                    </div>
+                    <div class="Container100">
+                      <p:dataTable lazy="true" id="ventas" var="row" rowIndexVar="index" value="#{kajoolCalendario.lazyModelVentas}" paginator="true" rowsPerPageTemplate="10" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="10" styleClass="janal-content-table" selectionMode="single" reflow="true" paginatorPosition="top">
+                        <f:facet name="header">
+                          <p:outputLabel value="&lt;i class='icon-calendar'&gt;&lt;/i&gt; Ventas diarias" escape="false" styleClass="janal-icons-header janal-color-white"/>
+                          <p:calendar id="fechaInicio" styleClass="janal-steps-boton-siguiente" value="#{kajoolCalendario.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" locale="mx" converter="janal.convertidor.Calendario"> 
+                            <p:ajax event="dateSelect" process="@this" update="ventas" listener="#{kajoolCalendario.doLoadCuentasVentas}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                          </p:calendar>  
+                          <p:menuButton value="Opciones">
+                            <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdfVentas', 'ventas')" oncomplete="janal.desbloquear()"/>
+                            <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXlsVentas', 'ventas')" oncomplete="janal.desbloquear()"/>
+                          </p:menuButton>
+                        </f:facet>
+                        <p:column styleClass="MarAuto Responsive" groupRow="true">
+                          <f:facet name="header">
+                            <h:outputText value="Empresa"/>
+                          </f:facet>
+                          <h:outputText value="#{row['nombreEmpresa']}"/>
+                        </p:column>                    
+                        <p:column styleClass="MarAuto Responsive" >
+                          <f:facet name="header">
+                            <h:outputText value="Medio pago"/>
+                          </f:facet>
+                          <h:outputText value="#{row['tipoMedioPago']}"/>
+                        </p:column>                    
+                        <p:column styleClass="MarAuto janal-column-right ColWid15 Responsive" >
+                          <f:facet name="header">
+                            <h:outputText value="Importe"/>
+                          </f:facet>
+                          <h:outputText value="#{row['importe']}"/>
+                        </p:column>                    
+                        <p:column styleClass="MarAuto janal-column-right ColWid15 Responsive" >
+                          <f:facet name="header">
+                            <h:outputText value="Ventas"/>
+                          </f:facet>
+                          <h:outputText value="#{row['total']}"/>
+                        </p:column>                    
+                        <f:facet name="footer">
+                          <p:outputLabel value="Total [#{kajoolCalendario.lazyModelVentas.rowCount}] registros"/>
+                        </f:facet>
+                      </p:dataTable>
+                      <h:commandLink id="dataPdfVentas">                    
+                        <pe:exporter type="pdf" skipComponents="com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="agendar" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
+                      </h:commandLink>
+                      <h:commandLink id="dataXlsVentas">
+                        <pe:exporter type="xlsx" skipComponents="org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="agendar" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/>                
+                      </h:commandLink>	                  
+                    </div>
+                  </p:panel>
+                </h:form>
+              </div>
+            </div>
+
+            <div class="Container100 Responsive">
+              <div class="ContainerIndent">
+                <p:panel style="height:505px;" class="graphic-update-pagar">
+                  <div class="Container100">
+                    <h:form>                  			                  
+                      <p:dataTable lazy="true" id="agendar" var="row" rowIndexVar="index" value="#{kajoolCalendario.lazyModelAgendar}" paginator="true" rowsPerPageTemplate="10" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="10" styleClass="janal-content-table" selectionMode="single" reflow="true" paginatorPosition="top">
+                        <f:facet name="header">
+                          <p:outputLabel value="&lt;i class='icon-calendar'&gt;&lt;/i&gt; Cuentas por agendar" escape="false" styleClass="janal-icons-header janal-color-white"/>
+                          <p:menuButton value="Opciones">
+                            <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdfAgendar', 'agendar')" oncomplete="janal.desbloquear()"/>
+                            <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXlsAgendar', 'agendar')" oncomplete="janal.desbloquear()"/>
+                          </p:menuButton>
+                        </f:facet>
+                        <p:column styleClass="janal-column-center ColWid15 Responsive">
+                          <f:facet name="header">
+                            <h:outputText value="Nota entrada"/>
+                          </f:facet>
+                          <h:outputText value="#{row.consecutivo}"/>
+                        </p:column>                    
+                        <p:column styleClass="janal-column-left Responsive" >
+                          <f:facet name="header">
+                            <h:outputText value="Proveedor"/>
+                          </f:facet>
+                          <h:outputText value="#{row.razonSocial}"/>
+                          <i class="fa fa-fw fa-calendar janal-color-black janal-icons-message" title="Fecha: #{row.registro}"></i>                      
+                        </p:column>                    
+                        <p:column styleClass="janal-column-center ColWid10 Responsive" >
+                          <f:facet name="header">
+                            <h:outputText value="Factura"/>
+                          </f:facet>
+                          <h:outputText value="#{row.factura}"/>
+                        </p:column>                    
+                        <p:column styleClass="janal-column-right ColWid15 Responsive" >
+                          <f:facet name="header">
+                            <h:outputText value="Total"/>
+                          </f:facet>
+                          <h:outputText value="#{row.total}"/>
+                        </p:column>                    
+                        <f:facet name="footer">
+                          <p:outputLabel value="Total [#{kajoolCalendario.lazyModelAgendar.rowCount}] registros"/>
+                        </f:facet>
+                      </p:dataTable>
+                      <h:commandLink id="dataPdfAgendar">                    
+                        <pe:exporter type="pdf" skipComponents="com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="agendar" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
+                      </h:commandLink>
+                      <h:commandLink id="dataXlsAgendar">
+                        <pe:exporter type="xlsx" skipComponents="org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="agendar" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/>                
+                      </h:commandLink>	                  
+                    </h:form>
+                  </div>
+                </p:panel>
+              </div>
+            </div>
+            
+          </div>  
+        </div>
+       
+        <div class="Container50 Responsive">
+          <div class="ContainerIndent">
+            
+            <p:schedule id="tabla" value="#{kajoolCalendario.lazyEventModel}" widgetVar="calendario" styleClass="janal-column-center" initialDate="#{kajoolCalendario.attrs.fechaInicio}" locale="mx" timeFormat="LT" clientTimeZone="true">
+              <p:ajax event="dateSelect" listener="#{kajoolCalendario.doDate}" update="@(.detalle)" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />
+              <p:ajax event="eventSelect" listener="#{kajoolCalendario.doSelect}" update="@(.detalle)" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />
+              <p:ajax event="eventMove" listener="#{kajoolCalendario.doMove}" update="@(.detalle)" oncomplete="fireSelectEvent()"/>
+              <p:ajax event="eventResize" listener="#{kajoolCalendario.doResize}" update="@(.detalle)" oncomplete="fireSelectEvent()"/>
+              <p:ajax event="viewChange" listener="#{kajoolCalendario.doView}" update="@(.detalle)" oncomplete="fireSelectEvent()"/>
+            </p:schedule>
+            
+            <div class="Container100 Responsive">
+              <div class="ContainerIndent">
+                <p:panel style="height:505px;" class="graphic-update-pagar">
+                  <div class="Container100">
+                    <h:form>                  			                  
+                      <p:dataTable lazy="true" id="detalle" var="row" rowIndexVar="index" value="#{kajoolCalendario.lazyModelPagar}" paginator="true" rowsPerPageTemplate="10" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="10" styleClass="janal-content-table detalle #{kajoolCalendario.lazyModelPagar eq null? 'janal-display-none': ''}" selectionMode="single" reflow="true" paginatorPosition="top">
+                        <f:facet name="header">
+                          <p:outputLabel value="&lt;i class='fa fa-group'&gt;&lt;/i&gt; Cuentas por pagar [#{kajoolCalendario.attrs.hoy}]" escape="false" styleClass="janal-icons-header janal-color-white"/>
+                          <p:menuButton value="Opciones">
+                            <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdfDetalle', 'detalle')" oncomplete="janal.desbloquear()"/>
+                            <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXlsDetalle', 'detalle')" oncomplete="janal.desbloquear()"/>
+                          </p:menuButton>
+                        </f:facet>
+                        <p:column styleClass="janal-column-center ColWid15 Responsive">
+                          <f:facet name="header">
+                            <h:outputText value="Nota entrada"/>
+                          </f:facet>
+                          <h:outputText value="#{row.consecutivo}"/>
+                        </p:column>                    
+                        <p:column styleClass="janal-column-left Responsive" >
+                          <f:facet name="header">
+                            <h:outputText value="Proveedor"/>
+                          </f:facet>
+                          <h:outputText value="#{row.razonSocial}"/>
+                          <i class="fa fa-fw fa-calendar janal-color-black janal-icons-message" title="Fecha: #{row.registro}"></i>                      
+                        </p:column>                    
+                        <p:column styleClass="janal-column-center ColWid10 Responsive" >
+                          <f:facet name="header">
+                            <h:outputText value="Factura"/>
+                          </f:facet>
+                          <h:outputText value="#{row.factura}"/>
+                        </p:column>                    
+                        <p:column styleClass="janal-column-right ColWid15 Responsive" >
+                          <f:facet name="header">
+                            <h:outputText value="Total"/>
+                          </f:facet>
+                          <h:outputText value="#{row.total}"/>
+                        </p:column>                    
+                        <f:facet name="footer">
+                          <p:outputLabel value="Total [#{kajoolCalendario.lazyModelPagar.rowCount}] registros"/>
+                        </f:facet>
+                      </p:dataTable>
+                      <h:commandLink id="dataPdfDetalle">                    
+                        <pe:exporter type="pdf" skipComponents="com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="detalle" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
+                      </h:commandLink>
+                      <h:commandLink id="dataXlsDetalle">
+                        <pe:exporter type="xlsx" skipComponents="org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="detalle" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/>                
+                      </h:commandLink>	                  
+                    </h:form>
+                  </div>
+                </p:panel>
+              </div>
+            </div>
+            
+          </div>	
+        </div>
+      </div>
+    </div>		
+    <div class="EmptyBox10"></div>
+    <div class="Container100">
+      <div class="ContainerIndent">
+      </div>            				
+    </div>
+  	<p:remoteCommand name="fireSelectEvent"/>
+		<p:notificationBar id="lockDownloadBackup" position="top" effect="slide" styleClass="jana-bar-top" widgetVar="downloadBackup" effectSpeed="slow">
+			<span title="Cerrar" style="position: absolute; top: 10px; right: 80px; cursor: pointer;" onclick="PF('downloadBackup').hide();"><i class="fa fa-lg fa-close"/></span>
+			<p:panelGrid layout="grid" columns="1" style="background: transparent;">
+				<h:outputText value="Administrador Web" styleClass="Fs20"/>
+				<p:spacer height="3px"/>
+				<h:outputText value="#{kajoolCalendario.attrs.messageBackup}" escape="false" styleClass="Fs14"/>
+			</p:panelGrid>
+		</p:notificationBar>
+  </ui:define>
+</ui:composition>

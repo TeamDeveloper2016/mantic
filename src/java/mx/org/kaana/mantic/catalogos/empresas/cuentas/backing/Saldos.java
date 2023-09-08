@@ -281,13 +281,12 @@ public class Saldos extends IBaseImportar implements Serializable {
 	} // doPago	
   
   public void doReporte(String nombre) throws Exception{
-    Parametros comunes = null;
-		Map<String, Object>params    = null;
+    Parametros comunes           = null;
+		Map<String, Object>params    = this.toPrepare();
 		Map<String, Object>parametros= null;
 		EReportes reporteSeleccion   = null;
     Entity seleccionado          = null;
 		try{		
-      params= toPrepare();
       params.put("empresa", this.attrs.get("empresa"));
 			params.put("idEmpresa", this.attrs.get("idEmpresa").toString().equals("-1") ? this.attrs.get("allEmpresa") : this.attrs.get("idEmpresa"));			
 			params.put("almacen", this.attrs.get("almacen"));			
@@ -405,11 +404,10 @@ public class Saldos extends IBaseImportar implements Serializable {
 	} // doEstructura
 	
 	public List<UISelectEntity> doCompleteProveedor(String codigo) {
- 		List<Columna> columns     = null;
+ 		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
 		boolean buscaPorCodigo    = false;
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
@@ -461,15 +459,13 @@ public class Saldos extends IBaseImportar implements Serializable {
 	}
 
   public void doLoadDetalle() {
-    List<Columna> columns     = null;
-	  Map<String, Object> params= null;	
+    List<Columna> columns     = new ArrayList<>();
+	  Map<String, Object> params= this.toPrepare();	
     try {
-  	  params = this.toPrepare();
 			Entity entity= (Entity)this.attrs.get("seleccionado");
 			params.put("sortOrder", "order by consecutivo desc");
 			params.put("idProveedor", entity.toLong("idProveedor"));
 			this.attrs.put("idProveedor", entity.toLong("idProveedor"));
-      columns= new ArrayList<>();
       columns.add(new Columna("saldo", EFormatoDinamicos.MILES_CON_DECIMALES));    
       columns.add(new Columna("abonado", EFormatoDinamicos.MILES_CON_DECIMALES));    
       columns.add(new Columna("fecha", EFormatoDinamicos.FECHA_CORTA));    

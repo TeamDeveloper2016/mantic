@@ -50,10 +50,9 @@ public abstract class Inventarios extends IBaseTnx implements Serializable {
 	}
 	
 	protected void toAffectAlmacenes(Session sesion, String consecutivo, TcManticNotasEntradasDto notaEntrada, TcManticNotasDetallesDto item, Articulo codigos) throws Exception {
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		double stock= 0D;
 		try {
-			params= new HashMap<>();
 			params.put("idAlmacen", this.idAlmacen);
 			params.put("idArticulo", item.getIdArticulo());
 			params.put("idProveedor", this.idProveedor);
