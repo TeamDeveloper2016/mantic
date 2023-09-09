@@ -60,6 +60,7 @@ public class Calendario extends Comun implements Serializable {
   protected FormatLazyModel lazyModelAgendar;
   protected FormatLazyModel lazyModelVentas;  
   private ScheduleModel lazyEventModel;
+  private String pivot;
   
   public FormatLazyModel getLazyModelPagar() {
     return lazyModelPagar;
@@ -85,7 +86,8 @@ public class Calendario extends Comun implements Serializable {
   @Override
   protected void init() {
     try {
-      Calendar calendar= new GregorianCalendar(2023, 4, 14);
+      //Calendar calendar= new GregorianCalendar(2023, 4, 14);
+      Calendar calendar= Calendar.getInstance();
 			this.attrs.put("calendario", Calendar.getInstance());
       this.attrs.put("isAdmin", JsfBase.isAdminEncuestaOrAdmin());
       this.attrs.put("fechaInicio", new Date(calendar.getTimeInMillis()));
@@ -171,12 +173,15 @@ public class Calendario extends Comun implements Serializable {
     List<Columna> columns     = new ArrayList<>();    
     Map<String, Object> params= new HashMap<>();
     try {      
-      params.put(Constantes.SQL_CONDICION, "date_format(tc_mantic_empresas_deudas.limite, '%Y%m%d')= ".concat(hoy));      
-      columns.add(new Columna("total", EFormatoDinamicos.MONEDA_CON_DECIMALES));
-      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
-      params.put("sortOrder", "order by dias desc");
-      this.lazyModelPagar = new FormatCustomLazy("VistaIndicadoresTableroDto", "pagar", params, columns);
-      UIBackingUtilities.resetDataTable("pagar");
+      if(!Objects.equals(this.pivot, hoy)) {
+        params.put(Constantes.SQL_CONDICION, "date_format(tc_mantic_empresas_deudas.limite, '%Y%m%d')= ".concat(hoy));      
+        columns.add(new Columna("total", EFormatoDinamicos.MONEDA_CON_DECIMALES));
+        columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
+        params.put("sortOrder", "order by dias desc");
+        this.lazyModelPagar = new FormatCustomLazy("VistaIndicadoresTableroDto", "pagar", params, columns);
+        UIBackingUtilities.resetDataTable("pagar");
+        this.pivot= hoy;
+      } // if  
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -192,7 +197,7 @@ public class Calendario extends Comun implements Serializable {
     List<Columna> columns     = new ArrayList<>();    
     Map<String, Object> params= new HashMap<>();
     try {      
-      params.put("id", 1L);      
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);      
       columns.add(new Columna("total", EFormatoDinamicos.MONEDA_CON_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
       params.put("sortOrder", "order by tc_mantic_empresas_deudas.registro");
@@ -249,8 +254,11 @@ public class Calendario extends Comun implements Serializable {
   }
 
   public void doDate(SelectEvent selectEvent) {
-    this.attrs.put("hoy", Fecha.formatear(Fecha.FECHA_NOMBRE_DIA, (java.util.Date)selectEvent.getObject()));
-    this.toLoadCuentasPagar(Fecha.formatear(Fecha.FECHA_ESTANDAR, (java.util.Date)selectEvent.getObject()));
+    Calendar calendario= Calendar.getInstance();
+    calendario.setTimeInMillis(((java.util.Date)selectEvent.getObject()).getTime());
+    calendario.add(Calendar.DATE, 1);
+    this.attrs.put("hoy", Fecha.formatear(Fecha.FECHA_NOMBRE_DIA, new Date(calendario.getTimeInMillis())));
+    this.toLoadCuentasPagar(Fecha.formatear(Fecha.FECHA_ESTANDAR, new Date(calendario.getTimeInMillis())));
   }
   
   public void doMove(ScheduleEntryMoveEvent event) {
