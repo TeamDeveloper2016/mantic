@@ -1026,7 +1026,9 @@ public class Tablero extends Comun implements Serializable {
     List<Columna> columns     = new ArrayList<>();    
     Map<String, Object> params= new HashMap<>();
     try {      
+      params.put("estatus", "1, 2, 3");
       params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      columns.add(new Columna("dias", EFormatoDinamicos.MILES_SIN_DECIMALES));
       columns.add(new Columna("total", EFormatoDinamicos.MONEDA_CON_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
       params.put("sortOrder", "order by dias desc");
@@ -1088,6 +1090,28 @@ public class Tablero extends Comun implements Serializable {
       Methods.clean(columns);
       sb= null;
     } // finally
+  }
+ 
+  public String doColor(Entity row) {
+    String regresar= "janal-semaforo-amarillo";
+    switch(row.toLong("idEmpresaEstatus").intValue()) {
+      case 1: // elaborada
+        regresar= "janal-semaforo-rojo";
+        break;
+      case 2: // programada
+        regresar= "janal-semaforo-azul";
+        break;
+      case 3: // parcializada
+        regresar= "janal-semaforo-amarilla";
+        break;
+      case 4: // liquidada
+        regresar= "janal-semaforo-verde";
+        break;
+      case 5: // cancelada
+        regresar= "janal-semaforo-naranja";
+        break;
+    } // switch
+    return regresar;
   }
   
 }

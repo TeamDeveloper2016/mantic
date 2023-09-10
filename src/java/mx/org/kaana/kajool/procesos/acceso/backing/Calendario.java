@@ -5,7 +5,6 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +24,7 @@ import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Global;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.formato.Periodo;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.reflection.Methods;
@@ -174,6 +174,7 @@ public class Calendario extends Comun implements Serializable {
     Map<String, Object> params= new HashMap<>();
     try {      
       if(!Objects.equals(this.pivot, hoy)) {
+        params.put("estatus", "1, 2, 3, 4, 5");      
         params.put(Constantes.SQL_CONDICION, "date_format(tc_mantic_empresas_deudas.limite, '%Y%m%d')= ".concat(hoy));      
         columns.add(new Columna("total", EFormatoDinamicos.MONEDA_CON_DECIMALES));
         columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
@@ -269,10 +270,30 @@ public class Calendario extends Comun implements Serializable {
     LOG.info(event);
   }
 
-  public void doView(SelectEvent selectEvent) {
-    LOG.info("View:" + selectEvent.getObject());
-    Schedule calendario= (Schedule)selectEvent.getSource();
-    this.toLoadCalendario(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)calendario.getInitialDate()));
+  public void doView(String date) {
+    LOG.info(date);
+    StringBuilder sb   = new StringBuilder();
+    String name        = null; 
+    int year           = Numero.getInteger(date.substring(date.length()- 4), Fecha.getAnioActual()); 
+    int month          = 1; 
+    int day            = 1; 
+    this.lazyModelPagar= null;
+    sb.append(year);
+    if(date.indexOf(" ")== 3) {
+      name = date.substring(0, date.indexOf(" "));
+      month= Fecha.getShortMes(name);
+      date = date.substring(date.indexOf(" ")+ 1);
+      day  = Numero.getInteger(date.substring(0, date.indexOf(" ")), 1);
+    } // if                    
+    else
+      if(date.indexOf(" ")> 3) {
+        name = date.substring(0, date.indexOf(" "));
+        month= Fecha.getLongMes(name);
+        if(date.indexOf(",")> 0)
+          day= Numero.getInteger(date.substring(date.indexOf(" ")+ 1, date.indexOf(",")), 1);
+      } // else
+    sb.append(month< 10? "0"+ month: month).append("01");
+//    this.toLoadCalendario(sb.toString());
   }
   
   private void toLoadCalendario(String date) {
@@ -280,12 +301,13 @@ public class Calendario extends Comun implements Serializable {
     Map<String, Object> params   = new HashMap<>();
     DefaultScheduleEvent registro= null;
     try {      
-      this.lazyEventModel.clear();
+//      this.lazyEventModel.getEvents().clear();
       Periodo periodo= new Periodo(date);
-      params.put("inicio", periodo.getInicioMes().toString());      
-      params.put("termino", periodo.getTerminoMes().toString());      
+      params.put("termino", periodo.getTerminoMes().getSemanaSiguiente().toString());      
+      periodo.addMeses(-12);
+      params.put("inicio", periodo.getTerminoAnio().getSemanaAnterior().toString());      
       columns.add(new Columna("cantidad", EFormatoDinamicos.MILES_SIN_DECIMALES));
-      List<Entity> cuentas= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaIndicadoresTableroDto", "calendario", params);
+      List<Entity> cuentas= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaIndicadoresTableroDto", "calendario", params, Constantes.SQL_TOPE_REGISTROS);
       for (Entity item: cuentas) {
         String color= "amarillo";
         if(Objects.equals(item.toLong("cantidad"), item.toLong("iniciada")))
@@ -293,14 +315,14 @@ public class Calendario extends Comun implements Serializable {
         else
           if(Objects.equals(item.toLong("cantidad"), item.toLong("liquidadas")))
             color= "verde";
-        registro= new DefaultScheduleEvent(item.toLong("cantidad")+ " CUENTAS", item.toDate("limite"), item.toDate("limite"), item);
+        registro= new DefaultScheduleEvent(item.toLong("cantidad")+ " CUENTAS", item.toDate("limite"), item.toDate("limite"));
         registro.setStyleClass("janal-semaforo-".concat(color));
         registro.setId(item.getKey().toString());
         registro.setEditable(Boolean.FALSE);
 				registro.setAllDay(Boolean.TRUE);
 				registro.setDescription("Cuentas por pagar ["+ item.toLong("cantidad")+ " ]");
-  			this.lazyEventModel.addEvent(registro);        
-      } // for
+  			this.lazyEventModel.addEvent(registro); 
+     } // for
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -310,6 +332,28 @@ public class Calendario extends Comun implements Serializable {
       Methods.clean(params);
       Methods.clean(columns);
     } // finally
+  }
+ 
+  public String doColor(Entity row) {
+    String regresar= "janal-semaforo-amarillo";
+    switch(row.toLong("idEmpresaEstatus").intValue()) {
+      case 1: // elaborada
+        regresar= "janal-semaforo-rojo";
+        break;
+      case 2: // programada
+        regresar= "janal-semaforo-azul";
+        break;
+      case 3: // parcializada
+        regresar= "janal-semaforo-amarilla";
+        break;
+      case 4: // liquidada
+        regresar= "janal-semaforo-verde";
+        break;
+      case 5: // cancelada
+        regresar= "janal-semaforo-naranja";
+        break;
+    } // switch
+    return regresar;
   }
   
 }

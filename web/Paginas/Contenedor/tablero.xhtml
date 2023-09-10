@@ -108,15 +108,18 @@
 				background-color: cyan !important;				
 				background-image: none !important;
       }
-			.wid-calendarizacion-48{
-				width: 35%
-			}
-			.wid-calendarizacion-10{
-				width: 30%
-			}
-			.wid-calendarizacion-47{
-				width: 35%
-			}
+			.wid-calendarizacion-48{ width: 35% }
+			.wid-calendarizacion-10 { width: 30% }
+			.wid-calendarizacion-47{ width: 35% }
+      .janal-semaforo-rojo { background-color: #f70b0b !important; border: solid 1px #f70b0b !important; color: yellow !important; }
+      .ui-datatable .ui-datatable-tablewrapper table tbody .janal-semaforo-rojo td, .janal-semaforo-rojo.ui-datatable table tbody tr td { color: yellow !important; }
+      .janal-semaforo-amarillo { background-color: #c99f15 !important; border: solid 1px yellow !important;color: yellow !important; }
+      .ui-datatable .ui-datatable-tablewrapper table tbody .janal-semaforo-amarillo td, .janal-semaforoamarillo.ui-datatable table tbody tr td { color: yellow !important; }
+      .janal-semaforo-verde { background-color: #004700 !important; border: solid 1px #004700 !important; color: yellow !important; }
+      .ui-datatable .ui-datatable-tablewrapper table tbody .janal-semaforo-verde td, .janal-semaforo-verde.ui-datatable table tbody tr td { color: yellow !important; }
+      .janal-semaforo-azul { background-color: #0a0aa1 !important; border: solid 1px #0a0aa1 !important; color: white !important; }
+      .ui-datatable .ui-datatable-tablewrapper table tbody .janal-semaforo-azul td, .janal-semaforo-azul.ui-datatable table tbody tr td { color: white !important; }
+      .janal-semaforo-naranja { background-color: #a16a05 !important; border: solid 1px #a16a05 !important; color: black !important; }
     </style>
   </ui:define>
   <ui:define name="contenido">
@@ -940,25 +943,32 @@
               <div class="EmptyBox10"></div>
               <div class="Container100">
                 <h:form>                  			                  
-                  <p:dataTable lazy="true" id="pagar" var="row" rowIndexVar="index" value="#{kajoolTablero.lazyModelPagar}" paginator="true" rowsPerPageTemplate="10" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="10" styleClass="janal-content-table" selectionMode="single" reflow="true" paginatorPosition="top">
+                  <p:dataTable lazy="true" id="pagar" var="row" rowIndexVar="index" value="#{kajoolTablero.lazyModelPagar}" paginator="true" rowsPerPageTemplate="10" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="10" styleClass="janal-content-table" selectionMode="single" reflow="true" paginatorPosition="top" rowStyleClass="#{kajoolTablero.doColor(row)}">
                     <f:facet name="header">
                       <p:menuButton value="Opciones">
                         <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdfPagar', 'pagar')" oncomplete="janal.desbloquear()"/>
                         <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXlsPagar', 'pagar')" oncomplete="janal.desbloquear()"/>
                       </p:menuButton>
                     </f:facet>
-                    <p:column styleClass="janal-column-center ColWid15 Responsive">
+                    <p:column styleClass="janal-column-center ColWid15 Responsive janal-display-none">
                       <f:facet name="header">
                         <h:outputText value="Nota entrada"/>
                       </f:facet>
                       <h:outputText value="#{row.consecutivo}"/>
+                    </p:column>              
+                    <p:column styleClass="janal-column-center ColWid15 Responsive" sortBy="#{row.factura}">
+                      <f:facet name="header">
+                        <h:outputText value="Factura"/>
+                      </f:facet>
+                      <h:outputText value="#{row.factura}"/>
+                      <i class="fa fa-fw fa-list-alt janal-icons-message" title="Nota de entrada: #{row.consecutivo}"></i>                      
                     </p:column>                    
                     <p:column styleClass="janal-column-left Responsive" >
                       <f:facet name="header">
                         <h:outputText value="Proveedor"/>
                       </f:facet>
                       <h:outputText value="#{row.razonSocial}"/>
-                      <i class="fa fa-fw fa-calendar janal-color-black janal-icons-message" title="#{row.registro}"></i>                      
+                      <i class="fa fa-fw fa-calendar janal-icons-message" title="#{row.registro}"></i>                      
                     </p:column>                    
                     <p:column styleClass="janal-column-center ColWid15 Responsive" >
                       <f:facet name="header">
@@ -971,6 +981,12 @@
                         <h:outputText value="Total"/>
                       </f:facet>
                       <h:outputText value="#{row.total}"/>
+                    </p:column>                
+                    <p:column styleClass="janal-column-center ColWid15 Responsive janal-display-none" sortBy="#{row.estatus}">
+                      <f:facet name="header">
+                        <h:outputText value="Estatus"/>
+                      </f:facet>
+                      <h:outputText value="#{row.estatus}"/>
                     </p:column>                    
                     <f:facet name="footer">
                       <p:outputLabel value="Total [#{kajoolTablero.lazyModelPagar.rowCount}] registros"/>

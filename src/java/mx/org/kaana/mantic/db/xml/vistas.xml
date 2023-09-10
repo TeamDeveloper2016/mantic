@@ -11608,14 +11608,14 @@ order by
         inner join
           tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor= tc_mantic_proveedores.id_proveedor
         where 
-          tc_mantic_empresas_deudas.id_empresa_estatus in (1, 2, 3)
+          tc_mantic_empresas_deudas.id_empresa_estatus in (1, 2, 3, 4, 5)
           and tc_mantic_empresas_deudas.id_revisado in (1, 2)
           and date_format(tc_mantic_empresas_deudas.limite, '%Y%m%d')&gt;= '{inicio}'
           and date_format(tc_mantic_empresas_deudas.limite, '%Y%m%d')&lt;= '{termino}'
         group by
           tc_mantic_empresas_deudas.limite
         order by
-          tc_mantic_empresas_deudas.limite
+          tc_mantic_empresas_deudas.limite desc
       </select>  
 			<select id="pagar">
         select
@@ -11625,15 +11625,19 @@ order by
           tc_mantic_notas_entradas.factura,
           tc_mantic_empresas_deudas.saldo as total,
           tc_mantic_empresas_deudas.limite as registro,
+          tc_mantic_empresas_deudas.id_empresa_estatus,
+          tc_mantic_empresas_estatus.nombre as estatus,
           (datediff(tc_mantic_empresas_deudas.limite, now())* -1) as dias
         from
           tc_mantic_empresas_deudas
         inner join
           tc_mantic_notas_entradas on tc_mantic_empresas_deudas.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada
         inner join
+          tc_mantic_empresas_estatus on tc_mantic_empresas_deudas.id_empresa_estatus= tc_mantic_empresas_estatus.id_empresa_estatus
+        inner join
           tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor= tc_mantic_proveedores.id_proveedor
         where 
-          tc_mantic_empresas_deudas.id_empresa_estatus in (1, 2, 3)
+          tc_mantic_empresas_deudas.id_empresa_estatus in ({estatus})
           and tc_mantic_empresas_deudas.id_revisado in (1, 2)
           and {condicion}
         {sortOrder}

@@ -68,20 +68,27 @@ public class Fecha {
     return nombreMes[mes];
   } // getNombreMes
 
+  public static int getLongMes(String mes) {
+    String[] nombreMes =
+    { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre" };
+    List<String> meses= Arrays.asList(nombreMes);
+    return meses.indexOf(Cadena.letraCapital(mes))+ 1;
+  } 
+
   public static String getNombreMesCorto(int mes) {
     String[] nombreMes = { "ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SEP", "OCT", "NOV", "DIC" };
     return nombreMes[mes];
-  } // getNombreMesCorto
+  } 
 
-  public static int  getNumeroMes(String mes) {
+  public static int getShortMes(String mes) {
     String[] nombreMes = { "ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SEP", "OCT", "NOV", "DIC" };
-    return  Arrays.asList(nombreMes).indexOf(mes.substring(0,3).toUpperCase())+1;
-  } // getNumeroMes
+    return  Arrays.asList(nombreMes).indexOf(mes.substring(0,3).toUpperCase())+ 1;
+  } 
 
   public static String getNombreDia(int dia) {
     String nombreDia[] = { "Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado" };
     return nombreDia[dia - 1];
-  } // getNombreDia
+  }
 
   public static String formatear(int patron, String fecha) {
     if (fecha != null && fecha.length() > 0) {

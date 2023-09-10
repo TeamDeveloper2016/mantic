@@ -1,6 +1,7 @@
 package mx.org.kaana.libs.formato;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 
 public class Periodo {
@@ -140,8 +141,24 @@ public class Periodo {
     return getDiaComodin(1);
   }
 
+  public Periodo getSemanaSiguiente() {
+    return getDiaComodin(7);
+  }
+
+  public Periodo getQuincenaSiguiente() {
+    return getDiaComodin(15);
+  }
+
   public Periodo getDiaAnterior() {
     return getDiaComodin(-1);
+  }
+  
+  public Periodo getSemanaAnterior() {
+    return getDiaComodin(-7);
+  }
+  
+  public Periodo getQuincenaAnterior() {
+    return getDiaComodin(-15);
   }
 
   public boolean isQuincenaImpar() {
@@ -214,6 +231,10 @@ public class Periodo {
 
   public boolean equals(String fecha) {
     return toString().equals(fecha);
+  }
+
+  public Date getDate() {
+    return new Date(this.anio, this.mes, this.dia);
   }
 
   public boolean equals(Periodo fecha) {
