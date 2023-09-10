@@ -210,7 +210,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			if (transaccion.ejecutar(this.accion)) {
 				if(this.accion.equals(EAccion.AGREGAR) || this.aplicar) {
 					if(this.toCheckCodigoBarras(((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada())) 
- 				    regresar= "/Paginas/Mantic/Catalogos/Articulos/codigos".concat(Constantes.REDIRECIONAR);
+    			  JsfBase.setFlashAttribute("codigosBarras", "/Paginas/Mantic/Catalogos/Articulos/codigos");
 					else
 						regresar= this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
 					if(this.accion.equals(EAccion.AGREGAR))

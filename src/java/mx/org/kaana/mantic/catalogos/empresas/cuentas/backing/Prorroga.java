@@ -7,6 +7,7 @@ import java.util.Map;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -85,6 +86,7 @@ public class Prorroga extends IBaseImportar implements Serializable {
     try {			
 			if(JsfBase.getFlashAttribute("idEmpresaDeuda")== null)
 				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
+			this.attrs.put("codigosBarras", JsfBase.getFlashAttribute("codigosBarras"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "saldos": JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("idEmpresaDeuda", JsfBase.getFlashAttribute("idEmpresaDeuda"));     
       this.nota= (TcManticNotasEntradasDto)DaoFactory.getInstance().findById(TcManticNotasEntradasDto.class, (Long)JsfBase.getFlashAttribute("idNotaEntrada"));
@@ -252,10 +254,15 @@ public class Prorroga extends IBaseImportar implements Serializable {
 	} 
 	
   public String doCancelar() {   
+    String regresar= ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
  		JsfBase.setFlashAttribute("idEmpresa", this.deuda.toLong("idEmpresa"));
  		JsfBase.setFlashAttribute("idEmpresaDeuda", this.attrs.get("idEmpresaDeuda"));
   	JsfBase.setFlashAttribute("idNotaEntrada", this.deuda.toLong("idNotaEntrada"));
-    return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
+    if(!Objects.equals(this.attrs.get("codigosBarras"), null)) {
+    	regresar= (String)this.attrs.get("codigosBarras");    
+    	JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Entradas/filtro");
+    } // if  
+    return regresar;
   } 
   
 	private boolean validaImporte() {
