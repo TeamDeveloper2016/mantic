@@ -39,6 +39,7 @@ import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.Random;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EFormatos;
@@ -208,10 +209,8 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			transaccion = new Transaccion(((NotaEntrada)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos(), this.aplicar, this.getXml(), this.getPdf());
 			if (transaccion.ejecutar(this.accion)) {
 				if(this.accion.equals(EAccion.AGREGAR) || this.aplicar) {
-					if(this.doCheckCodigoBarras(((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada())) {
-    			  JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Entradas/filtro");
- 				    regresar=  "/Paginas/Mantic/Catalogos/Articulos/codigos".concat(Constantes.REDIRECIONAR);
-					} // if
+					if(this.toCheckCodigoBarras(((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada())) 
+ 				    regresar= "/Paginas/Mantic/Catalogos/Articulos/codigos".concat(Constantes.REDIRECIONAR);
 					else
 						regresar= this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
 					if(this.accion.equals(EAccion.AGREGAR))
@@ -223,7 +222,16 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 					this.getAdminOrden().toStartCalculate();
  				if(!this.accion.equals(EAccion.CONSULTAR)) 
   				JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la nota de entrada."), ETipoMensaje.INFORMACION);
+ 			  JsfBase.setFlashAttribute("retorno", this.attrs.get("retorno"));
   			JsfBase.setFlashAttribute("idNotaEntrada", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada());
+        // ESTO ES PARA IRSE A LA PAGINA PARA CALENDARIZAR EL PAGO
+        if(this.aplicar) {
+          Long idEmpresaDeuda= this.toCheckCuentaPagar(((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada());
+          if(!Objects.equals(idEmpresaDeuda, -1L)) {
+  			    regresar= "/Paginas/Mantic/Catalogos/Empresas/Cuentas/prorroga".concat(Constantes.REDIRECIONAR);
+    			  JsfBase.setFlashAttribute("idEmpresaDeuda", idEmpresaDeuda);
+          } // if
+        } // if
 			} // if
 			else 
 				JsfBase.addMessage("Ocurrió un error al registrar la nota de entrada.", ETipoMensaje.ERROR);      			
@@ -723,15 +731,32 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		} // if
 	}
 
-	private boolean doCheckCodigoBarras(Long idNotaEntrada) throws Exception {
+	private boolean toCheckCodigoBarras(Long idNotaEntrada) throws Exception {
 		boolean regresar          = false;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("idNotaEntrada", idNotaEntrada);
-			Value value= DaoFactory.getInstance().toField("VistaNotasEntradasDto", "codigos", params);
+			Value value= DaoFactory.getInstance().toField("VistaNotasEntradasDto", "codigos", params, "total");
 			if(value.getData()!= null)
 			  regresar= value.toLong()> 0;
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+	  return regresar;	
+	}
+	
+	private Long toCheckCuentaPagar(Long idNotaEntrada) throws Exception {
+		Long regresar             = -1L;
+		Map<String, Object> params= new HashMap<>();
+		try {
+			params.put("idNotaEntrada", idNotaEntrada);
+			Value value= DaoFactory.getInstance().toField("TcManticEmpresasDeudasDto", "deuda", params, "idEmpresaDeuda");
+			if(value.getData()!= null)
+			  regresar= value.toLong();
 		} // try
 		catch (Exception e) {
 			throw e;

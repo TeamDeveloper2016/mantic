@@ -85,10 +85,9 @@ public class Prorroga extends IBaseImportar implements Serializable {
     try {			
 			if(JsfBase.getFlashAttribute("idEmpresaDeuda")== null)
 				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
-      this.attrs.put("idEmpresa", JsfBase.getFlashAttribute("idEmpresa"));     
+			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "saldos": JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("idEmpresaDeuda", JsfBase.getFlashAttribute("idEmpresaDeuda"));     
       this.nota= (TcManticNotasEntradasDto)DaoFactory.getInstance().findById(TcManticNotasEntradasDto.class, (Long)JsfBase.getFlashAttribute("idNotaEntrada"));
-//      this.attrs.put("idEmpresa", 1L);     
 //      this.attrs.put("idEmpresaDeuda", 9045L);     
 //      this.nota= (TcManticNotasEntradasDto)DaoFactory.getInstance().findById(TcManticNotasEntradasDto.class, 8932L);
 			this.attrs.put("xml", ""); 
@@ -237,8 +236,7 @@ public class Prorroga extends IBaseImportar implements Serializable {
 				transaccion= new Transaccion(this.deuda, this.prorroga, this.fechaRecepcion, (Long)this.attrs.get("idRevisado"), this.ikRecibio.getKey(), this.ikProveedorPago.getKey());
 				if(transaccion.ejecutar(EAccion.MODIFICAR)) {
 					JsfBase.addMessage("Modificar cuenta por pagar", "Se realizó la modificación de forma correcta", ETipoMensaje.INFORMACION);
-       		JsfBase.setFlashAttribute("idEmpresaDeuda", this.attrs.get("idEmpresaDeuda"));
-					regresar= "saldos".concat(Constantes.REDIRECIONAR);
+					regresar= this.doCancelar();
 				} // if
 				else
 					JsfBase.addMessage("Modificar cuenta por pagar", "Ocurrió un error al realizar la modificación", ETipoMensaje.ERROR);
@@ -251,15 +249,20 @@ public class Prorroga extends IBaseImportar implements Serializable {
 			JsfBase.addMessageError(e);
 		} // catch
 		return regresar;
-	} // doAceptar
+	} 
 	
+  public String doCancelar() {   
+ 		JsfBase.setFlashAttribute("idEmpresa", this.deuda.toLong("idEmpresa"));
+ 		JsfBase.setFlashAttribute("idEmpresaDeuda", this.attrs.get("idEmpresaDeuda"));
+  	JsfBase.setFlashAttribute("idNotaEntrada", this.deuda.toLong("idNotaEntrada"));
+    return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
+  } 
+  
 	private boolean validaImporte() {
 		boolean regresar= false;
-		Entity deuda    = null;
 		Double importe  = null;
 		try {
-			deuda   = (Entity) this.attrs.get("deuda");
-			importe = Numero.toRedondearSat(Double.valueOf(String.valueOf(deuda.get("importe"))));
+			importe = Numero.toRedondearSat(Double.valueOf(String.valueOf(this.deuda.get("importe"))));
 			regresar= importe>= 1D;
 		} // try
 		catch (Exception e) {
@@ -267,14 +270,13 @@ public class Prorroga extends IBaseImportar implements Serializable {
 			JsfBase.addMessageError(e);
 		} // catch		
 		return regresar;
-	} // validaImporte
+	} 
 	
 	public void doTabChange(TabChangeEvent event) {
-    Map<String, Object> params = null;
+    Map<String, Object> params = new HashMap<>();
     try {      
-      params = new HashMap<>();      
       if(event.getTab().getTitle().equals("Archivos")) {
-        params.put("idNotaEntrada", ((Entity)this.attrs.get("deuda")).toLong("idNotaEntrada"));      
+        params.put("idNotaEntrada", this.deuda.toLong("idNotaEntrada"));      
         params.put("idTipoDocumento", 13L);      
  			  this.doLoadImportados("VistaNotasEntradasDto", "importados", params);
       } // if  
@@ -295,10 +297,5 @@ public class Prorroga extends IBaseImportar implements Serializable {
 	public void doViewFile() {
 		this.doViewFile(Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas"));
 	}
-	
-  public String doCancelar() {   
-  	JsfBase.setFlashAttribute("idNotaEntrada", ((Entity)this.attrs.get("deuda")).toLong("idNotaEntrada"));
-    return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
-  } // doCancelar
 	
 }

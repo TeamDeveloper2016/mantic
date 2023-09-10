@@ -2989,6 +2989,16 @@ where
         where      
           id_empresa = {idEmpresa} and id_nota_entrada = {idNotaEntrada} and importe = {importe} and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
       </select>
+			<select id="deuda">
+				select
+				  tc_mantic_empresas_deudas.id_empresa_deuda as id_key,
+          tc_mantic_empresas_deudas.id_empresa_deuda
+			  from
+				  tc_mantic_empresas_deudas
+				where
+				  id_nota_entrada= {idNotaEntrada}
+          and saldo&gt;0
+			</select>
       <select id="unica">
         select      
           tc_mantic_empresas_deudas.id_empresa_deuda as id_key,
