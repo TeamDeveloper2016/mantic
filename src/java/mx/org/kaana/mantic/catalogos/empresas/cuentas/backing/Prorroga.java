@@ -87,11 +87,9 @@ public class Prorroga extends IBaseImportar implements Serializable {
 			if(JsfBase.getFlashAttribute("idEmpresaDeuda")== null)
 				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
 			this.attrs.put("codigosBarras", JsfBase.getFlashAttribute("codigosBarras"));
-			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "saldos": JsfBase.getFlashAttribute("retorno"));
+			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "/Paginas/Mantic/Catalogos/Empresas/Cuentas/saldos": JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("idEmpresaDeuda", JsfBase.getFlashAttribute("idEmpresaDeuda"));     
       this.nota= (TcManticNotasEntradasDto)DaoFactory.getInstance().findById(TcManticNotasEntradasDto.class, (Long)JsfBase.getFlashAttribute("idNotaEntrada"));
-//      this.attrs.put("idEmpresaDeuda", 9045L);     
-//      this.nota= (TcManticNotasEntradasDto)DaoFactory.getInstance().findById(TcManticNotasEntradasDto.class, 8932L);
 			this.attrs.put("xml", ""); 
 			this.attrs.put("pdf", ""); 
 			this.doLoad();
