@@ -64,7 +64,7 @@
 						<p:tab title="Importar">
 							<p:fileUpload fileUploadListener="#{manticArchivosProcesar.doFileUpload}" 
 								mode="advanced" process="@this" update="contenedorGrupos:documentos contenedorGrupos:referencias contenedorGrupos:conceptos @(.importado)" label="Selecciona XML" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="3145728"
-								multiple="multiple" allowTypes="#{manticArchivosProcesar.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100 janal-upload-frame"
+                multiple="multiple" allowTypes="#{manticArchivosProcesar.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100 janal-upload-frame" sequential="true" 
 								invalidSizeMessage="El tamaño máximo permitido del archivo es de 3 MB" invalidFileMessage="Solo se permiten archivos en formato #{manticArchivosProcesar.attrs.formatos}" oncomplete="janal.desbloquear()"/>
 							<br/>
               <p:dataTable lazy="false" id="documentos" var="row" rowIndexVar="index" value="#{manticArchivosProcesar.listado}" paginator="true" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" styleClass="janal-wid-100-txt importado" reflow="true" paginatorPosition="bottom" rowKey="#{row.id}">
@@ -74,7 +74,7 @@
                     <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('contenedorGrupos\\:dataXlsDocumentos', 'contenedorGrupos\\:documentos')" oncomplete="janal.desbloquear()"/>
                   </p:menuButton>
                 </f:facet>
-                <p:column styleClass="janal-column-left MarAuto Responsive janal-wid-5">
+                <p:column styleClass="janal-column-left MarAuto Responsive janal-fix-5">
                   <f:facet name="header">
                     <h:outputText value="No."/>
                   </f:facet>
@@ -122,6 +122,12 @@
                     <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('contenedorGrupos\\:dataXlsReferencias', 'contenedorGrupos\\:referencias')" oncomplete="janal.desbloquear()"/>
                   </p:menuButton>
                 </f:facet>
+                <p:column styleClass="janal-column-left MarAuto Responsive janal-fix-5">
+                  <f:facet name="header">
+                    <h:outputText value="No."/>
+                  </f:facet>
+                  <h:outputText value="#{index+ 1}."/>
+                </p:column>
                 <p:column styleClass="janal-column-left MarAuto Responsive janal-wid-6">
                   <f:facet name="header">
                     <h:outputText value="Factura"/>
@@ -158,7 +164,7 @@
                   </f:facet>
                   <h:outputText value="#{row.uuid}"/>
                 </p:column>                    
-                <p:column styleClass="MarAuto Responsive janal-column-left janal-wid-5">
+                <p:column styleClass="MarAuto Responsive janal-column-center janal-wid-5">
                   <f:facet name="header">
                     <h:outputText value="Tipo"/>
                   </f:facet>
@@ -189,6 +195,12 @@
                     <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('contenedorGrupos\\:dataXlsConceptos', 'contenedorGrupos\\:conceptos')" oncomplete="janal.desbloquear()"/>
                   </p:menuButton>
                 </f:facet>
+                <p:column styleClass="janal-column-left MarAuto Responsive janal-fix-5">
+                  <f:facet name="header">
+                    <h:outputText value="No."/>
+                  </f:facet>
+                  <h:outputText value="#{index+ 1}."/>
+                </p:column>
                 <p:column styleClass="janal-column-left MarAuto Responsive janal-wid-6">
                   <f:facet name="header">
                     <h:outputText value="Factura"/>
@@ -219,7 +231,7 @@
                   </f:facet>
                   <h:outputText value="#{row.descripcion}"/>
                 </p:column>     
-                <p:column styleClass="MarAuto Responsive janal-column-right">
+                <p:column styleClass="MarAuto Responsive">
                   <f:facet name="header">
                     <h:outputText value="Proveedor"/>
                   </f:facet>
@@ -277,6 +289,25 @@
               <h:commandLink id="dataXlsConceptos">
                 <pe:exporter type="xlsx" skipComponents="org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="conceptos" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/>                
               </h:commandLink>	                         
+						</p:tab>
+            <p:tab title="Erroneo(s)">
+              <p:dataTable lazy="false" id="erroneos" var="row" rowIndexVar="index" value="#{manticArchivosProcesar.todos}" paginator="true" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" styleClass="janal-wid-100-txt importado" reflow="true" paginatorPosition="bottom" rowKey="#{row}">
+                <p:column styleClass="janal-column-left MarAuto Responsive janal-fix-5">
+                  <f:facet name="header">
+                    <h:outputText value="No."/>
+                  </f:facet>
+                  <h:outputText value="#{index+ 1}."/>
+                </p:column>
+                <p:column styleClass="janal-column-left MarAuto Responsive">
+                  <f:facet name="header">
+                    <h:outputText value="Nombre"/>
+                  </f:facet>
+                  <h:outputText value="#{row}"/>
+                </p:column>                    
+                <f:facet name="footer">
+                  <p:outputLabel value="Total [#{manticArchivosProcesar.todos.size()}] registros"/>
+                </f:facet>
+              </p:dataTable>
 						</p:tab>
 					</p:tabView>
 				</div>

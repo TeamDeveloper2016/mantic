@@ -46,7 +46,9 @@ public class Procesar extends IBaseImportar implements IBaseStorage, Serializabl
   private List<Documento> listado;
   private List<Referencia> referencias;
   private List<Concepto> conceptos;
+  private List<String> todos;
   private String source;
+  private Integer count;
 
   public List<Documento> getListado() {
     return listado;
@@ -59,16 +61,22 @@ public class Procesar extends IBaseImportar implements IBaseStorage, Serializabl
   public List<Concepto> getConceptos() {
     return conceptos;
   }
+
+  public List<String> getTodos() {
+    return todos;
+  }
           
 	@PostConstruct
   @Override
   protected void init() {		
     try {
 			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_XML);
-      this.listado= new ArrayList<>();
+      this.listado    = new ArrayList<>();
       this.referencias= new ArrayList<>();
-      this.conceptos= new ArrayList<>();
-      this.source= Configuracion.getInstance().getPropiedadSistemaServidor("sat");
+      this.conceptos  = new ArrayList<>();
+      this.todos      = new ArrayList<>();
+      this.source     = Configuracion.getInstance().getPropiedadSistemaServidor("sat");
+      this.count      = 1;
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -94,11 +102,13 @@ public class Procesar extends IBaseImportar implements IBaseStorage, Serializabl
 	public void doFileUpload(FileUploadEvent event) {
 		StringBuilder path= new StringBuilder();  
 		StringBuilder temp= new StringBuilder();  
-		String nameFile   = Archivo.toFormatNameFile(event.getFile().getFileName().toUpperCase());
+    String original   = event.getFile().getFileName().toUpperCase();
+		String nameFile   = Archivo.toFormatNameFile(this.count+ "_"+ original);
     File result       = null;		
 		Long fileSize     = 0L;
+    this.count++;
 		try {
-      Documento documento= new Documento(event.getFile().getFileName().toUpperCase());
+      Documento documento= new Documento(original);
       int position= this.listado.indexOf(documento);
       if(position< 0) {
         path.append(this.source);
@@ -120,7 +130,7 @@ public class Procesar extends IBaseImportar implements IBaseStorage, Serializabl
             event.getFile().getFileName().toUpperCase(), // String original, 
             nameFile, // String name, 
             ruta, // String path, 
-            new Importado(nameFile, event.getFile().getContentType(), EFormatos.XML, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), null, event.getFile().getFileName().toUpperCase(), 13L) // Importado xml      
+            new Importado(nameFile, event.getFile().getContentType(), EFormatos.XML, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), null, original, 13L) // Importado xml      
           ));
           this.toReadFactura(result, Boolean.TRUE, 1D);
           // CARGAR LOS DATOS DE LA FACTURA
@@ -157,18 +167,19 @@ public class Procesar extends IBaseImportar implements IBaseStorage, Serializabl
               this.getEmisor().getNombre() // String proveedor
             ));
           } // for
-          this.toSaveFileRecord(event.getFile().getFileName().toUpperCase(), ruta, path.toString(), this.listado.get(this.listado.size()- 1).getXml().getName());            
+          this.toSaveFileRecord(original, ruta, path.toString(), this.listado.get(this.listado.size()- 1).getXml().getName());            
           this.getFactura().getConceptos().clear();
         } // if
       } // if
       else {
-  			JsfBase.addMessage("Precaución:", "El archivo ya esta cargado ".concat(event.getFile().getFileName().toUpperCase()), ETipoMensaje.ERROR);
-        LOG.error("EL ARCHIVO YA ESTA CARGADO EN LA LISTA ".concat(event.getFile().getFileName().toUpperCase()));
+  			JsfBase.addMessage("Precaución:", "El archivo ya esta cargado ".concat(original), ETipoMensaje.ERROR);
+        LOG.error("EL ARCHIVO YA ESTA CARGADO EN LA LISTA ".concat(original));
       } // if  
 		} // try
 		catch (Exception e) {
+      this.todos.add(original);
 			Error.mensaje(e);
-			JsfBase.addMessage("Importar:", "El archivo no pudo ser importado !", ETipoMensaje.ERROR);
+			JsfBase.addMessage("Importar:", "El archivo ["+ original+ "] no pudo ser importado !", ETipoMensaje.ERROR);
 			if(result!= null)
 			  result.delete();
 		} // catch    

@@ -906,7 +906,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 				if(clienteDomicilio.getKey()>= 0L)
 					countDomicilio++;
 			} // for
-			if(countDomicilio== 0){
+			if(countDomicilio== 0) {
 				this.attrs.put("renderedDomicilio", false);
 				this.attrs.put("mensajeDomicilio", "Un DOMICILIO registrado.");								
 			} // if
@@ -927,10 +927,12 @@ public class Accion extends IBaseAttribute implements Serializable {
 	} // doCreateMessage
   
   public void doLoadEspecial() {
-		if(this.attrs.get("idEspecial")!= null && "1".equals((String)this.attrs.get("idEspecial")))
+		if(!Objects.equals(this.attrs.get("idEspecial"), null) && Objects.equals("1", (String)this.attrs.get("idEspecial")))
       UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:especial', {validaciones: 'requerido|flotante|mayor-igual({\"cuanto\":5}|menor-igual({\"cuanto\":30})', mascara: 'libre'});");
-		else
+    else {
       UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:especial', {validaciones: 'libre', mascara: 'libre'});");
+      this.registroCliente.getCliente().setEspecial(0D);      
+    } // if  
   }
 
   public void doCreateUser(ClienteContactoRepresentante row) {

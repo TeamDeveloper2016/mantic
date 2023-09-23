@@ -303,8 +303,9 @@ public class Calendario extends Comun implements Serializable {
     try {      
 //      this.lazyEventModel.getEvents().clear();
       Periodo periodo= new Periodo(date);
+      periodo.addMeses(2);
       params.put("termino", periodo.getTerminoMes().getSemanaSiguiente().toString());      
-      periodo.addMeses(-12);
+      periodo.addMeses(-14);
       params.put("inicio", periodo.getTerminoAnio().getSemanaAnterior().toString());      
       columns.add(new Columna("cantidad", EFormatoDinamicos.MILES_SIN_DECIMALES));
       List<Entity> cuentas= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaIndicadoresTableroDto", "calendario", params, Constantes.SQL_TOPE_REGISTROS);
