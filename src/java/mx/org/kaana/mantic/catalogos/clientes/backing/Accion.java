@@ -93,6 +93,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 		this.loadTiposContactos();
 		this.loadTiposDomicilios();	
     this.toLoadTiposClientes();
+    this.toLoadUsosCfdi();
 		this.toLoadRegimenesFiscales();
 		this.loadTiposVentas();
 		this.loadDomicilios();
@@ -748,7 +749,26 @@ public class Accion extends IBaseAttribute implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
-	} // doEliminarRepresentante
+	} 
+	
+	private void toLoadUsosCfdi() {
+		List<Columna> columns     = new ArrayList<>();    
+    Map<String, Object> params= new HashMap<>();
+    try {      
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			this.attrs.put("usosCfdi", (List<UISelectEntity>) UIEntity.seleccione("TcManticUsosCfdiDto", "rows", params, columns, "completo"));
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally
+	} 
 	
 	private void toLoadRegimenesFiscales() {
 		List<Columna> columns     = new ArrayList<>();    
@@ -773,7 +793,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       Methods.clean(params);
       Methods.clean(columns);
     } // finally
-	} // loadRegimenesFiscales
+	} 
 	
 	private void toLoadTiposClientes() {
 		List<UISelectItem> tiposClientes= null;

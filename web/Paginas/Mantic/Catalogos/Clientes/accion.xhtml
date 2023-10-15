@@ -14,6 +14,7 @@
         'contenedorGrupos\\:clave': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
         'contenedorGrupos\\:rfc': {validaciones: 'requerido|rfc', mascara: 'fiscal', grupo: 'general', formatos: 'cambiar-mayusculas'},
         'contenedorGrupos\\:idTipoCliente': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+        'contenedorGrupos\\:idUsoCfdi': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:idRegimenFiscal': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:razonSocial': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
         'contenedorGrupos\\:paterno': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
@@ -73,6 +74,16 @@
 								</p:selectOneMenu>
                 <p:outputLabel for="rfc" value="RFC:"/>
                 <p:inputText id="rfc" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.cliente.rfc}" />                    
+                <p:outputLabel for="idUsoCfdi" value="Uso cfdi:"/>
+                <p:selectOneMenu id="idUsoCfdi" value="#{manticCatalogosClientesAccion.registroCliente.ikUsoCfdi}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <f:selectItems value="#{manticCatalogosClientesAccion.attrs.usosCfdi}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+                  <p:column headerText="Código">
+                    <h:outputText value="#{item.clave}"/>
+                  </p:column>   
+                  <p:column headerText="Nombre">
+                    <h:outputText value="#{item.completo}"/>
+                  </p:column>   
+								</p:selectOneMenu>
                 <p:outputLabel for="idRegimenFiscal" value="Régimen fiscal:"/>
                 <p:selectOneMenu id="idRegimenFiscal" value="#{manticCatalogosClientesAccion.registroCliente.ikRegimenFiscal}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                   <f:selectItems value="#{manticCatalogosClientesAccion.attrs.regimenesFiscales}" var="element" itemValue="#{element}" itemLabel="#{element.codigo} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>

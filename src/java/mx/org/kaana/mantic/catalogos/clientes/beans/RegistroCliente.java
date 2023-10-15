@@ -40,6 +40,7 @@ public class RegistroCliente implements Serializable {
 	private ClienteContactoRepresentante personaTipoContacto;	
 	private boolean habilitarCredito;
   private int index;
+  private UISelectEntity ikUsoCfdi;
   private UISelectEntity ikRegimenFiscal;
 
 	public RegistroCliente() {
@@ -96,6 +97,16 @@ public class RegistroCliente implements Serializable {
 	public void setCliente(TcManticClientesDto cliente) {
 		this.cliente = cliente;
 	}
+
+  public UISelectEntity getIkUsoCfdi() {
+    return ikUsoCfdi;
+  }
+
+  public void setIkUsoCfdi(UISelectEntity ikUsoCfdi) {
+    this.ikUsoCfdi = ikUsoCfdi;
+		if(this.ikUsoCfdi!= null && this.cliente!= null)
+		  this.cliente.setIdUsoCfdi(this.ikUsoCfdi.getKey());
+  }
 
 	public void setIkRegimenFiscal(UISelectEntity ikRegimenFiscal) {
 		this.ikRegimenFiscal=ikRegimenFiscal;
@@ -234,7 +245,8 @@ public class RegistroCliente implements Serializable {
 			motorBusqueda= new MotorBusqueda(this.idCliente);
 			this.cliente= motorBusqueda.toCliente();		
 			this.habilitarCredito= this.cliente.getIdCredito().equals(1L);
-      if(this.cliente!= null && this.cliente.getIdRegimenFiscal()!= null)
+      this.setIkUsoCfdi(new UISelectEntity(this.cliente.getIdUsoCfdi()));
+      if(this.cliente.getIdRegimenFiscal()!= null)
         this.setIkRegimenFiscal(new UISelectEntity(this.cliente.getIdRegimenFiscal()));
       else
         this.setIkRegimenFiscal(new UISelectEntity(-1L));
