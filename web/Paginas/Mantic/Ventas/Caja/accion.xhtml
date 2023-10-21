@@ -431,6 +431,7 @@
                   <p:panelGrid columns="1" styleClass="janal-wid-100-txt">								
                     <p:outputLabel for="cliente" value="Cliente:"/>		
                     <p:selectOneMenu id="cliente" value="#{manticVentasCajaAccion.attrs.clienteSeleccion}" var="item" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity">																	
+      								<p:ajax event="change" process="@this" onstart="return janal.bloquear()" listener="#{manticVentasCajaAccion.doActualizaCliente}" oncomplete="janal.desbloquear()" update="cliente contenido @(.cambio-cliente) contenedorGrupos contenedorGrupos:panelSumatoria contenedorGrupos:deudorPago contenedorGrupos:deudor contenedorGrupos:panelGenerales contenedorGrupos:facturacionSinCorreo contenedorGrupos:celularCliente contenedorGrupos:correosCliente"/>
                       <f:selectItems value="#{manticVentasCajaAccion.attrs.clientesSeleccion}" var="element" itemValue="#{element}" itemLabel="[#{element.especial eq '0'? '': '*'}] #{element.razonSocial}"/>
                       <p:column headerText="Clave">
                         <h:outputText value="#{item.clave}"/>
@@ -493,8 +494,7 @@
 							<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-30, janal-wid-70" rendered="#{manticVentasCajaAccion.attrs.facturarVenta}">
                 <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                   <p:outputLabel for="cfdi" value="Uso del CFDI:" rendered="#{manticVentasCajaAccion.attrs.facturarVenta}"/>
-                  <p:selectOneMenu id="cfdi" value="#{manticVentasCajaAccion.attrs.cfdi}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity" rendered="#{manticVentasCajaAccion.attrs.facturarVenta}">
-                    <f:selectItem itemValue="" itemLabel="SELECCIONE"/>
+                  <p:selectOneMenu id="cfdi" value="#{manticVentasCajaAccion.attrs.cfdi}" styleClass="janal-wid-100-txt cambio-cliente" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity" rendered="#{manticVentasCajaAccion.attrs.facturarVenta}">
                     <f:selectItems value="#{manticVentasCajaAccion.attrs.cfdis}" var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
                     <p:column styleClass="janal-column-left janal-wid-col-50">
                       <h:outputText value="#{item.clave}"/>

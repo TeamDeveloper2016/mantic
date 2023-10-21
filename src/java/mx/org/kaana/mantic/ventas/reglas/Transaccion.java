@@ -353,7 +353,7 @@ public class Transaccion extends TransaccionFactura {
 		List<Articulo> todos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(sesion, Articulo.class, "TcManticVentasDetallesDto", "detalle", this.orden.toMap());
 		for (Articulo item: todos) 
 			if(detalleArt.indexOf(item)< 0)
-				DaoFactory.getInstance().delete(sesion, item);
+				DaoFactory.getInstance().delete(sesion, TcManticVentasDetallesDto.class, item.getKey());
 		for (Articulo articulo: detalleArt) {
 			if(articulo.isValid()){
 				TcManticVentasDetallesDto item= articulo.toVentaDetalle();

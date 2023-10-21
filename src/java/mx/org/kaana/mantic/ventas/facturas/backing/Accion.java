@@ -70,6 +70,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 	private static final Log LOG               = LogFactory.getLog(Accion.class);  
   private static final long serialVersionUID = 327393488565639367L;
 	private static final String VENDEDOR_PERFIL= "VENDEDOR DE PISO";
+	private static final String GASTOS_GENERAL_CLAVE= "G03";	
 	
 	private SaldoCliente saldoCliente;
 	private StreamedContent image;
@@ -874,24 +875,29 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			motorBusqueda= new MotorBusqueda(-1L);
 			this.attrs.put("mostrarCorreos", seleccion.getKey().equals(-1L) || seleccion.getKey().equals(motorBusqueda.toClienteDefault().getKey()));
 			this.toFindCliente(seleccion);
-			loadDomicilios(seleccion.getKey());
+			this.loadDomicilios(seleccion.getKey());
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch		
-	} // doAsignaCliente
+	} 
 	
 	private void toFindCliente(UISelectEntity seleccion) {
-		List<UISelectEntity> clientesSeleccion= null;
+		List<UISelectEntity> clientesSeleccion= new ArrayList<>();
 		MotorBusqueda motorBusqueda           = null;
 		try {
-			clientesSeleccion= new ArrayList<>();
 			clientesSeleccion.add(seleccion);
 			motorBusqueda= new MotorBusqueda(-1L);
 			clientesSeleccion.add(0, new UISelectEntity(motorBusqueda.toClienteDefault()));
 			this.attrs.put("clientesSeleccion", clientesSeleccion);
 			this.attrs.put("clienteSeleccion", seleccion);			
+      List<UISelectEntity> cfdis= (List<UISelectEntity>)this.attrs.get("cfdis");
+      if(!Objects.equals(cfdis, null) && !cfdis.isEmpty()) {
+        int index= cfdis.indexOf(new UISelectEntity(seleccion.toLong("idUsoCfdi")));
+        if(index>= 0)
+          this.attrs.put("cfdi", cfdis.get(index));
+      } // if  
       this.toLoadRegimenesFiscales();      
 		} // try
 		catch (Exception e) {
@@ -905,7 +911,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 		this.attrs.put("codigoCliente", query);
     this.doUpdateClientes();		
 		return (List<UISelectEntity>)this.attrs.get("clientes");
-	}	// doCompleteCliente
+	}	
 	
 	@Override
 	public void doUpdateClientes() {
@@ -914,7 +920,6 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
     try {
       columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
-  		// params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getDependencias());
   		params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			String search= (String) this.attrs.get("codigoCliente"); 
 			search= !Cadena.isVacio(search)? search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*") : "WXYZ";
@@ -934,15 +939,23 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 	public void doActualizaPrecioCliente() {		
     List<UISelectEntity> clientesSeleccion= null;
 		UISelectEntity clienteSeleccion       = null;		
+		UISelectEntity seleccion              = null;		
 		try {
 			clienteSeleccion = (UISelectEntity) this.attrs.get("clienteSeleccion");			
       clientesSeleccion= (List<UISelectEntity>)this.attrs.get("clientesSeleccion");
       if(clientesSeleccion!= null && !clientesSeleccion.isEmpty()) {
         int index= clientesSeleccion.indexOf(clienteSeleccion);
         if(index>= 0) 
-          this.attrs.put("clienteSeleccion", clientesSeleccion.get(index));
+          seleccion= clientesSeleccion.get(index);
         else 
-          this.attrs.put("clienteSeleccion", clientesSeleccion.get(0));
+          seleccion= clientesSeleccion.get(0);
+        this.attrs.put("clienteSeleccion", seleccion);
+        List<UISelectEntity> cfdis= (List<UISelectEntity>)this.attrs.get("cfdis");
+        if(!Objects.equals(cfdis, null) && !cfdis.isEmpty()) {
+          index= cfdis.indexOf(new UISelectEntity(seleccion.toLong("idUsoCfdi")));
+          if(index>= 0)
+            this.attrs.put("cfdi", cfdis.get(index));
+        } // if  
         this.toLoadRegimenesFiscales();
       } // if
 			this.loadDomicilios(clienteSeleccion.getKey());
@@ -951,7 +964,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch		
-	} // doActualizaPrecioCliente
+	} 
 	
 	public String doClientes() {
 		String regresar= null;
@@ -1007,11 +1020,11 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
-			cfdis= UIEntity.build("TcManticUsosCfdiDto", Objects.equals(Configuracion.getInstance().getPropiedad("sistema.nivel.facturacion"), "4.0")? "rows": "row", params, columns, Constantes.SQL_TODOS_REGISTROS);
+			cfdis= UIEntity.seleccione("TcManticUsosCfdiDto", Objects.equals(Configuracion.getInstance().getPropiedad("sistema.nivel.facturacion"), "4.0")? "rows": "row", params, columns, Constantes.SQL_TODOS_REGISTROS, "clave");
 			this.attrs.put("cfdis", cfdis);
-			this.attrs.put("cfdi", new UISelectEntity("-1"));
+			this.attrs.put("cfdi", UIBackingUtilities.toFirstKeySelectEntity(cfdis));
 			for(Entity record: cfdis) {
-				if(record.getKey().equals(3L))
+        if(Objects.equals(record.toString("clave"), GASTOS_GENERAL_CLAVE))        
 					this.attrs.put("cfdi", record);
 			} // for
 		} // try

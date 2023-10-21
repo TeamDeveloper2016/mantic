@@ -177,7 +177,7 @@
 						<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
 							<p:outputLabel for="clientes" value="Buscar cliente:"/>							
 							<p:autoComplete id="clientes" placeholder="RFC o nombre" widgetVar="listadoClientes" var="customCliente" itemLabel="#{customCliente.razonSocial}" inputStyleClass="janal-wid-100-txt key-down-clientes filas" itemValue="#{customCliente}" value="#{manticVentasFacturasAccion.attrs.cliente}" completeMethod="#{manticVentasFacturasAccion.doCompleteCliente}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">
-								<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this idEmpresa" listener="#{manticVentasFacturasAccion.doAsignaCliente}" update="cliente contenido panelDomicilio correosCliente panelBotones" oncomplete="janal.desbloquear();"/>
+								<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this idEmpresa" listener="#{manticVentasFacturasAccion.doAsignaCliente}" update="cliente contenido panelDomicilio cfdi correosCliente panelBotones" oncomplete="janal.desbloquear();"/>
 								<f:facet name="itemtip">
 									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">												
 										<h:outputText value="Clave" />
@@ -203,7 +203,7 @@
 						<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100 janal-wid-100-txt" columnClasses="janal-wid-100-txt">
 							<p:outputLabel for="cliente" value="Cliente seleccionado:"/>							
 							<p:selectOneMenu id="cliente" value="#{manticVentasFacturasAccion.attrs.clienteSeleccion}" var="item" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity">								
-								<p:ajax event="change" process="@this idEmpresa" onstart="return janal.bloquear();" listener="#{manticVentasFacturasAccion.doActualizaPrecioCliente}" oncomplete="janal.desbloquear();" update="tabla clientes panelDomicilio"/>
+								<p:ajax event="change" process="@this idEmpresa" onstart="return janal.bloquear();" listener="#{manticVentasFacturasAccion.doActualizaPrecioCliente}" oncomplete="janal.desbloquear()" update="tabla clientes panelDomicilio cfdi"/>
 								<f:selectItems value="#{manticVentasFacturasAccion.attrs.clientesSeleccion}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.razonSocial}"/>
 								<p:column headerText="Clave">
 									<h:outputText value="#{item.clave}"/>
@@ -304,9 +304,8 @@
 							</p:column>   
 						</p:selectOneMenu>
 						<p:selectOneMenu id="cfdi" value="#{manticVentasFacturasAccion.attrs.cfdi}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity">																			
-							<f:selectItem itemValue="" itemLabel="SELECCIONE"/>
 							<f:selectItems value="#{manticVentasFacturasAccion.attrs.cfdis}" var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
-							<p:column  styleClass="janal-column-left janal-wid-col-50">
+							<p:column styleClass="janal-column-left janal-wid-col-50">
 								<h:outputText value="#{item.clave}"/>
 							</p:column>   										
 							<p:column  styleClass="janal-column-left">

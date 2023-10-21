@@ -237,10 +237,14 @@ public final class DaoFactory<T extends IBaseDto> {
    * @throws Exception
    */
   public Long delete(Session session, Class dto, Long key) throws Exception {
-    IBaseDao dao = null;
+    IBaseDao dao= null;
     try {
-      dao = new DaoFacade(dto);
-      return dao.delete(session, key);
+      if(dto== null)
+        throw new RuntimeException("No se tiene una clase definida para el DTO");
+      else {
+        dao = new DaoFacade(dto);
+        return dao.delete(session, key);
+      } // if  
     } // try
     catch (Exception e) {
       throw e;

@@ -150,11 +150,9 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 	
 	protected void loadSucursales() {
 		List<UISelectEntity> sucursales= null;
-		Map<String, Object>params      = null;
-		List<Columna> columns          = null;
+		Map<String, Object>params      = new HashMap<>();
+		List<Columna> columns          = new ArrayList<>();
 		try {
-			columns= new ArrayList<>();
-			params= new HashMap<>();
 			params.put("sucursales", JsfBase.isAdminEncuestaOrAdmin() ? JsfBase.getAutentifica().getEmpresa().getSucursales() : JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
@@ -170,11 +168,9 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 	
 	protected void loadSucursalesPerfil(){
 		List<UISelectEntity> sucursales= null;
-		Map<String, Object>params      = null;
-		List<Columna> columns          = null;
+		Map<String, Object>params      = new HashMap<>();
+		List<Columna> columns          = new ArrayList<>();
 		try {
-			columns= new ArrayList<>();
-			params= new HashMap<>();
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
@@ -189,14 +185,12 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 	} // loadSucursales
 	
 	public void doAlmacenesArticulo(Long idArticulo, Integer index) {
-		Map<String, Object>params= null;
-		List<Columna>columns     = null;
+		Map<String, Object>params= new HashMap<>();
+		List<Columna>columns     = new ArrayList<>();
 		try {
-			if(idArticulo!= null){
-				params= new HashMap<>();
+			if(idArticulo!= null) {
 				params.put("idArticulo", idArticulo);
 				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getDependencias());
-				columns= new ArrayList<>();
 				columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
 				columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 				columns.add(new Columna("stock", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
@@ -218,11 +212,9 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 	} // doDetailArticulo
 	
 	public void doLoadTicketAbiertos() {	
-		Map<String, Object>params= null;
-		List<Columna> columns    = null;
+		Map<String, Object>params= new HashMap<>();
+		List<Columna> columns    = new ArrayList<>();
 		try {
-			columns= new ArrayList<>();
-			params = new HashMap<>();
 			params.put("sortOrder", "");
 			params.put("idEmpresa", this.attrs.get("idEmpresa"));			
 			columns.add(new Columna("cuenta", EFormatoDinamicos.MAYUSCULAS));
@@ -263,22 +255,20 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 			Methods.clean(params);
 			Methods.clean(columns);
 		} // finally
-	} // doLoadCotizaciones
+	} 
 	
 	public void doLoadApartados(){		
-		Map<String, Object>params      = null;		
-		List<Columna> campos           = null;
+		Map<String, Object>params= new HashMap<>();		
+		List<Columna> columns    = new ArrayList<>();
 		try {			
-			params= new HashMap<>();
 			params.put("sortOrder", "");
 			params.put("idEmpresa", this.attrs.get("idEmpresa"));
 			params.put(Constantes.SQL_CONDICION, toCondicionApartados());
-			campos= new ArrayList<>();
-			campos.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));
-			campos.add(new Columna("cuenta", EFormatoDinamicos.MAYUSCULAS));
-			campos.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
-			campos.add(new Columna("vigencia", EFormatoDinamicos.FECHA_HORA_CORTA));
-			this.lazyApartados= new FormatLazyModel("VistaVentasDto", "lazyApartados", params, campos);			
+			columns.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("cuenta", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
+			columns.add(new Columna("vigencia", EFormatoDinamicos.FECHA_HORA_CORTA));
+			this.lazyApartados= new FormatLazyModel("VistaVentasDto", "lazyApartados", params, columns);			
 			UIBackingUtilities.execute("PF('dlgApartados').show();");			
 		} // try
 		catch (Exception e) {
@@ -287,7 +277,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 		} // catch		
 		finally{
 			Methods.clean(params);
-			Methods.clean(campos);
+			Methods.clean(columns);
 		} // finally
 	} // doLoadCotizaciones
 	
@@ -296,9 +286,8 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 	} // toCondicion
 	
 	private String toCondicion(boolean cotizacion) {
-		StringBuilder regresar= null;
+		StringBuilder regresar= new StringBuilder();
 		try {
-			regresar= new StringBuilder();
 			if(cotizacion) {
 				regresar.append("tc_mantic_ventas.id_venta_estatus in (");
 				regresar.append(EEstatusVentas.COTIZACION.getIdEstatusVenta());
@@ -391,13 +380,12 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 	
 	public void doAsignaCotizacion(){
 		Map<String, Object>params = new HashMap<>();
-		Date actual               = null;
+		Date actual               = new Date(Calendar.getInstance().getTimeInMillis());
 		try {
 			params.put("idVenta", ((Entity)this.attrs.get("cotizacion")).toLong("idVenta"));
 			this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params)));
 			this.unlockVentaExtends((Long)params.get("idVenta"), (Long)this.attrs.get("ticketLock"));
 			this.attrs.put("ticketLock", (Long)params.get("idVenta"));
-			actual= new Date(Calendar.getInstance().getTimeInMillis());
 			if(actual.after(((TicketVenta)getAdminOrden().getOrden()).getVigencia()))
 				this.generateNewVenta();    	
 			this.toLoadCatalog();
@@ -415,14 +403,13 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 	
 	public void doAsignaApartado() {
 		Map<String, Object>params = new HashMap<>();
-		Date actual               = null;
+		Date actual               = new Date(Calendar.getInstance().getTimeInMillis());
 		try {
 			params.put("idVenta", this.attrs.get("apartados"));
 			this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params)));
 			unlockVentaExtends(Long.valueOf(params.get("idVenta").toString()), (Long)this.attrs.get("ticketLock"));
 			this.attrs.put("ticketLock", Long.valueOf(params.get("idVenta").toString()));
 			this.asignaAbonoApartado();
-			actual= new Date(Calendar.getInstance().getTimeInMillis());
 			if(actual.after(((TicketVenta)getAdminOrden().getOrden()).getVigencia()))
 				this.generateNewVenta();    				
 			this.toLoadCatalog();
@@ -439,9 +426,8 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 	} // doAsignaApartado
 	
 	protected void generateNewVenta() throws Exception {
-		List<ArticuloVenta> articulosPivote= null;
+		List<ArticuloVenta> articulosPivote= new ArrayList<>();
 		try {
-			articulosPivote= new ArrayList<>();
 			for(Articulo vigente: getAdminOrden().getArticulos())				
 				articulosPivote.add((ArticuloVenta)vigente);			
 			this.getAdminOrden().getArticulos().clear();
@@ -490,12 +476,11 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 	protected void doAsignaClienteTicketAbierto() throws Exception {		
 		MotorBusqueda motorBusqueda           = null;
 		UISelectEntity seleccion              = null;
-		List<UISelectEntity> clientesSeleccion= null;
+		List<UISelectEntity> clientesSeleccion= new ArrayList<>();
 		Entity clienteDefault                 = null;
 		try {
 			motorBusqueda    = new MotorBusqueda(-1L, ((TicketVenta)this.getAdminOrden().getOrden()).getIdCliente());
 			seleccion        = new UISelectEntity(motorBusqueda.toCliente());
-			clientesSeleccion= new ArrayList<>();
 			clientesSeleccion.add(seleccion);
 			clienteDefault= motorBusqueda.toClienteDefault();
       if(!Objects.equal(seleccion.getKey(), clienteDefault.getKey()))
@@ -510,11 +495,11 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 		catch (Exception e) {	
 			throw e;
 		} // catch		
-	} // doAsignaClienteTicketAbierto
+	} 
 	
 	public void doReCalculatePreciosArticulos(Long idCliente){
-		doReCalculatePreciosArticulos(true, idCliente);
-	} // doReCalculatePreciosArticulos
+		this.doReCalculatePreciosArticulos(true, idCliente);
+	} 
 	
 	public void doReCalculatePreciosArticulos(boolean descuentoVigente, Long idCliente) {
 		MotorBusqueda motor          = null;
@@ -927,11 +912,10 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 	} // toMoveDataArt  
 	@Override
 	public void doUpdateSolicitado(Long idArticulo) {
-		List<Columna> columns= null;
+		List<Columna> columns= new ArrayList<>();
     try {
 			if(idArticulo!= null)
   			this.attrs.put("idArticulo", idArticulo);
-			columns= new ArrayList<>();
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("moneda", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("costo", EFormatoDinamicos.MONEDA_CON_DECIMALES));
@@ -991,14 +975,13 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 	
 	@Override
 	public void doLoadFaltantes() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			params.put("idAlmacen", this.getAdminOrden().getIdAlmacen());
 			params.put("idProveedor", this.getAdminOrden().getIdProveedor());
 			params.put("codigoFaltante", "");
-			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
@@ -1055,10 +1038,9 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 	} 
 	
 	public void doCleanClientes() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
 		try {
-			columns= new ArrayList<>();
   		params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
   		params.put(Constantes.SQL_CONDICION, Constantes.SQL_FALSO);
       this.attrs.put("lazyModelClientes", new FormatCustomLazy("VistaClientesDto", "findRazonSocial", params, columns));
@@ -1088,11 +1070,10 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 	} // doAsignaCliente
 	
   private void toFindCliente(UISelectEntity seleccion) {
-		List<UISelectEntity> clientesSeleccion= null;
+		List<UISelectEntity> clientesSeleccion= new ArrayList<>();
 		MotorBusqueda motorBusqueda           = null;
 		Entity clienteDefault                 = null;
 		try {
-			clientesSeleccion= new ArrayList<>();
 			clientesSeleccion.add(seleccion);
 			motorBusqueda= new MotorBusqueda(-1L);
 			clienteDefault= motorBusqueda.toClienteDefault();
@@ -1164,17 +1145,14 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 		this.attrs.put("codigoCliente", query);
     this.doUpdateClientes();		
 		return (List<UISelectEntity>)this.attrs.get("clientes");
-	}	// doCompleteCliente
+	}	
 	
 	public void doUpdateClientes() {
-		List<Columna> columns     = null;
-    Map<String, Object> params= null;
+		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
     try {
-			params = new HashMap<>();
-			columns= new ArrayList<>();
       columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
-  		// params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getDependencias());
   		params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			String search= (String) this.attrs.get("codigoCliente"); 
 			search= !Cadena.isVacio(search) ? search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*") : "WXYZ";
@@ -1193,13 +1171,12 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 	
 	public String toColor(Entity row) {
 		return doVerificaVigenciaCotizacion(row.getKey()) ? "janal-tr-yellow" : "";
-	} // toColor
+	} 
 	
 	protected void asignaAbonoApartado() throws Exception{
 		TcManticApartadosDto apartado= null;
-		Map<String, Object>params    = null;
+		Map<String, Object>params    = new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put("idVenta", ((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta());
 			apartado= (TcManticApartadosDto) DaoFactory.getInstance().toEntity(TcManticApartadosDto.class, "TcManticApartadosDto", "detalle", params);
 			if(apartado.isValid())

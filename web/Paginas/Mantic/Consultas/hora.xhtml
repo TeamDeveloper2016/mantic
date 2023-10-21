@@ -6,13 +6,12 @@
                 xmlns:p="http://primefaces.org/ui"
 								xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/reporte.xhtml">
-  <ui:param name="titulo" value="Consulta de ventas al corte por hora" />
+  <ui:param name="titulo" value="Consulta de ventas por hora" />
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {				
         'idEmpresa'   : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},        								
         'idCaja'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},        				
-        'idCierre'    : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},        				
 				'fechaInicio' : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
         'fechaTermino': {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'}
       };							
@@ -33,10 +32,10 @@
           <p:panel id="panelBusqueda" header="Búsqueda:" styleClass="lg-pantalla" toggleable="true" toggleOrientation="horizontal">
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" >
-              <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticConsultasHoras.attrs.isMatriz}"/>
-              <p:selectOneMenu id="idEmpresa" value="#{manticConsultasHoras.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-								<p:ajax event="change" listener="#{manticConsultasHoras.doLoadCajas}" process="@this" update="idCaja idCierre"/>
-                <f:selectItems value="#{manticConsultasHoras.attrs.sucursales}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{element.titulo eq ''? '': '|'} #{element.titulo}"/>
+              <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticConsultasHora.attrs.isMatriz}"/>
+              <p:selectOneMenu id="idEmpresa" value="#{manticConsultasHora.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+								<p:ajax event="change" listener="#{manticConsultasHora.doLoadCajas}" process="@this" update="idCaja"/>
+                <f:selectItems value="#{manticConsultasHora.attrs.sucursales}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{element.titulo eq ''? '': '|'} #{element.titulo}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>   
@@ -45,9 +44,8 @@
                 </p:column>   
               </p:selectOneMenu>  
 							<p:outputLabel for="idCaja" value="Cajas:"/>
-              <p:selectOneMenu id="idCaja" value="#{manticConsultasHoras.attrs.idCaja}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-								<p:ajax event="change" listener="#{manticConsultasHoras.doLoadCierres}" process="@this" update="idCierre"/>
-                <f:selectItems value="#{manticConsultasHoras.attrs.cajas}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{element.nombre eq ''? '': '|'} #{element.nombre} "/>
+              <p:selectOneMenu id="idCaja" value="#{manticConsultasHora.attrs.idCaja}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <f:selectItems value="#{manticConsultasHora.attrs.cajas}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{element.nombre eq ''? '': '|'} #{element.nombre} "/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>   
@@ -58,31 +56,21 @@
                   <h:outputText value="#{item.limite}"/>
                 </p:column>   
               </p:selectOneMenu>
-							<p:outputLabel for="idCierre" value="Cierres:"/>
-							<p:selectOneMenu id="idCierre" value="#{manticConsultasHoras.attrs.idCierre}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                <f:selectItems value="#{manticConsultasHoras.attrs.cierres}" var="element" itemValue="#{element}" itemLabel="#{element.consecutivo} #{element.nombre eq ''? '': '|'} #{element.registro}"/>
-                <p:column headerText="Consecutivo">
-                  <h:outputText value="#{item.consecutivo}"/>
-                </p:column>   
-                <p:column headerText="Fecha">
-                  <h:outputText value="#{item.registro}"/>
-                </p:column>   
-              </p:selectOneMenu>
-              <p:outputLabel for="fechaInicio" value="Fecha inicio:" rendered="false"/>
-							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticConsultasHoras.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario" rendered="false"/>
+              <p:outputLabel for="fechaInicio" value="Fecha:"/>
+							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticConsultasHora.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario"/>
 							<p:outputLabel for="fechaTermino" value="Fecha término:" rendered="false"/>
-							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticConsultasHoras.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario" rendered="false"/>
+							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticConsultasHora.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario" rendered="false"/>
 							<p:separator/>
             </p:panelGrid>
 						<div class="janal-align-right">
-							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{manticConsultasHoras.doLoad}" oncomplete="janal.desbloquear();" update="tabla credito apartado"/>
-							<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{manticConsultasHoras.doLoad}" oncomplete="janal.desbloquear();" update="tabla credito apartado" />
+							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{manticConsultasHora.doLoad}" oncomplete="janal.desbloquear();" update="tabla credito apartado"/>
+							<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{manticConsultasHora.doLoad}" oncomplete="janal.desbloquear();" update="tabla credito apartado" />
 						</div>
           </p:panel>
         </div>
 				<p:spacer/>
         <div id="collapse-content" class="ui-grid-col-9">
-          <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticConsultasHoras.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticConsultasHoras.attrs.seleccionado}" selectionMode="single" paginator="#{manticConsultasHoras.lazyModel.rowCount gt manticConsultasHoras.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">            
+          <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticConsultasHora.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticConsultasHora.attrs.seleccionado}" selectionMode="single" paginator="#{manticConsultasHora.lazyModel.rowCount gt manticConsultasHora.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">            
             <f:facet name="header" >
               <div class="lg-pantalla">
                 <p:menuButton value="Opciones">                  
@@ -134,21 +122,21 @@
 						<p:columnGroup type="footer">
 							<p:row>
 								<p:column colspan="5" style="text-align:right" footerText="Total:" />
-								<p:column footerText="#{manticConsultasHoras.doMonedaSat(manticConsultasHoras.attrs.total.total)}" style="text-align:right"/>									
+								<p:column footerText="#{manticConsultasHora.doMonedaSat(manticConsultasHora.attrs.total.total)}" style="text-align:right"/>									
 							</p:row>
 						</p:columnGroup>
             <f:facet name="footer">
-              <p:outputLabel value="Total [#{manticConsultasHoras.lazyModel==null?0:manticConsultasHoras.lazyModel.rowCount}] registros"/>
+              <p:outputLabel value="Total [#{manticConsultasHora.lazyModel==null?0:manticConsultasHora.lazyModel.rowCount}] registros"/>
             </f:facet>
           </p:dataTable>          
 					<p:spacer height="2px"/>
 					<h:commandLink id="creditoPdf">
-						<pe:exporter type="pdf"  skipComponents="org.primefaces.component.outputpanel.OutputPanel,com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="tabla" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
+						<pe:exporter type="pdf" skipComponents="org.primefaces.component.outputpanel.OutputPanel,com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="tabla" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
 					</h:commandLink>
 					<h:commandLink id="creditoXls">
 						<pe:exporter type="xlsx" skipComponents="javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="tabla" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/> 
 					</h:commandLink>			
-          <p:dataTable lazy="true" id="credito" widgetVar="kajoolCredito" var="row" value="#{manticConsultasHoras.lazyCredito}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_MAX_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_MAX_CADA_PAGINA}" selection="#{manticConsultasHoras.attrs.credito}" selectionMode="single" paginator="#{manticConsultasHoras.lazyCredito.rowCount gt manticConsultasHoras.lazyCredito.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">            
+          <p:dataTable lazy="true" id="credito" widgetVar="kajoolCredito" var="row" value="#{manticConsultasHora.lazyCredito}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_MAX_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_MAX_CADA_PAGINA}" selection="#{manticConsultasHora.attrs.credito}" selectionMode="single" paginator="#{manticConsultasHora.lazyCredito.rowCount gt manticConsultasHora.lazyCredito.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">            
             <f:facet name="header">
 							<div>
 							  <p:outputLabel value="Ventas registrada a crédito" styleClass="janal-color-white" style="float:left;"/>
@@ -209,11 +197,11 @@
 						<p:columnGroup type="footer">
 							<p:row>
 								<p:column colspan="6" style="text-align:right" footerText="Total:" />
-								<p:column footerText="#{manticConsultasHoras.credito}" style="text-align:right"/>									
+								<p:column footerText="#{manticConsultasHora.credito}" style="text-align:right"/>									
 							</p:row>
 						</p:columnGroup>
             <f:facet name="footer">
-              <p:outputLabel value="Total [#{manticConsultasHoras.lazyCredito== null? 0: manticConsultasHoras.lazyCredito.rowCount}] registros"/>
+              <p:outputLabel value="Total [#{manticConsultasHora.lazyCredito== null? 0: manticConsultasHora.lazyCredito.rowCount}] registros"/>
             </f:facet>
           </p:dataTable>  					
 					<h:commandLink id="apartadoPdf">
@@ -222,7 +210,7 @@
 					<h:commandLink id="apartadoXls">
 						<pe:exporter type="xlsx" skipComponents="javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="tabla" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/> 
 					</h:commandLink>			
-          <p:dataTable lazy="true" id="apartado" widgetVar="kajoolApartado" var="row" value="#{manticConsultasHoras.lazyApartado}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_MAX_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_MAX_CADA_PAGINA}" selection="#{manticConsultasHoras.attrs.apartado}" selectionMode="single" paginator="#{manticConsultasHoras.lazyApartado.rowCount gt manticConsultasHoras.lazyApartado.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">            
+          <p:dataTable lazy="true" id="apartado" widgetVar="kajoolApartado" var="row" value="#{manticConsultasHora.lazyApartado}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_MAX_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_MAX_CADA_PAGINA}" selection="#{manticConsultasHora.attrs.apartado}" selectionMode="single" paginator="#{manticConsultasHora.lazyApartado.rowCount gt manticConsultasHora.lazyApartado.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">            
             <f:facet name="header">
 							<div>
 							  <p:outputLabel value="Ventas registrada como apartados" styleClass="janal-color-white" style="float:left;"/>
@@ -283,11 +271,11 @@
 						<p:columnGroup type="footer">
 							<p:row>
 								<p:column colspan="6" style="text-align:right" footerText="Total:" />
-								<p:column footerText="#{manticConsultasHoras.apartado}" style="text-align:right"/>									
+								<p:column footerText="#{manticConsultasHora.apartado}" style="text-align:right"/>									
 							</p:row>
 						</p:columnGroup>
             <f:facet name="footer">
-              <p:outputLabel value="Total [#{manticConsultasHoras.lazyApartado== null? 0: manticConsultasHoras.lazyApartado.rowCount}] registros"/>
+              <p:outputLabel value="Total [#{manticConsultasHora.lazyApartado== null? 0: manticConsultasHora.lazyApartado.rowCount}] registros"/>
             </f:facet>
           </p:dataTable>  	
         </div>

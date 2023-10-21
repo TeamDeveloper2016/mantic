@@ -6,14 +6,14 @@
                 xmlns:p="http://primefaces.org/ui"
 								xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/filtro.xhtml">
-  <ui:param name="titulo" value="Ventas diarias" />
+  <ui:param name="titulo" value="Consulta de ventas al corte por día" />
   <ui:define name="librerias">
-		<h:outputScript library="janal" name="barcode/js.barcode.all.min.js"/>
-		<h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryTicketJs}"/>
     <script type="text/javascript">
       Janal.Control.fields = {
-        'idEmpresa'   : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},        				
-				'fechaInicio' : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'}        
+        'idEmpresa'  : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},        				
+        'idCaja'     : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},        				
+        'idCierre'   : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},        				
+				'idMedioPago': {validaciones: 'libre', mascara: 'libre', grupo: 'general'}        
       };							
     </script>		
 		<style>
@@ -34,9 +34,8 @@
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" >
               <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticConsultasDiarias.attrs.isMatriz}"/>
               <p:selectOneMenu id="idEmpresa" value="#{manticConsultasDiarias.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-								<p:ajax event="change" listener="#{manticConsultasDiarias.doLoadCajas}" process="@this" update="idCaja"/>
-								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
-                <f:selectItems value="#{manticConsultasDiarias.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.titulo}"/>
+								<p:ajax event="change" listener="#{manticConsultasDiarias.doLoadCajas}" process="@this" update="idCaja idCierre"/>
+                <f:selectItems value="#{manticConsultasDiarias.attrs.sucursales}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{element.titulo eq ''? '': '|'} #{element.titulo}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>   
@@ -46,8 +45,8 @@
               </p:selectOneMenu>  
 							<p:outputLabel for="idCaja" value="Cajas:"/>
               <p:selectOneMenu id="idCaja" value="#{manticConsultasDiarias.attrs.idCaja}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
-                <f:selectItems value="#{manticConsultasDiarias.attrs.cajas}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
+								<p:ajax event="change" listener="#{manticConsultasDiarias.doLoadCierres}" process="@this" update="idCierre"/>
+                <f:selectItems value="#{manticConsultasDiarias.attrs.cajas}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{element.nombre eq ''? '': '|'} #{element.nombre} "/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>   
@@ -58,8 +57,16 @@
                   <h:outputText value="#{item.limite}"/>
                 </p:column>   
               </p:selectOneMenu>
-							<p:outputLabel for="fechaInicio" value="Fecha:"/>
-							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100"  value="#{manticConsultasDiarias.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" locale="mx" converter="janal.convertidor.Calendario"/>              							
+							<p:outputLabel for="idCierre" value="Cierres:"/>
+							<p:selectOneMenu id="idCierre" value="#{manticConsultasDiarias.attrs.idCierre}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <f:selectItems value="#{manticConsultasDiarias.attrs.cierres}" var="element" itemValue="#{element}" itemLabel="#{element.consecutivo} #{element.nombre eq ''? '': '|'} #{element.registro}"/>
+                <p:column headerText="Consecutivo">
+                  <h:outputText value="#{item.consecutivo}"/>
+                </p:column>   
+                <p:column headerText="Fecha">
+                  <h:outputText value="#{item.registro}"/>
+                </p:column>   
+              </p:selectOneMenu>
 							<p:outputLabel for="idMedioPago" value="Forma de pago:"/>
               <p:selectOneMenu id="idMedioPago" value="#{manticConsultasDiarias.attrs.idMedioPago}" styleClass="janal-wid-96">								
                 <f:selectItems value="#{manticConsultasDiarias.attrs.mediosPago}"/>              
@@ -67,8 +74,8 @@
 							<p:separator/>
             </p:panelGrid>
 						<div class="janal-align-right">
-							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{manticConsultasDiarias.doLoad}" oncomplete="janal.desbloquear();" update="tabla credito apartado"/>
-							<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{manticConsultasDiarias.doLoad}" oncomplete="janal.desbloquear();" update="tabla credito apartado" />
+							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute()" process="panelBusqueda" actionListener="#{manticConsultasDiarias.doLoad}" oncomplete="janal.desbloquear()" update="tabla credito apartado"/>
+							<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.execute()" process="panelBusqueda" actionListener="#{manticConsultasDiarias.doLoad}" oncomplete="janal.desbloquear()" update="tabla credito apartado" />
 						</div>
           </p:panel>
         </div>
@@ -113,7 +120,7 @@
             </p:column>														
             <p:column class="janal-column-right MarAuto Responsive janal-wid-7" sortBy="#{row.importe}">
               <f:facet name="header">
-                <h:outputText value="$ Importe"/>
+                <h:outputText value="Importe"/>
               </f:facet>
               <h:outputText value="#{row['importe']}"/>
             </p:column>		
@@ -196,7 +203,7 @@
             </p:column>	
             <p:column class="janal-column-right MarAuto Responsive janal-wid-7" sortBy="#{row.importe}">
               <f:facet name="header">
-                <h:outputText value="$ Importe"/>
+                <h:outputText value="Importe"/>
               </f:facet>
               <h:outputText value="#{row['importe']}"/>
             </p:column>		
@@ -271,7 +278,7 @@
             </p:column>	
             <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.importe}">
               <f:facet name="header">
-                <h:outputText value="$ Importe"/>
+                <h:outputText value="Importe"/>
               </f:facet>
               <h:outputText value="#{row['importe']}"/>
             </p:column>		
@@ -327,17 +334,4 @@
     </p:dialog>  
   </ui:define>   	
   <ui:param name="componenteBloqueo" value="buscar buscarIcon tabla"/>
-  <ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar la cuenta de venta ?" />
-  <ui:param name="accionConfirmacion" value="#{manticConsultasDiarias}"/>
-  <ui:param name="updateComponent" value="tabla"/>
-  <ui:param name="eventoConfirmacion" value="doEliminar"	/>	
-  <ui:param name="renderedConfirmacion" value="true"/>	
-  <ui:define name="detalleConfirmacion">
-    <p:panelGrid layout="grid" columns="2">
-      <p:outputLabel value="No. cuenta:"/>
-      <p:outputLabel value="#{manticConsultasDiarias.attrs.seleccionado.consecutivo}"/>
-      <p:outputLabel value="Justificación:"/>
-      <p:inputTextarea value="#{manticConsultasDiarias.attrs.justificacionEliminar}"/>
-    </p:panelGrid>			
-  </ui:define>
 </ui:composition>

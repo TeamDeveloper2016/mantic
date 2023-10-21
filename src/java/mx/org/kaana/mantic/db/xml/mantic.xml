@@ -2376,6 +2376,21 @@ where
         where      
           orden = {orden} and ejercicio = {ejercicio}
       </select>
+      <select id="cierres">
+select      
+  tc_mantic_cierres.id_cierre as id_key,
+  tc_mantic_cierres.*
+from      
+  tc_mantic_cierres
+inner join
+  tc_mantic_cierres_cajas on tc_mantic_cierres.id_cierre= tc_mantic_cierres_cajas.id_cierre
+where      
+  tc_mantic_cierres_cajas.id_caja= {idCaja}
+group by
+  tc_mantic_cierres.id_cierre         
+order by
+  tc_mantic_cierres.registro desc
+      </select>
       <select id="siguiente">
         select
 					max(orden)+ 1 as siguiente

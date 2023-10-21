@@ -714,14 +714,20 @@ public class Accion extends IBaseVenta implements Serializable {
 		MotorBusqueda motor                   = null;
 		try {
 			ticketAbierto= (UISelectEntity) this.attrs.get("ticketAbierto");
-			clientes = (List<UISelectEntity>) this.attrs.get("clientes");
-			seleccion= clientes.get(clientes.indexOf((UISelectEntity)event.getObject()));
+			clientes     = (List<UISelectEntity>) this.attrs.get("clientes");
+			seleccion    = clientes.get(clientes.indexOf((UISelectEntity)event.getObject()));
 			clientesSeleccion= new ArrayList<>();
 			clientesSeleccion.add(seleccion);			
 			motor= new MotorBusqueda(-1L);
 			this.attrs.put("mostrarCorreos", seleccion== null || seleccion.getKey().equals(-1L) || seleccion.getKey().equals(motor.toClienteDefault().getKey()));
 			this.attrs.put("clientesSeleccion", clientesSeleccion);
 			this.attrs.put("clienteSeleccion", seleccion);
+      List<UISelectEntity> cfdis= (List<UISelectEntity>)this.attrs.get("cfdis");
+      if(!Objects.equals(seleccion, null) && !Objects.equals(cfdis, null) && !cfdis.isEmpty()) {
+        int index= cfdis.indexOf(new UISelectEntity(seleccion.toLong("idUsoCfdi")));
+        if(index>= 0)
+          this.attrs.put("cfdi", cfdis.get(index));
+      } // if  
 			facturarVenta= (Boolean) this.attrs.get("facturarVenta");
 			if(seleccion!= null && ((TicketVenta)this.getAdminOrden().getOrden()).isValid()) {				
 				this.setPrecio(Cadena.toBeanNameEspecial(seleccion.toString("tipoVenta")));
@@ -1420,7 +1426,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		List<UISelectEntity> cfdis= UIEntity.build("TcManticUsosCfdiDto", Objects.equals(Configuracion.getInstance().getPropiedad("sistema.nivel.facturacion"), "4.0")? "rows": "row", params, campos, Constantes.SQL_TODOS_REGISTROS);
 		this.attrs.put("cfdis", cfdis);
 		for(UISelectEntity record: cfdis) {
-			if(record.toString("clave").equals(GASTOS_GENERAL_CLAVE))
+			if(Objects.equals(record.toString("clave"), GASTOS_GENERAL_CLAVE))
 				cfdiSeleccion= record;
 		} // for
 		this.attrs.put("cfdi", cfdiSeleccion);
@@ -2058,4 +2064,33 @@ public class Accion extends IBaseVenta implements Serializable {
 		return regresar;
 	}
 
+  public void doActualizaCliente() {
+    List<UISelectEntity> clientesSeleccion= null;
+		UISelectEntity clienteSeleccion       = null;		
+		UISelectEntity seleccion              = null;		
+		try {
+			clienteSeleccion = (UISelectEntity) this.attrs.get("clienteSeleccion");			
+      clientesSeleccion= (List<UISelectEntity>)this.attrs.get("clientesSeleccion");
+      if(clientesSeleccion!= null && !clientesSeleccion.isEmpty()) {
+        int index= clientesSeleccion.indexOf(clienteSeleccion);
+        if(index>= 0) 
+          seleccion= clientesSeleccion.get(index);
+        else 
+          seleccion= clientesSeleccion.get(0);
+        this.attrs.put("clienteSeleccion", seleccion);
+        List<UISelectEntity> cfdis= (List<UISelectEntity>)this.attrs.get("cfdis");
+        if(!Objects.equals(cfdis, null) && !cfdis.isEmpty()) {
+          index= cfdis.indexOf(new UISelectEntity(seleccion.toLong("idUsoCfdi")));
+          if(index>= 0)
+            this.attrs.put("cfdi", cfdis.get(index));
+        } // if  
+        this.toLoadRegimenesFiscales();
+      } // if
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+  }
+  
 }
