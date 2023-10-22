@@ -180,7 +180,7 @@ public class Accion extends IBaseVenta implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
-  } // init
+  } 
 	
 	public void doInitPage() {
 		Calendar fechaInicio= null;
@@ -1025,10 +1025,10 @@ public class Accion extends IBaseVenta implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch		
-		finally{
+		finally {
 			Methods.clean(params);
 		} // finally
-	} // doAsignaTicketAbiertoGeneral
+	} 
 	
   @Override
 	protected void doAsignaClienteTicketAbierto() throws Exception { 		
@@ -1055,7 +1055,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		catch (Exception e) {	
 			throw e;
 		} // catch		
-	} // doAsignaClienteTicketAbierto
+	} 
 	
 	private void loadCajas() {
 		List<UISelectEntity> cajas= null;
@@ -1145,7 +1145,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch		
-	} // doActivarCliente
+	} 
 	
 	public void doActiveApartado() {
 		boolean apartado               = true;
@@ -1176,7 +1176,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch		
-	} // doActiveApartado
+	} 
 	
 	public void doOpenCobro() {
 		mx.org.kaana.mantic.ventas.reglas.Transaccion transaccion= null;
@@ -1220,7 +1220,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch		
-	} // doOpenCobro
+	} 
 	
 	private void loadOrdenVenta() throws Exception {		
 		// this.getAdminOrden().toCheckTotales();
@@ -1255,7 +1255,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		finally{
 			Methods.clean(params);
 		} // finally
-	} // loadBancos
+	} 
 	
 	private void loadTiposPagos() {
 		List<UISelectEntity> tiposPagos= null;
@@ -1294,7 +1294,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch		
-	} // doValidaCreditoCliente
+	} 
 	
 	public void doAgregarClienteTipoContacto() {
 		ClienteTipoContacto clienteTipoContacto= null;
@@ -1316,7 +1316,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			contador++;
 			this.attrs.put("contador", contador);
 		} // finally
-	} // doAgregarClienteTipoContacto
+	} 
 	
 	public void doEliminarClienteTipoContacto() {
 		try {			

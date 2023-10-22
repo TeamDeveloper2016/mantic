@@ -225,9 +225,8 @@ public abstract class MotorBusquedaCatalogos {
 	
 	public Entity toClienteDefault() throws Exception {
 		Entity regresar          = null;
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put("clave", VENTA);
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
 			regresar= (Entity) DaoFactory.getInstance().toEntity("VistaClientesDto", "clienteDefault", params);			

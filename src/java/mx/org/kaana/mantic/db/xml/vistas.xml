@@ -5846,7 +5846,8 @@ order by
 					tc_mantic_domicilios.codigo_postal, 
 					tc_mantic_tipos_ventas.nombre as tipo_venta,
           tc_mantic_clientes.especial,
-          tc_mantic_clientes.id_regimen_fiscal
+          tc_mantic_clientes.id_regimen_fiscal,
+          tc_mantic_clientes.id_uso_cfdi
 				from
 					tc_mantic_clientes 
 				inner join 

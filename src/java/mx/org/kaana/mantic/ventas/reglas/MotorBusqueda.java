@@ -27,7 +27,7 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 	
 	public MotorBusqueda(Long idComodin) {
 		this(idComodin, null);
-	}	// MotorBusqueda
+	}	
 
 	public MotorBusqueda(Long idComodin, Long idCliente) {
 		super(idCliente);
@@ -43,13 +43,12 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 			throw e;
 		} // catch		
 		return regresar;
-	} // toArticulo
+	} 
 	
 	public Entity toDescuentoGrupo() throws Exception{
 		Entity regresar          = null;
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put("idArticulo", this.idComodin);
 			params.put("idCliente", this.idCliente);
 			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getDependencias());
@@ -62,13 +61,12 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 			Methods.clean(params);
 		} // finally
 		return regresar;
-	} // toDescuentoGrupo
+	} 
 	
 	public Entity toDescuentoArticulo() throws Exception{
 		Entity regresar          = null;
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put("idArticulo", this.idComodin);			
 			regresar= (Entity) DaoFactory.getInstance().toEntity("VistaVentasDto", "descuentoArticuloVigente", params);
 		} // try
@@ -79,14 +77,12 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 			Methods.clean(params);
 		} // finally
 		return regresar;
-	} // toDescuentoGrupo
+	} 
 	
 	public Entity toCliente() throws Exception {
 		Entity regresar          = null;
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		try {
-			params= new HashMap<>();
-			// params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getDependencias());
 			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_cliente=" + this.idCliente);
 			regresar= (Entity) DaoFactory.getInstance().toEntity("VistaClientesDto", "findRazonSocial", params);
@@ -98,13 +94,12 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 			Methods.clean(params);
 		} // finally
 		return regresar;
-	} // toCliente
+	} 
 	
 	public Entity toDetalleArticulo() throws Exception {
 		Entity regresar          = null;
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		try {
-			params= new HashMap<>();			
 			params.put("idArticulo", this.idComodin);
 			regresar= (Entity) DaoFactory.getInstance().toEntity("VistaArticulosDto", "detalle", params);
 		} // try
@@ -115,13 +110,12 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 			Methods.clean(params);
 		} // finally
 		return regresar;
-	} // toDetalleArticulo
+	} 
 	
-	public Double toDeudaCliente() throws Exception{
+	public Double toDeudaCliente() throws Exception {
 		Double regresar          = null;
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put("idCliente", this.idCliente);
 			regresar= DaoFactory.getInstance().toField("TcManticClientesDeudasDto", "saldoCliente", params, "saldo").toDouble();
 		} // try
@@ -132,13 +126,12 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 			Methods.clean(params);
 		} // finally
 		return regresar;
-	} // toDeudaCliente		
+	} 	
 	
 	public List<ClienteTipoContacto> toCorreosCliente() throws Exception {
-		List<ClienteTipoContacto> regresar= null;
+		List<ClienteTipoContacto> regresar= new ArrayList<>();
 		List<ClienteTipoContacto> pivote  = null;
 		try {
-			regresar= new ArrayList<>();
 			pivote= super.toClientesTipoContacto();
 			if(!pivote.isEmpty()){
 				for(ClienteTipoContacto contacto: pivote){
@@ -151,13 +144,12 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 			throw e;
 		} // catch		
 		return regresar;
-	} // toClientesTipoContacto
+	} 
 	
 	public ClienteTipoContacto toTelefonoCliente() throws Exception {
-		ClienteTipoContacto regresar    = null;
+		ClienteTipoContacto regresar    = new ClienteTipoContacto();
 		List<ClienteTipoContacto> pivote= null;
 		try {
-			regresar= new ClienteTipoContacto();
 			pivote= super.toClientesTipoContacto();
 			if(!pivote.isEmpty()){
 				for(ClienteTipoContacto contacto: pivote){
@@ -170,13 +162,12 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 			throw e;
 		} // catch		
 		return regresar;
-	} // toClientesTipoContacto
+	} 
 	
 	public ClienteTipoContacto toCelularCliente() throws Exception {
-		ClienteTipoContacto regresar    = null;
+		ClienteTipoContacto regresar    = new ClienteTipoContacto();
 		List<ClienteTipoContacto> pivote= null;
 		try {
-			regresar= new ClienteTipoContacto();
 			pivote= super.toClientesTipoContacto();
 			if(!pivote.isEmpty()){
 				for(ClienteTipoContacto contacto: pivote){
@@ -189,7 +180,7 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 			throw e;
 		} // catch		
 		return regresar;
-	} // toClientesTipoContacto
+	} 
 	
 	public TcManticVentasDto toVenta(Long idVenta) throws Exception{
 		TcManticVentasDto regresar= null;
@@ -200,7 +191,7 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 			throw e;
 		} // catch				
 		return regresar;
-	} // toVenta
+	} 
 	
 	public boolean doVerificaVigenciaCotizacion(Long idVenta) throws Exception{
 		boolean regresar       = false;
@@ -217,14 +208,13 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 			throw e; 
 		} // catch		
 		return regresar;
-	} // doVerificaVigenciaCotizacion
+	} 
 	
 	public List<Entity> pagosVenta() throws Exception{
 		List<Entity> regresar     = null;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		int count                 = 0;
 		try {
-			params= new HashMap<>();
 			params.put("idVenta", this.idComodin);
 			regresar= DaoFactory.getInstance().toEntitySet("VistaVentasDto", "pagosVenta", params, Constantes.SQL_TODOS_REGISTROS);
 			for(Entity record: regresar){
@@ -241,12 +231,11 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 			Methods.clean(params);
 		} // finally
 		return regresar;
-	} // pagosVenta
+	} 
 	
 	private Entity toPagoEfectivo(){
-		Entity regresar= null;
+		Entity regresar= new Entity(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago());
 		try {
-			regresar= new Entity(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago());
 			regresar.put("idTipoMedioPago", new Value("idTipoMedioPago", ETipoMediosPago.EFECTIVO.getIdTipoMedioPago()));
 			regresar.put("idVenta", new Value("idVenta", this.idComodin));
 			regresar.put("nombre", new Value("nombre", ETipoMediosPago.EFECTIVO.name()));
@@ -255,13 +244,12 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 			throw e;
 		} // catch		
 		return regresar;
-	} // toPagoEfectivo
+	} 
 	
 	public Entity toFactura() throws Exception{
 		Entity regresar          = null;
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_factura=" + this.idComodin + " and folio is not null");
 			regresar= (Entity) DaoFactory.getInstance().toEntity("TcManticFacturasDto", "row", params);
 		} // try
@@ -272,5 +260,6 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 			Methods.clean(params);
 		} // finally
 		return regresar;
-	} // toFactura
+	} 
+  
 }

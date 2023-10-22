@@ -268,6 +268,12 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			clientesSeleccion.add(0, new UISelectEntity(clienteDefault));
 			this.attrs.put("clientesSeleccion", clientesSeleccion);
 			this.attrs.put("clienteSeleccion", seleccion);
+      List<UISelectEntity> cfdis= (List<UISelectEntity>)this.attrs.get("cfdis");
+      if(!Objects.equals(cfdis, null) && !cfdis.isEmpty()) {
+        int index= cfdis.indexOf(new UISelectEntity(seleccion.toLong("idUsoCfdi")));
+        if(index>= 0)
+          this.attrs.put("cfdi", cfdis.get(index));
+      } // if  
       this.toLoadRegimenesFiscales();  
 			this.setPrecio(Cadena.toBeanNameEspecial(seleccion.toString("tipoVenta")));
 		} // try
@@ -831,7 +837,13 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			clientesSeleccion.add(seleccion);			
 			this.attrs.put("clientesSeleccion", clientesSeleccion);
 			this.attrs.put("clienteSeleccion", seleccion);			
-			this.attrs.put("clienteDefault", seleccion);			
+			this.attrs.put("clienteDefault", seleccion);		
+      List<UISelectEntity> cfdis= (List<UISelectEntity>)this.attrs.get("cfdis");
+      if(!Objects.equals(cfdis, null) && !cfdis.isEmpty()) {
+        int index= cfdis.indexOf(new UISelectEntity(seleccion.toLong("idUsoCfdi")));
+        if(index>= 0)
+          this.attrs.put("cfdi", cfdis.get(index));
+      } // if  
       this.toLoadRegimenesFiscales();      
 			this.loadDomicilios(seleccion.getKey());
 		} // try
@@ -904,7 +916,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch		
-	} // toFindCliente
+	} 
 	
 	@Override
 	public List<UISelectEntity> doCompleteCliente(String query) {

@@ -186,7 +186,7 @@ public class Transaccion extends TransaccionFactura {
 						regresar= this.registraBitacora(sesion, this.orden.getIdVenta(), idEstatusVenta, this.justificacion);					
 					break;
 				case JUSTIFICAR:
-					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L){
+					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {
 						this.orden= (TcManticVentasDto) DaoFactory.getInstance().findById(sesion, TcManticVentasDto.class, this.bitacora.getIdVenta());
 						this.orden.setIdVentaEstatus(this.bitacora.getIdVentaEstatus());
 						regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;

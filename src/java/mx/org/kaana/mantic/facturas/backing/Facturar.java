@@ -69,6 +69,8 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 	private static final String VENDEDOR_PERFIL= "VENDEDOR DE PISO";
 	private static final String INDIVIDUAL     = "1";
 	private static final Long ESTATUS_ELABORADA= 2L;	
+	private static final String GASTOS_GENERAL_CLAVE= "G03";	
+  
 	private Entity cliente;
 	private List<Entity> tickets;
 	private List<Long> ventaPublico;
@@ -223,6 +225,12 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 			clientesSeleccion.add(0, new UISelectEntity(motorBusqueda.toClienteDefault()));
 			this.attrs.put("clientesSeleccion", clientesSeleccion);
 			this.attrs.put("clienteSeleccion", seleccion);
+      List<UISelectEntity> cfdis= (List<UISelectEntity>)this.attrs.get("cfdis");
+      if(!Objects.equals(cfdis, null) && !cfdis.isEmpty()) {
+        int index= cfdis.indexOf(new UISelectEntity(seleccion.toLong("idUsoCfdi")));
+        if(index>= 0)
+          this.attrs.put("cfdi", cfdis.get(index));
+      } // if  
       this.toLoadRegimenesFiscales();      
 			this.setPrecio(Cadena.toBeanNameEspecial(seleccion.toString("tipoVenta")));
 			this.loadDomicilios(idCliente);
@@ -231,7 +239,7 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch		
-	} // doAsignaCliente	
+	} 	
 	
   public String doAceptar() {  
     UnirFacturas transaccion       = null;
@@ -653,17 +661,22 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 	
 	private void loadClienteDefault() {
 		UISelectEntity seleccion              = null;
-		List<UISelectEntity> clientesSeleccion= null;
+		List<UISelectEntity> clientesSeleccion= new ArrayList<>();
 		MotorBusqueda motorBusqueda           = null;
 		Map<String, Object> params            = new HashMap<>();
 		try {
 			motorBusqueda= new MotorBusqueda(-1L);
-			seleccion= new UISelectEntity(motorBusqueda.toClienteDefault());
-			clientesSeleccion= new ArrayList<>();
+			seleccion    = new UISelectEntity(motorBusqueda.toClienteDefault());
 			clientesSeleccion.add(seleccion);			
 			this.attrs.put("clientesSeleccion", clientesSeleccion);
 			this.attrs.put("clienteSeleccion", seleccion);			
-			this.attrs.put("clienteDefault", seleccion);			
+			this.attrs.put("clienteDefault", seleccion);	
+      List<UISelectEntity> cfdis= (List<UISelectEntity>)this.attrs.get("cfdis");
+      if(!Objects.equals(cfdis, null) && !cfdis.isEmpty()) {
+        int index= cfdis.indexOf(new UISelectEntity(seleccion.toLong("idUsoCfdi")));
+        if(index>= 0)
+          this.attrs.put("cfdi", cfdis.get(index));
+      } // if  
       this.toLoadRegimenesFiscales();  
 			this.loadDomicilios(seleccion.getKey());
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
@@ -683,8 +696,8 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 		} // catch		
 		finally {
 			Methods.clean(params);
-		}
-	} // loadClienteDefault	
+		} // finally
+	} 
 	
 	private void loadDomicilios(Long idCliente) throws Exception{
 		Map<String, Object>params     = new HashMap<>();
@@ -723,15 +736,20 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 	} // doAsignaCliente
 	
 	private void toFindCliente(UISelectEntity seleccion) {
-		List<UISelectEntity> clientesSeleccion= null;
+		List<UISelectEntity> clientesSeleccion= new ArrayList<>();
 		MotorBusqueda motorBusqueda           = null;
 		try {
-			clientesSeleccion= new ArrayList<>();
 			clientesSeleccion.add(seleccion);
 			motorBusqueda= new MotorBusqueda(-1L);
 			clientesSeleccion.add(0, new UISelectEntity(motorBusqueda.toClienteDefault()));
 			this.attrs.put("clientesSeleccion", clientesSeleccion);
 			this.attrs.put("clienteSeleccion", seleccion);
+      List<UISelectEntity> cfdis= (List<UISelectEntity>)this.attrs.get("cfdis");
+      if(!Objects.equals(cfdis, null) && !cfdis.isEmpty()) {
+        int index= cfdis.indexOf(new UISelectEntity(seleccion.toLong("idUsoCfdi")));
+        if(index>= 0)
+          this.attrs.put("cfdi", cfdis.get(index));
+      } // if  
       this.toLoadRegimenesFiscales();
 			this.setPrecio(Cadena.toBeanNameEspecial(seleccion.toString("tipoVenta")));
 			this.doReCalculatePreciosArticulos(seleccion.getKey());		
@@ -740,14 +758,14 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch		
-	} // toFindCliente
+	} 
 	
 	@Override
 	public List<UISelectEntity> doCompleteCliente(String query) {
 		this.attrs.put("codigoCliente", query);
     this.doUpdateClientes();		
 		return (List<UISelectEntity>)this.attrs.get("clientes");
-	}	// doCompleteCliente
+	}	
 	
 	@Override
 	public void doUpdateClientes() {
@@ -776,6 +794,7 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 	public void doActualizaPrecioCliente(){
 		List<UISelectEntity> clientesSeleccion= null;
 		UISelectEntity clienteSeleccion       = null;
+    UISelectEntity seleccion              = null;
 		boolean precioVigente                 = false;
 		try {
 			clienteSeleccion= (UISelectEntity) this.attrs.get("clienteSeleccion");
@@ -786,9 +805,16 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 				this.setPrecio(Cadena.toBeanNameEspecial(clienteSeleccion.toString("tipoVenta")));				
         int index= clientesSeleccion.indexOf(clienteSeleccion);
         if(index>= 0) 
-          this.attrs.put("clienteSeleccion", clientesSeleccion.get(index));
+          seleccion= clientesSeleccion.get(index);
         else 
-          this.attrs.put("clienteSeleccion", clientesSeleccion.get(0));
+          seleccion= clientesSeleccion.get(0);
+        this.attrs.put("clienteSeleccion", seleccion);
+        List<UISelectEntity> cfdis= (List<UISelectEntity>)this.attrs.get("cfdis");
+        if(!Objects.equals(cfdis, null) && !cfdis.isEmpty()) {
+          index= cfdis.indexOf(new UISelectEntity(seleccion.toLong("idUsoCfdi")));
+          if(index>= 0)
+            this.attrs.put("cfdi", cfdis.get(index));
+        } // if  
         this.toLoadRegimenesFiscales();
 			} // if
 			else
@@ -800,7 +826,7 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch		
-	} // doActualizaPrecioCliente
+	} 
 	
 	public String doClientes() {
 		String regresar        = null;
@@ -856,7 +882,7 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 		} // finally
 	} // loadBancos
 	
-	private void loadCfdis(){
+	private void loadCfdis() {
 		List<UISelectEntity> cfdis= null;
 		List<Columna> columns     = new ArrayList<>();
 		Map<String, Object>params = new HashMap<>();
@@ -864,11 +890,11 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
-			cfdis= UIEntity.build("TcManticUsosCfdiDto", Objects.equals(Configuracion.getInstance().getPropiedad("sistema.nivel.facturacion"), "4.0")? "rows": "row", params, columns, Constantes.SQL_TODOS_REGISTROS);
+			cfdis= UIEntity.seleccione("TcManticUsosCfdiDto", Objects.equals(Configuracion.getInstance().getPropiedad("sistema.nivel.facturacion"), "4.0")? "rows": "row", params, columns, Constantes.SQL_TODOS_REGISTROS, "clave");
 			this.attrs.put("cfdis", cfdis);
-			this.attrs.put("cfdi", new UISelectEntity("-1"));
+			this.attrs.put("cfdi", UIBackingUtilities.toFirstKeySelectEntity(cfdis));
 			for(Entity record: cfdis){
-				if(record.getKey().equals(3L))
+				if(Objects.equals(record.toString("clave"), GASTOS_GENERAL_CLAVE))       
 					this.attrs.put("cfdi", record);
 			} // for
 		} // try
@@ -1133,7 +1159,7 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 			JsfBase.addMessageError(e);
 			Error.mensaje(e);			
 		} // catch		
-	} // doAgregarCorreo
+	} 
 
 	private void toLoadRegimenesFiscales() {
 		List<Columna> columns     = new ArrayList<>();    
@@ -1172,6 +1198,6 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
       Methods.clean(params);
       Methods.clean(columns);
     } // finally
-	} // toLoadRegimenesFiscales  
+	}   
   
 }
