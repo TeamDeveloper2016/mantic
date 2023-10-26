@@ -164,9 +164,9 @@ public class TiposVentas implements Serializable {
 		return "TiposVentas{"+"index="+index+", nombre="+nombre+", costo="+costo+", utilidad="+utilidad+", precio="+precio+", iva="+iva+", importe="+importe+", limite="+limite+", impuesto="+impuesto+ ", pivote="+pivote+'}';
 	}
 
-	public void toUpdateUtilidad(double utilidadad) {
+	public void toUpdateUtilidad(double utilidad) {
 		double calculo= Numero.toRedondearSat((this.costo* ((this.iva/100)+ 1)));
-		this.precio   = Numero.toRedondearSat(((utilidadad/ 100)+ 1)* calculo);
+		this.precio   = Numero.toRedondearSat(((utilidad/ 100)+ 1)* calculo);
 		this.toCalculate(this.rounded);
 	}
 	
