@@ -115,68 +115,68 @@
             </f:facet>	  
             <p:columnGroup type="header">
               <p:row>
-                <p:column rowspan="2" headerText="Nota entrada" />
-                <p:column rowspan="2" headerText="Código" />
-                <p:column rowspan="2" headerText="Articulo" />
-                <p:column rowspan="2" headerText="Costo" />
-                <p:column colspan="2" headerText="Menudeo" />
-                <p:column colspan="2" headerText="Medio mayoreo" />
-                <p:column colspan="2" headerText="Mayoreo" />
-                <p:column rowspan="2" headerText="Fecha" />
-                <p:column rowspan="2" headerText="..." styleClass="janal-column-center janal-wid-col-40"/>
+                <p:column rowspan="2" headerText="Nota entrada" styleClass="MarAuto Responsive janal-wid-10"/>
+                <p:column rowspan="2" headerText="Código" styleClass="MarAuto Responsive janal-wid-8"/>
+                <p:column rowspan="2" headerText="Articulo" styleClass="MarAuto Responsive"/>
+                <p:column rowspan="2" headerText="Costo" styleClass="MarAuto Responsive janal-wid-6"/>
+                <p:column colspan="2" headerText="Menudeo" styleClass="MarAuto Responsive"/>
+                <p:column colspan="2" headerText="Medio mayoreo" styleClass="MarAuto Responsive"/>
+                <p:column colspan="2" headerText="Mayoreo" styleClass="MarAuto Responsive"/>
+                <p:column rowspan="2" headerText="Fecha" styleClass="MarAuto Responsive janal-wid-10"/>
+                <p:column rowspan="2" headerText="..." styleClass="janal-wid-col-40"/>
               </p:row>
               <p:row>
-                <p:column headerText="Costo" />
-                <p:column headerText="Porcentaje" />
-                <p:column headerText="Costo" />
-                <p:column headerText="Porcentaje" />
-                <p:column headerText="Costo" />
-                <p:column headerText="Porcentaje" />
+                <p:column headerText="Costo" styleClass="janal-column-right MarAuto Responsive janal-wid-10"/>
+                <p:column headerText="Porcentaje" styleClass="janal-column-right MarAuto Responsive janal-wid-10"/>
+                <p:column headerText="Costo" styleClass="janal-column-right MarAuto Responsive janal-wid-10"/>
+                <p:column headerText="Porcentaje" styleClass="janal-column-right MarAuto Responsive janal-wid-10"/>
+                <p:column headerText="Costo" styleClass="janal-column-right MarAuto Responsive janal-wid-10"/>
+                <p:column headerText="Porcentaje" styleClass="janal-column-right MarAuto Responsive janal-wid-10"/>
               </p:row>
             </p:columnGroup>            
-            <p:column class="MarAuto Responsive janal-wid-13">
+            <p:column styleClass="janal-column-center">
               <h:outputText value="#{row['notaEntrada']}"/>
             </p:column>																
-            <p:column class="MarAuto Responsive janal-wid-13">
+            <p:column>
               <h:outputText value="#{row['propio']}"/>
             </p:column>																
-            <p:column class="MarAuto Responsive">
+            <p:column>
               <h:outputText value="#{row['nombre']}"/>
             </p:column>																
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+            <p:column styleClass="janal-column-right">
               <h:outputText value="#{row['precio']}"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+            <p:column>
               <p:inputNumber inputStyleClass="janal-wid-100-txt janal-column-right fila-#{row.idArticulo}" value="#{row['menudeo']}" symbol="" emptyValue="zero" symbolPosition="s" size="6">
                 <p:ajax event="change" listener="#{manticInventariosAlmacenesCostos.doChangeRowCostoMenudeo(row)}" process="@this" update="@(.fila-#{row.idArticulo})"/>
               </p:inputNumber>  
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+            <p:column>
               <p:inputNumber inputStyleClass="janal-wid-100-txt janal-column-right fila-#{row.idArticulo}" value="#{row['porcentajeMenudeo']}" symbol="%" emptyValue="zero" symbolPosition="s" size="5">
                 <p:ajax event="change" listener="#{manticInventariosAlmacenesCostos.doChangeRowPorcentajeMenudeo(row)}" process="@this" update="@(.fila-#{row.idArticulo})"/>
               </p:inputNumber>  
             </p:column>		
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+						<p:column>
               <p:inputNumber inputStyleClass="janal-wid-100-txt janal-column-right fila-#{row.idArticulo}" value="#{row['medioMayoreo']}" symbol="" emptyValue="zero" symbolPosition="s" size="6">
                 <p:ajax event="change" listener="#{manticInventariosAlmacenesCostos.doChangeRowCostoMedioMayoreo(row)}" process="@this" update="@(.fila-#{row.idArticulo})"/>
               </p:inputNumber>  
             </p:column>		
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+						<p:column>
               <p:inputNumber inputStyleClass="janal-wid-100-txt janal-column-right fila-#{row.idArticulo}" value="#{row['porcentajeMedioMayoreo']}" symbol="%" emptyValue="zero" symbolPosition="s" size="5">
                 <p:ajax event="change" listener="#{manticInventariosAlmacenesCostos.doChangeRowPorcentajeMedioMayoreo(row)}" process="@this" update="@(.fila-#{row.idArticulo})"/>
               </p:inputNumber>  
             </p:column>		
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+						<p:column>
               <p:inputNumber inputStyleClass="janal-wid-100-txt janal-column-right fila-#{row.idArticulo}" value="#{row['mayoreo']}" symbol="" emptyValue="zero" symbolPosition="s" size="6">
                 <p:ajax event="change" listener="#{manticInventariosAlmacenesCostos.doChangeRowCostoMayoreo(row)}" process="@this" update="@(.fila-#{row.idArticulo})"/>
               </p:inputNumber>  
             </p:column>		
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+						<p:column>
               <p:inputNumber inputStyleClass="janal-wid-100-txt janal-column-right fila-#{row.idArticulo}" value="#{row['porcentajeMayoreo']}" symbol="%" emptyValue="zero" symbolPosition="s" size="5">
                 <p:ajax event="change" listener="#{manticInventariosAlmacenesCostos.doChangeRowPorcentajeMayoreo(row)}" process="@this" update="@(.fila-#{row.idArticulo})"/>
               </p:inputNumber>  
             </p:column>		
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-10">
+						<p:column styleClass="janal-column-center">
               <h:outputText value="#{manticInventariosAlmacenesCostos.doFechaEstandar(row['fechaNotaEntrada'])}"/>
             </p:column>
 						<p:column>
