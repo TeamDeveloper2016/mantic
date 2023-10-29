@@ -61,7 +61,11 @@ public class Costos extends IBaseFilter implements Serializable {
   public void doLoad() {
 		Map<String, Object> params= this.toPrepare();
     try {
-			params.put("sortOrder", "order by (tc_mantic_articulos.menudeo- (tc_mantic_articulos.precio* 1.16))* 100/ (tc_mantic_articulos.precio* 1.16) desc");
+      Double utilidad= Objects.equals((Double)this.attrs.get("utilidad"), null)? 0D: (Double)this.attrs.get("utilidad");
+      if(utilidad<= 0)
+			  params.put("sortOrder", "order by (tc_mantic_articulos.menudeo- (tc_mantic_articulos.precio* 1.16))* 100/ (tc_mantic_articulos.precio* 1.16) asc");
+      else
+			  params.put("sortOrder", "order by (tc_mantic_articulos.menudeo- (tc_mantic_articulos.precio* 1.16))* 100/ (tc_mantic_articulos.precio* 1.16) desc");
       this.articulos = (List<Utilidad>)DaoFactory.getInstance().toEntitySet(Utilidad.class, "VistaConsultasDto", "costos", params, new Long(Constantes.REGISTROS_TOPE_PAGINA));
       UIBackingUtilities.resetDataTable();
     } // try
@@ -109,7 +113,11 @@ public class Costos extends IBaseFilter implements Serializable {
 		if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
 		  sb.append("(date_format(tc_mantic_notas_entradas.registro, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and");
     
-    sb.append("((tc_mantic_articulos.menudeo- (tc_mantic_articulos.precio* 1.16))* 100/ (tc_mantic_articulos.precio* 1.16)>= '").append((Double)this.attrs.get("utilidad")).append("') and");
+    Double utilidad= Objects.equals((Double)this.attrs.get("utilidad"), null)? 0D: (Double)this.attrs.get("utilidad");
+    if(utilidad<= 0)
+      sb.append("((tc_mantic_articulos.menudeo- (tc_mantic_articulos.precio* 1.16))* 100/ (tc_mantic_articulos.precio* 1.16)<= ").append(utilidad).append(") and");
+    else
+      sb.append("((tc_mantic_articulos.menudeo- (tc_mantic_articulos.precio* 1.16))* 100/ (tc_mantic_articulos.precio* 1.16)>= ").append(utilidad).append(") and");
 		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
 		  regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
 		else
@@ -263,12 +271,12 @@ public class Costos extends IBaseFilter implements Serializable {
   
   public void doChangeRowPorcentajeMedioMayoreo(Utilidad row) {
     row.setSql(ESql.UPDATE);
-    row.setMenudeo(((row.getPorcentajeMedioMayoreo()/100)+1)* (row.getPrecio()* 1.16));
+    row.setMedioMayoreo(((row.getPorcentajeMedioMayoreo()/100)+1)* (row.getPrecio()* 1.16));
   }
   
   public void doChangeRowPorcentajeMayoreo(Utilidad row) {
     row.setSql(ESql.UPDATE);
-    row.setMenudeo(((row.getPorcentajeMayoreo()/100)+ 1)* (row.getPrecio()* 1.16));
+    row.setMayoreo(((row.getPorcentajeMayoreo()/100)+ 1)* (row.getPrecio()* 1.16));
   }
   
   public void doUpdateChanges(Utilidad row) {

@@ -16,7 +16,7 @@
 				'proveedor'   : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
 				'fechaInicio' : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
         'fechaTermino': {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
-				'utilidad'    : {validaciones: 'requerido|flotante', mascara: 'libre', grupo: 'general'}
+				'utilidad'    : {validaciones: 'requerido|flotante-signo', mascara: 'libre', grupo: 'general'}
       };							
     </script>		
   </ui:define>
@@ -89,7 +89,7 @@
               <p:outputLabel for="fechaTermino" value="Fecha término:"/>
 							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticInventariosAlmacenesCostos.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario"/>							
               <p:outputLabel for="utilidad" value="Utilidad mayor a:"/>
-              <p:inputNumber id="utilidad" styleClass="janal-wid-100-txt" value="#{manticInventariosAlmacenesCostos.attrs.utilidad}" inputStyleClass="janal-wid-100-txt" converter="javax.faces.Double" decimalPlaces="2" decimalSeparator="." thousandSeparator="," minValue="1" maxValue="1000"/>
+              <p:inputText id="utilidad" styleClass="janal-wid-100-txt" value="#{manticInventariosAlmacenesCostos.attrs.utilidad}" converter="javax.faces.Double"/>
 							<p:separator/>
             </p:panelGrid>
 						<div class="janal-align-right">
@@ -147,7 +147,7 @@
               <h:outputText value="#{row['precio']}"/>
             </p:column>		
             <p:column>
-              <p:inputNumber inputStyleClass="janal-wid-100-txt janal-column-right fila-#{row.idArticulo}" value="#{row['menudeo']}" symbol="" emptyValue="zero" symbolPosition="s" size="6">
+              <p:inputNumber inputStyleClass="janal-wid-100-txt janal-column-right fila-#{row.idArticulo}" value="#{row['menudeo']}" emptyValue="zero" size="6" minValue="-10000000.99" maxValue="1000000">
                 <p:ajax event="change" listener="#{manticInventariosAlmacenesCostos.doChangeRowCostoMenudeo(row)}" process="@this" update="@(.fila-#{row.idArticulo})"/>
               </p:inputNumber>  
             </p:column>		
@@ -157,7 +157,7 @@
               </p:inputNumber>  
             </p:column>		
 						<p:column>
-              <p:inputNumber inputStyleClass="janal-wid-100-txt janal-column-right fila-#{row.idArticulo}" value="#{row['medioMayoreo']}" symbol="" emptyValue="zero" symbolPosition="s" size="6">
+              <p:inputNumber inputStyleClass="janal-wid-100-txt janal-column-right fila-#{row.idArticulo}" value="#{row['medioMayoreo']}" emptyValue="zero" size="6" minValue="-10000000.99" maxValue="1000000">
                 <p:ajax event="change" listener="#{manticInventariosAlmacenesCostos.doChangeRowCostoMedioMayoreo(row)}" process="@this" update="@(.fila-#{row.idArticulo})"/>
               </p:inputNumber>  
             </p:column>		
@@ -167,7 +167,7 @@
               </p:inputNumber>  
             </p:column>		
 						<p:column>
-              <p:inputNumber inputStyleClass="janal-wid-100-txt janal-column-right fila-#{row.idArticulo}" value="#{row['mayoreo']}" symbol="" emptyValue="zero" symbolPosition="s" size="6">
+              <p:inputNumber inputStyleClass="janal-wid-100-txt janal-column-right fila-#{row.idArticulo}" value="#{row['mayoreo']}" emptyValue="zero" size="6" minValue="-10000000.99" maxValue="1000000">
                 <p:ajax event="change" listener="#{manticInventariosAlmacenesCostos.doChangeRowCostoMayoreo(row)}" process="@this" update="@(.fila-#{row.idArticulo})"/>
               </p:inputNumber>  
             </p:column>		

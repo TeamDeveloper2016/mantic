@@ -614,21 +614,21 @@ $.mask.masks = $.extend($.mask.masks, {
 
 	$.validator.addMethod('moneda-decimal', function(value, element, params){
 			return /^(\d{1,3}[ ,]?)*(\.\d{0,2})$/.test(value);
-		}, 'No es v\u00E1lido, debe ser cantidad monetaria con decimales.');
+		}, 'No es v\u00E1lido, debe ser cantidad monetaria con decimales');
 
 	$.validator.addMethod('flotante', function(value, element, params) {
       if (janal.empty(value) || $(element).hasClass('ignore'))
         return true;
       else
         return (/^[0-9]+[\.]{0,1}\d*$/.test(janal.cleanToken(value)) && value.search(/^[0-9]+[\.]$/));
-    }, 'Solo acepta n\u00FAmeros flotantes sin signo.');
+    }, 'Solo acepta n\u00FAmeros flotantes sin signo');
 
   $.validator.addMethod('flotante-signo', function(value, element, params){
       if (janal.empty(value) || $(element).hasClass('ignore'))
         return true;
       else
-			  return (/^[-|+|]([1-9])+[\.]{0,1}\d*$/.test(janal.cleanToken(value)) && value.search(/^[-|+|]([1-9])+[\.]$/));
-		}, 'Solo acepta n\u00FAmeros flotantes con signo.');
+			  return (/^[-|+|]([0-9])+[\.]{0,1}\d*$/.test(janal.cleanToken(value)) && value.search(/^[-|+|]([0-9])+[\.]$/));
+		}, 'Solo acepta n\u00FAmeros flotantes con signo');
 
 	$.validator.addMethod(
 		'mayusculas', function(value, element, params) {
@@ -636,7 +636,7 @@ $.mask.masks = $.extend($.mask.masks, {
 				return true;
 			else
 				return /^[A-Z]|[\s]+$/.test(value);
-		}, 'Solo acepta texto en may\u00FAsculas.');
+		}, 'Solo acepta texto en may\u00FAsculas');
 	
 	$.validator.addMethod('minusculas', function(value, element, params) {
 			if (janal.empty(value) || $(element).hasClass('ignore'))
