@@ -63,6 +63,8 @@
 								<p:outputLabel value="Ticket:"/>						
                 <p:inputText value="#{manticCatalogosEmpresasCuentasProrroga.attrs.deuda.consecutivo}" styleClass="janal-wid-100-txt" readonly="true"/>
 								<p:spacer/><p:separator/>
+								<p:outputLabel value="Comentarios:"/>												
+                <p:inputTextarea id="comentarios" styleClass="janal-wid-100-txt janal-color-blue" value="#{manticCatalogosEmpresasCuentasProrroga.attrs.deuda.comentarios}" readonly="true"/>  
 								<p:outputLabel value="Proveedor:"/>												
 								<p:inputText value="#{manticCatalogosEmpresasCuentasProrroga.attrs.deuda.proveedor}" styleClass="janal-wid-100-txt" readonly="true"/>												
 								<p:outputLabel for="idProveedorPago" value="Condición de pago:"/>

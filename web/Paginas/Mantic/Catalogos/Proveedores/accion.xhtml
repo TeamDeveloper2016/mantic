@@ -19,6 +19,7 @@
         'contenedorGrupos\\:dias_entrega': {validaciones: 'entero', mascara: 'entero', grupo: 'general'},
         'contenedorGrupos\\:idTipoDia': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:idTipoMoneda': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'contenedorGrupos\\:comentarios': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
         'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
         'contenedorGrupos\\:detalleCalle': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:clave': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
@@ -237,6 +238,8 @@
                     <p:commandButton actionListener="#{manticCatalogosProveedoresAccion.registroProveedor.doAgregarProveedorCondicionPago}" process="@this tablaTipoPago" update="tablaTipoPago" icon="fa fa-plus" oncomplete="janal.refresh();"/>						
                   </f:facet>
                 </p:dataTable>	
+                <p:outputLabel value="Comentarios:" styleClass="janal-wid-100-txt"/>
+                <p:inputTextarea id="comentarios" styleClass="janal-wid-100-txt" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedor.comentarios}"/>  
               </p:panelGrid>	
             </p:tab>
             <p:tab id="tabTablaContactos" title="Contacto">

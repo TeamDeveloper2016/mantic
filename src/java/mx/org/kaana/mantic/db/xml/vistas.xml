@@ -9639,7 +9639,8 @@ order by
 					tc_mantic_empresas_estatus.nombre estatus,
           tc_mantic_empresas_deudas.fecha_recepcion,
           tc_mantic_empresas_deudas.id_recibio,
-          tc_mantic_empresas_deudas.id_proveedor_pago
+          tc_mantic_empresas_deudas.id_proveedor_pago,
+          tc_mantic_proveedores.comentarios
 				from
 					tc_mantic_empresas_deudas
 				inner join
