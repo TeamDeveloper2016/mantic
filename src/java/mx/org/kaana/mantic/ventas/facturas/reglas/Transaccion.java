@@ -95,7 +95,7 @@ public class Transaccion extends TransaccionFactura {
 		try {									
 			switch(accion) {																						
 				case MODIFICAR:
-					this.messageError= "Ocurrio un error al generar la factura.";
+					this.messageError= "Ocurrio un error al generar la factura";
 					if(this.idEstatusFactura.equals(EEstatusFicticias.TIMBRADA.getIdEstatusFicticia()) && this.checkTotal(sesion)) {
 						idEstatus= EEstatusFacturas.TIMBRADA.getIdEstatusFactura();
 						if(this.orden.getIdFactura()!= null && !this.orden.getIdFactura().equals(-1L)){
