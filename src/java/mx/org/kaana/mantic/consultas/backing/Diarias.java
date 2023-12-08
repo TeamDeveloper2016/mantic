@@ -286,9 +286,7 @@ public class Diarias extends IBaseFilter implements Serializable {
     List<Columna> columns     = new ArrayList<>();
 		Map<String, Object> params= new HashMap<>();
     try {
-			params.put("idCaja", caja.toLong("idCaja"));
 			params.put("idCierre", ((UISelectEntity)this.attrs.get("idCierre")).getKey());
-			params.put("dia", Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio")));
       columns.add(new Columna("medioPago", EFormatoDinamicos.MAYUSCULAS));      
       columns.add(new Columna("disponible", EFormatoDinamicos.MILES_SAT_DECIMALES));      
       columns.add(new Columna("acumulado", EFormatoDinamicos.MILES_SAT_DECIMALES));      

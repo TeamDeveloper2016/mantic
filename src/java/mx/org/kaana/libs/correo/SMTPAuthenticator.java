@@ -20,7 +20,7 @@ public class SMTPAuthenticator extends javax.mail.Authenticator {
     //String password = encriptado.desencriptar(TcConfiguraciones.getInstance().getPropiedad("correo.pass"), Encriptar._CLAVE);
     String username = TcConfiguraciones.getInstance().getPropiedadServidor("correo.admin.user");
     String password = TcConfiguraciones.getInstance().getPropiedadServidor("correo.admin.pass");
-    LOG.warn("usuario : " + username + "  password : " + encriptado.encriptar(password));
+    // LOG.warn("usuario: [" + username +"] password: [" + encriptado.encriptar(password)+ "]");
     return new PasswordAuthentication(username, password);
   }
 

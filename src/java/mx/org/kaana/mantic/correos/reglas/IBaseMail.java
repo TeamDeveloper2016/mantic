@@ -1,7 +1,5 @@
 package mx.org.kaana.mantic.correos.reglas;
 
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
@@ -153,9 +151,12 @@ public class IBaseMail implements Serializable {
     try {
       properties= new Properties();
       properties.put("mail.smtp.host", Configuracion.getInstance().getPropiedadServidor("mail.smtp.server"));
+      properties.put("mail.smtp.ssl.enable", "true");
+      properties.put("mail.smtp.ssl.trust", "*");
+      properties.put("mail.smtp.starttls.enable", "true");
       properties.put("mail.transport.protocol", "smtp");
       properties.put("mail.smtp.auth", "true");
-      properties.put("mail.smtp.port", "26");			
+      properties.put("mail.smtp.port", Configuracion.getInstance().getPropiedadServidor("mail.smtp.port"));			
 			session    = Session.getInstance(properties, this.authenticator);            
       message= new MimeMessage(session);
 			if(Cadena.isVacio(this.alias))
@@ -220,18 +221,21 @@ public class IBaseMail implements Serializable {
     } // finally
   } 
 
-  public static void main(String ... args) throws AddressException, UnirestException {
+  public static void main(String ... args) throws AddressException, UnirestException, MessagingException, UnsupportedEncodingException {
 		// https://www.emailverifierapp.com/email-verification-api-for-developers/sample-codes/#java
 		// API User Name: jimenez7616336
-		String email= "jimenez76%40yahoo.com";
-		String token= "8c2de22f7ea516f59ee8fad67f60e4e0164d8166";
-		HttpResponse<String> response = Unirest.post("https://api.evasrv.com/email_verification/")
-		.header("cache-control", "no-cache")
-		.header("content-type", "application/x-www-form-urlencoded")
-		.body("email="+ email+ "&user_API_token="+ token+ "&free=true&disposable=true&did_you_mean=true&role=true&bad=true&ev_score=true")
-		.asString();
-		LOG.info(response.getBody());
-		LOG.info("ok.");
+//		String email= "jimenez76%40yahoo.com";
+//		String token= "8c2de22f7ea516f59ee8fad67f60e4e0164d8166";
+//		HttpResponse<String> response = Unirest.post("https://api.evasrv.com/email_verification/")
+//		.header("cache-control", "no-cache")
+//		.header("content-type", "application/x-www-form-urlencoded")
+//		.body("email="+ email+ "&user_API_token="+ token+ "&free=true&disposable=true&did_you_mean=true&role=true&bad=true&ev_score=true")
+//		.asString();
+//		LOG.info(response.getBody());
+//		LOG.info("ok.");
+
+     IBaseMail mail= new IBaseMail("administrador@ferreteriabonanza.com", "jimenez76@yahoo.com", "Hola");
+     mail.send("Como estas ?");
 	}	
 	
 }
