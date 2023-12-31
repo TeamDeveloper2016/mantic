@@ -286,8 +286,11 @@ public class Filtro extends mx.org.kaana.mantic.ventas.backing.Filtro implements
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
   		params.put("idProveedor", -1L);
 			String search= (String) this.attrs.get("codigoFiltro"); 
-			if(!Cadena.isVacio(search)) 
+			if(!Cadena.isVacio(search)) {
   			search= search.replaceAll(Constantes.CLEAN_SQL, "").trim().toUpperCase().replaceAll("(,| |\\t)+", ".*");			
+        if(Cadena.isVacio(search))
+          search= "WXYZ";        
+      } // if  
 			else
 				search= "WXYZ";
   		params.put("codigo", search);			        

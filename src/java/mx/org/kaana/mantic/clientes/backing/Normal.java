@@ -197,6 +197,8 @@ public class Normal extends IBaseFilter implements Serializable {
 				if(buscaPorCodigo)
 					search= search.trim().substring(1);
 				search= search.toUpperCase().replaceAll("(,| |\\t)+", ".*");
+        if(Cadena.isVacio(search))
+          search= "WXYZ";        
 			} // if	
 			else
 				search= "WXYZ";
@@ -229,8 +231,11 @@ public class Normal extends IBaseFilter implements Serializable {
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
   		params.put("idProveedor", -1L);
 			String search= (String) this.attrs.get("codigoFiltro"); 
-			if(!Cadena.isVacio(search)) 
+			if(!Cadena.isVacio(search))  {
   			search= search.replaceAll(Constantes.CLEAN_SQL, "").trim().toUpperCase().replaceAll("(,| |\\t)+", ".*");			
+        if(Cadena.isVacio(search))
+          search= "WXYZ";        
+      } // if
 			else
 				search= "WXYZ";
   		params.put("codigo", search);			        

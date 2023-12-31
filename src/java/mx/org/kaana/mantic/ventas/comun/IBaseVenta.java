@@ -1232,6 +1232,8 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 				if(search.startsWith(".") || search.startsWith(":"))
 					search= search.trim().substring(1);				
 				search= search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*");
+        if(Cadena.isVacio(search))
+          search= "WXYZ";        
 			} // if	
 			else
 				search= "WXYZ";

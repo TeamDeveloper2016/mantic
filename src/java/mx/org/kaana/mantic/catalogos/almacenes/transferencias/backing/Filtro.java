@@ -401,6 +401,8 @@ public class Filtro extends Comun implements Serializable {
 				if(buscaPorCodigo)
 					search= search.trim().substring(1);
 				search= search.toUpperCase().replaceAll("(,| |\\t)+", ".*");
+        if(Cadena.isVacio(search))
+          search= "WXYZ";        
 			} // if	
 			else
 				search= "WXYZ";
