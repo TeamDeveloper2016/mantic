@@ -117,7 +117,7 @@ public class Clientes extends IBaseFilter implements Serializable {
               sb.append("(tc_mantic_clientes.id_cliente= ").append(clientes.get(clientes.indexOf(cliente)).toLong("idCliente")).append(") and");
             else 
               if(!Cadena.isVacio(JsfBase.getParametro("contenedorGrupos:razonSocial_input"))) {
-                String codigo= JsfBase.getParametro("contenedorGrupos:razonSocial_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
+                String codigo= JsfBase.getParametro("contenedorGrupos:razonSocial_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*");
                 sb.append("(upper(concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, ''))) regexp '.*").append(codigo).append(".*' or upper(tc_mantic_clientes.rfc) regexp '.*").append(codigo).append(".*') and");
               } // if  
             break;  
@@ -177,7 +177,7 @@ public class Clientes extends IBaseFilter implements Serializable {
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			if(!Cadena.isVacio(codigo)) {
   			codigo= codigo.replaceAll(Constantes.CLEAN_SQL, "").trim();
-				codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+				codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*");
 			} // if	
 			else
 				codigo= "WXYZ";

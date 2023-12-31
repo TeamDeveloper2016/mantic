@@ -120,7 +120,7 @@ public class Asociar extends IBaseFilter implements Serializable {
 				buscaPorFecha= search.startsWith(".");
 				if(buscaPorFecha)
 					search= search.trim().substring(1);
-				search= search.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+				search= search.toUpperCase().replaceAll("(,| |\\t)+", ".*");
 			} // if	
 			else
 				search= "WXYZ";

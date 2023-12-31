@@ -183,7 +183,7 @@ public class Transaccion extends IBaseTnx {
 		try {
 			params=new HashMap<>();
 			String codigo= entidad.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim();
-			params.put("descripcion", codigo.replaceAll("(,| |\\t)+", ".*.*"));
+			params.put("descripcion", codigo.replaceAll("(,| |\\t)+", ".*"));
 			Value value= DaoFactory.getInstance().toField(sesion, "TcJanalEntidadesDto", "entidad", params, "idEntidad");
 			if(value!= null && value.getData()!= null)
 				regresar= value.toLong();
@@ -209,7 +209,7 @@ public class Transaccion extends IBaseTnx {
 		try {
 			params=new HashMap<>();
 			params.put("idEntidad", idEntidad);
-			params.put("descripcion", municipio!= null? municipio.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*"): "XYZ");
+			params.put("descripcion", municipio!= null? municipio.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*"): "XYZ");
 			Value value= DaoFactory.getInstance().toField(sesion, "TcJanalMunicipiosDto", "municipio", params, "idMunicipio");
 			if(value!= null && value.getData()!= null)
 				regresar= value.toLong();
@@ -235,7 +235,7 @@ public class Transaccion extends IBaseTnx {
 		try {
 			params=new HashMap<>();
 			params.put("idMunicipio", idMunicipio);
-			params.put("descripcion", localidad!= null? localidad.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*"): "XYZ");
+			params.put("descripcion", localidad!= null? localidad.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*"): "XYZ");
 			Value value= DaoFactory.getInstance().toField(sesion, "TcJanalLocalidadesDto", "localidad", params, "idLocalidad");
 			if(value!= null && value.getData()!= null)
 				regresar= value.toLong();

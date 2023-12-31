@@ -85,10 +85,10 @@ public class Filtro extends IBaseFilter implements Serializable {
   		if(!Cadena.isVacio(this.attrs.get("fecha")))
 	  	  sb.append("(date_format(tc_kalan_citas.cuando, '%Y%m%d')= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fecha"))).append("') and ");	
 			if(clientes!= null && cliente!= null && clientes.indexOf(cliente)>= 0) 
-				sb.append("concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, '')) regexp '.*").append(clientes.get(clientes.indexOf(cliente)).toString("razonSocial").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*")).append(".*' and ");				
+				sb.append("concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, '')) regexp '.*").append(clientes.get(clientes.indexOf(cliente)).toString("razonSocial").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*")).append(".*' and ");				
 			else 
 				if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input"))) 
-					sb.append("concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, '')) regexp '.*").append(JsfBase.getParametro("razonSocial_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*")).append(".*' and ");				
+					sb.append("concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, '')) regexp '.*").append(JsfBase.getParametro("razonSocial_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*")).append(".*' and ");				
 			if(Cadena.isVacio(sb))
 				sb.append(Constantes.SQL_VERDADERO);
 			else
@@ -137,7 +137,7 @@ public class Filtro extends IBaseFilter implements Serializable {
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			if(!Cadena.isVacio(codigo)) {
   			codigo= codigo.replaceAll(Constantes.CLEAN_SQL, "").trim();
-				codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+				codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*");
 			} // if	
 			else
 				codigo= "WXYZ";

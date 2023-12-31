@@ -97,10 +97,10 @@ public class Agenda extends IBaseFilter implements Serializable {
           cliente = (UISelectEntity)this.attrs.get("cliente");
           clientes= (List<UISelectEntity>)this.attrs.get("clientes");
           if(clientes!= null && cliente!= null && clientes.indexOf(cliente)>= 0) 
-            sb.append("concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, '')) regexp '.*").append(clientes.get(clientes.indexOf(cliente)).toString("razonSocial").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*")).append(".*' and ");				
+            sb.append("concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, '')) regexp '.*").append(clientes.get(clientes.indexOf(cliente)).toString("razonSocial").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*")).append(".*' and ");				
           else 
             if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input"))) 
-              sb.append("concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, '')) regexp '.*").append(JsfBase.getParametro("razonSocial_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*")).append(".*' and ");				
+              sb.append("concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, '')) regexp '.*").append(JsfBase.getParametro("razonSocial_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*")).append(".*' and ");				
           break;
         case 1: // BUSCAR POR SERVICIO
           if(!Cadena.isVacio(this.attrs.get("idServicio").toString()) && !Objects.equals(this.attrs.get("idServicio").toString(), "-1"))
@@ -152,7 +152,7 @@ public class Agenda extends IBaseFilter implements Serializable {
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			if(!Cadena.isVacio(codigo)) {
   			codigo= codigo.replaceAll(Constantes.CLEAN_SQL, "").trim();
-				codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+				codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*");
 			} // if	
 			else
 				codigo= "WXYZ";

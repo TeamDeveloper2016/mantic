@@ -194,7 +194,7 @@ public class Costos extends IBaseFilter implements Serializable {
   		params.put("idProveedor", -1L);
 			String search= query; 
 			if(!Cadena.isVacio(search)) 
-  			search= search.replaceAll(Constantes.CLEAN_SQL, "").trim().toUpperCase().replaceAll("(,| |\\t)+", ".*.*");			
+  			search= search.replaceAll(Constantes.CLEAN_SQL, "").trim().toUpperCase().replaceAll("(,| |\\t)+", ".*");			
 			else
 				search= "WXYZ";
   		params.put("codigo", search);			        
@@ -228,7 +228,7 @@ public class Costos extends IBaseFilter implements Serializable {
 				buscaPorCodigo= search.startsWith(".");
 				if(buscaPorCodigo)
 					search= search.trim().substring(1);
-				search= search.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+				search= search.toUpperCase().replaceAll("(,| |\\t)+", ".*");
 			} // if	
 			else
 				search= "WXYZ";

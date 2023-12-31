@@ -106,13 +106,13 @@ public class Filtro extends IBaseTicket implements Serializable {
 		if(clientes!= null && cliente!= null && clientes.indexOf(cliente)>= 0) { 
    		String search= clientes.get(clientes.indexOf(cliente)).toString("razonSocial");
       String name  = search;
- 		  search= search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
+ 		  search= search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*");
 			sb.append("(upper(razon_social) like '%").append(name).append("%' or upper(concat(nombre, ' ', paterno, ' ', materno)) regexp '.*").append(search).append(".*') and ");			
     } // if  
 		else 
       if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input"))) {
      		String search= JsfBase.getParametro("razonSocial_input");
-  		  search= search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
+  		  search= search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*");
     		sb.append("(upper(razon_social) regexp '.*").append(search).append(".*' or upper(rfc) like '%").append(search).append("%' or upper(concat(nombre, ' ', paterno, ' ', materno)) regexp '.*").append(search).append(".*') and ");
       } // if  
 		if(!Cadena.isVacio(this.attrs.get("consecutivo")))
@@ -475,7 +475,7 @@ public class Filtro extends IBaseTicket implements Serializable {
 				buscaPorCodigo= codigo.startsWith(".");
 				if(buscaPorCodigo)
 					codigo= codigo.trim().substring(1);
-				codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+				codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*");
 			} // if	
 			else
 				codigo= "WXYZ";

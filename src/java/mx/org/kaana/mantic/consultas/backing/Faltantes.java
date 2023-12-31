@@ -22,9 +22,6 @@ import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.compras.ordenes.beans.OrdenCompra;
-import mx.org.kaana.mantic.enums.EEstatusVentas;
-import mx.org.kaana.mantic.enums.ETipoDocumento;
 import mx.org.kaana.mantic.ventas.comun.IBaseTicket;
 
 @Named(value= "manticConsultasFaltantes")
@@ -54,11 +51,9 @@ public class Faltantes extends IBaseTicket implements Serializable {
  
   @Override
   public void doLoad() {
-    List<Columna> columns     = null;
-		Map<String, Object> params= null;
+    List<Columna> columns     = new ArrayList<>();
+		Map<String, Object> params= this.toPrepare();
     try {
-			params = this.toPrepare();
-      columns= new ArrayList<>();
       params.put("sortOrder", "order by tt_mantic_compras.propio");
       params.put("sucursales", ((UISelectEntity)this.attrs.get("idSucursal")).getKey());
       params.put("idAlmacen", ((UISelectEntity)this.attrs.get("idAlmacen")).getKey());
@@ -104,10 +99,9 @@ public class Faltantes extends IBaseTicket implements Serializable {
 	} // toPrepare
 	
 	protected void toLoadCatalog() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
         params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
 			else
@@ -130,10 +124,9 @@ public class Faltantes extends IBaseTicket implements Serializable {
 	}
 
 	public void doLoadAlmacenes() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
 			params.put("sucursales", ((UISelectEntity)this.attrs.get("idSucursal")).getKey());
@@ -152,11 +145,10 @@ public class Faltantes extends IBaseTicket implements Serializable {
 	}
   
   public List<UISelectEntity> doCompleteProveedor(String query) {
- 		List<Columna> columns     = null;
+ 		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
 		boolean buscaPorCodigo    = false;
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
@@ -168,7 +160,7 @@ public class Faltantes extends IBaseTicket implements Serializable {
 				buscaPorCodigo= search.startsWith(".");
 				if(buscaPorCodigo)
 					search= search.trim().substring(1);
-				search= search.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+				search= search.toUpperCase().replaceAll("(,| |\\t)+", ".*");
 			} // if	
 			else
 				search= "WXYZ";

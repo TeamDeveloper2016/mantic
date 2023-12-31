@@ -303,7 +303,7 @@ public class Nuevo extends IBaseFilter implements Serializable {
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			if(!Cadena.isVacio(codigo)) {
   			codigo= codigo.replaceAll(Constantes.CLEAN_SQL, "").trim();
-				codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+				codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*");
 			} // if	
 			else
 				codigo= "WXYZ";

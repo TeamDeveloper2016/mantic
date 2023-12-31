@@ -548,7 +548,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 				buscaPorCodigo= (((boolean)this.attrs.get("buscaPorCodigo")) && !search.startsWith(".")) || (!((boolean)this.attrs.get("buscaPorCodigo")) && search.startsWith("."));  			
 				if(search.startsWith("."))
 					search= search.trim().substring(1);				
-				search= search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
+				search= search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*");
 			} // if	
 			else
 				search= "WXYZ";
@@ -763,7 +763,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
   		//params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getDependencias());
   		params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			String search= (String) this.attrs.get("codigoCliente"); 
-			search= !Cadena.isVacio(search)? search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*") : "WXYZ";
+			search= !Cadena.isVacio(search)? search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*") : "WXYZ";
   		params.put(Constantes.SQL_CONDICION, "upper(concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, ''))) regexp '.*".concat(search).concat(".*'").concat(" or upper(tc_mantic_clientes.rfc) regexp '.*".concat(search).concat(".*'")));			
       this.attrs.put("clientes", (List<UISelectEntity>) UIEntity.build("VistaClientesDto", "findRazonSocial", params, columns, 20L));
 		} // try

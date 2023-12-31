@@ -99,7 +99,7 @@ public class Articulos extends Comun implements Serializable {
   		sb.append("(upper(tc_mantic_listas_precios_detalles.codigo) like upper('%").append(this.attrs.get("codigo")).append("%') or upper(tc_mantic_listas_precios_detalles.auxiliar) like upper('%").append(this.attrs.get("codigo")).append("%')) and ");
 		String search= new String((String)this.attrs.get("nombre"));
 		if(!Cadena.isVacio(search)) {
-			search= search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
+			search= search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*");
   		sb.append(" upper(tc_mantic_listas_precios_detalles.descripcion) regexp '.*").append(search).append(".*' and ");
 	  } // if
 		if(!Cadena.isVacio(this.attrs.get("idProveedor"))) {

@@ -158,7 +158,7 @@ public class Filtro extends Comun implements Serializable {
 			sb.append("(tc_mantic_confrontas_detalles.id_articulo= ").append(articulos.get(articulos.indexOf(articulo)).getKey()).append(") and ");				
 		else 
 			if(!Cadena.isVacio(JsfBase.getParametro("codigos_input"))) 
-				sb.append("(tc_mantic_confrontas_detalles.nombre regexp '.*").append(JsfBase.getParametro("codigos_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*")).append(".*' or tc_mantic_confrontas_detalles.codigo regexp '.*").append(JsfBase.getParametro("codigos_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*")).append(".*') and ");				
+				sb.append("(tc_mantic_confrontas_detalles.nombre regexp '.*").append(JsfBase.getParametro("codigos_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*")).append(".*' or tc_mantic_confrontas_detalles.codigo regexp '.*").append(JsfBase.getParametro("codigos_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*")).append(".*') and ");				
 		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
 		  sb.append("(date_format(tc_mantic_confrontas.registro, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
 		if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
@@ -354,7 +354,7 @@ public class Filtro extends Comun implements Serializable {
 				buscaPorCodigo= search.startsWith(".");
 				if(buscaPorCodigo)
 					search= search.trim().substring(1);
-				search= search.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+				search= search.toUpperCase().replaceAll("(,| |\\t)+", ".*");
 			} // if	
 			else
 				search= "WXYZ";

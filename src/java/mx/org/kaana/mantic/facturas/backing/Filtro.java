@@ -172,7 +172,7 @@ public class Filtro extends Factura implements Serializable {
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
 			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			String search= (String)this.attrs.get("codigoCliente"); 
-			search= !Cadena.isVacio(search) ? search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*") : "WXYZ";
+			search= !Cadena.isVacio(search) ? search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*") : "WXYZ";
   		params.put(Constantes.SQL_CONDICION, "upper(concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, ''))) regexp '.*".concat(search).concat(".*'").concat(" or upper(tc_mantic_clientes.rfc) regexp '.*".concat(search).concat(".*'")));			
       this.attrs.put("clientes", (List<UISelectEntity>) UIEntity.build("VistaClientesDto", "findRazonSocial", params, columns, 20L));
 		} // try

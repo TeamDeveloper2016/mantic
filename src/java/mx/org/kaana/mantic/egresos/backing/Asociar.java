@@ -113,7 +113,7 @@ public class Asociar extends IBaseFilter implements Serializable {
 				buscaPorFecha= search.startsWith(".");
 				if(buscaPorFecha)
 					search= search.trim().substring(1);
-				search= search.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+				search= search.toUpperCase().replaceAll("(,| |\\t)+", ".*");
 			} // if	
 			else
 				search= "WXYZ";
@@ -302,7 +302,7 @@ public class Asociar extends IBaseFilter implements Serializable {
 				buscaPorCodigo= codigo.startsWith(".");
 				if(buscaPorCodigo)
 					codigo= codigo.trim().substring(1);
-				codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+				codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*");
 			} // if	
 			else
 				codigo= "WXYZ";

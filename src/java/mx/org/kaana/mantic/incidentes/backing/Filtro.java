@@ -121,7 +121,7 @@ public class Filtro extends Comun implements Serializable {
 				sb.append("tc_mantic_incidentes.id_persona=").append(((UISelectEntity)this.attrs.get("nombre")).getKey()).append(" and ");						
   		else 
 	  		if(!Cadena.isVacio(JsfBase.getParametro("nombre_input"))) { 
-					String nombre= JsfBase.getParametro("nombre_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
+					String nombre= JsfBase.getParametro("nombre_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*");
 		  		sb.append("(tc_mantic_personas.nombre regexp '.*").append(nombre).append(".*') and ");				
 				} // if			  			
 			if(!Cadena.isVacio(this.attrs.get("fechaInicio")))

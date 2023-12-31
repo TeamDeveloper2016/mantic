@@ -272,7 +272,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 			buscaPorCodigo= codigo.startsWith(".");
 			if(buscaPorCodigo)
 				codigo= codigo.trim().substring(1);
-			codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+			codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*");
 			params.put("codigo", codigo);
 			if((boolean)this.attrs.get("buscaPorCodigo") || buscaPorCodigo)
         articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porCodigo", params, columns, 20L);
@@ -481,7 +481,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 						buscarCodigoPor= 0;
 				if(search.startsWith(".") || search.startsWith(":"))
 					search= search.trim().substring(1);				
-				search= search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
+				search= search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*");
 			} // if	
 			else
 				search= "WXYZ";
@@ -530,7 +530,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 						buscarCodigoPor= 1;
 				if(search.startsWith(".") || search.startsWith(":"))
 					search= search.trim().substring(1);				
-				search= search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
+				search= search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*");
 			} // if	
 			else
 				search= "WXYZ";
@@ -575,7 +575,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 			} // if	
 			else
 				codigo= "WXYZ";
-			params.put("codigo", codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*.*"));
+			params.put("codigo", codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*"));
 			if(buscaPorCodigo)
         this.attrs.put("lazyModel", new FormatCustomLazy("VistaOrdenesComprasDto", "porCodigo", params, columns));
 			else
@@ -626,7 +626,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 				buscaPorCodigo= codigo.startsWith(".");
 				if(buscaPorCodigo)
 					codigo= codigo.trim().substring(1);
-				codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+				codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*");
 			} // if	
 			else
 				codigo= "WXYZ";

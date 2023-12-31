@@ -135,7 +135,7 @@ public class Accion extends Comun implements Serializable {
 			if(this.attrs.get("nombre")!= null && ((UISelectEntity)this.attrs.get("nombre")).getKey()> 0L)							
 				regresar.put("idPersona", ((UISelectEntity)this.attrs.get("nombre")).getKey());					  
 			if(!Cadena.isVacio(JsfBase.getParametro("nombre_input"))) { 
-				String nombre= JsfBase.getParametro("nombre_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");				
+				String nombre= JsfBase.getParametro("nombre_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*");				
 				regresar.put("nombreEmpleado", nombre);
 			} // if
 			else{

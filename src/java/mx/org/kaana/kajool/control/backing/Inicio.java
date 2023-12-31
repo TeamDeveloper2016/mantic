@@ -160,7 +160,7 @@ public class Inicio extends BaseMenu implements Serializable {
       params.put("idEmpresa", 1L);
       codigo= codigo.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim();
       if(codigo.length()> 1) {
-        params.put("codigo", codigo.replaceAll("(,| |\\t)+", ".*.*"));
+        params.put("codigo", codigo.replaceAll("(,| |\\t)+", ".*"));
         this.attrs.put("particular", Boolean.FALSE);
         List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaProductosDto", "codigo", params, 30L);
         if(items!= null && !items.isEmpty()) 
@@ -189,7 +189,7 @@ public class Inicio extends BaseMenu implements Serializable {
       String codigo= this.attrs.get("codigo")!= null? (String)this.attrs.get("codigo"): "";
       codigo= codigo.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim();
       if(codigo.length()> 1) {
-        params.put("codigo", codigo.replaceAll("(,| |\\t)+", ".*.*"));
+        params.put("codigo", codigo.replaceAll("(,| |\\t)+", ".*"));
         this.attrs.put("particular", Boolean.FALSE);
         List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaProductosDto", "codigo", params, 30L);
         if(items!= null && !items.isEmpty()) 

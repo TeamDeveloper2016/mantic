@@ -130,7 +130,7 @@ public class Portal extends IBaseFilter implements Serializable {
 				buscaPorCodigo= codigo.startsWith(".");
 				if(buscaPorCodigo)
 					codigo= codigo.trim().substring(1);
-				codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+				codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*");
 			} // if	
 			else
 				codigo= "WXYZ";

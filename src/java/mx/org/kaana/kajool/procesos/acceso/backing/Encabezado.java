@@ -134,7 +134,7 @@ public class Encabezado extends IBaseFilter implements Serializable {
 			boolean buscaPorCodigo= !codigo.startsWith(".");
 			if(!buscaPorCodigo)
 				codigo= codigo.trim().substring(1);
-			codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+			codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*");
 			this.attrs.put("codigo", codigo);
 			this.attrs.put("idXml", "porNombre");
 			if((boolean)this.attrs.get("buscaPorCodigo") || buscaPorCodigo)
@@ -281,7 +281,7 @@ public class Encabezado extends IBaseFilter implements Serializable {
 				buscaPorCodigo= search.startsWith(".");
 				if(buscaPorCodigo)
 					search= search.trim().substring(1);
-				search= search.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+				search= search.toUpperCase().replaceAll("(,| |\\t)+", ".*");
 			} // if	
 			else
 				search= "WXYZ";
@@ -351,7 +351,7 @@ public class Encabezado extends IBaseFilter implements Serializable {
 			boolean buscaPorCodigo= codigo.startsWith(".");
 			if(buscaPorCodigo)
 				codigo= codigo.trim().substring(1);
-			codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+			codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*");
 			this.attrs.put("codigo", codigo);
 			this.attrs.put("idXml", "porNombre");
 			if((boolean)this.attrs.get("buscaPorCodigo") || buscaPorCodigo)
@@ -386,7 +386,7 @@ public class Encabezado extends IBaseFilter implements Serializable {
 		if(codigo== null || codigo.equals(".*.")) 
 			this.lazyCatalogoArticulos= null;
 		else {
-			codigo= codigo.replaceAll(Constantes.CLEAN_SQL, "").trim().toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+			codigo= codigo.replaceAll(Constantes.CLEAN_SQL, "").trim().toUpperCase().replaceAll("(,| |\\t)+", ".*");
 			this.attrs.put("logo", Configuracion.getInstance().getEmpresa("icon"));
 			this.attrs.put("codigo", codigo);
 			this.attrs.put("idXml", "porCatalogo");

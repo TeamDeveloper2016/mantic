@@ -214,10 +214,9 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	}
 	
 	private void toLoadCondiciones(UISelectEntity proveedor) {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
   		params.put("idProveedor", proveedor.getKey());
@@ -337,10 +336,9 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	}
 
 	private void checkDevolucionesPendientes(Long idProveedor) {
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		List<Entity> pendientes   = null;
 		try {
-			params    = new HashMap<>();
 			params.put("idProveedor", idProveedor);
 			pendientes= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaOrdenesComprasDto", "pendientes", params);
 			this.attrs.put("pendientes", "<hr class='ui-separator ui-state-default ui-corner-all'/>");
@@ -442,10 +440,9 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	}
 	
 	public void doLoadAlmacenes() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
 			params.put("sucursales", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdEmpresa());
@@ -465,9 +462,8 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	}
 
   public void toSearchCodigos() {
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("idProveedor", this.getAdminOrden().getIdProveedor());
 			for (Articulo articulo: this.getAdminOrden().getArticulos()) {
 				params.put("idArticulo", articulo.getIdArticulo());
@@ -510,7 +506,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	} 
 
   public void doLoadArticulos() {
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		List<Articulo> articulos  = null;
 		try {
 			this.getAdminOrden().getArticulos().clear();
@@ -518,7 +514,6 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			if(!Objects.equal(idCargar, 1L) && 
 				this.getAdminOrden().getIdAlmacen()!= null && this.getAdminOrden().getIdAlmacen()> 0L &&
 				this.getAdminOrden().getIdProveedor()!= null && this.getAdminOrden().getIdProveedor()> 0L) {
-				params=new HashMap<>();
 				params.put("idSucursal", ((OrdenCompra)this.getAdminOrden().getOrden()).getIkEmpresa().getKey());
 				params.put("idAlmacen", this.getAdminOrden().getIdAlmacen());
 				params.put("idProveedor", this.getAdminOrden().getIdProveedor());

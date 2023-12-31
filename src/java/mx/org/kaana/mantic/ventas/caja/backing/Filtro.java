@@ -86,7 +86,7 @@ public class Filtro extends mx.org.kaana.mantic.ventas.backing.Filtro implements
 			sb.append("tc_mantic_ventas_detalles.id_articulo=").append(((UISelectEntity)this.attrs.get("nombre")).getKey()).append(" and ");						
 		else 
 			if(!Cadena.isVacio(JsfBase.getParametro("nombre_input"))) { 
-				String nombre= JsfBase.getParametro("nombre_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
+				String nombre= JsfBase.getParametro("nombre_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*");
 				sb.append("(tc_mantic_ventas_detalles.nombre regexp '.*").append(nombre).append(".*') and ");				
 			} // if	
 		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
@@ -101,7 +101,7 @@ public class Filtro extends mx.org.kaana.mantic.ventas.backing.Filtro implements
 			sb.append("tc_mantic_clientes.id_cliente= ").append(((Entity)this.attrs.get("cliente")).getKey()).append(" and ");					
 		else 
       if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input"))) 
-				sb.append("tc_mantic_clientes.razon_social regexp '.*").append(JsfBase.getParametro("razonSocial_input").replaceAll(Constantes.CLEAN_SQL, "").replaceAll("(,| |\\t)+", ".*.*")).append(".*' and ");
+				sb.append("tc_mantic_clientes.razon_social regexp '.*").append(JsfBase.getParametro("razonSocial_input").replaceAll(Constantes.CLEAN_SQL, "").replaceAll("(,| |\\t)+", ".*")).append(".*' and ");
 		if(estatus!= null) { 
 			if(!estatus.getKey().equals(-1L))
 				sb.append("(tc_mantic_ventas.id_venta_estatus= ").append(estatus.getKey()).append(") and ");
@@ -287,7 +287,7 @@ public class Filtro extends mx.org.kaana.mantic.ventas.backing.Filtro implements
   		params.put("idProveedor", -1L);
 			String search= (String) this.attrs.get("codigoFiltro"); 
 			if(!Cadena.isVacio(search)) 
-  			search= search.replaceAll(Constantes.CLEAN_SQL, "").trim().toUpperCase().replaceAll("(,| |\\t)+", ".*.*");			
+  			search= search.replaceAll(Constantes.CLEAN_SQL, "").trim().toUpperCase().replaceAll("(,| |\\t)+", ".*");			
 			else
 				search= "WXYZ";
   		params.put("codigo", search);			        

@@ -122,7 +122,7 @@ public class Ventas extends IBaseTicket implements Serializable {
 			sb.append("upper(tc_mantic_ventas_detalles.nombre) like upper('%").append(this.attrs.get("articulo")).append("%') and");					
 		if(!Cadena.isVacio(this.attrs.get("cliente"))) {
       String search= (String) this.attrs.get("cliente"); 
-			search= !Cadena.isVacio(search)? search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*"): "WXYZ";      
+			search= !Cadena.isVacio(search)? search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*"): "WXYZ";      
 			sb.append("(upper(concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, ''))) regexp '.*".concat(search).concat(".*'").concat(" or upper(tc_mantic_clientes.rfc) regexp '.*".concat(search).concat(".*') and ")));
     } // if  
 		if(!Cadena.isVacio(this.attrs.get("proveedor")))

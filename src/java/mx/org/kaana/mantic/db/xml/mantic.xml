@@ -3931,26 +3931,7 @@ order by
          delete from tr_mantic_empresa_tipo_contacto where id_empresa = {idEmpresa}
       </delete> 
     </unit>    
-     <unit id="TrManticOrdenCompraCargoDto">
-      <select id="row">
-        select      
-          *
-        from      
-          tr_mantic_orden_compra_cargo
-        where 
-          {condicion} 
-      </select>
-      <select id="identically">
-        select      
-          *
-        from      
-          tr_mantic_orden_compra_cargo
-        where      
-          id_orden_compra = {idOrdenCompra} and id_orden_compra_cargo = {idOrdenCompraCargo} and porcentaje = {porcentaje} and importe = {importe} and id_cargo_compra = {idCargoCompra}
-      </select>
-    </unit>
-    
-     <unit id="TrManticPersonaDomicilioDto">
+    <unit id="TrManticPersonaDomicilioDto">
       <select id="row">				
         select      
 					tr_mantic_persona_domicilio.id_persona_domicilio as id_key,

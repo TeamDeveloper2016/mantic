@@ -36,7 +36,7 @@ public class Clientes {
 		try {
 			params=new HashMap<>();
 			String codigo= entidad.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim();
-			params.put("descripcion", codigo.replaceAll("(,| |\\t)+", ".*.*"));
+			params.put("descripcion", codigo.replaceAll("(,| |\\t)+", ".*"));
 			Value value= DaoFactory.getInstance().toField("TcJanalEntidadesDto", "entidad", params, "idEntidad");
 			if(value!= null && value.getData()!= null)
 				regresar= value.toLong();
@@ -63,7 +63,7 @@ public class Clientes {
 			params=new HashMap<>();
 			params.put("idEntidad", idEntidad);
 			String codigo= municipio.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim();
-			params.put("descripcion", codigo.replaceAll("(,| |\\t)+", ".*.*"));
+			params.put("descripcion", codigo.replaceAll("(,| |\\t)+", ".*"));
 			Value value= DaoFactory.getInstance().toField("TcJanalMunicipiosDto", "municipio", params, "idMunicipio");
 			if(value!= null && value.getData()!= null)
 				regresar= value.toLong();
@@ -89,7 +89,7 @@ public class Clientes {
 		try {
 			params=new HashMap<>();
 			params.put("idMunicipio", idMunicipio);
-			params.put("descripcion", localidad!= null? localidad.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*"): "XYZ");
+			params.put("descripcion", localidad!= null? localidad.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*"): "XYZ");
 			Value value= DaoFactory.getInstance().toField("TcJanalLocalidadesDto", "localidad", params, "idLocalidad");
 			if(value!= null && value.getData()!= null)
 				regresar= value.toLong();

@@ -100,7 +100,7 @@ public class Personas extends IBaseFilter implements Serializable {
         sb.append("(tr_mantic_empresa_personal.id_empresa_persona= ").append(personas.get(personas.indexOf(persona)).toLong("idEmpresaPersona")).append(") and");
 			else 
 				if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input"))) {
-          String codigo= JsfBase.getParametro("razonSocial_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
+          String codigo= JsfBase.getParametro("razonSocial_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*");
           sb.append("(upper(concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, ''))) regexp '.*").append(codigo).append(".*' or upper(tc_mantic_personas.rfc) regexp '.*").append(codigo).append(".*') and");
         } // if  
 			regresar.put("fecha", Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fecha")));			
@@ -141,7 +141,7 @@ public class Personas extends IBaseFilter implements Serializable {
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			if(!Cadena.isVacio(codigo)) {
   			codigo= codigo.replaceAll(Constantes.CLEAN_SQL, "").trim();
-				codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+				codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*");
 			} // if	
 			else
 				codigo= "WXYZ";

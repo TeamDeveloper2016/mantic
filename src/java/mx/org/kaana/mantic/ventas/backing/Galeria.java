@@ -107,7 +107,7 @@ public class Galeria extends IBaseFilter implements Serializable {
 						buscarCodigoPor= 1;
 				if(search.startsWith(".") || search.startsWith(":"))
 					search= search.trim().substring(1);				
-				search= search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
+				search= search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*");
 			} // if	
 			else
 				search= "";

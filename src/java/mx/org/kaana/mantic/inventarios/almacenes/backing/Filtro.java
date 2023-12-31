@@ -120,7 +120,7 @@ public class Filtro extends Comun implements Serializable {
 			sb.append("tc_mantic_articulos.id_articulo=").append(((UISelectEntity)this.attrs.get("nombre")).getKey()).append(" and ");						
 		else 
 			if(!Cadena.isVacio(JsfBase.getParametro("nombre_input"))) { 
-				String nombre= JsfBase.getParametro("nombre_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
+				String nombre= JsfBase.getParametro("nombre_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*");
 				sb.append("(tc_mantic_articulos.nombre regexp '.*").append(nombre).append(".*' or tc_mantic_articulos.descripcion regexp '.*").append(nombre).append(".*') and ");				
 			} // if	
 		sb.append("tc_mantic_articulos.id_vigente=").append(this.attrs.get("idVigente")).append(" and ");
@@ -180,7 +180,7 @@ public class Filtro extends Comun implements Serializable {
 				buscaPorCodigo= search.startsWith(".");
 				if(buscaPorCodigo)
 					search= search.trim().substring(1);
-				search= search.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+				search= search.toUpperCase().replaceAll("(,| |\\t)+", ".*");
 			} // if	
 			else
 				search= "WXYZ";
@@ -214,7 +214,7 @@ public class Filtro extends Comun implements Serializable {
   		params.put("idProveedor", -1L);
 			String search= (String) this.attrs.get("codigoFiltro"); 
 			if(!Cadena.isVacio(search)) 
-  			search= search.replaceAll(Constantes.CLEAN_SQL, "").trim().toUpperCase().replaceAll("(,| |\\t)+", ".*.*");			
+  			search= search.replaceAll(Constantes.CLEAN_SQL, "").trim().toUpperCase().replaceAll("(,| |\\t)+", ".*");			
 			else
 				search= "WXYZ";
   		params.put("codigo", search);			        

@@ -215,7 +215,7 @@ public class Filtro extends IBaseTicket implements Serializable {
 		StringBuilder sb= new StringBuilder();
 		UISelectEntity estatus= (UISelectEntity) this.attrs.get("idVentaEstatus");
 		if(!Cadena.isVacio(JsfBase.getParametro("codigo_input"))) 
-	 	  sb.append("tc_mantic_ventas_detalles.codigo regexp '.*").append(JsfBase.getParametro("codigo_input").replaceAll(Constantes.CLEAN_SQL, "").replaceAll("(,| |\\t)+", ".*.*")).append(".*' and ");
+	 	  sb.append("tc_mantic_ventas_detalles.codigo regexp '.*").append(JsfBase.getParametro("codigo_input").replaceAll(Constantes.CLEAN_SQL, "").replaceAll("(,| |\\t)+", ".*")).append(".*' and ");
 //		else 
 //		  if(!Cadena.isVacio(this.attrs.get("codigo")) && !this.attrs.get("codigo").toString().equals("-1"))
 //			  sb.append("(upper(tc_mantic_ventas_detalles.codigo) like upper('%").append(((Entity)this.attrs.get("codigo")).getKey()).append("%')) and ");					
@@ -240,7 +240,7 @@ public class Filtro extends IBaseTicket implements Serializable {
 			sb.append("tc_mantic_clientes.id_cliente = ").append(((Entity)this.attrs.get("razonSocial")).getKey()).append(" and ");					
 		else 
       if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input"))) 
-				sb.append("tc_mantic_clientes.razon_social regexp '.*").append(JsfBase.getParametro("razonSocial_input").replaceAll(Constantes.CLEAN_SQL, "").replaceAll("(,| |\\t)+", ".*.*")).append(".*' and ");
+				sb.append("tc_mantic_clientes.razon_social regexp '.*").append(JsfBase.getParametro("razonSocial_input").replaceAll(Constantes.CLEAN_SQL, "").replaceAll("(,| |\\t)+", ".*")).append(".*' and ");
 		if(estatus!= null && !estatus.getKey().equals(-1L))
   		sb.append("(tc_mantic_ventas.id_venta_estatus= ").append(estatus.getKey()).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
@@ -481,7 +481,7 @@ public class Filtro extends IBaseTicket implements Serializable {
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
 			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());			
 			String search= (String)this.attrs.get("codigoCliente"); 
-			search= !Cadena.isVacio(search) ? search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*") : "WXYZ";
+			search= !Cadena.isVacio(search) ? search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*") : "WXYZ";
   		params.put(Constantes.SQL_CONDICION, "upper(concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, ''))) regexp '.*".concat(search).concat(".*'").concat(" or upper(tc_mantic_clientes.rfc) regexp '.*".concat(search).concat(".*'")));			
       this.attrs.put("clientes", (List<UISelectEntity>) UIEntity.build("VistaClientesDto", "findRazonSocial", params, columns, 20L));
 		} // try

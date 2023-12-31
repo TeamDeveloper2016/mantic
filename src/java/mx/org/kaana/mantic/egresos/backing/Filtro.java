@@ -159,7 +159,7 @@ public class Filtro extends Comun implements Serializable {
 			search= (String) this.attrs.get("descripcion");
 			if(!Cadena.isVacio(search)) {
 				search= search.replaceAll(Constantes.CLEAN_SQL, "").trim();				
-				sb.append("upper(tc_mantic_egresos.descripcion) regexp upper('.*").append(search.toUpperCase().replaceAll("(,| |\\t)+", ".*.*")).append(".*') and ");						
+				sb.append("upper(tc_mantic_egresos.descripcion) regexp upper('.*").append(search.toUpperCase().replaceAll("(,| |\\t)+", ".*")).append(".*') and ");						
 			} // if									
 			if(Cadena.isVacio(sb))
 				regresar= Constantes.SQL_VERDADERO;
@@ -517,7 +517,7 @@ public class Filtro extends Comun implements Serializable {
 				buscaPorCodigo= codigo.startsWith(".");
 				if(buscaPorCodigo)
 					codigo= codigo.trim().substring(1);
-				codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+				codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*");
 			} // if	
 			else
 				codigo= "WXYZ";

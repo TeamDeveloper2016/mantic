@@ -52,7 +52,7 @@ public abstract class Pedido extends IBaseAttribute implements Serializable{
   		params.put("idProveedor", -1L);
 			String search= (String) this.attrs.get("codigoFiltro"); 
 			if(!Cadena.isVacio(search)) 
-  			search= search.replaceAll(Constantes.CLEAN_SQL, "").trim().toUpperCase().replaceAll("(,| |\\t)+", ".*.*");			
+  			search= search.replaceAll(Constantes.CLEAN_SQL, "").trim().toUpperCase().replaceAll("(,| |\\t)+", ".*");			
 			else
 				search= "WXYZ";
   		params.put("codigo", search);			        
