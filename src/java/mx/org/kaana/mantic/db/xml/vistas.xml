@@ -1273,7 +1273,7 @@ group by
 				  tc_mantic_transferencias_estatus.nombre as estatus,
 				  tc_mantic_transferencias_estatus.id_transferencia_estatus,
 				  tc_mantic_confrontas.id_confronta as id_proveedor,
-				  tc_mantic_confrontas.id_transferencia as id_orden_detalle,
+				  tc_mantic_confrontas_detalles.id_transferencia_detalle as id_orden_detalle,
 					tc_mantic_confrontas_detalles.id_articulo,
 				  0 as id_aplicar,
 					tc_mantic_confrontas_detalles.cantidad as descuentos,
@@ -8913,7 +8913,7 @@ order by
 				  and tc_mantic_articulos.id_descontinuado= 2
 				  and tc_mantic_articulos.id_vigente= 1
 				  and tc_mantic_faltantes.id_empresa= {idSucursal}
-          and (tc_mantic_articulos.nombre regexp '.*.*' or upper(tc_mantic_articulos_codigos.codigo) regexp '.*.*')				
+          and (tc_mantic_articulos.nombre regexp '.*' or upper(tc_mantic_articulos_codigos.codigo) regexp '.*')				
           and tc_mantic_articulos.id_articulo not in 
 				    (select 
 				      tc_mantic_ordenes_detalles.id_articulo 

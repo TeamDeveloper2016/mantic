@@ -86,9 +86,8 @@ public class Transaccion extends ComunInventarios {
 
 	private Siguiente toSiguiente(Session sesion) throws Exception {
 		Siguiente regresar        = null;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("ejercicio", this.getCurrentYear());
 			params.put("idEmpresa", this.transferencia.getIdEmpresa());
 			params.put("operador", this.getCurrentSign());
@@ -108,9 +107,8 @@ public class Transaccion extends ComunInventarios {
 	}
 
 	private void toMarkFaltantes(Session sesion, Articulo articulo) throws Exception {
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			// QUITAR DE LAS VENTAS PERDIDAS LOS ARTICULOS QUE FUERON YA SURTIDOS EN EL ALMACEN
 			params.put("idArticulo", articulo.getIdArticulo());
 			Long idEmpresa= this.transferencia.getIdEmpresa();
@@ -182,9 +180,8 @@ public class Transaccion extends ComunInventarios {
 	}
 	
 	private void toApplyMovimientos(Session sesion) throws Exception {
-		Map<String, Object> params=null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			for (Articulo articulo: this.articulos) {
 				TcManticConfrontasDetallesDto item= articulo.toConfrontasDetalle();
 				TcManticArticulosDto umbrales     = (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, articulo.getIdArticulo());

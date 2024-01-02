@@ -289,7 +289,7 @@ public class Filtro extends mx.org.kaana.mantic.ventas.backing.Filtro implements
 			if(!Cadena.isVacio(search)) {
   			search= search.replaceAll(Constantes.CLEAN_SQL, "").trim().toUpperCase().replaceAll("(,| |\\t)+", ".*");			
         if(Cadena.isVacio(search))
-          search= "WXYZ";        
+          search= ".*";        
       } // if  
 			else
 				search= "WXYZ";

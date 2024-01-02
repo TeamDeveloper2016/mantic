@@ -160,7 +160,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 					search= search.trim().substring(1);
 				search= search.toUpperCase().replaceAll("(,| |\\t)+", ".*");
         if(Cadena.isVacio(search))
-          search= "WXYZ";        
+          search= ".*";        
 			} // if	
 			else
 				search= "WXYZ";

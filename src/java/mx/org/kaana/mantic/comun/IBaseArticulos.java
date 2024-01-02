@@ -483,7 +483,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 					search= search.trim().substring(1);				
 				search= search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*");
         if(Cadena.isVacio(search))
-          search= "WXYZ";        
+          search= ".*";        
 			} // if	
 			else
 				search= "WXYZ";
@@ -534,7 +534,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 					search= search.trim().substring(1);				
 				search= search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*");
         if(Cadena.isVacio(search))
-          search= "WXYZ";
+          search= ".*";
 			} // if	
 			else
 				search= "WXYZ";
