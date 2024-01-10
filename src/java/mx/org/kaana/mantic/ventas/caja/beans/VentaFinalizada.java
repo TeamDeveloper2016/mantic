@@ -10,7 +10,7 @@ import mx.org.kaana.mantic.db.dto.TcManticApartadosDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.ventas.beans.TicketVenta;
 
-public class VentaFinalizada implements Serializable{
+public class VentaFinalizada implements Serializable {
 
 	private static final long serialVersionUID = 6598582355031809104L;
 	private TicketVenta ticketVenta;
@@ -179,4 +179,5 @@ public class VentaFinalizada implements Serializable{
 	public void setIdTipoPago(Long idTipoPago) {
 		this.idTipoPago = idTipoPago;
 	}	
+  
 }

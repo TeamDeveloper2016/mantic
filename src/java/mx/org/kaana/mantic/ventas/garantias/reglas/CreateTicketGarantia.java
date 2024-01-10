@@ -80,9 +80,8 @@ public class CreateTicketGarantia extends CreateTicket{
 	protected String toFindDomicilio() throws Exception{
 		Entity domicilio         = null;
 		String regresar          = null;
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put("idEmpresa", this.ticket.getIdEmpresa());
 			domicilio= (Entity) DaoFactory.getInstance().toEntity("VistaInformacionEmpresas", "datosEmpresa", params);
 			regresar= domicilio.toString("empresaDireccion").concat(" C.P. ").concat(domicilio.toString("codigoPostal")).concat("<br> COLONIA. ").concat(domicilio.toString("colonia")).concat("<br> TEL.").concat(toTelefono());
@@ -95,10 +94,9 @@ public class CreateTicketGarantia extends CreateTicket{
 	
 	private String toTelefono() throws Exception{
 		String regresar          = "";
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		Entity telefono          = null;
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_empresa=" + this.ticket.getIdEmpresa() + " and id_tipo_contacto=" + ETiposContactos.TELEFONO.getKey());
 			telefono= (Entity) DaoFactory.getInstance().toEntity("TrManticEmpresaTipoContactoDto", "row", params);
 			if(telefono!= null)
@@ -238,9 +236,8 @@ public class CreateTicketGarantia extends CreateTicket{
 	public String toUsuario() throws Exception{
 		String regresar          = null;
 		Entity usuario           = null;
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put("idUsuario", this.ticket.getIdUsuario());
 			usuario= (Entity) DaoFactory.getInstance().toEntity("VistaUsuariosDto", "perfilUsuario", params);
 			regresar= usuario.toString("nombreCompleto");

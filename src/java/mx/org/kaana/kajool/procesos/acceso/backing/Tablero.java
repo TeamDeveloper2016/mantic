@@ -1027,7 +1027,7 @@ public class Tablero extends Comun implements Serializable {
     Map<String, Object> params= new HashMap<>();
     try {      
       params.put("estatus", "1, 2, 3");
-      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      params.put(Constantes.SQL_CONDICION, "tc_mantic_empresas_deudas.saldo> 0");
       columns.add(new Columna("dias", EFormatoDinamicos.MILES_SIN_DECIMALES));
       columns.add(new Columna("total", EFormatoDinamicos.MONEDA_CON_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));

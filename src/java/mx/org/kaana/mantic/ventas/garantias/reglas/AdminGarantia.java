@@ -190,17 +190,17 @@ public final class AdminGarantia extends IAdminArticulos implements Serializable
 	public void toCalculateGarantia(boolean recibida) {				
 		if(recibida){
 			this.articulosRecibida = new ArrayList<>();
-			toCalculateRecibida();
+			this.toCalculateRecibida();
 		} // if
 		else{
 			this.articulosTerminada= new ArrayList<>();
-			toCalculateTerminada();
+			this.toCalculateTerminada();
 		} // else
 	} // toCalculte
 	
 	public void toCalculateRecibida() {
 		ArticuloVenta artVenta= null;
-		getTotales().reset();
+		this.getTotales().reset();
 		for (Articulo articulo: getArticulos()) {
 			artVenta= (ArticuloVenta) articulo;
 			if(artVenta.isAplicar()){
@@ -210,25 +210,25 @@ public final class AdminGarantia extends IAdminArticulos implements Serializable
 				this.articulosRecibida.add(artVenta);
 			} // if
 		} // for
-		getTotales().removeUltimo(getArticulos().get(getArticulos().size()- 1));
-		getTotales().removeTotal();
-		this.setAjusteDeuda(getTotales().getTotal());
-	} // toCalculte
+		this.getTotales().removeUltimo(getArticulos().get(getArticulos().size()- 1));
+		this.getTotales().removeTotal();
+		this.setAjusteDeuda(this.getTotales().getTotal());
+	} // toCalculateRecibida
 	
 	public void toCalculateTerminada() {
 		ArticuloVenta artVenta= null;
-		getTotales().reset();
+		this.getTotales().reset();
 		for (Articulo articulo: getArticulos()) {
 			artVenta= (ArticuloVenta) articulo;
 			if(!artVenta.isAplicar()){
 				artVenta.toCalculate(true, this.getTipoDeCambio());
 				artVenta.setModificado(false);
-				getTotales().addArticulo(artVenta);
+				this.getTotales().addArticulo(artVenta);
 				this.articulosTerminada.add(artVenta);
 			} // if
 		} // for
-		getTotales().removeUltimo(getArticulos().get(getArticulos().size()- 1));
-		getTotales().removeTotal();
-		this.setAjusteDeuda(getTotales().getTotal());
-	} // toCalculte
+		this.getTotales().removeUltimo(getArticulos().get(getArticulos().size()- 1));
+		this.getTotales().removeTotal();
+		this.setAjusteDeuda(this.getTotales().getTotal());
+	} // toCalculateTerminada
 }

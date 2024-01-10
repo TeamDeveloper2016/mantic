@@ -200,11 +200,10 @@ public class Accion extends IBaseVenta implements Serializable {
   } // doLoad
 	
 	protected void loadDatosCliente(Long idVenta) throws Exception{
-		Map<String, Object>params = null;
+		Map<String, Object>params = new HashMap<>();
 		Entity descripcionGarantia= null;
-		Entity entity            = null;
+		Entity entity             = null;
 		try {
-			params= new HashMap<>();
 			params.put("sortOrder", "");
 			params.put("idEmpresa", ((TicketVenta)getAdminOrden().getOrden()).getIdEmpresa());
 			params.put(Constantes.SQL_CONDICION, "tc_mantic_ventas.id_venta=" + idVenta);
@@ -320,14 +319,12 @@ public class Accion extends IBaseVenta implements Serializable {
 	} // verificarDevolucionCredito
 	
 	public void toDetalleDeudaCliente(){
-		Map<String, Object>params= null;
-		List<Columna>columns     = null;
+		Map<String, Object>params= new HashMap<>();
+		List<Columna>columns     = new ArrayList<>();
 		try {
-			params= new HashMap<>();
 			params.put("idCliente", ((UISelectEntity) this.attrs.get("clienteSeleccion")).getKey());									
 			params.put("sortOrder", "order by	tc_mantic_clientes_deudas.registro desc");			
 			params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes_deudas.id_cliente_estatus in (".concat(EEstatusClientes.INICIADA.getIdEstatus().toString()).concat(",").concat(EEstatusClientes.PARCIALIZADA.getIdEstatus().toString()).concat(")"));			
-			columns= new ArrayList<>();
 			columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
 			columns.add(new Columna("limite", EFormatoDinamicos.FECHA_CORTA));
 			columns.add(new Columna("saldo", EFormatoDinamicos.MILES_SAT_DECIMALES));
@@ -402,7 +399,7 @@ public class Accion extends IBaseVenta implements Serializable {
             UIBackingUtilities.execute("jsTicket.imprimirMoreTicket('" + claves + "','" + tickets + "');");				
           JsfBase.addMessage("Se finalizó con éxito la garantia", ETipoMensaje.INFORMACION);
           this.setAdminOrden(new AdminGarantia(new TicketVenta()));
-          this.attrs.put("pago", new Pago(getAdminOrden().getTotales()));
+          this.attrs.put("pago", new Pago(this.getAdminOrden().getTotales()));
           this.init();
         } // if
         else 
@@ -425,9 +422,9 @@ public class Accion extends IBaseVenta implements Serializable {
 		Double iva               = 0D;
 		try {
 			for(ArticuloVenta articulo: garantia.getArticulosGarantia()){
-				total= total + articulo.getTotal();
-				subTotal= subTotal + articulo.getSubTotal();
-				iva= iva + articulo.getImpuestos();
+				total   = total+ articulo.getTotal();
+				subTotal= subTotal+ articulo.getSubTotal();
+				iva     = iva+ articulo.getImpuestos();
 			} // for
 			pago= new Pago(new Totales());
 			pago.getTotales().setTotal(total);
@@ -530,10 +527,9 @@ public class Accion extends IBaseVenta implements Serializable {
 	} // loadVentaFinalizada
 	
 	protected void loadCatalog() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
 			params.put("sucursales", this.attrs.get("idEmpresa"));
@@ -560,11 +556,10 @@ public class Accion extends IBaseVenta implements Serializable {
 	public void doAsignaCliente(SelectEvent event){
 		UISelectEntity seleccion              = null;
 		List<UISelectEntity> clientes         = null;
-		List<UISelectEntity> clientesSeleccion= null;
+		List<UISelectEntity> clientesSeleccion= new ArrayList<>();
 		try {
 			clientes= (List<UISelectEntity>) this.attrs.get("clientes");
 			seleccion= clientes.get(clientes.indexOf((UISelectEntity)event.getObject()));
-			clientesSeleccion= new ArrayList<>();
 			clientesSeleccion.add(seleccion);
 			this.attrs.put("clientesSeleccion", clientesSeleccion);
 			this.attrs.put("clienteSeleccion", seleccion);			
@@ -578,17 +573,15 @@ public class Accion extends IBaseVenta implements Serializable {
 	@Override
 	public void doLoadTicketAbiertos() {
 		List<UISelectEntity> ticketsAbiertos= null;
-		Map<String, Object>params           = null;
-		List<Columna> campos                = null;
-		List<Columna> columns               = null;
+		Map<String, Object>params           = new HashMap<>();
+		List<Columna> campos                = new ArrayList<>();
+		List<Columna> columns               = new ArrayList<>();
 		EAccion accion                      = null;
 		Entity entity                       = null;
 		try {
-			loadCajas();
-			params= new HashMap<>();
+			this.loadCajas();
 			params.put("sortOrder", "");
 			params.put("idEmpresa", this.attrs.get("idEmpresa"));
-			campos= new ArrayList<>();
 			campos.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));
 			campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			params.put(Constantes.SQL_CONDICION, toCondicion());
@@ -615,7 +608,6 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.attrs.put("clienteAsignado", false);
 			this.attrs.put("tabIndex", 0);		
 			this.attrs.put("registroCliente", new TcManticClientesDto());
-			columns= new ArrayList<>();
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
 			params.clear();
@@ -794,14 +786,13 @@ public class Accion extends IBaseVenta implements Serializable {
 	} // doAsignaCliente
 	
   private void toFindOpenTicket(UISelectEntity seleccion) {
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		EAccion accion           = null;
 		MotorBusqueda motor      = null;
 		Entity factura           = null;
 		try {
 			accion= (EAccion) this.attrs.get("accion");
 			if(!(accion.equals(EAccion.CONSULTAR)||accion.equals(EAccion.MODIFICAR))){
-				params= new HashMap<>();
 				params.put("idVenta", seleccion.getKey());
 				this.setDomicilio(new Domicilio());
 				this.attrs.put("registroCliente", new TcManticClientesDto());
@@ -898,12 +889,10 @@ public class Accion extends IBaseVenta implements Serializable {
 	
 	private void loadCajas() {
 		List<UISelectEntity> cajas= null;
-		Map<String, Object>params = null;
-		List<Columna> columns     = null;
+		Map<String, Object>params = new HashMap<>();
+		List<Columna> columns     = new ArrayList<>();
 		EAccion accion            = null;
 		try {
-			columns= new ArrayList<>();
-			params= new HashMap<>();
 			accion= (EAccion) this.attrs.get("accion");
 			if(accion.equals(EAccion.CONSULTAR)||accion.equals(EAccion.MODIFICAR))
 				params.put("idEmpresa", ((TicketVenta)this.getAdminOrden().getOrden()).getIdEmpresa());
@@ -949,6 +938,11 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.attrs.put("idArticulo", articuloAltered.getIdArticulo());
 			this.attrs.put("descripcion", articuloAltered.getNombre());
 			super.doCalculate(index);
+      
+      // POR ALGUNA RAZÓN ESTE IMPORTE NO SE ASIGNA Y ESTA EN CEROS CUANDO DEBERIA DE TENER EL VALOR TOTAL DEL ARTICULO (09/01/2023)
+      // SOLO APLICA PARA LAS DEVOLUCIONES, POR EL MOMENTO NO HE DETERMINADO LA CAUSA PERO NO MODIFICO LA INTERFAZ PARA NO AFECTAR
+      // A OTRO PROCESO 
+      this.getAdminOrden().getArticulos().get(index).setTotal(Numero.toRedondearSat(this.getAdminOrden().getArticulos().get(index).getImporte()));	
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -970,15 +964,13 @@ public class Accion extends IBaseVenta implements Serializable {
 	
 	private void loadBancos(){
 		List<UISelectEntity> bancos= null;
-		Map<String, Object> params = null;
-		List<Columna> campos       = null;
+		Map<String, Object> params = new HashMap<>();
+		List<Columna> columns      = new ArrayList<>();
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-			campos= new ArrayList<>();
-			campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-			campos.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
-			bancos= UIEntity.build("TcManticBancosDto", "row", params, campos, Constantes.SQL_TODOS_REGISTROS);
+			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+			bancos= UIEntity.build("TcManticBancosDto", "row", params, columns, Constantes.SQL_TODOS_REGISTROS);
 			this.attrs.put("bancos", bancos);
 			this.attrs.put("banco", bancos.get(0));
 		} // try
@@ -1002,14 +994,12 @@ public class Accion extends IBaseVenta implements Serializable {
 	} // doUpdateOpenTickets
 	
 	public void doUpdateOpenTickets(Boolean cobroCaja) {
-		List<Columna> columns     = null;
-    Map<String, Object> params= null;
+		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
     try {
-			params= new HashMap<>();
 			params.put("sortOrder", "");
 			params.put("idEmpresa", this.attrs.get("idEmpresa"));
 			params.put(Constantes.SQL_CONDICION, this.toCondicionOpenTicket(cobroCaja));
-			columns= new ArrayList<>();
 			columns.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));
 			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));			
       List<UISelectEntity> opens= (List<UISelectEntity>) UIEntity.build("VistaVentasDto", "lazy", params, columns, 20L);
@@ -1053,13 +1043,12 @@ public class Accion extends IBaseVenta implements Serializable {
  
   private Long toCierreCaja() {
     Long regresar             = -1L;
-    Map<String, Object> params= null;
+    Map<String, Object> params= new HashMap<>();
     try {      
 			List<UISelectEntity> cajas= (List<UISelectEntity>)this.attrs.get("cajas");
       int index= cajas.indexOf((UISelectEntity)this.attrs.get("caja"));
       if(index>= 0)
 			  this.attrs.put("caja", cajas.get(index));
-      params = new HashMap<>();      
       params.put("estatusAbierto", "1, 2");
       params.put("idEmpresa", ((UISelectEntity)this.attrs.get("caja")).toLong("idEmpresa"));
       params.put("idCaja", ((UISelectEntity)this.attrs.get("caja")).getKey());			
@@ -1078,9 +1067,8 @@ public class Accion extends IBaseVenta implements Serializable {
   }
 
   private void lookForGarantia() {
-    Map<String, Object> params = null;
+    Map<String, Object> params = new HashMap<>();
     try {      
-      params = new HashMap<>();      
       params.put("idVenta", (Long)this.attrs.get("idVenta"));
       Entity entity = (Entity)DaoFactory.getInstance().toEntity("TcManticGarantiasDto", "venta", params);
       this.attrs.put("error", entity!= null && !entity.isEmpty());
@@ -1095,13 +1083,11 @@ public class Accion extends IBaseVenta implements Serializable {
   }
  
   public void doLoadGarantia() {
-    List<Columna> columns     = null;
-	  Map<String, Object> params= null;	
+    List<Columna> columns     = new ArrayList<>();
+	  Map<String, Object> params= new HashMap();	
     try {
-  	  params = new HashMap();
 			params.put("sortOrder", "order by tc_mantic_garantias.registro desc");
 			params.put("idVenta", this.attrs.get("idVenta"));
-      columns= new ArrayList<>();
       columns.add(new Columna("impuestos", EFormatoDinamicos.MILES_CON_DECIMALES));    
       columns.add(new Columna("subTotal", EFormatoDinamicos.MILES_CON_DECIMALES));    
       columns.add(new Columna("total", EFormatoDinamicos.MILES_CON_DECIMALES));    
@@ -1133,14 +1119,12 @@ public class Accion extends IBaseVenta implements Serializable {
 	} // doRowToggle
   
   public void doLoadDetalle() {
-    List<Columna> columns     = null;
-	  Map<String, Object> params= null;	
+    List<Columna> columns     = new ArrayList<>();
+	  Map<String, Object> params= new HashMap();	
     try {
-  	  params = new HashMap();
 			Entity entity= (Entity)this.attrs.get("garantia");
 			params.put("sortOrder", "order by tc_mantic_garantias_detalles.registro");
 			params.put("idGarantia", entity.toLong("idGarantia"));
-      columns= new ArrayList<>();
       columns.add(new Columna("cantidad", EFormatoDinamicos.MILES_CON_DECIMALES));    
       columns.add(new Columna("impuestos", EFormatoDinamicos.MILES_CON_DECIMALES));    
       columns.add(new Columna("subTotal", EFormatoDinamicos.MILES_CON_DECIMALES));    
@@ -1160,4 +1144,5 @@ public class Accion extends IBaseVenta implements Serializable {
       Methods.clean(columns);
     } // finally		   
   }  
+  
 }
