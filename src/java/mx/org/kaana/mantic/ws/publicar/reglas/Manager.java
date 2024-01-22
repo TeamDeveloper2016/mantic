@@ -6,11 +6,11 @@ import mx.org.kaana.libs.json.Decoder;
 import mx.org.kaana.mantic.enums.ERespuesta;
 import mx.org.kaana.mantic.ws.publicar.beans.Respuesta;
 
-public class Manager implements Serializable{
+public class Manager implements Serializable {
 
 	private static final long serialVersionUID = 3136961119537818420L;
 
-	public String verificaConexion() throws Exception{
+	public String verificaConexion() throws Exception {
 		String regresar= null;
 		try {
 			regresar= Decoder.toJson(new Respuesta(ERespuesta.CORRECTO.getCodigo(), "Conexión exitosa"));
@@ -22,7 +22,7 @@ public class Manager implements Serializable{
 		return regresar;
 	} // verificaConexion
 	
-	public String ultimoRespaldo() throws Exception{
+	public String ultimoRespaldo() throws Exception {
 		String regresar = null;
 		GestorSQL gestor= null;
 		try {
@@ -35,4 +35,5 @@ public class Manager implements Serializable{
 		} // catch		
 		return regresar;
 	} // ultimoRespaldo
+  
 }

@@ -11,7 +11,7 @@ import org.apache.axis.client.Service;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public class Peticion implements Serializable{
+public class Peticion implements Serializable {
 
 	private static final Log LOG              = LogFactory.getLog(Peticion.class);  
 	private static final long serialVersionUID= 5441425208790235051L;		
@@ -66,7 +66,7 @@ public class Peticion implements Serializable{
     return regresar;
   } // consumir
 	
-	public String toEndPoint(){
+	public String toEndPoint() {
 		String regresar= null;
 		try {
 			regresar= TcConfiguraciones.getInstance().getPropiedad(SERVIDOR.concat(Configuracion.getInstance().getEtapaServidor().toLowerCase()));
@@ -77,4 +77,5 @@ public class Peticion implements Serializable{
 		} // catch		
 		return regresar;
 	} // toEndPoint
+  
 }

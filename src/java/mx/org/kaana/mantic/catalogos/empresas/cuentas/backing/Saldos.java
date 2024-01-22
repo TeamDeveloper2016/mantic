@@ -468,6 +468,7 @@ public class Saldos extends IBaseImportar implements Serializable {
 			this.attrs.put("idProveedor", entity.toLong("idProveedor"));
       columns.add(new Columna("saldo", EFormatoDinamicos.MILES_CON_DECIMALES));    
       columns.add(new Columna("abonado", EFormatoDinamicos.MILES_CON_DECIMALES));    
+      columns.add(new Columna("pagar", EFormatoDinamicos.MILES_CON_DECIMALES));    
       columns.add(new Columna("fecha", EFormatoDinamicos.FECHA_CORTA));    
       columns.add(new Columna("limite", EFormatoDinamicos.FECHA_CORTA));    
       columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));    

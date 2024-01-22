@@ -2,16 +2,22 @@ package mx.org.kaana.mantic.ws.publicar.beans;
 
 import java.io.Serializable;
 import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.mantic.enums.ERespuesta;
 
-public class Respuesta implements Serializable{
+public class Respuesta implements Serializable {
 	
 	private static final long serialVersionUID = -7431056257630809729L;
+  
 	private String codigo;
 	private String descripcion;
 	private String nombre;
 	private String ruta;
 	private String fecha;
 
+	public Respuesta() {
+    this(ERespuesta.ERROR.getCodigo(), ERespuesta.ERROR.getDescripcion());
+  }
+  
 	public Respuesta(String codigo, String descripcion) {
 		this(codigo, descripcion, "");
 	}
@@ -21,7 +27,7 @@ public class Respuesta implements Serializable{
 	}
 	
 	public Respuesta(String codigo, String descripcion, String nombre, String ruta) {
-		this(codigo, descripcion, nombre, ruta, Fecha.formatear(Fecha.FECHA_HORA_CORTA));
+		this(codigo, descripcion, nombre, ruta, Fecha.toRegistro());
 	}
 	
 	public Respuesta(String codigo, String descripcion, String nombre, String ruta, String fecha) {

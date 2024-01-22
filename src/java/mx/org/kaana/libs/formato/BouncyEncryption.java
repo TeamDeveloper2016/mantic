@@ -9,6 +9,7 @@ import org.bouncycastle.util.encoders.Base64;
 
 /**
  * Clase que encripta y desencripta cadenas con la libreria BouncyCastle
+ *
  * @company KAANA
  * @project KAJOOL (Control system polls)
  * @date 20/08/2015
@@ -21,10 +22,11 @@ public final class BouncyEncryption extends Properties {
   private static final long serialVersionUID = 4723854671077799971L;
 
   /**
-	 * Devuelve cadena desencriptada
-	 * @param cadena String a desencriptar
+   * Devuelve cadena desencriptada
+   *
+   * @param cadena String a desencriptar
    * @return instancia de Document con sentencias sql
-	 */
+   */
   public static String decrypt(String cadena) throws Exception {
     BlowfishEngine engine = new BlowfishEngine();
     PaddedBufferedBlockCipher cipher = new PaddedBufferedBlockCipher(engine);
@@ -38,18 +40,20 @@ public final class BouncyEncryption extends Properties {
     String auxiliar = new String(salidaDos);
     for (int i = 0; i < auxiliar.length(); i++) {
       char c = auxiliar.charAt(i);
-      if (c != 0)
+      if (c != 0) {
         regresar.append(c);
+      }
     } // for
 
     return regresar.toString();
   }
 
   /**
-	 * Devuelve cadena encriptada
-	 * @param cadena String a encriptar
+   * Devuelve cadena encriptada
+   *
+   * @param cadena String a encriptar
    * @return instancia de Document con sentencias sql
-	 */
+   */
   public static String encrypt(String cadena) throws Exception {
     BlowfishEngine engine = new BlowfishEngine();
     PaddedBufferedBlockCipher cipher = new PaddedBufferedBlockCipher(engine);
@@ -69,7 +73,7 @@ public final class BouncyEncryption extends Properties {
   }
 
   public static void main(String[] args) {
-    String originalString = "kajool2018"; // String to be encrypted.
+    String originalString = "Imox"; // String to be encrypted.
     try {
       String encryptedString = encrypt(originalString);
       System.out.println("Original String: " + originalString);

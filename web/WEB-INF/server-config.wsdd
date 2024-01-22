@@ -38,6 +38,11 @@
   <parameter name="className" value="mx.org.kaana.mantic.ws.publicar.Paises"/>
  </service>   
   
+ <service name="Planetas" provider="java:RPC">
+  <parameter name="allowedMethods" value="*"/>
+  <parameter name="className" value="mx.org.kaana.mantic.ws.publicar.Planetas"/>
+ </service>   
+  
  <service
 		name="Version"
 		provider="java:RPC">

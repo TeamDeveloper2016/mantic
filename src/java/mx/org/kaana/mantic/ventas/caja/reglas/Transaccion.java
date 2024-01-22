@@ -297,9 +297,8 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 	
 	private Siguiente toSiguienteCotizacion(Session sesion, Long idEmpresa) throws Exception {
 		Siguiente regresar        = null;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("ejercicio", this.getCurrentYear());
 			params.put("idEmpresa", idEmpresa);
 			params.put("operador", this.getCurrentSign());
@@ -359,9 +358,8 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 	
 	private Siguiente toSiguienteServicio(Session sesion, Long idServicio) throws Exception {
 		Siguiente regresar        = null;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("idServicio", idServicio);
 			Value next= DaoFactory.getInstance().toField(sesion, "TcManticServiciosBitacoraDto", "siguiente", params, "siguiente");
 			if(next.getData()!= null)
@@ -438,11 +436,10 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 	
 	public boolean verificarCierreCaja(Session sesion) throws Exception {
 		boolean regresar         = true;
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		TcManticCierresDto cierre= null;
 		TcManticCierresDto nuevo = null;
 		try {
-			params= new HashMap<>();
 			params.put("estatusAbierto", CIERRE_ACTIVO);
 			params.put("idEmpresa", this.ventaFinalizada.getTicketVenta().getIdEmpresa());
 			params.put("idCaja", this.ventaFinalizada.getIdCaja());			
@@ -482,9 +479,8 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 	private boolean registraAlertaRetiro(Session sesion, Long idCierre, Double efectivo, Double limite) throws Exception {
 		boolean regresar                = true;
 		TcManticCierresAlertasDto alerta= null;
-		Map<String, Object>params       = null;		
+		Map<String, Object>params       = new HashMap<>();		
 		try{
-			params= new HashMap<>();
 			params.put("idCierre", idCierre);
 			params.put(Constantes.SQL_CONDICION, "id_cierre="+idCierre);
 			alerta= (TcManticCierresAlertasDto) DaoFactory.getInstance().toEntity(sesion, TcManticCierresAlertasDto.class, "TcManticCierresAlertasDto", "row", params);
@@ -510,9 +506,8 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 	
 	private Double toAcumuladoCierreActivo(Session sesion, Long idCierre) throws Exception {
 		Double regresar          = 0D;
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		try{
-			params= new HashMap<>();		
 			params.put("idCierre", idCierre);
 			TcManticCierresCajasDto saldo= (TcManticCierresCajasDto) DaoFactory.getInstance().toEntity(sesion, TcManticCierresCajasDto.class, "TcManticCierresCajasDto", "caja", params);
 			if(saldo!= null)
@@ -525,12 +520,11 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 	} // toAcumuladoCierreActivo	
 	
 	private void toCierreActivo(Session sesion, Long idTipoMedioPago) throws Exception {
-		Map<String, Object>params     = null;
+		Map<String, Object>params     = new HashMap<>();
 		TcManticCierresCajasDto cierre= null;
 		ETipoMediosPago medioPago     = null;
 		Double abono                  = 0D;		
 		try{
-			params= new HashMap<>();
 			params.put("idCierre", this.idCierreVigente);
 			params.put("medioPago", idTipoMedioPago);
 			cierre= (TcManticCierresCajasDto) DaoFactory.getInstance().toEntity(sesion, TcManticCierresCajasDto.class, "TcManticCierresCajasDto", "cajaMedioPago", params);			
@@ -590,10 +584,9 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 	
 	private Siguiente toSiguienteApartado(Session sesion) throws Exception {
 		Siguiente regresar        = null;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		Entity siguiente          = null;
 		try {
-			params=new HashMap<>();
 			params.put("ejercicio", this.getCurrentYear());			
 			params.put("operador", this.getCurrentSign());
 			siguiente= (Entity) DaoFactory.getInstance().toEntity(sesion, "TcManticApartadosDto", "siguiente", params);
@@ -610,7 +603,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 	
 	private boolean pagarVenta(Session sesion, Long idEstatusVenta) throws Exception {
 		boolean regresar         = false;
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		Siguiente consecutivo    = null;
 		boolean validacionEstatus= false;
 		try {									
@@ -618,12 +611,15 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 			consecutivo= this.toSiguiente(sesion);			
 			this.getOrden().setCticket(consecutivo.getOrden());			
 			this.getOrden().setTicket(consecutivo.getConsecutivo());
-			this.getOrden().setIdVentaEstatus(idEstatusVenta);			
+			this.getOrden().setIdVentaEstatus(idEstatusVenta);
 			this.getOrden().setIdFacturar(this.ventaFinalizada.isFacturar() && validacionEstatus ? SI : NO);
 			this.getOrden().setIdCredito(this.ventaFinalizada.isCredito() && validacionEstatus ? SI : NO);
 			this.getOrden().setCobro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
       if(this.getOrden().getIdBanco()!= null && this.getOrden().getIdBanco()<= -1L)
         this.getOrden().setIdBanco(null);
+      // ESTO SUCEDE CUANDO SE TIENE 2 METODOS DE PAGO CON TARJETA DE CREDITO Y DEBITO
+      if(this.getOrden().getIdTipoMedioPago()!= null && this.getOrden().getIdTipoMedioPago()<= -1L)
+        this.getOrden().setIdTipoMedioPago(null);
 			if(this.ventaFinalizada.isFacturar() && validacionEstatus) {				
 				this.clienteDeault= getOrden().getIdCliente().equals(toClienteDefault(sesion));
 				if(this.clienteDeault) {
@@ -641,7 +637,6 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 			} // if						
 			if(DaoFactory.getInstance().update(sesion, this.getOrden())>= 1L) {				
 				if(this.registraBitacora(sesion, this.getOrden().getIdVenta(), idEstatusVenta, "LA VENTA HA SIDO FINALIZADA")) {
-					params= new HashMap<>();
 					params.put("idVenta", this.getOrden().getIdVenta());
 					regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticVentasDetallesDto.class, params)>= 1;
 					this.toFillArticulos(sesion, this.ventaFinalizada.getArticulos());
@@ -729,9 +724,8 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 	
 	protected Siguiente toSiguiente(Session sesion) throws Exception {
 		Siguiente regresar        = null;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("ejercicio", this.getCurrentYear());
 			params.put("idEmpresa", getOrden().getIdEmpresa());
 			params.put("operador", this.getCurrentSign());
@@ -1103,12 +1097,11 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 	private boolean alterarStockArticulos(Session sesion, List<Articulo> articulos, Long idAlmacen, boolean movimiento) throws Exception {
 		TcManticAlmacenesArticulosDto almacenArticulo= null;
 		TcManticArticulosDto articuloVenta           = null;		
-		Map<String, Object>params                    = null;
+		Map<String, Object>params                    = new HashMap<>();
 		boolean regresar                             = false;
 		int count                                    = 0; 
 		Double stock                                 = 0D;
 		try {			
-			params= new HashMap<>();
 			for(Articulo articulo: articulos) {
 				if(articulo.isValid()) {
 					params.put(Constantes.SQL_CONDICION, "id_articulo="+ articulo.getIdArticulo()+ " and id_almacen="+ idAlmacen);
@@ -1146,9 +1139,8 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 
 	private boolean checkOrdenServicio(Session sesion) throws Exception {
     boolean regresar          = false;
-    Map<String, Object> params= null;
+    Map<String, Object> params= new HashMap<>();
     try {      
-      params = new HashMap<>();      
 			params.put("idVenta", this.ventaFinalizada.getTicketVenta().getIdVenta());
 			TcManticServiciosDto servicio= (TcManticServiciosDto) DaoFactory.getInstance().toEntity(sesion, TcManticServiciosDto.class, "TcManticServiciosDto", "venta", params);
 			if(servicio!= null) {
@@ -1215,9 +1207,8 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 	private Long toIdAlmacenUbicacion(Session sesion) throws Exception {
 		Long regresar                            = -1L;
 		TcManticAlmacenesUbicacionesDto ubicacion= null;
-		Map<String, Object>params                = null;		
+		Map<String, Object>params                = new HashMap<>();		
 		try {
-			params= new HashMap<>();
 			params.put("idAlmacen", getOrden().getIdAlmacen());
 			ubicacion= (TcManticAlmacenesUbicacionesDto) DaoFactory.getInstance().toEntity(sesion, TcManticAlmacenesUbicacionesDto.class, "TcManticAlmacenesUbicacionesDto", "general", params);
 			if(ubicacion!= null)
@@ -1241,9 +1232,8 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 	private boolean actualizaInventario(Session sesion, Long idAlmacen, Long idArticulo, Double cantidad) throws Exception {
 		boolean regresar                 = false;
 		TcManticInventariosDto inventario= null;
-		Map<String, Object>params        = null;
+		Map<String, Object>params        = new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put("idAlmacen", idAlmacen);
 			params.put("idArticulo", idArticulo);
 			inventario= (TcManticInventariosDto) DaoFactory.getInstance().toEntity(sesion, TcManticInventariosDto.class, "TcManticInventariosDto", "inventario", params);
@@ -1350,7 +1340,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 	
 	private boolean liquidarApartado(Session sesion) throws Exception {		
 		List<TcManticApartadosPagosDto> pagos= null;
-		Map<String, Object>params    = null;
+		Map<String, Object>params    = new HashMap<>();
 		TcManticApartadosDto apartado= null;
 		Long idApartado = null;
 		Double saldo    = 0D;
@@ -1358,7 +1348,6 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		boolean regresar= false;		
 		int count       = 0;
 		try {
-			params= new HashMap<>();
 			params.put("idVenta", getOrden().getIdVenta());
 			apartado= (TcManticApartadosDto) DaoFactory.getInstance().findFirst(sesion, TcManticApartadosDto.class, "detalle", params);
 			idApartado= apartado.getIdApartado();

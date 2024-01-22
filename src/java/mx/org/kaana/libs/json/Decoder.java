@@ -46,7 +46,7 @@ public final class Decoder {
  * @throws Exception
  */
 
-  public static  Serializable toSerializar(Class serializable, String json) throws Exception {
+  public static Serializable toSerializar(Class serializable, String json) throws Exception {
     Serializable regresar   = null;
     Gson gson               = null;
     try {
@@ -117,6 +117,11 @@ public final class Decoder {
 
   public static String json(Serializable serializable) throws Exception {
   	Gson gson= new GsonBuilder().setPrettyPrinting().registerTypeAdapter(String.class, new StringTypeAdapter()).registerTypeAdapter(Double.class, new DoubleTypeAdapter()).create();
+    return gson.toJson(serializable);
+  }
+	
+  public static String cleanJson(Serializable serializable) throws Exception {
+  	Gson gson= new GsonBuilder().registerTypeAdapter(String.class, new StringTypeAdapter()).registerTypeAdapter(Double.class, new DoubleTypeAdapter()).create();
     return gson.toJson(serializable);
   }
 	

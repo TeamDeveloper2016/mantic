@@ -4,6 +4,116 @@
 -->
 <process>
 	<dml> 
+		<unit id="VistaPlanetasDto">
+			<select id="mercurio">
+select
+  tr_mantic_empresa_personal.id_empresa,
+  tc_janal_usuarios.id_usuario,
+  concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as nombre,
+  tc_mantic_personas.cuenta,
+  tc_mantic_personas.contrasenia,
+  if(tc_janal_usuarios.id_perfil>= 3, 3, tc_janal_usuarios.id_perfil) as id_perfil,
+  date_format(tc_janal_usuarios.registro, '%Y%m%d%h%i%S') as registro
+from
+  tc_janal_usuarios
+inner join
+  tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+inner join
+  tr_mantic_empresa_personal on tc_mantic_personas.id_persona= tr_mantic_empresa_personal.id_persona
+where
+  date_format(tc_janal_usuarios.registro, '%Y%m%d%h%i%S')&gt;= '{fecha}'
+order by
+  tc_janal_usuarios.id_perfil
+      </select>
+			<select id="venus">
+select
+  tc_mantic_articulos.id_articulo,
+  tc_mantic_almacenes.id_empresa,
+  tc_mantic_almacenes.id_almacen,
+  tc_mantic_articulos.nombre,
+  group_concat(tc_mantic_articulos_codigos.codigo separator '|') as codigos,
+  date_format(tc_mantic_articulos.registro, '%Y%m%d%h%i%S') as registro
+from
+  tc_mantic_articulos
+inner join
+  tc_mantic_articulos_codigos on tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo
+inner join
+  tc_mantic_almacenes_articulos on tc_mantic_articulos_codigos.id_articulo= tc_mantic_almacenes_articulos.id_articulo
+inner join
+  tc_mantic_almacenes on tc_mantic_almacenes_articulos.id_almacen= tc_mantic_almacenes.id_almacen
+where
+  date_format(tc_mantic_articulos.registro, '%Y%m%d%h%i%S')&gt;= '{fecha}'
+group by
+  tc_mantic_articulos.id_articulo,
+  tc_mantic_almacenes.id_empresa,
+  tc_mantic_almacenes.id_almacen
+order by
+  tc_mantic_articulos.id_articulo, 
+  tc_mantic_almacenes.id_empresa,
+  tc_mantic_almacenes.id_almacen
+      </select>
+			<select id="marte">
+select
+  tc_mantic_empresas.id_empresa,
+  tc_mantic_empresas.id_tipo_empresa as id_tipo,
+  tc_mantic_empresas.nombre,
+  date_format(tc_mantic_empresas.registro, '%Y%m%d%h%i%S') as registro
+from
+  tc_mantic_empresas
+where
+  date_format(tc_mantic_empresas.registro, '%Y%m%d%h%i%S')&gt;= '{fecha}'
+order by
+  tc_mantic_empresas.id_empresa
+      </select>
+			<select id="jupiter">
+select
+  tc_mantic_almacenes.id_empresa,
+  tc_mantic_almacenes.id_almacen,
+  tc_mantic_almacenes.id_principal,
+  tc_mantic_almacenes.nombre,
+  date_format(tc_mantic_almacenes.registro, '%Y%m%d%h%i%S') as registro
+from
+  tc_mantic_almacenes
+where
+  date_format(tc_mantic_almacenes.registro, '%Y%m%d%h%i%S')&gt;= '{fecha}'
+order by
+  tc_mantic_almacenes.id_empresa,
+  tc_mantic_almacenes.id_almacen
+      </select>
+      <select id="saturno">
+select
+  tc_mantic_almacenes_ubicaciones.id_almacen,
+  tc_mantic_almacenes_ubicaciones.id_almacen_ubicacion as id_ubicacion,
+  concat(tc_mantic_almacenes_ubicaciones.piso, '|', tc_mantic_almacenes_ubicaciones.cuarto, '|', tc_mantic_almacenes_ubicaciones.anaquel) as nombre,
+  date_format(tc_mantic_almacenes_ubicaciones.registro, '%Y%m%d%h%i%S') as registro
+from
+  tc_mantic_almacenes_ubicaciones
+where
+  date_format(tc_mantic_almacenes_ubicaciones.registro, '%Y%m%d%h%i%S')&gt;= '{fecha}'
+order by
+  tc_mantic_almacenes_ubicaciones.id_almacen,
+  tc_mantic_almacenes_ubicaciones.id_almacen_ubicacion        
+      </select>
+      <select id="neptuno">
+select
+  tr_mantic_empresa_personal.id_empresa,
+  tc_janal_usuarios.id_usuario,
+  concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as nombre,
+  tc_janal_usuarios.activo,
+  if(tc_janal_usuarios.id_perfil>= 3, 3, tc_janal_usuarios.id_perfil) as id_perfil,
+  date_format(tc_janal_usuarios.registro, '%Y%m%d%h%i%S') as registro
+from
+  tc_janal_usuarios
+inner join
+  tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+inner join
+  tr_mantic_empresa_personal on tc_mantic_personas.id_persona= tr_mantic_empresa_personal.id_persona
+where
+  tc_janal_usuarios.id_usuario= {idUsuario}
+order by
+  tc_janal_usuarios.id_perfil
+      </select>
+    </unit>    
 		<unit id="VistaVentasDiariasDto">
 			<select id="horas">
 select

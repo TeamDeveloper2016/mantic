@@ -6,11 +6,11 @@ import mx.org.kaana.mantic.enums.ERespuesta;
 import mx.org.kaana.mantic.ws.publicar.beans.Respuesta;
 import mx.org.kaana.mantic.ws.publicar.reglas.Manager;
 
-public class Paises implements Serializable{
+public class Paises implements Serializable {
 	
 	private static final long serialVersionUID = -6756978815958154700L;
 	
-	public String argentina() throws Exception{
+	public String argentina() throws Exception {
 		String regresar= null;
 		Manager manager= null;
 		try {
@@ -21,7 +21,7 @@ public class Paises implements Serializable{
 			regresar= Decoder.toJson(new Respuesta(ERespuesta.ERROR.getCodigo(), e.getMessage()));			
 		} // catch		
 		return regresar;
-	} // afganistan
+	} // argentina
 	
 	public String mexico() throws Exception{
 		String regresar= null;
@@ -34,5 +34,5 @@ public class Paises implements Serializable{
 			regresar= Decoder.toJson(new Respuesta(ERespuesta.ERROR.getCodigo(), e.getMessage()));			
 		} // catch		
 		return regresar;
-	} // albania
+	} // mexico
 }

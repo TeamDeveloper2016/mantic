@@ -2,9 +2,16 @@ package mx.org.kaana.mantic.enums;
 
 public enum ERespuesta {
 
-	CORRECTO    ("01", "Correcto"),
-	SIN_RESPALDO("02", "No se encontro ningun respaldo."),
-	ERROR       ("99", "Error");	
+	CORRECTO       ("01", "Correcto"),
+	SIN_USUARIOS   ("02", "No se tienen usuarios registrados y/o nuevos"),
+	SIN_PRODUCTOS  ("03", "No se tienen productos registrados y/o nuevos"),
+	SIN_EMPRESAS   ("04", "No se tienen empresas registradas y/o nuevas"),
+	SIN_ALMACENES  ("05", "No se tienen almacenes registrados y/o nuevos"),
+	SIN_UBICACIONES("06", "No se tienen ubicaciones registrados y/o nuevos"),
+	SIN_RESPALDO   ("07", "No se encontro ningun respaldo"),
+	USUARIO_ERROR  ("08", "El usuario no esta activo"),
+	TOKEN          ("98", "Token invalido"),
+	ERROR          ("99", "Error");	
 	
 	private String codigo;
 	private String descripcion;
@@ -15,7 +22,7 @@ public enum ERespuesta {
 	}	
 	
 	public Long getIdRespuesta(){
-		return this.ordinal() + 1L;
+		return this.ordinal()+ 1L;
 	} 
 
 	public String getCodigo() {
@@ -25,4 +32,5 @@ public enum ERespuesta {
 	public String getDescripcion() {
 		return descripcion;
 	}	
+  
 }
