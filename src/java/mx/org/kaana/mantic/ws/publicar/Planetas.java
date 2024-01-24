@@ -7,20 +7,27 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.hibernate.SessionFactoryFacade;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.BouncyEncryption;
 import mx.org.kaana.libs.formato.Cadena;
-import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.json.Decoder;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.db.dto.TcManticConteoDetallesDto;
+import mx.org.kaana.mantic.db.dto.TcManticConteosBitacoraDto;
+import mx.org.kaana.mantic.db.dto.TcManticConteosDto;
 import mx.org.kaana.mantic.enums.ERespuesta;
 import mx.org.kaana.mantic.ws.imox.beans.Almacen;
+import mx.org.kaana.mantic.ws.imox.beans.Cantidad;
+import mx.org.kaana.mantic.ws.imox.beans.Conteo;
 import mx.org.kaana.mantic.ws.imox.beans.Empresa;
 import mx.org.kaana.mantic.ws.imox.beans.Producto;
 import mx.org.kaana.mantic.ws.imox.beans.Ubicacion;
 import mx.org.kaana.mantic.ws.imox.beans.Usuario;
 import mx.org.kaana.mantic.ws.publicar.beans.Respuesta;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 /**
  * @company KAANA
@@ -43,7 +50,7 @@ public class Planetas implements Serializable {
     Map<String, Object> params= new HashMap<>();
     Respuesta respuesta       = null;
     try {
-      respuesta= this.toParser(this.neptuno(atmosfera, radio));
+      respuesta= this.toRespueta(this.neptuno(atmosfera, radio));
       if(Objects.equals(respuesta.getCodigo(), ERespuesta.CORRECTO.getCodigo())) {
         params.put("fecha", densidad);
         ArrayList<Usuario> usuarios= (ArrayList<Usuario>)DaoFactory.getInstance().toEntitySet(Usuario.class, "VistaPlanetasDto", "mercurio", params, -1L);
@@ -74,7 +81,7 @@ public class Planetas implements Serializable {
     Map<String, Object> params= new HashMap<>();
     Respuesta respuesta       = null;
     try {
-      respuesta= this.toParser(this.neptuno(atmosfera, radio));
+      respuesta= this.toRespueta(this.neptuno(atmosfera, radio));
       if(Objects.equals(respuesta.getCodigo(), ERespuesta.CORRECTO.getCodigo())) {
         params.put("fecha", densidad);
         ArrayList<Producto> productos =(ArrayList<Producto>)DaoFactory.getInstance().toEntitySet(Producto.class, "VistaPlanetasDto", "venus", params, -1L);
@@ -101,7 +108,7 @@ public class Planetas implements Serializable {
     Map<String, Object> params= new HashMap<>();
     Respuesta respuesta       = null;
     try {
-      respuesta= this.toParser(this.neptuno(atmosfera, radio));
+      respuesta= this.toRespueta(this.neptuno(atmosfera, radio));
       if(Objects.equals(respuesta.getCodigo(), ERespuesta.CORRECTO.getCodigo())) {
         params.put("fecha", densidad);
         ArrayList<Empresa> empresas= (ArrayList<Empresa>)DaoFactory.getInstance().toEntitySet(Empresa.class, "VistaPlanetasDto", "marte", params, -1L);
@@ -128,7 +135,7 @@ public class Planetas implements Serializable {
     Map<String, Object> params= new HashMap<>();
     Respuesta respuesta       = null;
     try {
-      respuesta= this.toParser(this.neptuno(atmosfera, radio));
+      respuesta= this.toRespueta(this.neptuno(atmosfera, radio));
       if(Objects.equals(respuesta.getCodigo(), ERespuesta.CORRECTO.getCodigo())) {
         params.put("fecha", densidad);
         ArrayList<Almacen> almacenes= (ArrayList<Almacen>)DaoFactory.getInstance().toEntitySet(Almacen.class, "VistaPlanetasDto", "jupiter", params, -1L);
@@ -155,7 +162,7 @@ public class Planetas implements Serializable {
     Map<String, Object> params= new HashMap<>();
     Respuesta respuesta       = null;
     try {
-      respuesta= this.toParser(this.neptuno(atmosfera, radio));
+      respuesta= this.toRespueta(this.neptuno(atmosfera, radio));
       if(Objects.equals(respuesta.getCodigo(), ERespuesta.CORRECTO.getCodigo())) {
         params.put("fecha", densidad);
         ArrayList<Ubicacion> ubicaciones= (ArrayList<Ubicacion>)DaoFactory.getInstance().toEntitySet(Ubicacion.class, "VistaPlanetasDto", "saturno", params, -1L);
@@ -177,14 +184,14 @@ public class Planetas implements Serializable {
   }
   
   // SERVICIO WEB PARA REGISTRAR UN CONTEO INDIVIDUAL
-  public String urano(Long radio, String distancia, String atmosfera) throws Exception {
+  public String urano(Long radio, String densidad, String atmosfera) throws Exception {
     String regresar           = Decoder.toJson(new Respuesta(ERespuesta.CORRECTO.getCodigo(), "Proceso correcto")); 
     Map<String, Object> params= new HashMap<>();
     Respuesta respuesta       = null;
     try {
-      respuesta= this.toParser(this.neptuno(atmosfera, radio));
+      respuesta= this.toRespueta(this.neptuno(atmosfera, radio));
       if(Objects.equals(respuesta.getCodigo(), ERespuesta.CORRECTO.getCodigo())) 
-        regresar= Decoder.toJson(new Respuesta(ERespuesta.CORRECTO.getCodigo(), this.toAplicarConteo(radio, distancia)));
+        regresar= Decoder.toJson(new Respuesta(ERespuesta.CORRECTO.getCodigo(), this.toAplicarConteo(radio, densidad)));
       else
         regresar= Decoder.toJson(respuesta);
     } // try
@@ -229,33 +236,76 @@ public class Planetas implements Serializable {
     return regresar;
   }
   
-  private String toAplicarConteo(Long idUsuario, String conteos) {
-    String id= Cadena.rellenar(String.valueOf(idUsuario), 3, '0', true);
-    String regresar= id.concat(Fecha.toRegistro());
-    try {      
-      // Entity entity = DaoFactory.getInstance().toEntity("", "", params);
+  private String toAplicarConteo(Long idUsuario, String densidad) throws Exception {
+    String id              = Cadena.rellenar(String.valueOf(idUsuario), 3, '0', true);
+    String regresar        = id.concat(Fecha.toRegistro());
+    Transaction transaction= null;
+    Session session        = null;
+		try {
+			session= SessionFactoryFacade.getInstance().getSession(-1L);
+			transaction= session.beginTransaction();
+			session.clear();
+      Conteo items= this.toConteo(densidad);
+      TcManticConteosDto conteo= new TcManticConteosDto(
+        densidad, // String conteos, 
+        items.getRegistro(), // String fecha, 
+        new Long(items.getProductos().size()), // Long articulos, 
+        items.getIdUsuario(), // Long idUsuario, 
+        -1L, // Long idConteo, 
+        null, // Timestamp procesado, 
+        items.getIdConteo(), // Long idReferencia, 
+        items.getNombre(), // String nombre, 
+        1L, // Long idConteoEstatus, 
+        regresar // String token
+      );
       // INSERTAR EL REGISTRO DE LOS CONTEOS PARA DESPUES VERFICAR SI SE INTEGRARON
-    } // try
-    catch (Exception e) {
-      Error.mensaje(e);
-    } // catch	
+      DaoFactory.getInstance().insert(session, conteo);
+      TcManticConteosBitacoraDto bitacora= new TcManticConteosBitacoraDto(
+        null, // String justificacion, 
+        conteo.getIdUsuario(), // Long idUsuario, 
+        conteo.getIdConteo(), // Long idConteo, 
+        -1L, // Long idConteoBitacora, 
+        conteo.getIdConteoEstatus() // Long idConteoEstatus
+      );
+      DaoFactory.getInstance().insert(session, bitacora);
+      for (Cantidad item: items.getProductos()) {
+        TcManticConteoDetallesDto detalle= new TcManticConteoDetallesDto(
+          item.getRegistro(), // String fecha, 
+          -1L, // Long idConteoDetalle, 
+          conteo.getIdConteo(), // Long idConteo, 
+          null, // Timestamp procesado, 
+          item.getCantidad(), // Double cantidad, 
+          item.getIdProducto(), // Long idArticulo, 
+          item.getDescripcion() // String nombre
+        );
+        DaoFactory.getInstance().insert(session, detalle);
+      } // for
+			transaction.commit();
+		} // try
+		catch (Exception e) {
+			if (transaction!= null) {
+				transaction.rollback();
+			} // if
+			throw e;
+		} // catch
+		finally {
+			if (session!= null) {
+				session.close();
+			} // if
+			transaction= null;
+			session    = null;
+		} // finally    
     return regresar;
   }
 
-  private Respuesta toParser(String msg) {
+  private Respuesta toRespueta(String msg) {
     Gson gson = new Gson();
     return gson.fromJson(msg, Respuesta.class);
   }
   
-  public static void main(String ... args) throws Exception {
-    Planetas planetas= new Planetas();
-    //System.out.println(planetas.mercurio(1L, "19000101", "/Eb1AjylyNNfQBLodn6Jf6Stb8NM7Hw2"));
-    //System.out.println(planetas.marte(1L, "19000101", "/Eb1AjylyNNfQBLodn6Jf6Stb8NM7Hw2"));
-    //System.out.println(planetas.jupiter(1L, "19000101", "/Eb1AjylyNNfQBLodn6Jf6Stb8NM7Hw2"));
-    //System.out.println(planetas.saturno(1L, "19000101", "/Eb1AjylyNNfQBLodn6Jf6Stb8NM7Hw2"));
-    //System.out.println(planetas.urano(1L, "Hola", "/Eb1AjylyNNfQBLodn6Jf6Stb8NM7Hw2"));
-    //System.out.println(planetas.venus(1L, "19000101", "/Eb1AjylyNNfQBLodn6Jf6Stb8NM7Hw2"));
-    System.out.println(planetas.neptuno("/Eb1AjylyNNfQBLodn6Jf6Stb8NM7Hw2", 1L));
+  private Conteo toConteo(String msg) {
+    Gson gson = new Gson();
+    return gson.fromJson(msg, Conteo.class);
   }
   
 }

@@ -7,6 +7,78 @@
   </model>
 
   <dml>
+    <unit id="TcManticConteosDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_mantic_conteos
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_mantic_conteos
+where      
+  id_conteo = {idConteo}
+      </select>
+    </unit>    
+    <unit id="TcManticConteoDetallesDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_mantic_conteo_detalles
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_mantic_conteo_detalles
+where      
+  id_conteo = {idConteo} and id_articulo = {idArticulo}
+      </select>
+    </unit>    
+    <unit id="TcManticConteosEstatusDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_mantic_conteos_estatus
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_mantic_conteos_estatus
+where      
+  nombre = '{nombre}'
+      </select>
+    </unit>    
+    <unit id="TcManticConteosBitacoraDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_mantic_conteos_bitacora
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_mantic_conteos_bitacora
+where      
+  id_conteo_bitacora = {idConteoBitacora}
+      </select>
+    </unit>    
     <unit id="TcManticTiposClientesDto">
       <select id="row">
 select      

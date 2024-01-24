@@ -1,10 +1,7 @@
 package mx.org.kaana.mantic.ws.imox.beans;
 
 import java.io.Serializable;
-import java.sql.Date;
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 
@@ -22,21 +19,19 @@ public class Conteo implements Serializable {
 
   private Long idConteo;
   private Long idUsuario;
-  private Date fecha;
   private String nombre;
   private List<Cantidad> productos;
-  private Timestamp registro;
+  private String registro;
 
   public Conteo() {
   }
 
-  public Conteo(Long idConteo, Long idUsuario, Date fecha, String nombre) {
+  public Conteo(Long idConteo, Long idUsuario, String nombre, String registro) {
     this.idConteo = idConteo;
     this.idUsuario = idUsuario;
-    this.fecha = fecha;
     this.nombre = nombre;
     this.productos = new ArrayList<>();
-    this.registro = new Timestamp(Calendar.getInstance().getTimeInMillis());
+    this.registro = registro;
   }
 
   public Long getIdConteo() {
@@ -55,14 +50,6 @@ public class Conteo implements Serializable {
     this.idUsuario = idUsuario;
   }
 
-  public Date getFecha() {
-    return fecha;
-  }
-
-  public void setFecha(Date fecha) {
-    this.fecha = fecha;
-  }
-
   public String getNombre() {
     return nombre;
   }
@@ -79,11 +66,11 @@ public class Conteo implements Serializable {
     this.productos = productos;
   }
 
-  public Timestamp getRegistro() {
+  public String getRegistro() {
     return registro;
   }
 
-  public void setRegistro(Timestamp registro) {
+  public void setRegistro(String registro) {
     this.registro = registro;
   }
 
@@ -118,7 +105,7 @@ public class Conteo implements Serializable {
 
   @Override
   public String toString() {
-    return "Conteo{" + "idConteo=" + idConteo + ", idUsuario=" + idUsuario + ", fecha=" + fecha + ", nombre=" + nombre + ", productos=" + productos + ", registro=" + registro + '}';
+    return "Conteo{" + "idConteo=" + idConteo + ", idUsuario=" + idUsuario + ", nombre=" + nombre + ", productos=" + productos + ", registro=" + registro + '}';
   }
   
 }

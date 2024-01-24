@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Objects;
+import mx.org.kaana.libs.formato.Fecha;
 
 /**
  * @company KAANA
@@ -20,7 +21,7 @@ public class Cantidad implements Serializable {
   private Long idProducto;
   private Double cantidad;
   private String descripcion;
-  private Timestamp registro;
+  private String registro;
 
   public Cantidad() {
   }
@@ -29,7 +30,7 @@ public class Cantidad implements Serializable {
     this.idProducto = idProducto;
     this.cantidad = cantidad;
     this.descripcion = descripcion;
-    this.registro = new Timestamp(Calendar.getInstance().getTimeInMillis());
+    this.registro = Fecha.toRegistro();
   }
 
   public Long getIdProducto() {
@@ -56,11 +57,11 @@ public class Cantidad implements Serializable {
     this.descripcion = descripcion;
   }
 
-  public Timestamp getRegistro() {
+  public String getRegistro() {
     return registro;
   }
 
-  public void setRegistro(Timestamp registro) {
+  public void setRegistro(String registro) {
     this.registro = registro;
   }
 
