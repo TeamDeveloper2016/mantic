@@ -77,4 +77,11 @@ public class Respuesta implements Serializable {
 	public void setRuta(String ruta) {
 		this.ruta = ruta;
 	}	
+
+  @Override
+  public String toString() {
+    return "Respuesta{" + "codigo=" + codigo + ", descripcion=" + descripcion + ", fecha=" + fecha + '}';
+  }
+  
+
 }

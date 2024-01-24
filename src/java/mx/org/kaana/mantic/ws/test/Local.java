@@ -11,7 +11,7 @@ import mx.org.kaana.mantic.ws.publicar.Planetas;
  * @author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public class Conteos implements Serializable {
+public class Local implements Serializable {
 
   private static final long serialVersionUID = -1430227883528578119L;
 
