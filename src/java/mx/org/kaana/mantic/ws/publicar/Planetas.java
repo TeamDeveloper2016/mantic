@@ -19,9 +19,11 @@ import mx.org.kaana.mantic.db.dto.TcManticConteosBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticConteosDto;
 import mx.org.kaana.mantic.enums.ERespuesta;
 import mx.org.kaana.mantic.ws.imox.beans.Almacen;
+import mx.org.kaana.mantic.ws.imox.beans.Articulo;
 import mx.org.kaana.mantic.ws.imox.beans.Cantidad;
 import mx.org.kaana.mantic.ws.imox.beans.Conteo;
 import mx.org.kaana.mantic.ws.imox.beans.Empresa;
+import mx.org.kaana.mantic.ws.imox.beans.Inventario;
 import mx.org.kaana.mantic.ws.imox.beans.Producto;
 import mx.org.kaana.mantic.ws.imox.beans.Ubicacion;
 import mx.org.kaana.mantic.ws.imox.beans.Usuario;
@@ -41,7 +43,8 @@ public class Planetas implements Serializable {
 
   private static final long serialVersionUID = 8944954886601403304L;
   private static final String TEXT_TOKEN= "/Eb1AjylyNNfQBLodn6Jf6Stb8NM7Hw2";
-  private static final Long USER_TOKEN  = 1976L;
+  private static final Long USER_SUPER  = 1976L;
+  private static final Long USER_ADMIN  = 1991L;
   
 
   // SERVICIO WEB PARA LOS USUARIOS
@@ -210,13 +213,13 @@ public class Planetas implements Serializable {
     Map<String, Object> params= new HashMap<>();
     try {
       if(Objects.equals(BouncyEncryption.decrypt(TEXT_TOKEN), BouncyEncryption.decrypt(atmosfera))) {
-        if(Objects.equals(radio, USER_TOKEN)) 
+        if(Objects.equals(radio, USER_SUPER) || Objects.equals(radio, USER_ADMIN)) 
           regresar= Decoder.toJson(new Respuesta(ERespuesta.CORRECTO.getCodigo(), ERespuesta.CORRECTO.getDescripcion()));
         else {  
           params.put("idUsuario", radio);
           Entity usuario= (Entity)DaoFactory.getInstance().toEntity("VistaPlanetasDto", "neptuno", params);
           if(usuario!= null && !usuario.isEmpty()) 
-            if(Objects.equals(radio, USER_TOKEN) || Objects.equals(usuario.toLong("activo"), 1L)) 
+            if(Objects.equals(usuario.toLong("activo"), 1L)) 
               regresar= Decoder.toJson(new Respuesta(ERespuesta.CORRECTO.getCodigo(), ERespuesta.CORRECTO.getDescripcion()));
             else
               regresar= Decoder.toJson(new Respuesta(ERespuesta.USUARIO_ERROR.getCodigo(), ERespuesta.USUARIO_ERROR.getDescripcion()));
@@ -226,6 +229,60 @@ public class Planetas implements Serializable {
       } // if
       else
         regresar= Decoder.toJson(new Respuesta(ERespuesta.TOKEN.getCodigo(), ERespuesta.TOKEN.getDescripcion()));
+    } // try
+    catch (Exception e) {
+      regresar= Decoder.toJson(new Respuesta(ERespuesta.ERROR.getCodigo(), e.getMessage()));
+    } // catch
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  }
+  
+  // SERVICIO WEB PARA LOS INVENTARIOS
+  public String pluton(Long radio, String densidad, String atmosfera) throws Exception {
+    String regresar           = Decoder.toJson(new Respuesta(ERespuesta.CORRECTO.getCodigo(), "Proceso correcto")); 
+    Map<String, Object> params= new HashMap<>();
+    Respuesta respuesta       = null;
+    try {
+      respuesta= this.toRespueta(this.neptuno(atmosfera, radio));
+      if(Objects.equals(respuesta.getCodigo(), ERespuesta.CORRECTO.getCodigo())) {
+        params.put("fecha", densidad);
+        ArrayList<Inventario> inventarios= (ArrayList<Inventario>)DaoFactory.getInstance().toEntitySet(Inventario.class, "VistaPlanetasDto", "pluton", params, -1L);
+        if(inventarios!= null && !inventarios.isEmpty()) 
+          regresar= Decoder.toJson(new Respuesta(ERespuesta.CORRECTO.getCodigo(), Decoder.cleanJson(inventarios)));
+        else
+          regresar= Decoder.toJson(new Respuesta(ERespuesta.SIN_UBICACIONES.getCodigo(), ERespuesta.SIN_UBICACIONES.getDescripcion()));
+      } // if
+      else
+        regresar= Decoder.toJson(respuesta);
+    } // try
+    catch (Exception e) {
+      regresar= Decoder.toJson(new Respuesta(ERespuesta.ERROR.getCodigo(), e.getMessage()));
+    } // catch
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  }
+  
+  // SERVICIO WEB PARA LOS PRODUCTOS / ARTICULOS
+  public String sol(Long radio, String densidad, String atmosfera) throws Exception {
+    String regresar           = Decoder.toJson(new Respuesta(ERespuesta.CORRECTO.getCodigo(), "Proceso correcto")); 
+    Map<String, Object> params= new HashMap<>();
+    Respuesta respuesta       = null;
+    try {
+      respuesta= this.toRespueta(this.neptuno(atmosfera, radio));
+      if(Objects.equals(respuesta.getCodigo(), ERespuesta.CORRECTO.getCodigo())) {
+        params.put("fecha", densidad);
+        ArrayList<Articulo> articulos= (ArrayList<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaPlanetasDto", "sol", params, -1L);
+        if(articulos!= null && !articulos.isEmpty()) 
+          regresar= Decoder.toJson(new Respuesta(ERespuesta.CORRECTO.getCodigo(), Decoder.cleanJson(articulos)));
+        else
+          regresar= Decoder.toJson(new Respuesta(ERespuesta.SIN_UBICACIONES.getCodigo(), ERespuesta.SIN_UBICACIONES.getDescripcion()));
+      } // if
+      else
+        regresar= Decoder.toJson(respuesta);
     } // try
     catch (Exception e) {
       regresar= Decoder.toJson(new Respuesta(ERespuesta.ERROR.getCodigo(), e.getMessage()));

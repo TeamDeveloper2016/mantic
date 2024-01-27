@@ -27,10 +27,10 @@ order by
       </select>
 			<select id="venus">
 select
-  tc_mantic_articulos.id_articulo,
-  tc_mantic_almacenes.id_empresa,
-  tc_mantic_almacenes.id_almacen,
+  tc_mantic_articulos.id_articulo as id_producto,
   tc_mantic_articulos.nombre,
+  tc_mantic_almacenes.id_almacen,
+  tc_mantic_almacenes_articulos.id_almacen_ubicacion as id_ubicacion,
   group_concat(tc_mantic_articulos_codigos.codigo separator '|') as codigos,
   date_format(tc_mantic_articulos.registro, '%Y%m%d%h%i%S') as registro
 from
@@ -112,6 +112,46 @@ where
   tc_janal_usuarios.id_usuario= {idUsuario}
 order by
   tc_janal_usuarios.id_perfil
+      </select>
+			<select id="pluton">
+select
+  tc_mantic_articulos.id_articulo as id_producto,
+  tc_mantic_almacenes.id_almacen,
+  tc_mantic_almacenes_ubicaciones.id_almacen_ubicacion as id_ubicacion,
+  date_format(tc_mantic_articulos.registro, '%Y%m%d%h%i%S') as registro
+from
+  tc_mantic_articulos
+inner join
+  tc_mantic_almacenes_articulos on tc_mantic_articulos_codigos.id_articulo= tc_mantic_almacenes_articulos.id_articulo
+inner join
+  tc_mantic_almacenes on tc_mantic_almacenes_articulos.id_almacen= tc_mantic_almacenes.id_almacen
+where
+  date_format(tc_mantic_articulos.registro, '%Y%m%d%h%i%S')&gt;= '{fecha}'
+group by
+  tc_mantic_articulos.id_articulo,
+  tc_mantic_almacenes.id_empresa,
+  tc_mantic_almacenes.id_almacen
+order by
+  tc_mantic_articulos.id_articulo, 
+  tc_mantic_almacenes.id_empresa,
+  tc_mantic_almacenes.id_almacen
+      </select>
+			<select id="sol">
+select
+  tc_mantic_articulos.id_articulo as id_producto,
+  tc_mantic_articulos.nombre,
+  group_concat(tc_mantic_articulos_codigos.codigo separator '|') as codigos,
+  date_format(tc_mantic_articulos.registro, '%Y%m%d%h%i%S') as registro
+from
+  tc_mantic_articulos
+inner join
+  tc_mantic_articulos_codigos on tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo
+where
+  date_format(tc_mantic_articulos.registro, '%Y%m%d%h%i%S')&gt;= '{fecha}'
+group by
+  tc_mantic_articulos.id_articulo
+order by
+  tc_mantic_articulos.id_articulo
       </select>
     </unit>    
 		<unit id="VistaVentasDiariasDto">
@@ -9433,7 +9473,7 @@ order by
 					sum(tc_mantic_empresas_deudas.importe) as importe,
 					sum(tc_mantic_empresas_deudas.pagar) as pagar,
 					abs(sum(tc_mantic_empresas_deudas.saldo)) as saldo,
-					sum(tc_mantic_empresas_deudas.pagar+ tc_mantic_empresas_deudas.saldo) as abonado,
+					sum(tc_mantic_empresas_deudas.pagar- tc_mantic_empresas_deudas.saldo) as abonado,
           tc_mantic_empresas_deudas.id_nota_entrada
 				from
 					tc_mantic_empresas_deudas
@@ -9472,7 +9512,7 @@ order by
 						tc_mantic_empresas_deudas.pagar,
 						abs(tc_mantic_empresas_deudas.saldo) as saldo,
             tc_mantic_empresas_deudas.id_revisado,
-            (tc_mantic_empresas_deudas.pagar+ tc_mantic_empresas_deudas.saldo) as abonado,
+            (tc_mantic_empresas_deudas.pagar- tc_mantic_empresas_deudas.saldo) as abonado,
 						concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as persona,
 						tc_mantic_empresas_deudas.limite,
 						tc_mantic_empresas_deudas.registro,
