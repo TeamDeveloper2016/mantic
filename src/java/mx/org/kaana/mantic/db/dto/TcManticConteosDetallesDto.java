@@ -1,9 +1,6 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -13,9 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -30,8 +24,8 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
  */
 
 @Entity
-@Table(name="tc_mantic_conteo_detalles")
-public class TcManticConteoDetallesDto implements IBaseDto, Serializable {
+@Table(name="tc_mantic_conteos_detalles")
+public class TcManticConteosDetallesDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
   @Column (name="fecha")
@@ -50,19 +44,21 @@ public class TcManticConteoDetallesDto implements IBaseDto, Serializable {
   private Long idArticulo;
   @Column (name="nombre")
   private String nombre;
+  @Column (name="codigo")
+  private String codigo;
   @Column (name="registro")
   private Timestamp registro;
 
-  public TcManticConteoDetallesDto() {
+  public TcManticConteosDetallesDto() {
     this(new Long(-1L));
   }
 
-  public TcManticConteoDetallesDto(Long key) {
-    this(null, new Long(-1L), null, new Timestamp(Calendar.getInstance().getTimeInMillis()), null, null, null);
+  public TcManticConteosDetallesDto(Long key) {
+    this(null, new Long(-1L), null, new Timestamp(Calendar.getInstance().getTimeInMillis()), null, null, null, null);
     setKey(key);
   }
 
-  public TcManticConteoDetallesDto(String fecha, Long idConteoDetalle, Long idConteo, Timestamp procesado, Double cantidad, Long idArticulo, String nombre) {
+  public TcManticConteosDetallesDto(String fecha, Long idConteoDetalle, Long idConteo, Timestamp procesado, Double cantidad, Long idArticulo, String nombre, String codigo) {
     setFecha(fecha);
     setIdConteoDetalle(idConteoDetalle);
     setIdConteo(idConteo);
@@ -70,6 +66,7 @@ public class TcManticConteoDetallesDto implements IBaseDto, Serializable {
     setCantidad(cantidad);
     setIdArticulo(idArticulo);
     setNombre(nombre);
+    setCodigo(codigo);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
 	
@@ -137,6 +134,14 @@ public class TcManticConteoDetallesDto implements IBaseDto, Serializable {
     return registro;
   }
 
+  public String getCodigo() {
+    return codigo;
+  }
+
+  public void setCodigo(String codigo) {
+    this.codigo = codigo;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -166,6 +171,8 @@ public class TcManticConteoDetallesDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getNombre());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getCodigo());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
   	return regresar.toString();
@@ -181,14 +188,15 @@ public class TcManticConteoDetallesDto implements IBaseDto, Serializable {
 		regresar.put("cantidad", getCantidad());
 		regresar.put("idArticulo", getIdArticulo());
 		regresar.put("nombre", getNombre());
+		regresar.put("codigo", getCodigo());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
-    Object[] regresar = new Object[]{
-    getFecha(), getIdConteoDetalle(), getIdConteo(), getProcesado(), getCantidad(), getIdArticulo(), getNombre(), getRegistro()
+    Object[] regresar = new Object[] {
+      getFecha(), getIdConteoDetalle(), getIdConteo(), getProcesado(), getCantidad(), getIdArticulo(), getNombre(), getCodigo(), getRegistro()
     };
     return regresar;
   }
@@ -217,7 +225,7 @@ public class TcManticConteoDetallesDto implements IBaseDto, Serializable {
 
   @Override
   public Class toHbmClass() {
-    return TcManticConteoDetallesDto.class;
+    return TcManticConteosDetallesDto.class;
   }
 
   @Override
@@ -233,7 +241,7 @@ public class TcManticConteoDetallesDto implements IBaseDto, Serializable {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    final TcManticConteoDetallesDto other = (TcManticConteoDetallesDto) obj;
+    final TcManticConteosDetallesDto other = (TcManticConteosDetallesDto) obj;
     if (getIdConteoDetalle() != other.idConteoDetalle && (getIdConteoDetalle() == null || !getIdConteoDetalle().equals(other.idConteoDetalle))) {
       return false;
     }

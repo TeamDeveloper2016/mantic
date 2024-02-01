@@ -25,12 +25,12 @@ where
   id_conteo = {idConteo}
       </select>
     </unit>    
-    <unit id="TcManticConteoDetallesDto">
+    <unit id="TcManticConteosDetallesDto">
       <select id="row">
 select      
   *
 from      
-  tc_mantic_conteo_detalles
+  tc_mantic_conteos_detalles
 where 
   {condicion} 
       </select>
@@ -38,7 +38,7 @@ where
 select      
   *
 from      
-  tc_mantic_conteo_detalles
+  tc_mantic_conteos_detalles
 where      
   id_conteo = {idConteo} and id_articulo = {idArticulo}
       </select>

@@ -1,9 +1,6 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -13,9 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -56,6 +50,10 @@ public class TcManticConteosDto implements IBaseDto, Serializable {
   private Long idConteoEstatus;
   @Column (name="token")
   private String token;
+  @Column (name="id_empresa")
+  private Long idEmpresa;
+  @Column (name="id_almacen")
+  private Long idAlmacen;
   @Column (name="registro")
   private Timestamp registro;
 
@@ -64,11 +62,11 @@ public class TcManticConteosDto implements IBaseDto, Serializable {
   }
 
   public TcManticConteosDto(Long key) {
-    this(null, null, null, null, new Long(-1L), new Timestamp(Calendar.getInstance().getTimeInMillis()), null, null, null, null);
+    this(null, null, null, null, new Long(-1L), new Timestamp(Calendar.getInstance().getTimeInMillis()), null, null, null, null, new Long(-1L), new Long(-1L));
     setKey(key);
   }
 
-  public TcManticConteosDto(String conteos, String fecha, Long articulos, Long idUsuario, Long idConteo, Timestamp procesado, Long idReferencia, String nombre, Long idConteoEstatus, String token) {
+  public TcManticConteosDto(String conteos, String fecha, Long articulos, Long idUsuario, Long idConteo, Timestamp procesado, Long idReferencia, String nombre, Long idConteoEstatus, String token, Long idEmpresa, Long idAlmacen) {
     setConteos(conteos);
     setFecha(fecha);
     setArticulos(articulos);
@@ -79,6 +77,8 @@ public class TcManticConteosDto implements IBaseDto, Serializable {
     setNombre(nombre);
     setIdConteoEstatus(idConteoEstatus);
     setToken(token);
+    setIdEmpresa(idEmpresa);
+    setIdAlmacen(idAlmacen);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
 	
@@ -162,6 +162,22 @@ public class TcManticConteosDto implements IBaseDto, Serializable {
     return token;
   }
 
+  public Long getIdEmpresa() {
+    return idEmpresa;
+  }
+
+  public void setIdEmpresa(Long idEmpresa) {
+    this.idEmpresa = idEmpresa;
+  }
+
+  public Long getIdAlmacen() {
+    return idAlmacen;
+  }
+
+  public void setIdAlmacen(Long idAlmacen) {
+    this.idAlmacen = idAlmacen;
+  }
+
   public void setRegistro(Timestamp registro) {
     this.registro = registro;
   }
@@ -205,6 +221,10 @@ public class TcManticConteosDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getToken());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdEmpresa());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdAlmacen());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
   	return regresar.toString();
@@ -223,14 +243,16 @@ public class TcManticConteosDto implements IBaseDto, Serializable {
 		regresar.put("nombre", getNombre());
 		regresar.put("idConteoEstatus", getIdConteoEstatus());
 		regresar.put("token", getToken());
+		regresar.put("idEmpresa", getIdEmpresa());
+		regresar.put("idAlmacen", getIdAlmacen());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
-    Object[] regresar = new Object[]{
-    getConteos(), getFecha(), getArticulos(), getIdUsuario(), getIdConteo(), getProcesado(), getIdReferencia(), getNombre(), getIdConteoEstatus(), getToken(), getRegistro()
+    Object[] regresar = new Object[] {
+      getConteos(), getFecha(), getArticulos(), getIdUsuario(), getIdConteo(), getProcesado(), getIdReferencia(), getNombre(), getIdConteoEstatus(), getToken(), getIdEmpresa(), getIdAlmacen(), getRegistro()
     };
     return regresar;
   }

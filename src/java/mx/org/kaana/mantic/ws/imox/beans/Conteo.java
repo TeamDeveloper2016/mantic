@@ -18,6 +18,8 @@ public class Conteo implements Serializable {
   private static final long serialVersionUID = -8330660760447754833L;
 
   private Long idConteo;
+  private Long idEmpresa;
+  private Long idAlmacen;
   private Long idUsuario;
   private String nombre;
   private List<Cantidad> productos;
@@ -26,8 +28,10 @@ public class Conteo implements Serializable {
   public Conteo() {
   }
 
-  public Conteo(Long idConteo, Long idUsuario, String nombre, String registro) {
+  public Conteo(Long idConteo, Long idUsuario, String nombre, String registro, Long idEmpresa, Long idAlmacen) {
     this.idConteo = idConteo;
+    this.idConteo = idEmpresa;
+    this.idConteo = idAlmacen;
     this.idUsuario = idUsuario;
     this.nombre = nombre;
     this.productos = new ArrayList<>();
@@ -64,6 +68,22 @@ public class Conteo implements Serializable {
 
   public void setProductos(List<Cantidad> productos) {
     this.productos = productos;
+  }
+
+  public Long getIdEmpresa() {
+    return idEmpresa;
+  }
+
+  public void setIdEmpresa(Long idEmpresa) {
+    this.idEmpresa = idEmpresa;
+  }
+
+  public Long getIdAlmacen() {
+    return idAlmacen;
+  }
+
+  public void setIdAlmacen(Long idAlmacen) {
+    this.idAlmacen = idAlmacen;
   }
 
   public String getRegistro() {
@@ -105,7 +125,7 @@ public class Conteo implements Serializable {
 
   @Override
   public String toString() {
-    return "Conteo{" + "idConteo=" + idConteo + ", idUsuario=" + idUsuario + ", nombre=" + nombre + ", productos=" + productos + ", registro=" + registro + '}';
+    return "Conteo{" + "idConteo=" + idConteo + ", idEmpresa=" + idEmpresa + ", idAlmacen=" + idAlmacen + ", idUsuario=" + idUsuario + ", nombre=" + nombre + ", productos=" + productos + ", registro=" + registro + '}';
   }
   
 }

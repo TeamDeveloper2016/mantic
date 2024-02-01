@@ -1,8 +1,6 @@
 package mx.org.kaana.mantic.ws.imox.beans;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
-import java.util.Calendar;
 import java.util.Objects;
 import mx.org.kaana.libs.formato.Fecha;
 
@@ -20,16 +18,18 @@ public class Cantidad implements Serializable {
 
   private Long idProducto;
   private Double cantidad;
+  private String codigo;
   private String descripcion;
   private String registro;
 
   public Cantidad() {
   }
 
-  public Cantidad(Long idProducto, Double cantidad, String descripcion) {
+  public Cantidad(Long idProducto, Double cantidad, String descripcion, String codigo) {
     this.idProducto = idProducto;
     this.cantidad = cantidad;
     this.descripcion = descripcion;
+    this.codigo = codigo;
     this.registro = Fecha.toRegistro();
   }
 
@@ -55,6 +55,14 @@ public class Cantidad implements Serializable {
 
   public void setDescripcion(String descripcion) {
     this.descripcion = descripcion;
+  }
+
+  public String getCodigo() {
+    return codigo;
+  }
+
+  public void setCodigo(String codigo) {
+    this.codigo = codigo;
   }
 
   public String getRegistro() {
@@ -92,7 +100,8 @@ public class Cantidad implements Serializable {
 
   @Override
   public String toString() {
-    return "Cantidad{" + "idProducto=" + idProducto + ", cantidad=" + cantidad + ", descripcion=" + descripcion + ", registro=" + registro + '}';
+    return "Cantidad{" + "idProducto=" + idProducto + ", cantidad=" + cantidad + ", codigo=" + codigo + ", descripcion=" + descripcion + ", registro=" + registro + '}';
   }
+
   
 }

@@ -14,7 +14,7 @@ import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.json.Decoder;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.db.dto.TcManticConteoDetallesDto;
+import mx.org.kaana.mantic.db.dto.TcManticConteosDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticConteosBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticConteosDto;
 import mx.org.kaana.mantic.enums.ERespuesta;
@@ -313,7 +313,9 @@ public class Planetas implements Serializable {
         items.getIdConteo(), // Long idReferencia, 
         items.getNombre(), // String nombre, 
         1L, // Long idConteoEstatus, 
-        regresar // String token
+        regresar, // String token
+        items.getIdEmpresa(), // Long idEmpresa
+        items.getIdAlmacen() // Long idAlmacen
       );
       // INSERTAR EL REGISTRO DE LOS CONTEOS PARA DESPUES VERFICAR SI SE INTEGRARON
       DaoFactory.getInstance().insert(session, conteo);
@@ -326,14 +328,15 @@ public class Planetas implements Serializable {
       );
       DaoFactory.getInstance().insert(session, bitacora);
       for (Cantidad item: items.getProductos()) {
-        TcManticConteoDetallesDto detalle= new TcManticConteoDetallesDto(
+        TcManticConteosDetallesDto detalle= new TcManticConteosDetallesDto(
           item.getRegistro(), // String fecha, 
           -1L, // Long idConteoDetalle, 
           conteo.getIdConteo(), // Long idConteo, 
           null, // Timestamp procesado, 
           item.getCantidad(), // Double cantidad, 
           item.getIdProducto(), // Long idArticulo, 
-          item.getDescripcion() // String nombre
+          item.getDescripcion(), // String nombre
+          item.getCodigo() // String codigo
         );
         DaoFactory.getInstance().insert(session, detalle);
       } // for
