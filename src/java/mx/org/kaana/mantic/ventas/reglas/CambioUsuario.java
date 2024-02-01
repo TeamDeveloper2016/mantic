@@ -16,13 +16,16 @@ import mx.org.kaana.kajool.procesos.acceso.exceptions.BloqueoSitioException;
 import mx.org.kaana.kajool.procesos.acceso.perfil.reglas.RegistroPerfil;
 import mx.org.kaana.kajool.procesos.acceso.reglas.Acceso;
 import mx.org.kaana.libs.formato.BouncyEncryption;
-import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 public class CambioUsuario extends Acceso implements Serializable{
 
 	private static final long serialVersionUID=-1750582993624963783L;
+  private static final Log LOG = LogFactory.getLog(CambioUsuario.class);
+  
 	private boolean acceso;	
 	private Long idPersona;
 	
@@ -51,7 +54,7 @@ public class CambioUsuario extends Acceso implements Serializable{
 		this.idPersona=idPersona;
 	}
 
-	public boolean validaUsuario(){
+	public boolean validaUsuario() {
 		boolean regresar= false;
 		try {
 			valida();				
@@ -59,7 +62,9 @@ public class CambioUsuario extends Acceso implements Serializable{
 				regresar= JsfBase.getAutentifica().getRedirect().equals(EPaginasPrivilegios.DEFAULT) || JsfBase.getAutentifica().getRedirect().equals(EPaginasPrivilegios.PERFILES);				
 		} // try
 		catch (Exception e) {			
-			Error.mensaje(e);
+      LOG.error("AUTENTICACION: "+ e);
+      // SE QUITA PORQUE SON MUCHOS TEXTO AL LOG
+			// Error.mensaje(e);
 		} // catch		
 		return regresar;
 	} // validaUsuario	

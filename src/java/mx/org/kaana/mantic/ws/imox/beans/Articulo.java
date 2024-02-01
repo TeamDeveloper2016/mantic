@@ -19,15 +19,17 @@ public class Articulo implements Serializable {
   private Long idProducto;
   private String nombre;
   private String codigos;
+  private Long idActivo;
   private String registro;
 
   public Articulo() {
   }
 
-  public Articulo(Long idProducto, String nombre, String codigos) {
+  public Articulo(Long idProducto, String nombre, String codigos, Long idActivo) {
     this.idProducto = idProducto;
     this.nombre = nombre;
     this.codigos = codigos;
+    this.idActivo= idActivo;
     this.registro = Fecha.toRegistro();
   }
 
@@ -53,6 +55,14 @@ public class Articulo implements Serializable {
 
   public void setCodigos(String codigos) {
     this.codigos = codigos;
+  }
+
+  public Long getIdActivo() {
+    return idActivo;
+  }
+
+  public void setIdActivo(Long idActivo) {
+    this.idActivo = idActivo;
   }
 
   public String getRegistro() {
@@ -90,7 +100,7 @@ public class Articulo implements Serializable {
 
   @Override
   public String toString() {
-    return "Producto{" + "idProducto=" + idProducto + ", nombre=" + nombre + ", codigos=" + codigos + ", registro=" + registro + '}';
+    return "Articulo{" + "idProducto=" + idProducto + ", nombre=" + nombre + ", codigos=" + codigos + ", idActivo=" + idActivo + ", registro=" + registro + '}';
   }
   
 }

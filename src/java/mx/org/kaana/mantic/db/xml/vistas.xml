@@ -4,6 +4,69 @@
 -->
 <process>
 	<dml> 
+		<unit id="VistaConteosDto">
+      <select id="lazy">
+select
+  tc_mantic_conteos.id_conteo as id_key,
+  tc_mantic_empresas.nombre as empresa,  
+  tc_mantic_almacenes.nombre as almacen,
+  upper(tc_mantic_conteos.nombre) as nombre,
+  tc_mantic_conteos.id_conteo_estatus,
+  tc_mantic_conteos.id_usuario,
+  ifnull(tc_mantic_conteos.procesado, now()) as procesado,
+  if(tc_mantic_conteos.procesado is null, 2, 1) as id_procesado,  
+  tc_mantic_conteos_estatus.nombre as estatus,
+  tc_mantic_conteos_estatus.estatus_asociados, 
+  concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as usuario,
+  concat(substr(tc_mantic_conteos.fecha, 7, 2), '/', substr(tc_mantic_conteos.fecha, 5, 2), '/', substr(tc_mantic_conteos.fecha, 1, 4)) as fecha,
+  count(tc_mantic_conteos_detalles.id_conteo_detalle) as articulos
+from
+  tc_mantic_conteos
+inner join
+  tc_mantic_conteos_detalles on tc_mantic_conteos.id_conteo= tc_mantic_conteos_detalles.id_conteo
+inner join
+  tc_mantic_articulos on tc_mantic_conteos_detalles.id_articulo= tc_mantic_articulos.id_articulo
+inner join 
+	tc_mantic_conteos_estatus on tc_mantic_conteos.id_conteo_estatus=tc_mantic_conteos_estatus.id_conteo_estatus
+inner join
+	tc_janal_usuarios on tc_mantic_conteos.id_usuario= tc_janal_usuarios.id_usuario
+inner join
+	tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+inner join 
+  tc_mantic_empresas on tc_mantic_conteos.id_empresa= tc_mantic_empresas.id_empresa
+inner join 
+  tc_mantic_almacenes on tc_mantic_conteos.id_almacen= tc_mantic_almacenes.id_almacen
+where
+  tc_mantic_conteos.id_empresa in (idEmpresa)
+  and tc_mantic_articulos.id_articulo_tipo= 1 
+  and {condicion}
+group by
+  tc_mantic_conteos.id_conteo
+{sortOrder}
+      </select>
+      <select id="row">
+select 
+  tc_mantic_conteos_detalles.id_conteo_detalle as id_key,
+  tc_mantic_articulos.id_articulo,
+  tc_mantic_articulos.nombre,
+  tc_mantic_conteos_detalles.cantidad,
+  concat(substr(tc_mantic_conteos_detalles.fecha, 7, 2), '/', substr(tc_mantic_conteos_detalles.fecha, 5, 2), '/', substr(tc_mantic_conteos_detalles.fecha, 1, 4)) as fecha,
+  ifnull(tc_mantic_conteos_detalles.procesado, now()) as procesado,
+  if(tc_mantic_conteos_detalles.procesado is null, 2, 1) as id_procesado,  
+  tc_mantic_conteos_detalles.registro
+from
+  tc_mantic_conteos_detalles
+inner join
+  tc_mantic_articulos on tc_mantic_conteos_detalles.id_articulo= tc_mantic_articulos.id_articulo
+where
+  tc_mantic_conteos_detalles.id_conteo= {idConteo}
+group by
+  tc_mantic_conteos_detalles.id_conteo,
+  tc_mantic_articulos.id_articulo
+order by
+  tc_mantic_articulos.nombre
+      </select>
+    </unit>  
 		<unit id="VistaPlanetasDto">
 			<select id="mercurio">
 select
@@ -32,6 +95,7 @@ select
   tc_mantic_almacenes.id_almacen,
   tc_mantic_almacenes_articulos.id_almacen_ubicacion as id_ubicacion,
   group_concat(tc_mantic_articulos_codigos.codigo separator '|') as codigos,
+  tc_mantic_articulos.id_descontinuado as id_activo,
   date_format(tc_mantic_articulos.registro, '%Y%m%d%h%i%S') as registro
 from
   tc_mantic_articulos
@@ -117,12 +181,12 @@ order by
 select
   tc_mantic_articulos.id_articulo as id_producto,
   tc_mantic_almacenes.id_almacen,
-  tc_mantic_almacenes_ubicaciones.id_almacen_ubicacion as id_ubicacion,
+  tc_mantic_almacenes_articulos.id_almacen_ubicacion as id_ubicacion,
   date_format(tc_mantic_articulos.registro, '%Y%m%d%h%i%S') as registro
 from
   tc_mantic_articulos
 inner join
-  tc_mantic_almacenes_articulos on tc_mantic_articulos_codigos.id_articulo= tc_mantic_almacenes_articulos.id_articulo
+  tc_mantic_almacenes_articulos on tc_mantic_articulos.id_articulo= tc_mantic_almacenes_articulos.id_articulo
 inner join
   tc_mantic_almacenes on tc_mantic_almacenes_articulos.id_almacen= tc_mantic_almacenes.id_almacen
 where
@@ -140,6 +204,7 @@ order by
 select
   tc_mantic_articulos.id_articulo as id_producto,
   tc_mantic_articulos.nombre,
+  tc_mantic_articulos.id_descontinuado as id_activo,
   group_concat(tc_mantic_articulos_codigos.codigo separator '|') as codigos,
   date_format(tc_mantic_articulos.registro, '%Y%m%d%h%i%S') as registro
 from
@@ -9790,6 +9855,7 @@ order by
           tc_mantic_empresas_deudas.fecha_recepcion,
           tc_mantic_empresas_deudas.id_recibio,
           tc_mantic_empresas_deudas.id_proveedor_pago,
+          tc_mantic_empresas_deudas.observaciones,
           tc_mantic_proveedores.comentarios
 				from
 					tc_mantic_empresas_deudas

@@ -224,8 +224,10 @@ public class Prorroga extends IBaseImportar implements Serializable {
 		calendar.setTimeInMillis(this.fechaRecepcion.getTime());
 		if(this.ikProveedorPago!= null && this.ikProveedorPago.size()> 1)
  		  diasPlazo= this.ikProveedorPago.toLong("plazo");
-		calendar.add(Calendar.DATE, diasPlazo.intValue()- 1);
-		this.prorroga= new Date(calendar.getTimeInMillis());
+    if(diasPlazo> 0L) {
+		  calendar.add(Calendar.DATE, diasPlazo.intValue()- 1);
+		  this.prorroga= new Date(calendar.getTimeInMillis());
+    } // if  
 	}
   
 	public String doAceptar() {

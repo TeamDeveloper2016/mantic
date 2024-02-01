@@ -21,17 +21,19 @@ public class Producto implements Serializable {
   private Long idAlmacen;
   private Long idUbicacion;
   private String codigos;
+  private Long idActivo;
   private String registro;
 
   public Producto() {
   }
 
-  public Producto(Long idProducto, String nombre, Long idAlmacen, Long idUbicacion, String codigos) {
+  public Producto(Long idProducto, String nombre, Long idAlmacen, Long idUbicacion, String codigos, Long idActivo) {
     this.idProducto = idProducto;
     this.nombre = nombre;
     this.idAlmacen = idAlmacen;
     this.idUbicacion = idUbicacion;
     this.codigos = codigos;
+    this.idActivo = idActivo;
     this.registro = Fecha.toRegistro();
   }
 
@@ -75,6 +77,14 @@ public class Producto implements Serializable {
     this.codigos = codigos;
   }
 
+  public Long getIdActivo() {
+    return idActivo;
+  }
+
+  public void setIdActivo(Long idActivo) {
+    this.idActivo = idActivo;
+  }
+
   public String getRegistro() {
     return registro;
   }
@@ -110,7 +120,8 @@ public class Producto implements Serializable {
 
   @Override
   public String toString() {
-    return "Producto{" + "idProducto=" + idProducto + ", nombre=" + nombre + ", idAlmacen=" + idAlmacen + ", idUbicacion=" + idUbicacion + ", codigos=" + codigos + ", registro=" + registro + '}';
+    return "Producto{" + "idProducto=" + idProducto + ", nombre=" + nombre + ", idAlmacen=" + idAlmacen + ", idUbicacion=" + idUbicacion + ", codigos=" + codigos + ", idActivo=" + idActivo + ", registro=" + registro + '}';
   }
+
   
 }

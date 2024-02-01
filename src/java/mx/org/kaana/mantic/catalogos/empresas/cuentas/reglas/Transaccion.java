@@ -469,6 +469,7 @@ public class Transaccion extends IBaseTnx {
 				item.setImporte(importe);
 				item.setPagar(importe);
 				item.setSaldo(this.calculateSaldo(sesion, importe, this.detalle.getKey()));
+        item.setObservaciones(String.valueOf(this.detalle.get("observaciones")));
 				DaoFactory.getInstance().update(sesion, item);
         TcManticEmpresasBitacoraDto bitacora= new TcManticEmpresasBitacoraDto(
           String.valueOf(this.detalle.get("observaciones")), // String justificacion, 
@@ -705,9 +706,8 @@ public class Transaccion extends IBaseTnx {
 	
 	private List<Entity> toDeudas(Session sesion) throws Exception {
 		List<Entity> regresar    = null;
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put("idProveedor", this.idProveedor);
 			params.put(Constantes.SQL_CONDICION, " tc_mantic_empresas_deudas.saldo> 0 and tc_mantic_empresas_deudas.id_empresa_estatus in (1, 2, 3)");			
 			params.put("sortOrder", "order by tc_mantic_empresas_deudas.registro asc");
@@ -805,9 +805,8 @@ public class Transaccion extends IBaseTnx {
 	
 	private Siguiente toSiguiente(Session sesion) throws Exception {
 		Siguiente regresar        = null;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("ejercicio", this.getCurrentYear());
 			params.put("idEmpresa", this.idEmpresa);
 			params.put("operador", this.getCurrentSign());
@@ -838,14 +837,15 @@ public class Transaccion extends IBaseTnx {
 	} // eliminarPago
 
   private Boolean toDeletePagos(Session sesion) throws Exception {
-    Boolean regresar= Boolean.FALSE;
-    Map<String, Object> params = null;
+    Boolean regresar          = Boolean.FALSE;
+    Map<String, Object> params= new HashMap<>();
     try {      
-      params = new HashMap<>();      
       params.put("idEmpresaPagoControl", this.idEmpresaPago);      
       List<Entity> items = (List<Entity>)DaoFactory.getInstance().toEntitySet(sesion, "VistaEmpresasDto", "eliminarPagos", params);
       if(items!= null && !items.isEmpty()) {
+        // TcManticProveedoresDto proveedor= (TcManticProveedoresDto)DaoFactory.getInstance().findById(sesion, TcManticProveedoresDto.class, items.get(0).toLong("idProveedor"));
         for (Entity item: items) {
+          // proveedor.setSaldo(Numero.toRedondearSat(proveedor.getSaldo()+ item.toDouble("abonado")));
           // borrar todos los archivos asociados a los pagos 
           List<TcManticEmpresasPagosArchivosDto> archivos= (List<TcManticEmpresasPagosArchivosDto>)DaoFactory.getInstance().toEntitySet(sesion, TcManticEmpresasPagosArchivosDto.class, "TcManticEmpresasPagosArchivosDto", "pago", item.toMap());
           if(archivos!= null && !archivos.isEmpty()) {
@@ -875,6 +875,7 @@ public class Transaccion extends IBaseTnx {
           DaoFactory.getInstance().insert(sesion, bitacora);
         } // for
         DaoFactory.getInstance().delete(sesion, TcManticEmpresasPagosControlesDto.class, this.idEmpresaPago);
+        // DaoFactory.getInstance().update(sesion, proveedor);
       } // if
       regresar= Boolean.TRUE;
     } // try
@@ -889,9 +890,8 @@ public class Transaccion extends IBaseTnx {
   
   private Boolean toDeleteCuenta(Session sesion) throws Exception {
     Boolean regresar= Boolean.FALSE;
-    Map<String, Object> params = null;
+    Map<String, Object> params = new HashMap<>();
     try {      
-      params = new HashMap<>();      
       params.put("idEmpresaDeuda", this.idEmpresaPago);      
       TcManticEmpresasDeudasDto item= (TcManticEmpresasDeudasDto)DaoFactory.getInstance().findById(sesion, TcManticEmpresasDeudasDto.class, this.idEmpresaPago);
       item.setIdRevisado(1L);
@@ -933,10 +933,9 @@ public class Transaccion extends IBaseTnx {
   } 
   
   public void toAffectAlmacenes(Session sesion, TcManticNotasEntradasDto nota) throws Exception {
-    Map<String, Object> params= null;
+    Double stock= null;
+    Map<String, Object> params= new HashMap<>();
     try {      
-      Double stock= null;
-      params = new HashMap<>();      
       params.put("idNotaEntrada", nota.getIdNotaEntrada());      
       List<TcManticNotasDetallesDto> items= (List<TcManticNotasDetallesDto>)DaoFactory.getInstance().toEntitySet(sesion, TcManticNotasDetallesDto.class, "TcManticNotasDetallesDto", "detalle", params);
       if(items!= null && !items.isEmpty()) {
