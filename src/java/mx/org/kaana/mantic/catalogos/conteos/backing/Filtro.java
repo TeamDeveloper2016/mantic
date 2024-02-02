@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -17,6 +18,7 @@ import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.procesos.comun.Comun;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
@@ -29,20 +31,23 @@ import mx.org.kaana.libs.reflection.Methods;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.StreamedContent;
 
-@Named(value = "manticCatalogosArticulosFiltro")
+@Named(value = "manticCatalogosConteosFiltro")
 @ViewScoped
 public class Filtro extends Comun implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428879L;
+  
+  private FormatLazyModel lazyDetalle;
 
+	public FormatLazyModel getLazyDetalle() {
+		return lazyDetalle;
+	}		
+  
   @PostConstruct
   @Override
   protected void init() {
     try {
       this.attrs.put("buscaPorCodigo", false);
-      this.attrs.put("codigo", "");
-      this.attrs.put("nombre", "");
-      this.attrs.put("usuario", "");
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());      
 			this.attrs.put("isGerente", JsfBase.isAdminEncuestaOrAdmin());
@@ -67,9 +72,11 @@ public class Filtro extends Comun implements Serializable {
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("almacen", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("procesado", EFormatoDinamicos.FECHA_HORA_CORTA));
       params.put("sortOrder", "order by tc_mantic_conteos.registro desc");
-      this.lazyModel = new FormatCustomLazy("VistaConteosDto", "row", params, columns);
+      this.lazyModel = new FormatCustomLazy("VistaConteosDto", "lazy", params, columns);
       UIBackingUtilities.resetDataTable();
+      this.lazyDetalle= null;
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -110,7 +117,7 @@ public class Filtro extends Comun implements Serializable {
 		Map<String, Object> regresar= new HashMap<>();
 		StringBuilder sb            = new StringBuilder("");
 		try {
-      if(!Cadena.isVacio(this.attrs.get("idConteoProcess")) && !this.attrs.get("idConteoProcess").toString().equals("-1")) 
+      if(!Cadena.isVacio(this.attrs.get("idConteoProcess")) && !Objects.equals((Long)this.attrs.get("idConteoProcess"), -1L)) 
         sb.append("tc_mantic_conteos.id_conteo=").append(this.attrs.get("idConteoProcess")).append(" and ");
 			if(!Cadena.isVacio(JsfBase.getParametro("codigo_input")))
 				sb.append("upper(tc_mantic_articulos_codigos.codigo) like upper('%").append(JsfBase.getParametro("codigo_input")).append("%') and ");						
@@ -126,7 +133,7 @@ public class Filtro extends Comun implements Serializable {
   		else 
 	  		if(!Cadena.isVacio(JsfBase.getParametro("usuario_input"))) { 
 					String nombre= JsfBase.getParametro("usuario_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*");
-		  		sb.append("(concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) regexp '").append(nombre).append(".*' or tc_mantic_personas.cuentea regexp '").append(nombre).append(".*') and ");				
+		  		sb.append("(concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) regexp '").append(nombre).append(".*' or tc_mantic_personas.cuenta regexp '").append(nombre).append(".*') and ");				
 				} // if	
 			if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
 				sb.append("(tc_mantic_conteos.fecha>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
@@ -291,6 +298,7 @@ public class Filtro extends Comun implements Serializable {
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
+      search= !Cadena.isVacio(search)? search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim(): "WXYZ";
 			if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
 				params.put("sucursales", this.attrs.get("idEmpresa"));
 			else
@@ -328,16 +336,16 @@ public class Filtro extends Comun implements Serializable {
 		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-      columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-			params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
+      columns.add(new Columna("cuenta", EFormatoDinamicos.MINUSCULAS));
+      columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("paterno", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("materno", EFormatoDinamicos.MAYUSCULAS));
 			if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
 				params.put("sucursales", this.attrs.get("idEmpresa"));
 			else
 				params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-  		params.put("idProveedor", -1L);			
-  		params.put("codigo", search);			
-      this.attrs.put("codigos", (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porCodigo", params, columns, 20L));
+  		params.put("codigo", search.toUpperCase().replaceAll("(,| |\\t)+", ".*"));
+      this.attrs.put("usuarios", (List<UISelectEntity>) UIEntity.build("VistaTcJanalUsuariosDto", "porCuenta", params, columns, 20L));
 		} // try
 	  catch (Exception e) {
       Error.mensaje(e);
@@ -363,5 +371,50 @@ public class Filtro extends Comun implements Serializable {
 			JsfBase.addMessageError(e);
 		} // catch		
 	} 
+  
+  public void doConsultar() {
+    this.doDetalle((Entity)this.attrs.get("seleccionado"));
+  }
+  
+  public void doDetalle(Entity row) {
+		Map<String, Object>params= new HashMap<>();
+		List<Columna>columns     = new ArrayList<>();
+		try {
+			if(row!= null && !row.isEmpty()) {
+        this.attrs.put("seleccionado", row);
+				params.put("idConteo", row.toLong("idConteo"));
+				columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+				columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+				columns.add(new Columna("procesado", EFormatoDinamicos.FECHA_HORA_CORTA));
+				this.lazyDetalle= new FormatLazyModel("VistaConteosDto", "row", params, columns);
+				UIBackingUtilities.resetDataTable("tablaDetalle");
+			} // if
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+		finally{
+			Methods.clean(params);
+			Methods.clean(columns);
+		} // finally
+  }
+ 
+  public void doProcesar() {
+    // Transaccion transaccion  = null;
+    Entity seleccionado      = null;
+    try {
+      seleccionado = (Entity) this.attrs.get("seleccionado");
+//      transaccion = new Transaccion(registro, 0D, true);
+//      if (transaccion.ejecutar(EAccion.ELIMINAR)) 
+//        JsfBase.addMessage("Eliminar articulo", "El conteo fue eliminado correctamente", ETipoMensaje.ERROR);
+//      else
+//        JsfBase.addMessage("Eliminar articulo", "Ocurrió un error al eliminar el conteo", ETipoMensaje.ERROR);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch		
+  } 
   
 }

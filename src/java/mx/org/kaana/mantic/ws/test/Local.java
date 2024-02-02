@@ -23,9 +23,9 @@ public class Local implements Serializable {
     //System.out.println(planetas.saturno(1L, "19000101", "/Eb1AjylyNNfQBLodn6Jf6Stb8NM7Hw2"));
     //System.out.println(planetas.venus(1L, "19000101", "/Eb1AjylyNNfQBLodn6Jf6Stb8NM7Hw2"));
     //System.out.println(planetas.neptuno("/Eb1AjylyNNfQBLodn6Jf6Stb8NM7Hw2", 1L));
-    //System.out.println(planetas.urano(1L, "{\"idConteo\":1,\"idUsuario\": 1,\"nombre\":\"Hola\",\"productos\":[{ \"idProducto\": 1,\"cantidad\": 997.0,\"codigo\": \"1234\",\"descripcion\": \"\",\"registro\": \"20240123215540896\"},{\"idProducto\": 2,\"cantidad\": 998.0,\"codigo\": \"1235\",\"descripcion\": \"\",\"registro\": \"20240123215540927\"},{\"idProducto\": 3,\"cantidad\": 999.0,\"codigo\": \"1236\",\"descripcion\": \"\",\"registro\": \"20240123215540927\"}],\"registro\": \"20240123215312\",\"idEmpresa\": \"1\",\"idAlmacen\": \"1\"}", "/Eb1AjylyNNfQBLodn6Jf6Stb8NM7Hw2"));
+    System.out.println(planetas.urano(1L, "{\"idConteo\":4,\"idUsuario\": 1,\"nombre\":\"Hola\",\"productos\":[{ \"idProducto\": 1,\"cantidad\": 997.0,\"codigo\": \"1234\",\"descripcion\": \"\",\"registro\": \"20240123215540896\"},{\"idProducto\": 2,\"cantidad\": 998.0,\"codigo\": \"1235\",\"descripcion\": \"\",\"registro\": \"20240123215540927\"},{\"idProducto\": 3,\"cantidad\": 999.0,\"codigo\": \"1236\",\"descripcion\": \"\",\"registro\": \"20240123215540927\"}],\"registro\": \"20240123215312\",\"idEmpresa\": \"1\",\"idAlmacen\": \"1\"}", "/Eb1AjylyNNfQBLodn6Jf6Stb8NM7Hw2"));
     //System.out.println(planetas.pluton(1L, "19000101", "/Eb1AjylyNNfQBLodn6Jf6Stb8NM7Hw2"));
-    System.out.println(planetas.sol(1L, "19000101", "/Eb1AjylyNNfQBLodn6Jf6Stb8NM7Hw2"));
+    //System.out.println(planetas.sol(1L, "19000101", "/Eb1AjylyNNfQBLodn6Jf6Stb8NM7Hw2"));
 
 //    Conteo conteo= new Conteo(1L, 1L, "Hola", "20240123215312");
 //    conteo.getProductos().add(new Cantidad(1L, 997D, ""));

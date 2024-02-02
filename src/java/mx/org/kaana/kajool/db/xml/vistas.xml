@@ -57,6 +57,24 @@
 				where
 					tc_mantic_personas.cuenta = '{cuenta}' and tc_janal_usuarios.activo=1
       </select>
+      <select id="porCuenta">
+        select
+					tc_janal_usuarios.id_usuario as id_key, 
+					tc_janal_usuarios.id_usuario, 
+          tc_mantic_personas.cuenta, 
+          tc_mantic_personas.nombres, 
+          ifnull(tc_mantic_personas.paterno, '') as paterno,
+          ifnull(tc_mantic_personas.materno, '') as materno
+				from
+					tc_janal_usuarios
+				inner join
+					tc_mantic_personas on tc_mantic_personas.id_persona= tc_janal_usuarios.id_persona
+				where
+					tc_janal_usuarios.activo= 1
+          and (upper(tc_mantic_personas.cuenta) regexp '{codigo}' or concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ifnull(tc_mantic_personas.materno, '')) regexp '{codigo}')
+        order by
+          tc_mantic_personas.cuenta
+      </select>
       <select id="cambioUsuario">
         select
 					tc_janal_usuarios.id_usuario as id_key, 

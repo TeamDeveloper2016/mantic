@@ -8,6 +8,7 @@
       <select id="lazy">
 select
   tc_mantic_conteos.id_conteo as id_key,
+  tc_mantic_conteos.id_conteo,
   tc_mantic_empresas.nombre as empresa,  
   tc_mantic_almacenes.nombre as almacen,
   upper(tc_mantic_conteos.nombre) as nombre,
@@ -26,6 +27,8 @@ inner join
   tc_mantic_conteos_detalles on tc_mantic_conteos.id_conteo= tc_mantic_conteos_detalles.id_conteo
 inner join
   tc_mantic_articulos on tc_mantic_conteos_detalles.id_articulo= tc_mantic_articulos.id_articulo
+inner join
+  tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo= tc_mantic_articulos_codigos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1
 inner join 
 	tc_mantic_conteos_estatus on tc_mantic_conteos.id_conteo_estatus=tc_mantic_conteos_estatus.id_conteo_estatus
 inner join
@@ -37,7 +40,7 @@ inner join
 inner join 
   tc_mantic_almacenes on tc_mantic_conteos.id_almacen= tc_mantic_almacenes.id_almacen
 where
-  tc_mantic_conteos.id_empresa in (idEmpresa)
+  tc_mantic_conteos.id_empresa in ({idEmpresa})
   and tc_mantic_articulos.id_articulo_tipo= 1 
   and {condicion}
 group by
@@ -47,6 +50,7 @@ group by
       <select id="row">
 select 
   tc_mantic_conteos_detalles.id_conteo_detalle as id_key,
+  tc_mantic_conteos_detalles.id_conteo_detalle,
   tc_mantic_articulos.id_articulo,
   tc_mantic_articulos.nombre,
   tc_mantic_conteos_detalles.cantidad,
