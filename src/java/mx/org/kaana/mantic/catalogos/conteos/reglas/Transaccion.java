@@ -2,12 +2,14 @@ package mx.org.kaana.mantic.catalogos.conteos.reglas;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.hibernate.Session;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.libs.formato.Error;
+import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticConteosBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticConteosDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticConteosDto;
@@ -51,6 +53,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 			this.messageError= "Ocurrio un error al ".concat(accion.name().toLowerCase()).concat(" el conteo");
 			switch(accion) {
 				case PROCESAR:
+          regresar= this.toProcesar(sesion);
 					break;
 				case ELIMINAR:
 					this.conteo.setIdConteoEstatus(4L);
@@ -78,5 +81,26 @@ public class Transaccion extends IBaseTnx implements Serializable {
 		} // catch		
 		return regresar;
 	}	
+ 
   
+  private boolean toProcesar(Session sesion) throws Exception {
+    Boolean regresar= Boolean.FALSE;
+    Map<String, Object> params = new HashMap<>();
+    try {      
+      params.put("idConteo", this.conteo.getIdConteo());      
+      List<TcManticConteosDetallesDto> items= (List<TcManticConteosDetallesDto>)DaoFactory.getInstance().toEntitySet(sesion, TcManticConteosDetallesDto.class, "TcManticConteosDetallesDto", "igual", params);
+      for (Object item: items) {
+        System.out.println(item);
+      } // for
+      regresar= Boolean.TRUE;
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;    
+  }
+
 } 

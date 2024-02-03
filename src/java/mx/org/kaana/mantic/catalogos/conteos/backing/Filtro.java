@@ -165,8 +165,10 @@ public class Filtro extends Comun implements Serializable {
   		  regresar.put("almacen", " and (tc_mantic_conteos.id_almacen= "+ ((UISelectEntity)this.attrs.get("idAlmacen")).getKey()+ ")");
 			else
   		  regresar.put("almacen", " ");
-      if(!Cadena.isVacio(this.attrs.get("idConteoEstatus")) && !this.attrs.get("idConteoEstatus").toString().equals("-1"))
-  		  sb.append("(tc_mantic_conteos.id_conteo_estatus= ").append(this.attrs.get("idConteoEstatus")).append(") and ");
+      if(!Cadena.isVacio(this.attrs.get("idAlmacen")) && !this.attrs.get("idAlmacen").toString().equals("-1"))
+  		  sb.append("(tc_mantic_conteos.id_almacen= ").append(this.attrs.get("idAlmacen")).append(") and ");
+      if(!Cadena.isVacio(this.attrs.get("idConteoProcess")) && !Objects.equals((Long)this.attrs.get("idConteoProcess"), -1L)) 
+        sb.append("tc_mantic_conteos.id_conteo=").append(this.attrs.get("idConteoProcess")).append(" and ");
 			if(Cadena.isVacio(sb.toString()))
 				regresar.put("condicion", Constantes.SQL_VERDADERO);
 			else
