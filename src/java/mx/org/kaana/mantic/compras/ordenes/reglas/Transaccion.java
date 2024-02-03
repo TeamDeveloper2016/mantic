@@ -90,7 +90,7 @@ public class Transaccion extends Inventarios implements Serializable {
 		try {
 			if(this.orden!= null)
 				params.put("idOrdenCompra", this.orden.getIdOrdenCompra());
-			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" para la orden de compra");
+			this.messageError= "Ocurrio un error al ".concat(accion.name().toLowerCase()).concat(" la orden de compra");
 			if(this.orden!= null && this.orden.getIdCliente()!= null && this.orden.getIdCliente()< 0)
 				this.orden.setIdCliente(null);
 			switch(accion) {

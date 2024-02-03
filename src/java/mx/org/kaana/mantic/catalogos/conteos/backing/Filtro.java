@@ -10,6 +10,7 @@ import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
@@ -19,15 +20,20 @@ import mx.org.kaana.kajool.procesos.comun.Comun;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
+import mx.org.kaana.mantic.catalogos.conteos.reglas.Transaccion;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
+import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.db.dto.TcManticConteosBitacoraDto;
+import mx.org.kaana.mantic.db.dto.TcManticConteosDto;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.StreamedContent;
 
@@ -37,11 +43,23 @@ public class Filtro extends Comun implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428879L;
   
+  private EAccion accion;
   private FormatLazyModel lazyDetalle;
 
 	public FormatLazyModel getLazyDetalle() {
 		return lazyDetalle;
 	}		
+  
+  public Boolean getAdmin() {
+    Boolean regresar= Boolean.FALSE;
+    try {
+      regresar= JsfBase.isAdminEncuestaOrAdmin();
+    } // try
+    catch(Exception e) {
+      regresar= Boolean.FALSE;
+    } // catch
+    return regresar;
+  }
   
   @PostConstruct
   @Override
@@ -51,12 +69,13 @@ public class Filtro extends Comun implements Serializable {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());      
 			this.attrs.put("isGerente", JsfBase.isAdminEncuestaOrAdmin());
-			this.toLoadCatalog();
+			this.toLoadCatalogos();
       if(JsfBase.getFlashAttribute("idConteoProcess")!= null) {
         this.attrs.put("idConteoProcess", JsfBase.getFlashAttribute("idConteoProcess"));
         this.doLoad();
         this.attrs.put("idConteoProcess", null);
       } // if
+      this.accion= EAccion.PROCESAR;
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -87,7 +106,7 @@ public class Filtro extends Comun implements Serializable {
     } // finally		
   } // doLoad
 	
-	private void toLoadCatalog() {
+	private void toLoadCatalogos() {
 		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
@@ -103,6 +122,9 @@ public class Filtro extends Comun implements Serializable {
 			this.attrs.put("idEmpresa", new UISelectEntity("-1"));
       this.attrs.put("almacenes", (List<UISelectEntity>) UIEntity.build("TcManticAlmacenesDto", "almacenes", params, columns));
 			this.attrs.put("idAlmacen", new UISelectEntity("-1"));
+			columns.remove(0);
+      this.attrs.put("estatus", (List<UISelectEntity>) UIEntity.build("TcManticConteosEstatusDto", "row", params, columns));
+			this.attrs.put("idConteoEstatus", new UISelectEntity("-1"));
     } // try
     catch (Exception e) {
       throw e;
@@ -143,6 +165,8 @@ public class Filtro extends Comun implements Serializable {
   		  regresar.put("almacen", " and (tc_mantic_conteos.id_almacen= "+ ((UISelectEntity)this.attrs.get("idAlmacen")).getKey()+ ")");
 			else
   		  regresar.put("almacen", " ");
+      if(!Cadena.isVacio(this.attrs.get("idConteoEstatus")) && !this.attrs.get("idConteoEstatus").toString().equals("-1"))
+  		  sb.append("(tc_mantic_conteos.id_conteo_estatus= ").append(this.attrs.get("idConteoEstatus")).append(") and ");
 			if(Cadena.isVacio(sb.toString()))
 				regresar.put("condicion", Constantes.SQL_VERDADERO);
 			else
@@ -401,20 +425,105 @@ public class Filtro extends Comun implements Serializable {
   }
  
   public void doProcesar() {
-    // Transaccion transaccion  = null;
-    Entity seleccionado      = null;
+    this.accion= EAccion.PROCESAR;
+    this.attrs.put("titulo", "¿ Está seguro de procesar el conteo seleccionado ?");
+  }
+  
+  public void doEliminar() {
+    this.accion= EAccion.DEPURAR;
+    this.attrs.put("titulo", "¿ Está seguro de eliminar el conteo seleccionado ?");
+  }
+  
+  public void doEjecutar() {
+    switch(this.accion) {
+      case PROCESAR:
+        this.toProcesar();
+        break;
+      case DEPURAR:
+        this.toEliminar();
+        break;
+    } // switch
+  }
+  
+  private void toProcesar() {
+    Transaccion transaccion= null;
+    Entity seleccionado    = (Entity) this.attrs.get("seleccionado");
     try {
-      seleccionado = (Entity) this.attrs.get("seleccionado");
-//      transaccion = new Transaccion(registro, 0D, true);
-//      if (transaccion.ejecutar(EAccion.ELIMINAR)) 
-//        JsfBase.addMessage("Eliminar articulo", "El conteo fue eliminado correctamente", ETipoMensaje.ERROR);
-//      else
-//        JsfBase.addMessage("Eliminar articulo", "Ocurrió un error al eliminar el conteo", ETipoMensaje.ERROR);
+      TcManticConteosDto conteo= (TcManticConteosDto)DaoFactory.getInstance().findById(TcManticConteosDto.class, seleccionado.getKey());
+      transaccion = new Transaccion(conteo);
+      if (transaccion.ejecutar(this.accion)) 
+        JsfBase.addMessage("Eliminar articulo", "El conteo fue procesado correctamente", ETipoMensaje.ERROR);
+      else
+        JsfBase.addMessage("Eliminar articulo", "Ocurrió un error al procesar el conteo", ETipoMensaje.ERROR);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
   } 
+ 
+  private void toEliminar() {
+    Transaccion transaccion= null;
+		Entity seleccionado    = (Entity)this.attrs.get("seleccionado");
+    try {
+      TcManticConteosDto conteo= (TcManticConteosDto)DaoFactory.getInstance().findById(TcManticConteosDto.class, seleccionado.getKey());
+      transaccion = new Transaccion(conteo);
+      if (transaccion.ejecutar(this.accion)) 
+        JsfBase.addMessage("Eliminar articulo", "El conteo fue eliminado correctamente", ETipoMensaje.ERROR);
+      else
+        JsfBase.addMessage("Eliminar articulo", "Ocurrió un error al eliminar el conteo", ETipoMensaje.ERROR);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch		
+  }
+ 
+	public void doActualizarEstatus() {
+		Transaccion transaccion            = null;
+		TcManticConteosBitacoraDto bitacora= null;
+		Entity seleccionado                = (Entity)this.attrs.get("seleccionado");
+		try {
+      TcManticConteosDto conteo= (TcManticConteosDto)DaoFactory.getInstance().findById(TcManticConteosDto.class, seleccionado.getKey());
+			bitacora    = new TcManticConteosBitacoraDto(
+        (String)this.attrs.get("justificacion"), // String justificacion, 
+        JsfBase.getIdUsuario(), // Long idUsuario, 
+        seleccionado.getKey(), // Long idConteo, 
+        -1L, // Long idConteoBitacora, 
+        Long.valueOf((String)this.attrs.get("idEstatus")) // Long idConteoEstatus
+      );
+			transaccion = new Transaccion(conteo, bitacora);
+			if(transaccion.ejecutar(EAccion.JUSTIFICAR))
+				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta.", ETipoMensaje.INFORMACION);
+			else
+				JsfBase.addMessage("Cambio estatus", "Ocurrio un error al realizar el cambio de estatus.", ETipoMensaje.ERROR);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+		finally{
+			this.attrs.put("justificacion", "");
+		} // finally
+	}	
+ 
+	public void doLoadEstatus() {
+		Entity seleccionado          = (Entity)this.attrs.get("seleccionado");
+		Map<String, Object>params    = new HashMap<>();
+		List<UISelectItem> allEstatus= null;
+		try {
+			params.put(Constantes.SQL_CONDICION, "id_conteo_estatus in (".concat(seleccionado.toString("estatusAsociados")).concat(")"));
+			allEstatus= UISelect.build("TcManticConteosEstatusDto", params, "nombre", EFormatoDinamicos.MAYUSCULAS);			
+			this.attrs.put("allEstatus", allEstatus);
+			this.attrs.put("idEstatus", allEstatus.get(0));
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+	} 
   
 }

@@ -6,6 +6,7 @@
                 xmlns:c="http://java.sun.com/jsp/jstl/core"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 template="/WEB-INF/plantillas/filtro.xhtml">
 	<ui:param name="titulo" value="Catálogo de conteos realizados" />
 	<ui:define name="librerias">
@@ -15,9 +16,10 @@
 				idAlmacen: {validaciones: 'libre', mascara: 'libre'},
 				codigo   : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
 				nombre   : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
-        fechaInicio  : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
-        fechaTermino : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
-				usuario  : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}
+        fechaInicio    : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
+        fechaTermino   : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
+				usuario        : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+        idConteoEstatus: {validaciones: 'libre', mascara: 'libre', grupo: 'general'}        
 			};
 			
 			function reload() {
@@ -31,7 +33,18 @@
 				$janal.console('janal.onLoadCallBack.reload()');
 				setTimeout('reload();', 1000);
 			};
-			
+			fieldsDialog= {
+				'justificacion'  : {validaciones: 'libre', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas'}
+			};
+			function validaJustificacion() {
+				var ok= janal.partial('dialogo');
+				if(ok){
+					PF('dlgEstatus').hide();
+					janal.restore();
+					janal.refresh();
+				} // if
+				return ok;
+			} // validaJustificacion
 			$(document).ready(function() { });
 		</script>		
 	</ui:define>
@@ -124,6 +137,14 @@
 									</h:panelGrid>
 								</f:facet>
 							</p:autoComplete>	
+              <p:outputLabel for="idConteoEstatus" value="Estatus:"/>
+              <p:selectOneMenu id="idConteoEstatus" value="#{manticCatalogosConteosFiltro.attrs.idConteoEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
+                <f:selectItems value="#{manticCatalogosConteosFiltro.attrs.estatus}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombre}"/>
+                </p:column>   
+              </p:selectOneMenu>
 							<p:separator/>
 						</p:panelGrid>
 						<div class="janal-align-right">
@@ -190,7 +211,7 @@
 								<f:facet name="header">
 									<h:outputText value=""/>
 								</f:facet>
-								<h:graphicImage library="janal" name="icon/semaforos/#{row.idProcesado eq '1' ? 'circulo-verde.png': 'circulo-rojo.png'}" title="Conteo #{row.idProcesado eq '1'? '': 'NO'} procesado #{row.idProcesado eq '1'? row.procesado: ''}"/>
+								<h:graphicImage library="janal" name="icon/semaforos/#{row.idConteoEstatus eq '4'? 'circulo-rojo.png': row.idConteoEstatus eq '1'? 'circulo-azul.png': row.idConteoEstatus eq '5'? 'circulo-amarillo.png': 'circulo-verde.png'}" title="Conteo #{row.idConteoEstatus eq '4'? 'cancelado': row.idConteoEstatus eq '1'? 'registrado': row.idConteoEstatus eq '5'? 'suspendido': 'integrado'}"/>
 							</p:column>
               <p:column class="janal-column-center MarAuto Responsive janal-wid-col-40">
   							<p:commandButton icon="fa fa-search" title="Partida(s)" actionListener="#{manticCatalogosConteosFiltro.doDetalle(row)}" process="@this" update="tablaDetalle @(.detalle)" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
@@ -200,9 +221,12 @@
 							</f:facet>
 						</p:dataTable>
 						<p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-              <p:menuitem icon="fa fa-gear" value="Procesar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" disabled="#{manticCatalogosConteosFiltro.attrs.seleccionado.idProcesado eq '1'}"/>
+              <p:menuitem icon="fa fa-gear" value="Procesar" actionListener="#{manticCatalogosConteosFiltro.doProcesar()}" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" disabled="#{fn:contains('|2|3|4|5|', manticCatalogosConteosFiltro.attrs.seleccionado.idConteoEstatus)}"/>
 							<p:separator/>
               <p:menuitem action="#{manticCatalogosConteosFiltro.doConsultar()}" process="@this tabla" update="tablaDetalle @(.detalle)" icon="fa fa-search" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+              <p:menuitem icon="fa fa-trash" value="Eliminar" actionListener="#{manticCatalogosConteosFiltro.doEliminar()}" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{manticCatalogosConteosFiltro.admin}"/>
+              <p:separator rendered="#{fn:contains('|1|4|5|', manticCatalogosConteosFiltro.attrs.seleccionado.idConteoEstatus)}"/>
+              <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosConteosFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|4|5|', manticCatalogosConteosFiltro.attrs.seleccionado.idConteoEstatus)}"/>
 						</p:contextMenu>		
           </div>  
 					<div class="ui-grid-row janal-grid-row">
@@ -268,10 +292,29 @@
 			</div>
 		</div>		           				
 	</ui:define>    
-	<ui:param name="textoConfirmacion" value="¿ Está seguro de procesar el conteo seleccionado ?" />
+	<ui:define name="dialogos">		
+		<p:dialog id="dialogoEstatus" widgetVar="dlgEstatus" header="Cambio de estatus" dynamic="true" resizable="false" closable="true" minimizable="false" maximizable="false" responsive="true" width="60%" onShow="janal.change('formDialogoEstatus', fieldsDialog); janal.refresh();" appendTo="@(body)">
+			<h:form id="formDialogoEstatus" prependId="false">
+				<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
+					<p:outputLabel for="estatusDlg" value="Estatus:"/>												
+          <p:selectOneMenu id="estatusDlg" value="#{manticCatalogosConteosFiltro.attrs.idEstatus}" styleClass="janal-wid-100-txt">									
+						<f:selectItems value="#{manticCatalogosConteosFiltro.attrs.allEstatus}"/>					
+					</p:selectOneMenu>
+				</h:panelGrid>
+				<p:outputLabel for="justificacion" value="Justificación:"/><br/>
+				<p:inputTextarea id="justificacion" value="#{manticCatalogosConteosFiltro.attrs.justificacion}" styleClass="janal-wid-100-txt"/>
+				<hr class="ui-widget-content"/>
+				<div class="janal-line-button">
+					<p:commandButton icon="fa fa-check" process="@this dialogoEstatus" update="tabla" value="Aceptar" action="#{manticCatalogosConteosFiltro.doActualizarEstatus}" onstart="return validaJustificacion()" oncomplete="janal.desbloquear();"/>
+					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="return PF('dlgEstatus').hide();" oncomplete="janal.desbloquear();"/>
+				</div>
+			</h:form>
+		</p:dialog>  
+  </ui:define>
+	<ui:param name="textoConfirmacion" value="#{manticCatalogosConteosFiltro.attrs.titulo}" />
 	<ui:param name="accionConfirmacion" value="#{manticCatalogosConteosFiltro}"/>
 	<ui:param name="updateComponent" value="tabla"/>
-	<ui:param name="eventoConfirmacion" value="doProcesar"	/>	
+	<ui:param name="eventoConfirmacion" value="doEjecutar"	/>	
 	<ui:param name="renderedConfirmacion" value="true"/>	
 	<ui:define name="detalleConfirmacion">
 		<h:panelGrid columns="2">
