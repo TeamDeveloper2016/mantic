@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import org.hibernate.Session;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.EAccion;
@@ -81,16 +82,17 @@ public class Transaccion extends IBaseTnx implements Serializable {
 		} // catch		
 		return regresar;
 	}	
- 
   
   private boolean toProcesar(Session sesion) throws Exception {
     Boolean regresar= Boolean.FALSE;
     Map<String, Object> params = new HashMap<>();
     try {      
       params.put("idConteo", this.conteo.getIdConteo());      
-      List<TcManticConteosDetallesDto> items= (List<TcManticConteosDetallesDto>)DaoFactory.getInstance().toEntitySet(sesion, TcManticConteosDetallesDto.class, "TcManticConteosDetallesDto", "igual", params);
-      for (Object item: items) {
-        System.out.println(item);
+      List<TcManticConteosDetallesDto> items= (List<TcManticConteosDetallesDto>)DaoFactory.getInstance().toEntitySet(sesion, TcManticConteosDetallesDto.class, "TcManticConteosDetallesDto", "detalle", params);
+      for (TcManticConteosDetallesDto item: items) {
+        if(Objects.equals(item.getProcesado(), null)) {
+          System.out.println(item);
+        } // if  
       } // for
       regresar= Boolean.TRUE;
     } // try
