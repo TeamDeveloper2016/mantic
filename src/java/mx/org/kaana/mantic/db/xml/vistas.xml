@@ -52,6 +52,7 @@ select
   tc_mantic_conteos_detalles.id_conteo_detalle as id_key,
   tc_mantic_conteos_detalles.id_conteo_detalle,
   tc_mantic_articulos.id_articulo,
+  tc_mantic_conteos_detalles.codigo,
   tc_mantic_articulos.nombre,
   tc_mantic_conteos_detalles.cantidad,
   concat(substr(tc_mantic_conteos_detalles.fecha, 7, 2), '/', substr(tc_mantic_conteos_detalles.fecha, 5, 2), '/', substr(tc_mantic_conteos_detalles.fecha, 1, 4)) as fecha,

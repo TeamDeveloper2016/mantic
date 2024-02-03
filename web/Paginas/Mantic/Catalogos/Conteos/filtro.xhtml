@@ -207,7 +207,7 @@
 								</f:facet>
 								<h:outputText value="#{row['fecha']}"/>
 							</p:column>			
-							<p:column class="janal-column-center MarAuto Responsive janal-wid-3" sortBy="#{row.idProcesado}">
+							<p:column class="janal-column-center MarAuto Responsive janal-wid-3" sortBy="#{row.idConteoEstatus}">
 								<f:facet name="header">
 									<h:outputText value=""/>
 								</f:facet>
@@ -247,7 +247,7 @@
                   <p:commandButton icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXlsDetalle', 'tablaDetalle')" oncomplete="janal.desbloquear()"/>
                 </div>	
               </f:facet>												
-              <p:column class="janal-column-left MarAuto Responsive janal-wid-12" sortBy="#{row.codigo}">
+              <p:column class="janal-column-center MarAuto Responsive janal-wid-12" sortBy="#{row.codigo}">
                 <f:facet name="header">
                   <h:outputText value="Código"/>
                 </f:facet>
