@@ -107,8 +107,8 @@ public class Conteos extends IBaseFilter implements Serializable {
 
 	@Override
   public void doLoad() {
-		List<Columna> columns     = null;
-    Map<String, Object> params= null;
+		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
     try {
 			List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
 			if(almacenes!= null && !almacenes.isEmpty()) {
@@ -118,8 +118,6 @@ public class Conteos extends IBaseFilter implements Serializable {
       } // if  
 			if(this.attrs.get("almacen")!= null)
 			  this.attrs.put("idAlmacen", ((UISelectEntity)this.attrs.get("almacen")).getKey());			
-      params = new HashMap<>();      
-			columns= new ArrayList<>();
       columns.add(new Columna("inicial", EFormatoDinamicos.NUMERO_SAT_DECIMALES));
       columns.add(new Columna("entradas", EFormatoDinamicos.NUMERO_SAT_DECIMALES));
       columns.add(new Columna("salidas", EFormatoDinamicos.NUMERO_SAT_DECIMALES));
@@ -163,10 +161,9 @@ public class Conteos extends IBaseFilter implements Serializable {
 	private void toLoadAlmacenArticulo() throws Exception {
 		List<UISelectEntity> ubicaciones= (List<UISelectEntity>)this.attrs.get("ubicaciones");
     TcManticInventariosDto vigente  = (TcManticInventariosDto)this.attrs.get("vigente");
-    Map<String, Object> params      = null;
+    Map<String, Object> params      = new HashMap<>();
     Long idArticulo                 = this.attrs.get("idArticulo")== null? -1L: (Long)this.attrs.get("idArticulo");
     try {      
-      params = new HashMap<>();      
       params.put("idArticulo", idArticulo);      
       params.put("idAlmacen", this.attrs.get("idAlmacen"));      
       this.articulo= (ArticuloAlmacen)DaoFactory.getInstance().toEntity(ArticuloAlmacen.class, "TcManticAlmacenesArticulosDto", "almacenArticulo", params);
@@ -182,7 +179,8 @@ public class Conteos extends IBaseFilter implements Serializable {
             -1L, // Long idAlmacenUbicacion, 
             (Long)this.attrs.get("idArticulo"), // Long idArticulo, 
             0D, // Double stock
-            item.getIdVerificado() // Long idVerificado
+            item.getIdVerificado(), // Long idVerificado
+            -1L // Long idInventario
           );
         else
           this.articulo= new ArticuloAlmacen();
@@ -212,15 +210,13 @@ public class Conteos extends IBaseFilter implements Serializable {
 	
 	private void toLoadAlmacenes() throws Exception {
 		List<UISelectEntity> almacenes= null;
-		Map<String, Object> params    = null;
-		List<Columna> columns         = null;
+		Map<String, Object> params    = new HashMap<>();
+		List<Columna> columns         = new ArrayList<>();
 		try {
-			params= new HashMap<>();
       if(JsfBase.isAdmin())
         params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
       else
 			  params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-			columns= new ArrayList<>();
 			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));							
 			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));							
 			columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));							
@@ -238,9 +234,8 @@ public class Conteos extends IBaseFilter implements Serializable {
 	} // loadAlmacenes
 
   public void toLoadUbicaciones() {
-		List<Columna> columns= null;
+		List<Columna> columns= new ArrayList<>();
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("almacen", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("piso", EFormatoDinamicos.MAYUSCULAS));
@@ -273,9 +268,8 @@ public class Conteos extends IBaseFilter implements Serializable {
 	}	
 
 	private void updateArticulo(Entity articulo) throws Exception {
-		List<Columna> columns= null;
+		List<Columna> columns= new ArrayList<>();
 		try {
-			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("empaque", EFormatoDinamicos.MAYUSCULAS));
@@ -308,11 +302,9 @@ public class Conteos extends IBaseFilter implements Serializable {
 	}
 	
 	private void toSearchUltimo() {
-		Map<String, Object> params= null;
-		List<Columna> columns     = null;
+		Map<String, Object> params= new HashMap<>();
+		List<Columna> columns     = new ArrayList<>();
 		try {
-			params = new HashMap<>();
-			columns= new ArrayList<>();
 			this.attrs.put("ultimo", "");
 	  	if(this.attrs.get("idArticulo")!= null) {
 				Periodo periodo= new Periodo();
@@ -350,12 +342,11 @@ public class Conteos extends IBaseFilter implements Serializable {
 	}	
 
 	public void doUpdateArticulos() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
 		List<UISelectEntity> articulos= null;
-		boolean buscaPorCodigo    = false;
+		boolean buscaPorCodigo    = Boolean.FALSE;
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
@@ -400,12 +391,10 @@ public class Conteos extends IBaseFilter implements Serializable {
 	
 	public void doArticulos() {
 		List<UISelectEntity> articulos= null;
-    Map<String, Object> params   = null;
-		List<Columna> columns        = null;
+    Map<String, Object> params    = new HashMap<>();
+		List<Columna> columns         = new ArrayList<>();
     try {
-			columns= new ArrayList<>();
 			if(this.attrs.get("busqueda")!= null && this.attrs.get("busqueda").toString().length()> 2) {
-				params = new HashMap<>();      
 				params.put("nombre", this.attrs.get("busqueda"));
 				params.put("codigo", this.attrs.get("busqueda"));
 				params.put("idEmpresa", this.attrs.get("idEmpresa"));
@@ -469,10 +458,9 @@ public class Conteos extends IBaseFilter implements Serializable {
 	}
 	
 	public void doCleanArticulos() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
 		try {
-			columns= new ArrayList<>();
 			params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
   		params.put("idProveedor", this.attrs.get("proveedor")== null? new UISelectEntity(new Entity(-1L)): ((UISelectEntity)this.attrs.get("proveedor")).getKey());
@@ -509,11 +497,10 @@ public class Conteos extends IBaseFilter implements Serializable {
 	}
 	
   public void doUpdateDialogArticulos(String codigo) {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
 		boolean buscaPorCodigo    = false;
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("original", EFormatoDinamicos.MONEDA_CON_DECIMALES));
@@ -589,9 +576,8 @@ public class Conteos extends IBaseFilter implements Serializable {
 	}
 	
 	private void toLoadMovimientos() {
-		List<Columna> columns= null;
+		List<Columna> columns= new ArrayList<>();
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("almacen", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombreEmpresa", EFormatoDinamicos.MAYUSCULAS));
@@ -631,10 +617,9 @@ public class Conteos extends IBaseFilter implements Serializable {
 		
 	private Long toFindIdKey(String consecutivo, String proceso, String idXml) {
 		Long regresar             = -1L;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
 			this.toLoadItemAlmacen();
-			params=new HashMap<>();
 			params.put("consecutivo", consecutivo);
 			params.put("idEmpresa", ((UISelectEntity)this.attrs.get("almacen")).toLong("idEmpresa"));
 			Entity entity= (Entity)DaoFactory.getInstance().toEntity(proceso, idXml, params);
@@ -653,11 +638,10 @@ public class Conteos extends IBaseFilter implements Serializable {
 	
 	public String doMoveSection() {
 		UISelectEntity consecutivo    = (UISelectEntity)this.attrs.get("consecutivo");
-		List<Columna> columns         = null;
+		List<Columna> columns         = new ArrayList<>();
     Map<String, Object> params    = new HashMap<>();
 		List<UISelectEntity> documento= null;
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_CON_DECIMALES));
@@ -736,11 +720,9 @@ public class Conteos extends IBaseFilter implements Serializable {
 	}
  
   public void toLoadConteos() {
-		List<Columna> columns= null;
-    Map<String, Object> params = null;
+		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
     try {
-      params = new HashMap<>();      
-			columns= new ArrayList<>();
       columns.add(new Columna("inicial", EFormatoDinamicos.NUMERO_SAT_DECIMALES));
       columns.add(new Columna("entradas", EFormatoDinamicos.NUMERO_SAT_DECIMALES));
       columns.add(new Columna("salidas", EFormatoDinamicos.NUMERO_SAT_DECIMALES));

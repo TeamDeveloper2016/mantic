@@ -15,6 +15,7 @@ public class ArticuloAlmacen extends TcManticAlmacenesArticulosDto implements Se
 
   private static final long serialVersionUID = 5762232736243735164L;
 
+  private Long idInventario;
   private Long idVerificado;
 
   public ArticuloAlmacen() {
@@ -22,9 +23,18 @@ public class ArticuloAlmacen extends TcManticAlmacenesArticulosDto implements Se
     this.idVerificado= 2L;
   }
   
-  public ArticuloAlmacen(Double minimo, Long idAlmacenArticulo, Long idUsuario, Long idAlmacen, Double maximo, Long idAlmacenUbicacion, Long idArticulo, Double stock, Long idVerificado) {
+  public ArticuloAlmacen(Double minimo, Long idAlmacenArticulo, Long idUsuario, Long idAlmacen, Double maximo, Long idAlmacenUbicacion, Long idArticulo, Double stock, Long idVerificado, Long idInventario) {
     super(minimo, idAlmacenArticulo, idUsuario, idAlmacen, maximo, idAlmacenUbicacion, idArticulo, stock);
+    this.idInventario= idInventario;
     this.idVerificado= idVerificado;
+  }
+
+  public Long getIdInventario() {
+    return idInventario;
+  }
+
+  public void setIdInventario(Long idInventario) {
+    this.idInventario = idInventario;
   }
   
   public Long getIdVerificado() {

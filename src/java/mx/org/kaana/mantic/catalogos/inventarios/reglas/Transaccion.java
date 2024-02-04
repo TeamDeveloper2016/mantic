@@ -61,11 +61,10 @@ public class Transaccion extends IBaseTnx {
 	} 
 
 	private boolean toAffectAlmacenes(Session sesion, EAccion accion) throws Exception {
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		double stock              = this.articulo.getInicial();
-    boolean regresar          = false; 
+    boolean regresar          = Boolean.FALSE; 
 		try {
-			params=new HashMap<>();
 			this.almacen.setStock(this.articulo.getInicial());
 			if(this.almacen.isValid()) 
 				DaoFactory.getInstance().update(sesion, this.almacen);
@@ -131,11 +130,10 @@ public class Transaccion extends IBaseTnx {
     return regresar;
 	}
 
-  private Double toSumAlmacenArticulo(Session sesion, Long idArticulo) {
+  private Double toSumAlmacenArticulo(Session sesion, Long idArticulo) throws Exception {
 		Double regresar           = 0D;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			params.put("idArticulo", idArticulo);
 			Value value= DaoFactory.getInstance().toField(sesion, "VistaKardexDto", "existencias", params, "total");
@@ -143,7 +141,7 @@ public class Transaccion extends IBaseTnx {
 				regresar= value.toDouble();
 		} // try
 		catch (Exception e) {
-			Error.mensaje(e);
+			throw e;
 		} // catch
 		finally {
 			Methods.clean(params);
