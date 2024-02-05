@@ -20,19 +20,19 @@ public class Usuario implements Serializable {
   private Long idUsuario;
   private String nombre;
   private String cuenta;
-  private String contrasenia;
+  private String token;
   private Long idPerfil;
   private String registro;
 
   public Usuario() {
   }
 
-  public Usuario(Long idEmpresa, Long idUsuario, String nombre, String cuenta, String contrasenia, Long idPerfil) {
+  public Usuario(Long idEmpresa, Long idUsuario, String nombre, String cuenta, String token, Long idPerfil) {
     this.idEmpresa = idEmpresa;
     this.idUsuario = idUsuario;
     this.nombre = nombre;
     this.cuenta = cuenta;
-    this.contrasenia = contrasenia;
+    this.token = token;
     this.idPerfil = idPerfil;
     this.registro= Fecha.toRegistro();
   }
@@ -69,12 +69,12 @@ public class Usuario implements Serializable {
     this.cuenta = cuenta;
   }
 
-  public String getContrasenia() {
-    return contrasenia;
+  public String getToken() {
+    return token;
   }
 
-  public void setContrasenia(String contrasenia) {
-    this.contrasenia = contrasenia;
+  public void setToken(String token) {
+    this.token = token;
   }
 
   public Long getIdPerfil() {
@@ -120,7 +120,7 @@ public class Usuario implements Serializable {
 
   @Override
   public String toString() {
-    return "Usuario{" + "idEmpresa=" + idEmpresa + ", idUsuario=" + idUsuario + ", nombre=" + nombre + ", cuenta=" + cuenta + ", contrasenia=" + contrasenia + ", idPerfil=" + idPerfil + ", registro=" + registro + '}';
+    return "Usuario{" + "idEmpresa=" + idEmpresa + ", idUsuario=" + idUsuario + ", nombre=" + nombre + ", cuenta=" + cuenta + ", token=" + token + ", idPerfil=" + idPerfil + ", registro=" + registro + '}';
   }
     
 }

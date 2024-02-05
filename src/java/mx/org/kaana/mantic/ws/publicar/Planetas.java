@@ -61,7 +61,8 @@ public class Planetas implements Serializable {
         ArrayList<Usuario> usuarios= (ArrayList<Usuario>)DaoFactory.getInstance().toEntitySet(Usuario.class, "VistaPlanetasDto", "mercurio", params, -1L);
         if(!Objects.equals(usuarios, null) && !usuarios.isEmpty()) {
           for (Usuario item: usuarios) {
-            item.setContrasenia(BouncyEncryption.decrypt(item.getContrasenia()));
+            item.setNombre(BouncyEncryption.encrypt(item.getNombre()));
+            item.setCuenta(BouncyEncryption.encrypt(item.getCuenta()));
           } // for
           regresar= Decoder.toJson(new Respuesta(ERespuesta.CORRECTO.getCodigo(), Decoder.cleanJson(usuarios)));
         } // if

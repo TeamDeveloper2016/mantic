@@ -234,7 +234,7 @@
             <p:dataTable lazy="true" id="tablaDetalle" widgetVar="kajoolTableDetalle" var="row" value="#{manticCatalogosConteosFiltro.lazyDetalle}" styleClass="detalle janal-wid-100 #{manticCatalogosConteosFiltro.lazyDetalle eq null ? 'janal-display-none': ''}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosConteosFiltro.attrs.detalle}" selectionMode="single" paginator="#{manticCatalogosConteosFiltro.lazyDetalle.rowCount gt manticCatalogosConteosFiltro.lazyDetalle.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
               <f:facet name="header">
                 <div style="float: left">
-                  <p:outputLabel value="Detalle de partida(s) del conteo seleccionado: #{manticCatalogosConteosFiltro.attrs.seleccionado.nombre}" styleClass="detalle janal-text-white janal-font-bold"/>
+                  <p:outputLabel value="Detalle de partida(s) del conteo seleccionado: #{manticCatalogosConteosFiltro.attrs.seleccionado.nombre}" styleClass="detalle janal-text-white"/>
                 </div>  
                 <div class="lg-pantalla">
                   <p:menuButton value="Opciones">

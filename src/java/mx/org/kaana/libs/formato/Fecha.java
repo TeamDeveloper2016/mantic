@@ -270,24 +270,34 @@ public class Fecha {
     return formatear(FECHA_EXTENDIDA);
   } // getHoyCorreo
 
-  private static String temporal(int patron, int dias) {
+  private static String dias(int patron, int dias) {
     Calendar dia= Calendar.getInstance();
     dia.add(Calendar.DATE, dias);
     return formatear(patron, formatear("yyyyMMddHHmmssS", dia.getTime()));
   } // formatear
 
   public static String getHoy(int dias) {
-    return temporal(FECHA_CORTA, dias);
+    return dias(FECHA_CORTA, dias);
   } // getHoy
 
   public static String getHoyMesCorto(int dias) {
-    return temporal(FECHA_NOMBRE_MES_CORTO, dias);
+    return dias(FECHA_NOMBRE_MES_CORTO, dias);
   } // getHoyMesCorto
-  
-  public static String getHoyEstandar(int dias) {
-    return temporal(FECHA_ESTANDAR, dias);
-  } // getHoyEstandar
 
+  public static String getHoyEstandar(int dias) {
+    return dias(FECHA_ESTANDAR, dias);
+  } // getHoyEstandar
+  
+  private static String minutos(int minutos) {
+    Calendar dia= Calendar.getInstance();
+    dia.add(Calendar.MINUTE, minutos);
+    return formatear("yyyyMMddHHmmssS", dia.getTime());
+  } // formatear
+
+  public static String getMinutosEstandar(int minutos) {
+    return minutos(minutos);
+  } // getMinutosEstandar
+  
   public static String getFormatoHoras(int horas) {
     Calendar dia= Calendar.getInstance();
     dia.add(Calendar.HOUR, horas);
