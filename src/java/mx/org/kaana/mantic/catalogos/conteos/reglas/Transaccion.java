@@ -12,15 +12,12 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
-import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Numero;
-import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.inventarios.beans.ArticuloAlmacen;
-import mx.org.kaana.mantic.db.dto.TcManticAlmacenesArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesUbicacionesDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticConteosBitacoraDto;
@@ -41,8 +38,8 @@ import org.apache.log4j.Logger;
 
 public class Transaccion extends IBaseTnx implements Serializable {
 
-  private static final Logger LOG = Logger.getLogger(Transaccion.class);
-	private static final long serialVersionUID=-3186367186737677671L;
+  private static final Logger LOG= Logger.getLogger(Transaccion.class);
+	private static final long serialVersionUID= -3186367186737677671L;
  
 	private TcManticConteosDto conteo;	
 	private TcManticConteosBitacoraDto bitacora;
@@ -92,7 +89,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 					break;
 			} // switch
 			if(!regresar)
-        throw new Exception("");
+        throw new Exception("Error al procesar el conteo");
 		} // try
 		catch (Exception e) {		
 			Error.mensaje(e);
@@ -151,7 +148,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
       this.conteo.setProcesado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
       this.conteo.setIdConteoEstatus(3L);
       DaoFactory.getInstance().update(sesion, this.conteo);
-      bitacora= new TcManticConteosBitacoraDto(
+      this.bitacora= new TcManticConteosBitacoraDto(
         null, // String justificacion, 
         this.conteo.getIdUsuario(), // Long idUsuario, 
         this.conteo.getIdConteo(), // Long idConteo, 
@@ -193,11 +190,11 @@ public class Transaccion extends IBaseTnx implements Serializable {
         almacen.setIdAlmacenUbicacion(this.toLoadIdUbicacion(sesion));
       } // if	
       TcManticInventariosDto inventario= (TcManticInventariosDto)DaoFactory.getInstance().findById(sesion, TcManticInventariosDto.class, almacen.getIdInventario());
-      if(Objects.equals(inventario, null)) {
+      if(Objects.equals(inventario, null) || !inventario.getEntradas().equals(0D) || !inventario.getSalidas().equals(0D)) {
         inventario= new TcManticInventariosDto(-1L);
         inventario.setIdAlmacen(this.conteo.getIdAlmacen());
         inventario.setIdArticulo(item.getIdArticulo());
-        inventario.setEjercicio(new Long(Calendar.getInstance().get(Calendar.YEAR)));
+        inventario.setEjercicio(new Long(Fecha.getAnioActual()));
         inventario.setInicial(0D);
         inventario.setEntradas(0D);
         inventario.setSalidas(0D);
@@ -205,12 +202,45 @@ public class Transaccion extends IBaseTnx implements Serializable {
         inventario.setIdUsuario(this.conteo.getIdUsuario());
         inventario.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
       } // if
-      else { 
-        inventario.setIdUsuario(this.conteo.getIdUsuario());
-        inventario.setIdVerificado(almacen.getIdVerificado());
-        inventario.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
-      } // if  
-      regresar= this.toAffectAlmacenes(sesion, inventario, almacen);
+			almacen.setStock(inventario.getInicial());
+			if(almacen.isValid()) 
+				DaoFactory.getInstance().update(sesion, almacen);
+			else 
+				DaoFactory.getInstance().insert(sesion, almacen);
+			// QUITAR DE LAS VENTAS PERDIDAS LOS ARTICULOS QUE FUERON YA SURTIDOS EN EL ALMACEN
+			params.put("idEmpresa", this.conteo.getIdEmpresa());
+			params.put("idAlmacen", almacen.getIdAlmacen());
+			params.put("idArticulo", inventario.getIdArticulo());
+			params.put("observaciones", "ESTE ARTICULO FUE CONTADO EL DIA "+ Fecha.getHoyExtendido());
+			DaoFactory.getInstance().updateAll(sesion, TcManticFaltantesDto.class, params);
+			// afectar el stock global del articulo basado en las diferencias que existian en el almacen origen
+			TcManticArticulosDto global= (TcManticArticulosDto)DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, inventario.getIdArticulo());
+			if(global!= null) {
+				global.setStock(this.toSumAlmacenArticulo(sesion, almacen.getIdArticulo()));
+        global.setIdVerificado(almacen.getIdVerificado());
+  			DaoFactory.getInstance().update(sesion, global);
+			} // if
+			else
+				LOG.error("El articulos ["+ inventario.getIdArticulo()+ "] no existe hay que verificarlo !");
+      // generar un registro en la bitacora de movimientos de los articulos 
+      TcManticMovimientosDto movimiento= new TcManticMovimientosDto(
+        "VER", // String consecutivo, 
+        8L, // Long idTipoMovimiento, 
+        this.conteo.getIdUsuario(), // Long idUsuario, 
+        almacen.getIdAlmacen(), // Long idAlmacen, 
+        -1L, // Long idMovimiento, 
+        0D, // Double cantidad, 
+        inventario.getIdArticulo(), // Long idArticulo, 
+        inventario.getInicial(), // Double stock, 
+        Numero.toRedondearSat(inventario.getInicial()), // Double calculo
+        null // String observaciones
+      );
+      DaoFactory.getInstance().insert(sesion, movimiento);
+      inventario.setStock(inventario.getInicial());
+      if(inventario.isValid())
+        regresar= DaoFactory.getInstance().update(sesion, inventario)> 0L;
+      else
+        regresar= DaoFactory.getInstance().insert(sesion, inventario)> 0L;
     } // try
     catch (Exception e) {
       throw e;
@@ -245,57 +275,6 @@ public class Transaccion extends IBaseTnx implements Serializable {
     } // finally
     return regresar;
   }
-  
-	private boolean toAffectAlmacenes(Session sesion, TcManticInventariosDto inventario, ArticuloAlmacen almacen) throws Exception {
-		Map<String, Object> params= new HashMap<>();
-		double stock              = inventario.getInicial();
-    boolean regresar          = Boolean.FALSE; 
-		try {
-			almacen.setStock(inventario.getInicial());
-			if(almacen.isValid()) 
-				DaoFactory.getInstance().update(sesion, almacen);
-			else 
-				DaoFactory.getInstance().insert(sesion, almacen);
-			// QUITAR DE LAS VENTAS PERDIDAS LOS ARTICULOS QUE FUERON YA SURTIDOS EN EL ALMACEN
-			params.put("idEmpresa", this.conteo.getIdEmpresa());
-			params.put("idAlmacen", almacen.getIdAlmacen());
-			params.put("idArticulo", inventario.getIdArticulo());
-			params.put("observaciones", "ESTE ARTICULO FUE CONTADO EL DIA "+ Fecha.getHoyExtendido());
-			DaoFactory.getInstance().updateAll(sesion, TcManticFaltantesDto.class, params);
-			// afectar el stock global del articulo basado en las diferencias que existian en el almacen origen
-			TcManticArticulosDto global= (TcManticArticulosDto)DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, inventario.getIdArticulo());
-			if(global!= null) {
-				global.setStock(this.toSumAlmacenArticulo(sesion, almacen.getIdArticulo()));
-        global.setIdVerificado(almacen.getIdVerificado());
-  			DaoFactory.getInstance().update(sesion, global);
-			} // if
-			else
-				LOG.error("El articulos ["+ inventario.getIdArticulo()+ "] no existe hay que verificarlo !");
-      // generar un registro en la bitacora de movimientos de los articulos 
-      TcManticMovimientosDto movimiento= new TcManticMovimientosDto(
-        "VER", // String consecutivo, 
-        8L, // Long idTipoMovimiento, 
-        this.conteo.getIdUsuario(), // Long idUsuario, 
-        almacen.getIdAlmacen(), // Long idAlmacen, 
-        -1L, // Long idMovimiento, 
-        0D, // Double cantidad, 
-        inventario.getIdArticulo(), // Long idArticulo, 
-        stock, // Double stock, 
-        Numero.toRedondearSat(stock), // Double calculo
-        null // String observaciones
-      );
-      DaoFactory.getInstance().insert(sesion, movimiento);
-      inventario.setStock(inventario.getInicial());
-      if(inventario.isValid())
-        regresar= DaoFactory.getInstance().update(sesion, inventario)> 0L;
-      else
-        regresar= DaoFactory.getInstance().insert(sesion, inventario)> 0L;
-		} // try
-		finally {
-			Methods.clean(params);
-		} // finally
-    return regresar;
-	}
   
   private Double toSumAlmacenArticulo(Session sesion, Long idArticulo) throws Exception {
 		Double regresar           = 0D;

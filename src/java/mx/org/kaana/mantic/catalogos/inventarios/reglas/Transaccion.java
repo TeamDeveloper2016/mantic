@@ -26,12 +26,12 @@ public class Transaccion extends IBaseTnx {
 
 	private static final Log LOG=LogFactory.getLog(Transaccion.class);
 	
-	private TcManticInventariosDto articulo;
+	private TcManticInventariosDto inventario;
 	private ArticuloAlmacen almacen;
 	private String messageError;
 
-	public Transaccion(TcManticInventariosDto articulo, ArticuloAlmacen almacen) {
-		this.articulo= articulo;
+	public Transaccion(TcManticInventariosDto inventario, ArticuloAlmacen almacen) {
+		this.inventario= inventario;
 		this.almacen = almacen;
 	}
 
@@ -62,20 +62,19 @@ public class Transaccion extends IBaseTnx {
 
 	private boolean toAffectAlmacenes(Session sesion, EAccion accion) throws Exception {
 		Map<String, Object> params= new HashMap<>();
-		double stock              = this.articulo.getInicial();
     boolean regresar          = Boolean.FALSE; 
 		try {
-			this.almacen.setStock(this.articulo.getInicial());
+			this.almacen.setStock(this.inventario.getInicial());
 			if(this.almacen.isValid()) 
 				DaoFactory.getInstance().update(sesion, this.almacen);
 			else {
-				params.put("idAlmacen", this.articulo.getIdAlmacen());
-				params.put("idArticulo", this.articulo.getIdArticulo());
+				params.put("idAlmacen", this.inventario.getIdAlmacen());
+				params.put("idArticulo", this.inventario.getIdArticulo());
 				TcManticAlmacenesArticulosDto ubicacion= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().findFirst(sesion, TcManticAlmacenesArticulosDto.class, params, "ubicacion");
 				if(ubicacion== null) {
 					TcManticAlmacenesUbicacionesDto general= (TcManticAlmacenesUbicacionesDto)DaoFactory.getInstance().findFirst(sesion, TcManticAlmacenesUbicacionesDto.class, params, "general");
 					if(general== null) {
-						general= new TcManticAlmacenesUbicacionesDto("GENERAL", "", "GENERAL", "", "", JsfBase.getAutentifica().getPersona().getIdUsuario(), this.articulo.getIdAlmacen(), -1L);
+						general= new TcManticAlmacenesUbicacionesDto("GENERAL", "", "GENERAL", "", "", JsfBase.getAutentifica().getPersona().getIdUsuario(), this.inventario.getIdAlmacen(), -1L);
 						DaoFactory.getInstance().insert(sesion, general);
 					} // if	
 					this.almacen.setIdAlmacenUbicacion(general.getIdAlmacenUbicacion());
@@ -88,19 +87,19 @@ public class Transaccion extends IBaseTnx {
 			if(empresa.getData()!= null)
 				idEmpresa= empresa.toLong();
 			// QUITAR DE LAS VENTAS PERDIDAS LOS ARTICULOS QUE FUERON YA SURTIDOS EN EL ALMACEN
-			params.put("idArticulo", this.articulo.getIdArticulo());
+			params.put("idArticulo", this.inventario.getIdArticulo());
 			params.put("idEmpresa", idEmpresa);
 			params.put("observaciones", "ESTE ARTICULO FUE CONTADO EL DIA "+ Fecha.getHoyExtendido());
 			DaoFactory.getInstance().updateAll(sesion, TcManticFaltantesDto.class, params);
 			// afectar el stock global del articulo basado en las diferencias que existian en el almacen origen
-			TcManticArticulosDto global= (TcManticArticulosDto)DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, this.articulo.getIdArticulo());
+			TcManticArticulosDto global= (TcManticArticulosDto)DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, this.inventario.getIdArticulo());
 			if(global!= null) {
 				global.setStock(this.toSumAlmacenArticulo(sesion, this.almacen.getIdArticulo()));
         global.setIdVerificado(this.almacen.getIdVerificado());
   			DaoFactory.getInstance().update(sesion, global);
 			} // if
 			else
-				LOG.error("El articulos ["+ this.articulo.getIdArticulo()+ "] no existe hay que verificarlo !");
+				LOG.error("El articulos ["+ this.inventario.getIdArticulo()+ "] no existe hay que verificarlo !");
 			if(!accion.equals(EAccion.PROCESAR)) {
 				// generar un registro en la bitacora de movimientos de los articulos 
 				TcManticMovimientosDto movimiento= new TcManticMovimientosDto(
@@ -110,19 +109,19 @@ public class Transaccion extends IBaseTnx {
 					this.almacen.getIdAlmacen(), // Long idAlmacen, 
 					-1L, // Long idMovimiento, 
 					0D, // Double cantidad, 
-					articulo.getIdArticulo(), // Long idArticulo, 
-					stock, // Double stock, 
-					Numero.toRedondearSat(stock), // Double calculo
+					inventario.getIdArticulo(), // Long idArticulo, 
+					this.inventario.getInicial(), // Double stock, 
+					Numero.toRedondearSat(this.inventario.getInicial()), // Double calculo
 					null // String observaciones
 				);
 				DaoFactory.getInstance().insert(sesion, movimiento);
 			} // if
       
-      this.articulo.setStock(this.articulo.getInicial());
-      if(this.articulo.isValid())
-        regresar= DaoFactory.getInstance().update(sesion, this.articulo)> 0L;
+      this.inventario.setStock(this.inventario.getInicial());
+      if(this.inventario.isValid())
+        regresar= DaoFactory.getInstance().update(sesion, this.inventario)> 0L;
       else
-        regresar= DaoFactory.getInstance().insert(sesion, this.articulo)> 0L;
+        regresar= DaoFactory.getInstance().insert(sesion, this.inventario)> 0L;
 		} // try
 		finally {
 			Methods.clean(params);
@@ -147,6 +146,6 @@ public class Transaccion extends IBaseTnx {
 			Methods.clean(params);
 		} // finally
 		return regresar;
-	} // toSumAlmacenArticulo
+	} 
 
 }
