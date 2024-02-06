@@ -49,12 +49,13 @@ public class Transaccion extends IBaseTnx implements Serializable {
 	private String messageError;
 
 	public Transaccion(TcManticConteosDto conteo) {
-    this.conteo= conteo;
+    this(conteo, null);
 	} // Transaccion
   
 	public Transaccion(TcManticConteosDto conteo, TcManticConteosBitacoraDto bitacora) {
-    this.conteo= conteo;
-		this.bitacora= bitacora;
+    this.conteo      = conteo;
+		this.bitacora    = bitacora;
+  	this.messageError= "Ocurrio un error en el conteo";
 	} // Transaccion
 	
 	public String getMessageError() {
@@ -66,7 +67,6 @@ public class Transaccion extends IBaseTnx implements Serializable {
 		boolean regresar          = Boolean.FALSE;
 		Map<String, Object> params= new HashMap<>();
 		try {
-			this.messageError= "Ocurrio un error al ".concat(accion.name().toLowerCase()).concat(" el conteo");
 			switch(accion) {
 				case PROCESAR:
           regresar= this.toProcesar(sesion);
@@ -96,6 +96,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 		} // try
 		catch (Exception e) {		
 			Error.mensaje(e);
+      this.messageError= "Error: ["+ e+ "]";
 			throw new Exception(this.messageError.concat("<br/>")+ e);
 		} // catch		
 		return regresar;
@@ -113,7 +114,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
         -1L, // Long idConteoBitacora, 
         this.conteo.getIdConteoEstatus()// Long idConteoEstatus
       );          
-      DaoFactory.getInstance().insert(sesion, bitacora);
+      regresar= DaoFactory.getInstance().insert(sesion, bitacora)> 0L;
     } // try
     catch (Exception e) {
       throw e;
@@ -126,36 +127,38 @@ public class Transaccion extends IBaseTnx implements Serializable {
     Map<String, Object> params= new HashMap<>();
     try {      
       params.put("idConteo", this.conteo.getIdConteo());      
+      this.conteo.setIdConteoEstatus(2L);
+      DaoFactory.getInstance().update(sesion, this.conteo);
+      this.bitacora= new TcManticConteosBitacoraDto(
+        null, // String justificacion, 
+        this.conteo.getIdUsuario(), // Long idUsuario, 
+        this.conteo.getIdConteo(), // Long idConteo, 
+        -1L, // Long idConteoBitacora, 
+        this.conteo.getIdConteoEstatus()// Long idConteoEstatus
+      );          
+      DaoFactory.getInstance().insert(sesion, bitacora);
       List<TcManticConteosDetallesDto> items= (List<TcManticConteosDetallesDto>)DaoFactory.getInstance().toEntitySet(sesion, TcManticConteosDetallesDto.class, "TcManticConteosDetallesDto", "detalle", params);
       for (TcManticConteosDetallesDto item: items) {
         if(Objects.equals(item.getProcesado(), null)) {
-          this.conteo.setIdConteoEstatus(2L);
-          DaoFactory.getInstance().update(sesion, this.conteo);
-          this.bitacora= new TcManticConteosBitacoraDto(
-            null, // String justificacion, 
-            this.conteo.getIdUsuario(), // Long idUsuario, 
-            this.conteo.getIdConteo(), // Long idConteo, 
-            -1L, // Long idConteoBitacora, 
-            this.conteo.getIdConteoEstatus()// Long idConteoEstatus
-          );          
-          DaoFactory.getInstance().insert(sesion, bitacora);
           regresar= this.toArticulo(sesion, item);
           item.setProcesado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
-          DaoFactory.getInstance().insert(sesion, item);
-          this.conteo.setProcesado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
-          this.conteo.setIdConteoEstatus(3L);
-          DaoFactory.getInstance().update(sesion, this.conteo);
-          bitacora= new TcManticConteosBitacoraDto(
-            null, // String justificacion, 
-            this.conteo.getIdUsuario(), // Long idUsuario, 
-            this.conteo.getIdConteo(), // Long idConteo, 
-            -1L, // Long idConteoBitacora, 
-            this.conteo.getIdConteoEstatus()// Long idConteoEstatus
-          );          
-          DaoFactory.getInstance().insert(sesion, this.bitacora);
+          DaoFactory.getInstance().update(sesion, item);
           LOG.error(item);
-        } // if  
+        } // if
+        else
+          regresar= Boolean.TRUE;
       } // for
+      this.conteo.setProcesado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+      this.conteo.setIdConteoEstatus(3L);
+      DaoFactory.getInstance().update(sesion, this.conteo);
+      bitacora= new TcManticConteosBitacoraDto(
+        null, // String justificacion, 
+        this.conteo.getIdUsuario(), // Long idUsuario, 
+        this.conteo.getIdConteo(), // Long idConteo, 
+        -1L, // Long idConteoBitacora, 
+        this.conteo.getIdConteoEstatus() // Long idConteoEstatus
+      );          
+      regresar= DaoFactory.getInstance().insert(sesion, this.bitacora)> 0L;
     } // try
     catch (Exception e) {
       throw e;

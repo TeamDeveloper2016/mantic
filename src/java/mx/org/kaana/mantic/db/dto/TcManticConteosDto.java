@@ -62,7 +62,7 @@ public class TcManticConteosDto implements IBaseDto, Serializable {
   }
 
   public TcManticConteosDto(Long key) {
-    this(null, null, null, null, new Long(-1L), new Timestamp(Calendar.getInstance().getTimeInMillis()), null, null, null, null, new Long(-1L), new Long(-1L));
+    this(null, null, null, null, new Long(-1L), null, null, null, null, null, new Long(-1L), new Long(-1L));
     setKey(key);
   }
 
