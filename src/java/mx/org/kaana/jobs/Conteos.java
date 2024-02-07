@@ -58,7 +58,6 @@ public class Conteos extends IBaseJob implements Serializable {
               transaccion= null;
             } // finally
           } // if
-          break;
         } // for
         LOG.error("---------------------------------------------------------");
       } // if
@@ -71,11 +70,6 @@ public class Conteos extends IBaseJob implements Serializable {
 			Methods.clean(params);
 		} // finally
 	} // execute
-  
-  public static void main(String ... args) throws JobExecutionException {
-    Conteos conteos= new Conteos();
-    conteos.procesar(null);
-  }
   
 }
 

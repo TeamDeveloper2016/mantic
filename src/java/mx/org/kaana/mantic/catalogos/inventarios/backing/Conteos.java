@@ -690,6 +690,7 @@ public class Conteos extends IBaseFilter implements Serializable {
           this.attrs.put("tipoDocumento", "de la garantía");
 					break;
 				case 6: // CONTEOS
+				case 8: // REMOTOS
           columns.clear();
           columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
           columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_CON_DECIMALES));
@@ -699,7 +700,7 @@ public class Conteos extends IBaseFilter implements Serializable {
       		params.put("idMovimiento", consecutivo.getKey());
 					documento= (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "ver", params, columns, Constantes.SQL_TODOS_REGISTROS);
           this.attrs.put("documentos", documento);
-          this.attrs.put("tipoDocumento", "del conteo");
+          this.attrs.put("tipoDocumento", "del conteo ".concat(Objects.equals(consecutivo.toLong("idTipoMovimiento"), 8L)? "remotos": ""));
 					break;
 			} // switch
 			if(documento!= null && !documento.isEmpty()) {

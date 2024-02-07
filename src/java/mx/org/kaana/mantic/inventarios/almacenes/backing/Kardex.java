@@ -775,6 +775,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
           this.attrs.put("tipoDocumento", "de la garantía");
 					break;
 				case 6: // CONTEOS
+				case 8: // REMOTOS
           columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
           columns.add(new Columna("inicial", EFormatoDinamicos.NUMERO_CON_DECIMALES));
           columns.add(new Columna("salidas", EFormatoDinamicos.NUMERO_CON_DECIMALES));
@@ -787,7 +788,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
       		params.put("registro", periodo.toString());
 					documento= (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "conteo", params, columns, Constantes.SQL_TODOS_REGISTROS);
           this.attrs.put("documentos", documento);
-          this.attrs.put("tipoDocumento", "del conteo");
+          this.attrs.put("tipoDocumento", "del conteo ".concat(Objects.equals(consecutivo.toLong("idTipoMovimiento"), 8L)? "remotos": ""));
 					break;
 			} // switch
 			if(documento!= null && !documento.isEmpty()) {

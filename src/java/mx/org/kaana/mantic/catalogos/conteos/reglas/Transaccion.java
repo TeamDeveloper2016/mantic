@@ -183,7 +183,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
           articulo.getMaximo(), // Long maximo, 
           -1L, // Long idAlmacenUbicacion, 
           item.getIdArticulo(), // Long idArticulo, 
-          0D, // Double stock
+          item.getCantidad(), // Double stock
           articulo.getIdVerificado(), // Long idVerificado
           -1L // Long idInventario
         );
@@ -195,13 +195,18 @@ public class Transaccion extends IBaseTnx implements Serializable {
         inventario.setIdAlmacen(this.conteo.getIdAlmacen());
         inventario.setIdArticulo(item.getIdArticulo());
         inventario.setEjercicio(new Long(Fecha.getAnioActual()));
-        inventario.setInicial(0D);
+        inventario.setInicial(item.getCantidad());
         inventario.setEntradas(0D);
         inventario.setSalidas(0D);
         inventario.setStock(0D);
         inventario.setIdUsuario(this.conteo.getIdUsuario());
         inventario.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
       } // if
+      else {
+        inventario.setInicial(item.getCantidad());
+        inventario.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+      } // else  
+      almacen.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 			almacen.setStock(inventario.getInicial());
 			if(almacen.isValid()) 
 				DaoFactory.getInstance().update(sesion, almacen);
@@ -224,7 +229,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 				LOG.error("El articulos ["+ inventario.getIdArticulo()+ "] no existe hay que verificarlo !");
       // generar un registro en la bitacora de movimientos de los articulos 
       TcManticMovimientosDto movimiento= new TcManticMovimientosDto(
-        "VER", // String consecutivo, 
+        "REM", // String consecutivo, 
         8L, // Long idTipoMovimiento, 
         this.conteo.getIdUsuario(), // Long idUsuario, 
         almacen.getIdAlmacen(), // Long idAlmacen, 

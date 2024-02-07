@@ -105,10 +105,5 @@ public class Correos extends IBaseJob implements Serializable {
 		} // finally
 	} // execute
   
-  public static void main(String ... args) throws JobExecutionException {
-    Correos correo= new Correos();
-    correo.procesar(null);
-  }
-  
 }
 

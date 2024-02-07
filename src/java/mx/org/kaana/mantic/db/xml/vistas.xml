@@ -133,7 +133,7 @@ inner join
 inner join
   tc_mantic_almacenes on tc_mantic_almacenes_articulos.id_almacen= tc_mantic_almacenes.id_almacen
 where
-  date_format(tc_mantic_articulos.registro, '%Y%m%d%h%i%S')&gt;= '{fecha}'
+  date_format(tc_mantic_articulos.actualizado, '%Y%m%d%h%i%S')&gt;= '{fecha}'
 group by
   tc_mantic_articulos.id_articulo,
   tc_mantic_almacenes.id_empresa,
@@ -217,7 +217,7 @@ inner join
 inner join
   tc_mantic_almacenes on tc_mantic_almacenes_articulos.id_almacen= tc_mantic_almacenes.id_almacen
 where
-  date_format(tc_mantic_articulos.registro, '%Y%m%d%h%i%S')&gt;= '{fecha}'
+  date_format(tc_mantic_articulos.actualizado, '%Y%m%d%h%i%S')&gt;= '{fecha}'
 group by
   tc_mantic_articulos.id_articulo,
   tc_mantic_almacenes.id_empresa,
@@ -239,7 +239,7 @@ from
 inner join
   tc_mantic_articulos_codigos on tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo
 where
-  date_format(tc_mantic_articulos.registro, '%Y%m%d%h%i%S')&gt;= '{fecha}'
+  date_format(tc_mantic_articulos.actualizado, '%Y%m%d%h%i%S')&gt;= '{fecha}'
 group by
   tc_mantic_articulos.id_articulo
 order by

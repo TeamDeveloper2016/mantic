@@ -106,10 +106,5 @@ public class Rfcs extends IBaseJob implements Serializable {
 		} // finally
 	} // execute
   
-  public static void main(String ... args) throws JobExecutionException {
-    Rfcs correo= new Rfcs();
-    correo.procesar(null);
-  }
-  
 }
 
