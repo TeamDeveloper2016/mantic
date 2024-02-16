@@ -323,9 +323,11 @@ public class Planetas implements Serializable {
         items.getIdAlmacen(), // Long idAlmacen
         items.getSemilla()
       );
+      params.put("semilla", conteo.getSemilla());
+      params.put("idUsuario", conteo.getIdUsuario());
       params.put("idReferencia", conteo.getIdReferencia());
       params.put("nombre", conteo.getNombre());
-      TcManticConteosDto existe= (TcManticConteosDto)DaoFactory.getInstance().toEntity(TcManticConteosDto.class, "TcManticConteosDto", "igual", params);
+      TcManticConteosDto existe= (TcManticConteosDto)DaoFactory.getInstance().toEntity(TcManticConteosDto.class, "TcManticConteosDto", "identically", params);
       if(Objects.equals(existe, null)) {
         // INSERTAR EL REGISTRO DE LOS CONTEOS PARA DESPUES VERFICAR SI SE INTEGRARON
         DaoFactory.getInstance().insert(session, conteo);
@@ -368,7 +370,7 @@ public class Planetas implements Serializable {
         );
         params.put("idConteo", conteo.getIdConteo());
         params.put("idArticulo", item.getIdProducto());
-        TcManticConteosDetallesDto copia= (TcManticConteosDetallesDto)DaoFactory.getInstance().toEntity(TcManticConteosDetallesDto.class, "TcManticConteosDetallesDto", "igual", params);
+        TcManticConteosDetallesDto copia= (TcManticConteosDetallesDto)DaoFactory.getInstance().toEntity(TcManticConteosDetallesDto.class, "TcManticConteosDetallesDto", "identically", params);
         if(Objects.equals(copia, null)) 
           DaoFactory.getInstance().insert(session, detalle);
         else

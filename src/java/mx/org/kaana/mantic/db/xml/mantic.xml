@@ -18,20 +18,15 @@ where
       </select>
       <select id="identically">
 select      
-  *
-from      
-  tc_mantic_conteos
-where      
-  id_conteo = {idConteo}
-      </select>
-      <select id="igual">
-select      
+  tc_mantic_conteos.id_conteo as id_key,
   tc_mantic_conteos.*
 from      
   tc_mantic_conteos
 where      
   id_referencia= '{idReferencia}'
   and nombre= '{nombre}'
+  and semilla= '{semilla}'
+  and id_usuario= {idUsuario}
       </select>
       <delete id="rows">
 delete from      
