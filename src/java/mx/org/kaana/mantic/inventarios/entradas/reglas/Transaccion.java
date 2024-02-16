@@ -280,10 +280,9 @@ public class Transaccion extends Inventarios implements Serializable {
 	}
 	
 	private Siguiente toSiguiente(Session sesion) throws Exception {
-		Siguiente regresar= null;
-		Map<String, Object> params=null;
+		Siguiente regresar        = null;
+		Map<String, Object> params=new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("ejercicio", this.getCurrentYear());
 			params.put("idEmpresa", this.orden.getIdEmpresa());
 			params.put("operador", this.getCurrentSign());
@@ -339,9 +338,8 @@ public class Transaccion extends Inventarios implements Serializable {
 	}
 	
 	private void toApplyNotaEntrada(Session sesion) throws Exception {
-		Map<String, Object> params=null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			for (Articulo articulo: this.articulos) {
 				TcManticNotasDetallesDto item= articulo.toNotaDetalle();
 				item.setIdNotaEntrada(this.orden.getIdNotaEntrada());

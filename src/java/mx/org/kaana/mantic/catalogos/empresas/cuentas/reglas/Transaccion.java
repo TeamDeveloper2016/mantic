@@ -491,9 +491,8 @@ public class Transaccion extends IBaseTnx {
 		Double regresar          = 0.0D;
 		Double totalPagos        = 0.0D;
 		List<Entity>pagos        = null;
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put("idEmpresaDeuda", idEmpresaDeuda);
 			pagos= DaoFactory.getInstance().toEntitySet(sesion, "VistaEmpresasDto", "pagosDeuda", params);
 			if(!pagos.isEmpty()) {
@@ -513,7 +512,7 @@ public class Transaccion extends IBaseTnx {
 	private boolean procesarPagoGeneral(Session sesion) throws Exception {		
 		boolean regresar         = true;
 		List<Entity> deudas      = null;		
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		Double saldo             = 1D;
 		Double saldoDeuda        = 0D;				
 		Double pagoParcial       = 0D;				
@@ -546,9 +545,8 @@ public class Transaccion extends IBaseTnx {
 						saldo= 0D;
 						abono= Numero.toRedondearSat(saldoDeuda- this.pago.getPago());
 						idEstatus= this.saldar? EEstatusEmpresas.LIQUIDADA.getIdEstatusEmpresa(): (saldoDeuda.equals(this.pago.getPago())? EEstatusEmpresas.LIQUIDADA.getIdEstatusEmpresa() : EEstatusEmpresas.PARCIALIZADA.getIdEstatusEmpresa());
-					} /// else
+					} // else
 					if(this.registrarPago(sesion, item, pagoParcial, this.control.getIdEmpresaPagoControl())) {
-						params= new HashMap<>();
 						params.put("saldo", abono);
             if(Objects.equals(idEstatus, EEstatusEmpresas.LIQUIDADA))
 						  params.put("idRevisado", 1L);

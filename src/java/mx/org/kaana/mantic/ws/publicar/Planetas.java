@@ -63,6 +63,7 @@ public class Planetas implements Serializable {
           for (Usuario item: usuarios) {
             item.setNombre(BouncyEncryption.encrypt(item.getNombre()));
             item.setCuenta(BouncyEncryption.encrypt(item.getCuenta()));
+            // item.setToken(BouncyEncryption.decrypt(item.getToken()));
           } // for
           regresar= Decoder.toJson(new Respuesta(ERespuesta.CORRECTO.getCodigo(), Decoder.cleanJson(usuarios)));
         } // if
@@ -315,11 +316,12 @@ public class Planetas implements Serializable {
         -1L, // Long idConteo, 
         null, // Timestamp procesado, 
         items.getIdConteo(), // Long idReferencia, 
-        items.getNombre(), // String nombre, 
+        BouncyEncryption.decrypt(items.getNombre()), // String nombre, 
         1L, // Long idConteoEstatus, 
         regresar, // String token
         items.getIdEmpresa(), // Long idEmpresa
-        items.getIdAlmacen() // Long idAlmacen
+        items.getIdAlmacen(), // Long idAlmacen
+        items.getSemilla()
       );
       params.put("idReferencia", conteo.getIdReferencia());
       params.put("nombre", conteo.getNombre());

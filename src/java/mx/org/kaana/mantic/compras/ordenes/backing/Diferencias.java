@@ -82,9 +82,8 @@ public class Diferencias extends IFilterImportar implements Serializable {
  
   @Override
   public void doLoad() {
-    List<Columna> columns= null;
+    List<Columna> columns= new ArrayList<>();
     try {
-      columns = new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
@@ -179,9 +178,8 @@ public class Diferencias extends IFilterImportar implements Serializable {
 	}
 
   public void doChangeAplicar(Entity afectado) {
-		Map<String, Object> params=null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("idAplicar", (boolean)afectado.toBoolean("afectar")? 1L: 2L);
 			DaoFactory.getInstance().update(TcManticNotasDetallesDto.class, afectado.getKey(), params);
 		} // try
@@ -196,11 +194,9 @@ public class Diferencias extends IFilterImportar implements Serializable {
 	
 	public void doRowSelectEvent() {
 		Entity seleccionado= (Entity)this.attrs.get("seleccionado");
-    List<Columna> columns     = null;
-	  Map<String, Object> params= null;
+    List<Columna> columns     = new ArrayList<>();
+	  Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
-      columns = new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
@@ -230,7 +226,7 @@ public class Diferencias extends IFilterImportar implements Serializable {
 	}
   
   public void doReporte(String nombre) throws Exception{
-		Parametros comunes = null;
+		Parametros comunes           = null;
 		Map<String, Object>parametros= null;
 		EReportes reporteSeleccion   = null;
 		try{		
