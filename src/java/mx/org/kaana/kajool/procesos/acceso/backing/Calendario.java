@@ -14,6 +14,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -82,6 +83,11 @@ public class Calendario extends Comun implements Serializable {
     this.lazyEventModel = lazyEventModel;
   }
 
+  public String getParticular() {
+    String total= Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("particular")).toDouble("total"));
+    return "Deuda: <strong>"+ total+ "</strong>";  
+  }
+  
   @PostConstruct
   @Override
   protected void init() {
@@ -101,6 +107,7 @@ public class Calendario extends Comun implements Serializable {
       this.toLoadCuentasAgendar();
       this.doLoadCuentasVentas();
       this.toLoadCalendario(Fecha.formatear(Fecha.FECHA_ESTANDAR, new Date(calendar.getTimeInMillis())));
+      this.attrs.put("particular", this.toEmptyTotales());
     } // try
     catch (Exception e) {
       JsfBase.addMessageError(e);
@@ -180,6 +187,7 @@ public class Calendario extends Comun implements Serializable {
         columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
         params.put("sortOrder", "order by dias desc");
         this.lazyModelPagar = new FormatCustomLazy("VistaIndicadoresTableroDto", "pagar", params, columns);
+        this.attrs.put("particular", this.toTotales("VistaIndicadoresTableroDto", "particular", params));
         UIBackingUtilities.resetDataTable("pagar");
         this.pivot= hoy;
       } // if  
@@ -300,6 +308,7 @@ public class Calendario extends Comun implements Serializable {
     List<Columna> columns        = new ArrayList<>();    
     Map<String, Object> params   = new HashMap<>();
     DefaultScheduleEvent registro= null;
+    DefaultScheduleEvent deuda   = null;
     try {      
 //      this.lazyEventModel.getEvents().clear();
       Periodo periodo= new Periodo(date);
@@ -321,8 +330,18 @@ public class Calendario extends Comun implements Serializable {
         registro.setId(item.getKey().toString());
         registro.setEditable(Boolean.FALSE);
 				registro.setAllDay(Boolean.TRUE);
-				registro.setDescription("Cuentas por pagar ["+ item.toLong("cantidad")+ " ]");
+				registro.setDescription("Cuentas por pagar ["+ item.toLong("cantidad")+ "]");
   			this.lazyEventModel.addEvent(registro); 
+        Double valor= item.toDouble("deuda");
+        if(valor!= 0D) {
+          deuda= new DefaultScheduleEvent("DEUDA: "+ Numero.formatear(Numero.MILES_CON_DECIMALES, valor), item.toDate("limite"), item.toDate("limite"));
+          deuda.setStyleClass("janal-semaforo-blanco");
+          deuda.setId(item.getKey().toString());
+          deuda.setEditable(Boolean.FALSE);
+          deuda.setAllDay(Boolean.TRUE);
+          deuda.setDescription("Cuentas por pagar ["+ Numero.formatear(Numero.MILES_CON_DECIMALES, valor)+ "]");
+          this.lazyEventModel.addEvent(deuda); 
+        } // if
      } // for
     } // try
     catch (Exception e) {
@@ -354,6 +373,26 @@ public class Calendario extends Comun implements Serializable {
         regresar= "janal-semaforo-naranja";
         break;
     } // switch
+    return regresar;
+  }
+ 
+  private Entity toTotales(String proceso, String idXml, Map<String, Object> params) {
+    Entity regresar= null;
+    try {      
+      regresar= (Entity)DaoFactory.getInstance().toEntity(proceso, idXml, params);
+      if(Objects.equals(regresar, null) || regresar.isEmpty()) 
+        regresar= this.toEmptyTotales();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    return regresar;
+  }
+   
+  private Entity toEmptyTotales() {
+    Entity regresar= new Entity(-1L);
+    regresar.put("total", new Value("total", 0D));
     return regresar;
   }
   

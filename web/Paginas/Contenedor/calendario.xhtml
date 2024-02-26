@@ -42,6 +42,8 @@
       .ui-datatable .ui-datatable-tablewrapper table tbody .janal-semaforo-azul td, .janal-semaforo-azul.ui-datatable table tbody tr td { color: white !important; }
       .janal-semaforo-naranja { background-color: #a16a05 !important; border: solid 1px #a16a05 !important; color: black !important; }
       .ui-datatable .ui-datatable-tablewrapper table tbody .janal-semaforo-naranja td, .janal-semaforo-naranja.ui-datatable table tbody tr td { color: white !important; }
+      .janal-semaforo-blanco { background-color: white !important; border: solid 1px #a16a05 !important; color: black !important; }
+      .ui-datatable .ui-datatable-tablewrapper table tbody .janal-semaforo-blanco td, .janal-semaforo-blanco.ui-datatable table tbody tr td { color: black !important; }
       .fc-today { background: rgb(2, 0, 36); background: linear-gradient(90deg, rgba(2, 0, 36, 1) 0%, rgba(121, 121, 228, 1) 0%, rgba(0, 212, 255, 1) 100%) !important; }
       .fc-content { text-align: center; }
     </style> 
@@ -298,6 +300,7 @@
                         <h:outputText value="#{row.estatus}"/>
                       </p:column>                    
                       <f:facet name="footer">
+                        <p:outputLabel styleClass="detalle" style="float: left;" value="#{kajoolCalendario.particular}" escape="false"/>                        
                         <p:outputLabel value="Total [#{kajoolCalendario.lazyModelPagar.rowCount}] registros"/>
                       </f:facet>
                     </p:dataTable>

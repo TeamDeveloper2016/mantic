@@ -12351,6 +12351,7 @@ order by
           tc_mantic_empresas_deudas.id_empresa_deuda as id_key,
           tc_mantic_empresas_deudas.limite,
           count(*) as cantidad,
+          sum(if(tc_mantic_empresas_deudas.id_empresa_estatus= 1 or tc_mantic_empresas_deudas.id_empresa_estatus= 2 or tc_mantic_empresas_deudas.id_empresa_estatus= 3, ifnull(tc_mantic_empresas_deudas.saldo, 0), 0)) as deuda,
           sum(if(tc_mantic_empresas_deudas.id_empresa_estatus= 1 or tc_mantic_empresas_deudas.id_empresa_estatus= 2, 1, 0)) as iniciada,
           sum(if(tc_mantic_empresas_deudas.id_empresa_estatus= 3, 1, 0)) as parcializada,
           sum(if(tc_mantic_empresas_deudas.id_empresa_estatus= 4 or tc_mantic_empresas_deudas.id_empresa_estatus= 5, 1, 0)) as liquidadas
@@ -12394,6 +12395,26 @@ order by
           and tc_mantic_empresas_deudas.id_revisado in (1, 2)
           and {condicion}
         {sortOrder}
+      </select>  
+			<select id="particular">
+select
+  tc_mantic_empresas_deudas.id_empresa_deuda as id_key,
+  sum(ifnull(tc_mantic_empresas_deudas.saldo, 0)) as total
+from
+  tc_mantic_empresas_deudas
+inner join
+  tc_mantic_notas_entradas on tc_mantic_empresas_deudas.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada
+inner join
+  tc_mantic_empresas_estatus on tc_mantic_empresas_deudas.id_empresa_estatus= tc_mantic_empresas_estatus.id_empresa_estatus
+inner join
+  tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor= tc_mantic_proveedores.id_proveedor
+where 
+  tc_mantic_empresas_deudas.id_empresa_estatus in ({estatus})
+  and tc_mantic_empresas_deudas.id_revisado in (1, 2)
+  and tc_mantic_empresas_deudas.id_empresa_estatus in (1, 2, 3)
+  and {condicion}
+group by
+  tc_mantic_empresas_deudas.limite
       </select>  
 			<select id="agendar">
         select

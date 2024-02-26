@@ -14,6 +14,7 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.BouncyEncryption;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.json.Decoder;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticConteosDetallesDto;
@@ -30,6 +31,8 @@ import mx.org.kaana.mantic.ws.imox.beans.Producto;
 import mx.org.kaana.mantic.ws.imox.beans.Ubicacion;
 import mx.org.kaana.mantic.ws.imox.beans.Usuario;
 import mx.org.kaana.mantic.ws.publicar.beans.Respuesta;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -43,6 +46,8 @@ import org.hibernate.Transaction;
 
 public class Planetas implements Serializable {
 
+  private static final Log LOG = LogFactory.getLog(Planetas.class);
+  
   private static final long serialVersionUID = 8944954886601403304L;
   private static final String TEXT_TOKEN= "/Eb1AjylyNNfQBLodn6Jf6Stb8NM7Hw2";
   private static final Long USER_SUPER  = 1976L;
@@ -74,6 +79,7 @@ public class Planetas implements Serializable {
         regresar= Decoder.toJson(respuesta);
     } // try
     catch (Exception e) {
+      Error.mensaje(e);
       regresar= Decoder.toJson(new Respuesta(ERespuesta.ERROR.getCodigo(), e.getMessage()));
     } // catch
     finally {
@@ -101,6 +107,7 @@ public class Planetas implements Serializable {
         regresar= Decoder.toJson(respuesta);
     } // try
     catch (Exception e) {
+      Error.mensaje(e);
       regresar= Decoder.toJson(new Respuesta(ERespuesta.ERROR.getCodigo(), e.getMessage()));
     } // catch
     finally {
@@ -128,6 +135,7 @@ public class Planetas implements Serializable {
         regresar= Decoder.toJson(respuesta);
     } // try
     catch (Exception e) {
+      Error.mensaje(e);
       regresar= Decoder.toJson(new Respuesta(ERespuesta.ERROR.getCodigo(), e.getMessage()));
     } // catch
     finally {
@@ -155,6 +163,7 @@ public class Planetas implements Serializable {
         regresar= Decoder.toJson(respuesta);
     } // try
     catch (Exception e) {
+      Error.mensaje(e);
       regresar= Decoder.toJson(new Respuesta(ERespuesta.ERROR.getCodigo(), e.getMessage()));
     } // catch
     finally {
@@ -182,6 +191,7 @@ public class Planetas implements Serializable {
         regresar= Decoder.toJson(respuesta);
     } // try
     catch (Exception e) {
+      Error.mensaje(e);
       regresar= Decoder.toJson(new Respuesta(ERespuesta.ERROR.getCodigo(), e.getMessage()));
     } // catch
     finally {
@@ -203,6 +213,7 @@ public class Planetas implements Serializable {
         regresar= Decoder.toJson(respuesta);
     } // try
     catch (Exception e) {
+      Error.mensaje(e);
       regresar= Decoder.toJson(new Respuesta(ERespuesta.ERROR.getCodigo(), e.getMessage()));
     } // catch
     finally {
@@ -235,6 +246,7 @@ public class Planetas implements Serializable {
         regresar= Decoder.toJson(new Respuesta(ERespuesta.TOKEN.getCodigo(), ERespuesta.TOKEN.getDescripcion()));
     } // try
     catch (Exception e) {
+      Error.mensaje(e);
       regresar= Decoder.toJson(new Respuesta(ERespuesta.ERROR.getCodigo(), e.getMessage()));
     } // catch
     finally {
@@ -262,6 +274,7 @@ public class Planetas implements Serializable {
         regresar= Decoder.toJson(respuesta);
     } // try
     catch (Exception e) {
+      Error.mensaje(e);
       regresar= Decoder.toJson(new Respuesta(ERespuesta.ERROR.getCodigo(), e.getMessage()));
     } // catch
     finally {
@@ -289,6 +302,7 @@ public class Planetas implements Serializable {
         regresar= Decoder.toJson(respuesta);
     } // try
     catch (Exception e) {
+      Error.mensaje(e);
       regresar= Decoder.toJson(new Respuesta(ERespuesta.ERROR.getCodigo(), e.getMessage()));
     } // catch
     finally {
@@ -385,6 +399,8 @@ public class Planetas implements Serializable {
 			transaction.commit();
 		} // try
 		catch (Exception e) {
+      LOG.error("SOLICITUD: "+ densidad);
+      Error.mensaje(e);
 			if (transaction!= null) {
 				transaction.rollback();
 			} // if
