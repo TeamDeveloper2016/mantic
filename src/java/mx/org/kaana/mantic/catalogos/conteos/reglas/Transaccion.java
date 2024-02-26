@@ -140,7 +140,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
           regresar= this.toArticulo(sesion, item);
           item.setProcesado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
           DaoFactory.getInstance().update(sesion, item);
-          LOG.error(item);
+          // LOG.error(item);
         } // if
         else
           regresar= Boolean.TRUE;
@@ -270,7 +270,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
         regresar= general.getIdAlmacenUbicacion();
       } // if
       else
-        regresar= ubicaciones.get(0).toLong("idAlmacenUbicacion");
+        regresar= ubicaciones.get(0).getKey();
     } // try
     catch (Exception e) {
       throw e;      

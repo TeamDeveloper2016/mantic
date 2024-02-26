@@ -11,7 +11,7 @@ select
   tc_mantic_conteos.id_conteo,
   tc_mantic_empresas.nombre as empresa,  
   tc_mantic_almacenes.nombre as almacen,
-  upper(tc_mantic_articulos.nombre) as nombre,
+  upper(tc_mantic_conteos.nombre) as nombre,
   tc_mantic_conteos.id_conteo_estatus,
   tc_mantic_conteos.version,
   tc_mantic_conteos.id_usuario,
@@ -4967,7 +4967,8 @@ order by
 					tc_mantic_movimientos.id_almacen= {idAlmacen}
 					and tc_mantic_movimientos.id_articulo= {idArticulo}
 				  and date_format(tc_mantic_movimientos.registro, '%Y%m%d')&gt;= '{registro}'
-					and tc_mantic_movimientos.id_tipo_movimiento= 6
+					and tc_mantic_movimientos.id_tipo_movimiento in ({idTipoMovimiento})
+          and {condicion}
 				order by
 					tc_mantic_movimientos.registro desc
 			</select>
@@ -5005,9 +5006,9 @@ order by
 				inner join 
 					tc_mantic_empresas on tc_mantic_almacenes.id_empresa= tc_mantic_empresas.id_empresa
 				inner join
-					tc_janal_usuarios on tc_mantic_movimientos.id_usuario = tc_janal_usuarios.id_usuario
+					tc_janal_usuarios on tc_mantic_movimientos.id_usuario= tc_janal_usuarios.id_usuario
 				inner join
-					tc_mantic_personas on tc_janal_usuarios.id_persona = tc_mantic_personas.id_persona
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
 				where
 					tc_mantic_movimientos.id_movimiento= {idMovimiento}
 				order by

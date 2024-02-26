@@ -312,6 +312,8 @@ public class Conteos extends IBaseFilter implements Serializable {
 				params.put("idArticulo", this.attrs.get("idArticulo"));
 				params.put("idAlmacen", this.attrs.get("idAlmacen"));
 				params.put("registro", periodo.toString());
+				params.put("idTipoMovimiento", "6, 8");
+        params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 				columns.add(new Columna("concepto", EFormatoDinamicos.MAYUSCULAS));
 				columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
 				Entity ultimo= (Entity)DaoFactory.getInstance().toEntity("VistaKardexDto", "conteo", params);

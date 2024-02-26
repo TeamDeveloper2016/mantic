@@ -783,6 +783,8 @@ public class Kardex extends IBaseAttribute implements Serializable {
 					Long idArticulo= consecutivo.toLong("idArticulo");
       		params.put("idAlmacen", ((UISelectEntity)this.attrs.get("idAlmacen")).getKey());
       		params.put("idArticulo", idArticulo);
+      		params.put("idTipoMovimiento", consecutivo.toLong("idTipoMovimiento").intValue());
+      		params.put(Constantes.SQL_CONDICION, "tc_mantic_movimientos.id_movimiento= "+ consecutivo.getKey());
 					Periodo periodo= new Periodo();
 			    periodo.addMeses(-18);
       		params.put("registro", periodo.toString());

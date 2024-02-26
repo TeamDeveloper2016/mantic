@@ -41,7 +41,7 @@ public class Conteos extends IBaseJob implements Serializable {
 			if(Configuracion.getInstance().isEtapaDesarrollo() || Configuracion.getInstance().isEtapaProduccion()) {
         LOG.error("----------------ENTRO A CONTEOS REMOTOS------------------");
         params.put("sucursales", "1,2,3");
-        params.put("fecha", Fecha.getMinutosEstandar(-15));
+        params.put("fecha", Fecha.getMinutosEstandar(-5));
         List<Entity> conteos= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaConteosDto", "remoto", params, 500L);
         for (Entity item: conteos) {
           LOG.error("Conteo: "+ item.toLong("idConteo")+ " - "+ item.toString("fecha")+ " de "+ item.toString("usuario"));  
