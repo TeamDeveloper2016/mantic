@@ -56,6 +56,8 @@ public class TcManticConteosDto implements IBaseDto, Serializable {
   private Long idAlmacen;
   @Column (name="semilla")
   private String semilla;
+  @Column (name="version")
+  private String version;
   @Column (name="registro")
   private Timestamp registro;
 
@@ -64,11 +66,11 @@ public class TcManticConteosDto implements IBaseDto, Serializable {
   }
 
   public TcManticConteosDto(Long key) {
-    this(null, null, null, null, new Long(-1L), null, null, null, null, null, new Long(-1L), new Long(-1L), null);
+    this(null, null, null, null, new Long(-1L), null, null, null, null, null, new Long(-1L), new Long(-1L), null, null);
     setKey(key);
   }
 
-  public TcManticConteosDto(String conteos, String fecha, Long articulos, Long idUsuario, Long idConteo, Timestamp procesado, Long idReferencia, String nombre, Long idConteoEstatus, String token, Long idEmpresa, Long idAlmacen, String semilla) {
+  public TcManticConteosDto(String conteos, String fecha, Long articulos, Long idUsuario, Long idConteo, Timestamp procesado, Long idReferencia, String nombre, Long idConteoEstatus, String token, Long idEmpresa, Long idAlmacen, String semilla, String version) {
     setConteos(conteos);
     setFecha(fecha);
     setArticulos(articulos);
@@ -82,6 +84,7 @@ public class TcManticConteosDto implements IBaseDto, Serializable {
     setIdEmpresa(idEmpresa);
     setIdAlmacen(idAlmacen);
     setSemilla(semilla);
+    setVersion(version);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
 	
@@ -189,6 +192,14 @@ public class TcManticConteosDto implements IBaseDto, Serializable {
     this.semilla = semilla;
   }
 
+  public String getVersion() {
+    return version;
+  }
+
+  public void setVersion(String version) {
+    this.version = version;
+  }
+
   public void setRegistro(Timestamp registro) {
     this.registro = registro;
   }
@@ -238,6 +249,8 @@ public class TcManticConteosDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getSemilla());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getVersion());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
   	return regresar.toString();
@@ -259,6 +272,7 @@ public class TcManticConteosDto implements IBaseDto, Serializable {
 		regresar.put("idEmpresa", getIdEmpresa());
 		regresar.put("idAlmacen", getIdAlmacen());
 		regresar.put("semilla", getSemilla());
+		regresar.put("version", getVersion());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
@@ -266,7 +280,7 @@ public class TcManticConteosDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[] {
-      getConteos(), getFecha(), getArticulos(), getIdUsuario(), getIdConteo(), getProcesado(), getIdReferencia(), getNombre(), getIdConteoEstatus(), getToken(), getIdEmpresa(), getIdAlmacen(), getSemilla(), getRegistro()
+      getConteos(), getFecha(), getArticulos(), getIdUsuario(), getIdConteo(), getProcesado(), getIdReferencia(), getNombre(), getIdConteoEstatus(), getToken(), getIdEmpresa(), getIdAlmacen(), getSemilla(), getVersion(), getRegistro()
     };
     return regresar;
   }

@@ -8,8 +8,9 @@ public enum ERespuesta {
 	SIN_EMPRESAS   ("04", "No se tienen empresas registradas y/o nuevas"),
 	SIN_ALMACENES  ("05", "No se tienen almacenes registrados y/o nuevos"),
 	SIN_UBICACIONES("06", "No se tienen ubicaciones registrados y/o nuevos"),
-	SIN_RESPALDO   ("07", "No se encontro ningun respaldo"),
-	USUARIO_ERROR  ("08", "El usuario no esta activo"),
+	SIN_INVENTARIOS("07", "No se tienen inventarios registrados y/o nuevos"),
+	SIN_RESPALDO   ("08", "No se encontro ningun respaldo"),
+	USUARIO_ERROR  ("09", "El usuario no esta activo"),
 	TOKEN          ("98", "Token invalido"),
 	ERROR          ("99", "Error");	
 	

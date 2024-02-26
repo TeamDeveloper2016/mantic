@@ -11,15 +11,16 @@ select
   tc_mantic_conteos.id_conteo,
   tc_mantic_empresas.nombre as empresa,  
   tc_mantic_almacenes.nombre as almacen,
-  upper(tc_mantic_conteos.nombre) as nombre,
+  upper(tc_mantic_articulos.nombre) as nombre,
   tc_mantic_conteos.id_conteo_estatus,
+  tc_mantic_conteos.version,
   tc_mantic_conteos.id_usuario,
   ifnull(tc_mantic_conteos.procesado, now()) as procesado,
   if(tc_mantic_conteos.procesado is null, 2, 1) as id_procesado,  
   tc_mantic_conteos_estatus.nombre as estatus,
   tc_mantic_conteos_estatus.estatus_asociados, 
   concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as usuario,
-  concat(substr(tc_mantic_conteos.fecha, 7, 2), '/', substr(tc_mantic_conteos.fecha, 5, 2), '/', substr(tc_mantic_conteos.fecha, 1, 4)) as fecha,
+  concat(substr(tc_mantic_conteos.fecha, 7, 2), '/', substr(tc_mantic_conteos.fecha, 5, 2), '/', substr(tc_mantic_conteos.fecha, 1, 4), ' ', substr(tc_mantic_conteos.fecha, 9, 2), ':', substr(tc_mantic_conteos.fecha, 11, 2), ':', substr(tc_mantic_conteos.fecha, 13, 2)) as fecha,
   count(tc_mantic_conteos_detalles.id_conteo_detalle) as articulos
 from
   tc_mantic_conteos
@@ -55,7 +56,7 @@ select
   tc_mantic_conteos_detalles.codigo,
   tc_mantic_articulos.nombre,
   tc_mantic_conteos_detalles.cantidad,
-  concat(substr(tc_mantic_conteos_detalles.fecha, 7, 2), '/', substr(tc_mantic_conteos_detalles.fecha, 5, 2), '/', substr(tc_mantic_conteos_detalles.fecha, 1, 4)) as fecha,
+  concat(substr(tc_mantic_conteos_detalles.fecha, 7, 2), '/', substr(tc_mantic_conteos_detalles.fecha, 5, 2), '/', substr(tc_mantic_conteos_detalles.fecha, 1, 4), ' ', substr(tc_mantic_conteos_detalles.fecha, 9, 2), ':', substr(tc_mantic_conteos_detalles.fecha, 11, 2), ':', substr(tc_mantic_conteos_detalles.fecha, 13, 2)) as fecha,
   ifnull(tc_mantic_conteos_detalles.procesado, now()) as procesado,
   if(tc_mantic_conteos_detalles.procesado is null, 2, 1) as id_procesado,  
   tc_mantic_conteos_detalles.registro
@@ -122,7 +123,7 @@ select
   tc_mantic_almacenes.id_almacen,
   tc_mantic_almacenes_articulos.id_almacen_ubicacion as id_ubicacion,
   group_concat(tc_mantic_articulos_codigos.codigo separator '|') as codigos,
-  tc_mantic_articulos.id_descontinuado as id_activo,
+  if(tc_mantic_articulos.id_descontinuado= 2, 1, 2) as id_activo,
   date_format(tc_mantic_articulos.registro, '%Y%m%d%h%i%S') as registro
 from
   tc_mantic_articulos
@@ -231,7 +232,7 @@ order by
 select
   tc_mantic_articulos.id_articulo as id_producto,
   tc_mantic_articulos.nombre,
-  tc_mantic_articulos.id_descontinuado as id_activo,
+  if(tc_mantic_articulos.id_descontinuado= 2, 1, 2) as id_activo,
   group_concat(tc_mantic_articulos_codigos.codigo separator '|') as codigos,
   date_format(tc_mantic_articulos.registro, '%Y%m%d%h%i%S') as registro
 from
@@ -4426,7 +4427,7 @@ order by
 					tc_mantic_ventas.id_venta_estatus,
 					tc_mantic_ventas_estatus.nombre as estatus,
 					tc_mantic_ventas_estatus.estatus_asociados, 
-					if(tc_mantic_ventas_estatus.id_venta_estatus in (1,2), 'VENTA', tc_mantic_ventas_estatus.nombre) tipo,	
+					if(tc_mantic_ventas_estatus.id_venta_estatus in (1,2), 'VENTA', tc_mantic_ventas_estatus.nombre) as tipo,	
 					tc_mantic_ventas.registro,
 					tc_mantic_ventas.vigencia,
 					tc_mantic_personas.cuenta,
@@ -4435,8 +4436,8 @@ order by
 					tc_mantic_clientes.id_credito,
 					tc_mantic_clientes.razon_social as cliente,
 					tc_mantic_clientes.limite_credito,					
-					(select saldo from tc_mantic_clientes_deudas where tc_mantic_clientes_deudas.id_venta= tc_mantic_ventas.id_venta group by tc_mantic_clientes_deudas.id_venta) saldo,
-					(select limite from tc_mantic_clientes_deudas where tc_mantic_clientes_deudas.id_venta= tc_mantic_ventas.id_venta group by tc_mantic_clientes_deudas.id_venta) limite,
+          ifnull(tc_mantic_clientes_deudas.saldo, 0) as saldo,
+          ifnull(tc_mantic_clientes_deudas.limite, 0) as limite,
 					tc_mantic_facturas.id_factura,
 					tc_mantic_facturas.id_facturama,
 					tc_mantic_facturas.sello_sat,
@@ -4444,14 +4445,16 @@ order by
 					tc_mantic_facturas.intentos,
 					tc_mantic_facturas.cancelada,
 				  tc_mantic_facturas.folio as factura,
-					if(tc_mantic_facturas.folio is null, 0, 1) folio,
-					if(tc_mantic_facturas.id_facturama is null, 0, 1) facturado,
-					if(tc_mantic_facturas.id_factura_estatus is null, 1, tc_mantic_facturas.id_factura_estatus) id_factura_estatus,
+					if(tc_mantic_facturas.folio is null, 0, 1) as folio,
+					if(tc_mantic_facturas.id_facturama is null, 0, 1) as facturado,
+					if(tc_mantic_facturas.id_factura_estatus is null, 1, tc_mantic_facturas.id_factura_estatus) as id_factura_estatus,
 					tc_mantic_ventas.id_tipo_documento,
           tc_mantic_ventas.candado
 				from 
-					tc_mantic_ventas						
-				left join 
+					tc_mantic_ventas
+        left join
+          tc_mantic_clientes_deudas on tc_mantic_ventas.id_venta= tc_mantic_clientes_deudas.id_venta
+  			left join 
 					tc_mantic_ventas_detalles on tc_mantic_ventas.id_venta = tc_mantic_ventas_detalles.id_venta
 				inner join 
 					tc_mantic_empresas on tc_mantic_ventas.id_empresa= tc_mantic_empresas.id_empresa

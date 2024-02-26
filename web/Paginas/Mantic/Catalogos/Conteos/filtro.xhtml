@@ -201,7 +201,13 @@
 								</f:facet>
 								<h:outputText value="#{row['articulos']}"/>
 							</p:column>											
-							<p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.fecha}">
+							<p:column class="janal-column-center MarAuto Responsive janal-wid-6" sortBy="#{row.version}">
+								<f:facet name="header">
+									<h:outputText value="Version"/>
+								</f:facet>
+								<h:outputText value="#{row['version']}"/>
+							</p:column>			
+							<p:column class="janal-column-center MarAuto Responsive janal-wid-12" sortBy="#{row.fecha}">
 								<f:facet name="header">
 									<h:outputText value="Fecha"/>
 								</f:facet>
@@ -271,7 +277,7 @@
                 </f:facet>
                 <h:outputText value="#{row['cantidad']}"/>
               </p:column>								
-              <p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.fecha}">
+              <p:column class="janal-column-center MarAuto Responsive janal-wid-12" sortBy="#{row.fecha}">
                 <f:facet name="header">
                   <h:outputText value="Fecha"/>
                 </f:facet>

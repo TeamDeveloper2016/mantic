@@ -256,7 +256,7 @@ public class Planetas implements Serializable {
         if(inventarios!= null && !inventarios.isEmpty()) 
           regresar= Decoder.toJson(new Respuesta(ERespuesta.CORRECTO.getCodigo(), Decoder.cleanJson(inventarios)));
         else
-          regresar= Decoder.toJson(new Respuesta(ERespuesta.SIN_UBICACIONES.getCodigo(), ERespuesta.SIN_UBICACIONES.getDescripcion()));
+          regresar= Decoder.toJson(new Respuesta(ERespuesta.SIN_INVENTARIOS.getCodigo(), ERespuesta.SIN_INVENTARIOS.getDescripcion()));
       } // if
       else
         regresar= Decoder.toJson(respuesta);
@@ -283,7 +283,7 @@ public class Planetas implements Serializable {
         if(articulos!= null && !articulos.isEmpty()) 
           regresar= Decoder.toJson(new Respuesta(ERespuesta.CORRECTO.getCodigo(), Decoder.cleanJson(articulos)));
         else
-          regresar= Decoder.toJson(new Respuesta(ERespuesta.SIN_UBICACIONES.getCodigo(), ERespuesta.SIN_UBICACIONES.getDescripcion()));
+          regresar= Decoder.toJson(new Respuesta(ERespuesta.SIN_PRODUCTOS.getCodigo(), ERespuesta.SIN_PRODUCTOS.getDescripcion()));
       } // if
       else
         regresar= Decoder.toJson(respuesta);
@@ -321,7 +321,8 @@ public class Planetas implements Serializable {
         regresar, // String token
         items.getIdEmpresa(), // Long idEmpresa
         items.getIdAlmacen(), // Long idAlmacen
-        items.getSemilla()
+        items.getSemilla(), // String semilla
+        items.getVersion() // String version
       );
       params.put("semilla", conteo.getSemilla());
       params.put("idUsuario", conteo.getIdUsuario());

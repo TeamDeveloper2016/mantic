@@ -24,12 +24,13 @@ public class Conteo implements Serializable {
   private String nombre;
   private List<Cantidad> productos;
   private String semilla;
+  private String version;
   private String registro;
 
   public Conteo() {
   }
 
-  public Conteo(Long idConteo, Long idUsuario, String nombre, String registro, Long idEmpresa, Long idAlmacen, String semilla) {
+  public Conteo(Long idConteo, Long idUsuario, String nombre, String registro, Long idEmpresa, Long idAlmacen, String semilla, String version) {
     this.idConteo = idConteo;
     this.idConteo = idEmpresa;
     this.idConteo = idAlmacen;
@@ -37,6 +38,7 @@ public class Conteo implements Serializable {
     this.nombre = nombre;
     this.productos = new ArrayList<>();
     this.semilla = semilla;
+    this.version = version;
     this.registro = registro;
   }
 
@@ -96,6 +98,14 @@ public class Conteo implements Serializable {
     this.semilla = semilla;
   }
 
+  public String getVersion() {
+    return version;
+  }
+
+  public void setVersion(String version) {
+    this.version = version;
+  }
+
   public String getRegistro() {
     return registro;
   }
@@ -135,7 +145,7 @@ public class Conteo implements Serializable {
 
   @Override
   public String toString() {
-    return "Conteo{" + "idConteo=" + idConteo + ", idEmpresa=" + idEmpresa + ", idAlmacen=" + idAlmacen + ", idUsuario=" + idUsuario + ", nombre=" + nombre + ", productos=" + productos + ", semilla=" + semilla + ", registro=" + registro + '}';
+    return "Conteo{" + "idConteo=" + idConteo + ", idEmpresa=" + idEmpresa + ", idAlmacen=" + idAlmacen + ", idUsuario=" + idUsuario + ", nombre=" + nombre + ", productos=" + productos + ", semilla=" + semilla + ", version=" + version + ", registro=" + registro + '}';
   }
   
 }
