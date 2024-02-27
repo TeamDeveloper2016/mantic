@@ -188,7 +188,7 @@ public class Calendario extends Comun implements Serializable {
         params.put("sortOrder", "order by dias desc");
         this.lazyModelPagar = new FormatCustomLazy("VistaIndicadoresTableroDto", "pagar", params, columns);
         this.attrs.put("particular", this.toTotales("VistaIndicadoresTableroDto", "particular", params));
-        UIBackingUtilities.resetDataTable("pagar");
+        UIBackingUtilities.resetDataTable("detalle");
         this.pivot= hoy;
       } // if  
     } // try
@@ -211,7 +211,7 @@ public class Calendario extends Comun implements Serializable {
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
       params.put("sortOrder", "order by tc_mantic_empresas_deudas.registro");
       this.lazyModelAgendar = new FormatCustomLazy("VistaIndicadoresTableroDto", "agendar", params, columns);
-      UIBackingUtilities.resetDataTable("pagar");
+      UIBackingUtilities.resetDataTable("agendar");
     } // try
     catch (Exception e) {
       Error.mensaje(e);

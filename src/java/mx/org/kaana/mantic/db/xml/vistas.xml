@@ -76,6 +76,7 @@ order by
 select
   tc_mantic_conteos.id_conteo as id_key,
   tc_mantic_conteos.id_conteo,
+  tc_mantic_conteos.nombre,
   concat(substr(tc_mantic_conteos.fecha, 7, 2), '/', substr(tc_mantic_conteos.fecha, 5, 2), '/', substr(tc_mantic_conteos.fecha, 1, 4), ' ', substr(tc_mantic_conteos.fecha, 9, 2), ':', substr(tc_mantic_conteos.fecha, 11, 2), ':', substr(tc_mantic_conteos.fecha, 13, 2)) as fecha,
   concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as usuario
 from

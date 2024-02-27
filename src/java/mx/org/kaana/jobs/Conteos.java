@@ -38,28 +38,31 @@ public class Conteos extends IBaseJob implements Serializable {
 		Map<String, Object> params= new HashMap<>();
     Transaccion transaccion   = null;
 		try {
-			if(Configuracion.getInstance().isEtapaDesarrollo() || Configuracion.getInstance().isEtapaProduccion()) {
-        LOG.error("----------------ENTRO A CONTEOS REMOTOS------------------");
+			if(Configuracion.getInstance().isEtapaProduccion()) {
         params.put("sucursales", "1,2,3");
         params.put("fecha", Fecha.getMinutosEstandar(-5));
         List<Entity> conteos= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaConteosDto", "remoto", params, 500L);
-        for (Entity item: conteos) {
-          LOG.error("Conteo: "+ item.toLong("idConteo")+ " - "+ item.toString("fecha")+ " de "+ item.toString("usuario"));  
-          TcManticConteosDto conteo= (TcManticConteosDto)DaoFactory.getInstance().findById(TcManticConteosDto.class, item.toLong("idConteo"));
-          if(!Objects.equals(conteo, null)) {
-            transaccion= new Transaccion(conteo);
-            try {
-              transaccion.ejecutar(EAccion.PROCESAR);
-            } // try
-            catch(Exception e) {
-              transaccion.ejecutar(EAccion.DESACTIVAR);
-            } // catch
-            finally {
-              transaccion= null;
-            } // finally
-          } // if
-        } // for
-        LOG.error("---------------------------------------------------------");
+        if(conteos!= null && !conteos.isEmpty()) {
+          LOG.error("----------------ENTRO A CONTEOS REMOTOS------------------");
+          for (Entity item: conteos) {
+            LOG.error("Conteo: "+ item.toString("nombre")+ " - "+ item.toString("fecha")+ " de "+ item.toString("usuario"));  
+            TcManticConteosDto conteo= (TcManticConteosDto)DaoFactory.getInstance().findById(TcManticConteosDto.class, item.toLong("idConteo"));
+            if(!Objects.equals(conteo, null)) {
+              transaccion= new Transaccion(conteo);
+              try {
+                transaccion.ejecutar(EAccion.PROCESAR);
+              } // try
+              catch(Exception e) {
+                Error.mensaje(e); 
+                transaccion.ejecutar(EAccion.DESACTIVAR);
+              } // catch
+              finally {
+                transaccion= null;
+              } // finally
+            } // if
+          } // for
+          LOG.error("---------------------------------------------------------");
+        } // if
       } // if
 	  } // try
 		catch(Exception e) {
