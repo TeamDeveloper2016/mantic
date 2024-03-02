@@ -114,7 +114,7 @@
 							</f:facet>
 						</p:dataTable>
 						<p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-              <p:menuitem icon="fa fa-trash" value="Eliminar" actionListener="#{manticCatalogosConteosVersiones.doEliminar()}" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>
+              <p:menuitem icon="fa fa-trash" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>
 						</p:contextMenu>		
           </div>  
 				</div>

@@ -17,9 +17,9 @@ public class Remote implements Serializable {
   private static final long serialVersionUID = -1430227883528578119L;
 
   public static void main(String ... args) throws Exception {
-    Object[] params= {1976L, "19000101", "/Eb1AjylyNNfQBLodn6Jf6Stb8NM7Hw2"};
-    Conteos conteos= new Conteos("mercurio", params);
-    System.out.println(conteos.getBeanRespuesta());
+//    Object[] params= {1976L, "19000101", "/Eb1AjylyNNfQBLodn6Jf6Stb8NM7Hw2"};
+//    Conteos conteos= new Conteos("mercurio", params);
+//    System.out.println(conteos.getBeanRespuesta());
 //    Conteos conteos= new Conteos("sol", params);
 //    System.out.println(conteos.getBeanRespuesta());
     
@@ -33,6 +33,11 @@ public class Remote implements Serializable {
 
 //    Conteos conteos= new Conteos("urano", params);
 //    System.out.println(conteos.getBeanRespuesta());
+
+    Object[] params= {"/Eb1AjylyNNfQBLodn6Jf6Stb8NM7Hw2", "145852545202688741", "20240301215028999"};
+    Conteos conteos= new Conteos("galaxia", params);
+    System.out.println(conteos.getBeanRespuesta());
+
   }
   
 }

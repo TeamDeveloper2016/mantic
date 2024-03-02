@@ -141,7 +141,10 @@
 							</f:facet>
 						</p:dataTable>
 						<p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-              <p:menuitem icon="fa fa-trash" value="Eliminar" actionListener="#{manticCatalogosConteosDispositivos.doEliminar()}" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>
+              <p:menuitem icon="fa fa-trash" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>
+              <p:separator/>
+              <p:menuitem icon="fa fa-remove" value="Desactivar" actionListener="#{manticCatalogosConteosDispositivos.doActivar(2)}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" process="@this tabla" update="tabla" rendered="#{manticCatalogosConteosDispositivos.attrs.seleccionado.idActivo.toLong eq 1}"/>
+              <p:menuitem icon="fa fa-check" value="Activar" actionListener="#{manticCatalogosConteosDispositivos.doActivar(1)}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" process="@this tabla" update="tabla" rendered="#{manticCatalogosConteosDispositivos.attrs.seleccionado.idActivo.toLong eq 2}"/>
 						</p:contextMenu>		
           </div>  
 				</div>
