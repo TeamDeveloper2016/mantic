@@ -20,6 +20,7 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticConteosDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticConteosBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticConteosDto;
+import mx.org.kaana.mantic.db.dto.TcManticDispositivosDto;
 import mx.org.kaana.mantic.enums.ERespuesta;
 import mx.org.kaana.mantic.ws.imox.beans.Almacen;
 import mx.org.kaana.mantic.ws.imox.beans.Articulo;
@@ -27,6 +28,8 @@ import mx.org.kaana.mantic.ws.imox.beans.Cantidad;
 import mx.org.kaana.mantic.ws.imox.beans.Conteo;
 import mx.org.kaana.mantic.ws.imox.beans.Empresa;
 import mx.org.kaana.mantic.ws.imox.beans.Inventario;
+import mx.org.kaana.mantic.ws.imox.beans.Item;
+import mx.org.kaana.mantic.ws.imox.beans.Items;
 import mx.org.kaana.mantic.ws.imox.beans.Producto;
 import mx.org.kaana.mantic.ws.imox.beans.Ubicacion;
 import mx.org.kaana.mantic.ws.imox.beans.Usuario;
@@ -222,6 +225,28 @@ public class Planetas implements Serializable {
     return regresar;
   }
   
+  // SERVICIO WEB PARA REGISTRAR UN CONTEO INDIVIDUAL
+  public String solar(Long radio, String densidad, String atmosfera) throws Exception {
+    String regresar           = Decoder.toJson(new Respuesta(ERespuesta.CORRECTO.getCodigo(), "Proceso correcto")); 
+    Map<String, Object> params= new HashMap<>();
+    Respuesta respuesta       = null;
+    try {
+      respuesta= this.toRespueta(this.neptuno(atmosfera, radio));
+      if(Objects.equals(respuesta.getCodigo(), ERespuesta.CORRECTO.getCodigo())) 
+        regresar= Decoder.toJson(new Respuesta(ERespuesta.CORRECTO.getCodigo(), this.toAplicarItems(radio, densidad)));
+      else
+        regresar= Decoder.toJson(respuesta);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      regresar= Decoder.toJson(new Respuesta(ERespuesta.ERROR.getCodigo(), e.getMessage()));
+    } // catch
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  }
+  
   // SERVICIO WEB PARA VERIFICAR QUE UN USUARIO ESTA ACTIVO
   public String neptuno(String atmosfera, Long radio) throws Exception {
     String regresar           = Decoder.toJson(new Respuesta(ERespuesta.CORRECTO.getCodigo(), "Proceso correcto")); 
@@ -310,6 +335,100 @@ public class Planetas implements Serializable {
     } // finally
     return regresar;
   }
+
+  // SERVICIO WEB PARA PARA ENROLAR DISPOSITIVOS
+  public String luna(Long radio, String densidad, String atmosfera) throws Exception {
+    String regresar           = Decoder.toJson(new Respuesta(ERespuesta.CORRECTO.getCodigo(), "Proceso correcto")); 
+    Map<String, Object> params= new HashMap<>();
+    Respuesta respuesta       = null;
+    try {
+      respuesta= this.toRespueta(this.neptuno(atmosfera, radio));
+      if(Objects.equals(respuesta.getCodigo(), ERespuesta.CORRECTO.getCodigo())) {
+        regresar= Decoder.toJson(new Respuesta(ERespuesta.CORRECTO.getCodigo(), this.toEnrolar(radio, densidad)));
+      } // if  
+      else
+        regresar= Decoder.toJson(respuesta);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      regresar= Decoder.toJson(new Respuesta(ERespuesta.ENROLAMIENTO_ERROR.getCodigo(), e.getMessage()));
+    } // catch
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  }
+
+  // SERVICIO WEB PARA VERIFICAR LA VIGENCIA DE UNA APLICACIÓN MOVIL
+  public String sistema(String atmosfera, String radio, String densidad) throws Exception {
+    String regresar           = Decoder.toJson(new Respuesta(ERespuesta.CORRECTO.getCodigo(), "Proceso correcto")); 
+    Map<String, Object> params= new HashMap<>();
+    try {
+      if(Objects.equals(BouncyEncryption.decrypt(TEXT_TOKEN), BouncyEncryption.decrypt(atmosfera))) {
+        params.put("nombre", BouncyEncryption.decrypt(radio));
+        params.put("version", densidad);
+        Entity vigencia= (Entity)DaoFactory.getInstance().toEntity("TcManticVersionesDto", "row", params);
+        if(vigencia!= null && !vigencia.isEmpty()) 
+          regresar= Decoder.toJson(new Respuesta(ERespuesta.CORRECTO.getCodigo(), vigencia.toString("vigencia")));
+        else
+          regresar= Decoder.toJson(new Respuesta(ERespuesta.APLICACION_ERROR.getCodigo(), ERespuesta.APLICACION_ERROR.getDescripcion()));
+      } // if
+      else
+        regresar= Decoder.toJson(new Respuesta(ERespuesta.TOKEN.getCodigo(), ERespuesta.TOKEN.getDescripcion()));
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      regresar= Decoder.toJson(new Respuesta(ERespuesta.APLICACION_ERROR.getCodigo(), e.getMessage()));
+    } // catch
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  }
+  
+  private String toEnrolar(Long idUsuario, String densidad) throws Exception {
+    String id                 = Cadena.rellenar(String.valueOf(idUsuario), 3, '0', true);
+    String regresar           = id.concat(Fecha.toRegistro());
+    Map<String, Object> params= new HashMap<>();
+    Transaction transaction   = null;
+    Session session           = null;
+		try {
+      LOG.error("ENROLAR: ["+ densidad+ "]");
+			session    = SessionFactoryFacade.getInstance().getSession(-1L);
+			transaction= session.beginTransaction();
+			session.clear();
+      TcManticDispositivosDto item= this.toDispositivo(densidad);
+      if(item!= null) {
+        item.setNombre(BouncyEncryption.decrypt(item.getNombre())); 
+        item.setCuenta(BouncyEncryption.decrypt(item.getCuenta())); 
+        Entity entity= (Entity)DaoFactory.getInstance().toEntity("TcManticVersionesDto", "identically", item.toMap());
+        if(entity!= null && !entity.isEmpty()) {
+          item.setIdVersion(entity.toLong("idVersion"));
+        } // if
+        item.setOriginal(densidad);
+        item.setIdActivo(1L);
+        DaoFactory.getInstance().insert(session, item);
+      } // if
+			transaction.commit();
+		} // try
+		catch (Exception e) {
+      LOG.error("SOLICITUD: "+ densidad);
+      Error.mensaje(e);
+			if (transaction!= null) {
+				transaction.rollback();
+			} // if
+			throw e;
+		} // catch
+		finally {
+      Methods.clean(params);
+			if (session!= null) {
+				session.close();
+			} // if
+			transaction= null;
+			session    = null;
+		} // finally    
+    return regresar;
+  }
   
   private String toAplicarConteo(Long idUsuario, String densidad) throws Exception {
     String id                 = Cadena.rellenar(String.valueOf(idUsuario), 3, '0', true);
@@ -318,6 +437,7 @@ public class Planetas implements Serializable {
     Transaction transaction   = null;
     Session session           = null;
 		try {
+      LOG.error("CONTEO: ["+ densidad+ "]");
 			session    = SessionFactoryFacade.getInstance().getSession(-1L);
 			transaction= session.beginTransaction();
 			session.clear();
@@ -417,6 +537,113 @@ public class Planetas implements Serializable {
     return regresar;
   }
 
+  private String toAplicarItems(Long idUsuario, String densidad) throws Exception {
+    String id                 = Cadena.rellenar(String.valueOf(idUsuario), 3, '0', true);
+    String regresar           = id.concat(Fecha.toRegistro());
+    Map<String, Object> params= new HashMap<>();
+    Transaction transaction   = null;
+    Session session           = null;
+		try {
+      LOG.error("CONTEO: ["+ densidad+ "]");
+			session    = SessionFactoryFacade.getInstance().getSession(-1L);
+			transaction= session.beginTransaction();
+			session.clear();
+      Items items= this.toItems(densidad);
+      TcManticConteosDto conteo= new TcManticConteosDto(
+        densidad, // String conteos, 
+        items.getRegistro(), // String fecha, 
+        new Long(items.getProductos().size()), // Long articulos, 
+        items.getIdUsuario(), // Long idUsuario, 
+        -1L, // Long idConteo, 
+        null, // Timestamp procesado, 
+        items.getIdConteo(), // Long idReferencia, 
+        BouncyEncryption.decrypt(items.getNombre()), // String nombre, 
+        1L, // Long idConteoEstatus, 
+        regresar, // String token
+        items.getIdEmpresa(), // Long idEmpresa
+        items.getIdAlmacen(), // Long idAlmacen
+        items.getSemilla(), // String semilla
+        items.getVersion() // String version
+      );
+      params.put("semilla", conteo.getSemilla());
+      params.put("idUsuario", conteo.getIdUsuario());
+      params.put("idReferencia", conteo.getIdReferencia());
+      params.put("nombre", conteo.getNombre());
+      TcManticConteosDto existe= (TcManticConteosDto)DaoFactory.getInstance().toEntity(TcManticConteosDto.class, "TcManticConteosDto", "identically", params);
+      if(Objects.equals(existe, null)) {
+        // INSERTAR EL REGISTRO DE LOS CONTEOS PARA DESPUES VERFICAR SI SE INTEGRARON
+        DaoFactory.getInstance().insert(session, conteo);
+        TcManticConteosBitacoraDto bitacora= new TcManticConteosBitacoraDto(
+          null, // String justificacion, 
+          conteo.getIdUsuario(), // Long idUsuario, 
+          conteo.getIdConteo(), // Long idConteo, 
+          -1L, // Long idConteoBitacora, 
+          conteo.getIdConteoEstatus() // Long idConteoEstatus
+        );
+        DaoFactory.getInstance().insert(session, bitacora);
+      } // if
+      else {
+        regresar= existe.getToken();
+        if(existe.getArticulos()!= items.getProductos().size()) {
+          existe.setConteos(densidad);
+          existe.setArticulos(new Long(items.getProductos().size()));
+          DaoFactory.getInstance().update(session, existe);
+        } // if
+        conteo.setIdConteo(existe.getIdConteo());
+        TcManticConteosBitacoraDto bitacora= new TcManticConteosBitacoraDto(
+          "SE ENVIO UNA ACTUALIZACIÓN", // String justificacion, 
+          conteo.getIdUsuario(), // Long idUsuario, 
+          conteo.getIdConteo(), // Long idConteo, 
+          -1L, // Long idConteoBitacora, 
+          conteo.getIdConteoEstatus() // Long idConteoEstatus
+        );
+        DaoFactory.getInstance().insert(session, bitacora);
+      } // if
+      for (Item item: items.getProductos()) {
+        TcManticConteosDetallesDto detalle= new TcManticConteosDetallesDto(
+          item.getE(), // String fecha, 
+          -1L, // Long idConteoDetalle, 
+          conteo.getIdConteo(), // Long idConteo, 
+          null, // Timestamp procesado, 
+          item.getB(), // Double cantidad, 
+          item.getA(), // Long idArticulo, 
+          item.getD(), // String nombre
+          item.getC() // String codigo
+        );
+        params.put("idConteo", conteo.getIdConteo());
+        params.put("idArticulo", item.getA());
+        TcManticConteosDetallesDto copia= (TcManticConteosDetallesDto)DaoFactory.getInstance().toEntity(TcManticConteosDetallesDto.class, "TcManticConteosDetallesDto", "identically", params);
+        if(Objects.equals(copia, null)) 
+          DaoFactory.getInstance().insert(session, detalle);
+        else
+          if(Objects.equals(copia.getProcesado(), null)) {
+            copia.setCantidad(item.getB());
+            copia.setFecha(item.getE());
+            copia.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+            DaoFactory.getInstance().update(session, copia);
+          } // if  
+      } // for
+			transaction.commit();
+		} // try
+		catch (Exception e) {
+      LOG.error("SOLICITUD: "+ densidad);
+      Error.mensaje(e);
+			if (transaction!= null) {
+				transaction.rollback();
+			} // if
+			throw e;
+		} // catch
+		finally {
+      Methods.clean(params);
+			if (session!= null) {
+				session.close();
+			} // if
+			transaction= null;
+			session    = null;
+		} // finally    
+    return regresar;
+  }
+
   private Respuesta toRespueta(String msg) {
     Gson gson = new Gson();
     return gson.fromJson(msg, Respuesta.class);
@@ -425,6 +652,16 @@ public class Planetas implements Serializable {
   private Conteo toConteo(String msg) {
     Gson gson = new Gson();
     return gson.fromJson(msg, Conteo.class);
+  }
+  
+  private Items toItems(String msg) {
+    Gson gson = new Gson();
+    return gson.fromJson(msg, Items.class);
+  }
+  
+  private TcManticDispositivosDto toDispositivo(String msg) {
+    Gson gson = new Gson();
+    return gson.fromJson(msg, TcManticDispositivosDto.class);
   }
   
 }

@@ -89,6 +89,7 @@ inner join
 	tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
 where
   tc_mantic_conteos.id_empresa in ({sucursales})
+  and tc_mantic_conteos.id_conteo_estatus in (1)
   and tc_mantic_conteos_detalles.fecha&lt;= '{fecha}'
 group by
   tc_mantic_conteos.id_conteo

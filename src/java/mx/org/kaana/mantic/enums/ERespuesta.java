@@ -11,6 +11,8 @@ public enum ERespuesta {
 	SIN_INVENTARIOS("07", "No se tienen inventarios registrados y/o nuevos"),
 	SIN_RESPALDO   ("08", "No se encontro ningun respaldo"),
 	USUARIO_ERROR  ("09", "El usuario no esta activo"),
+	ENROLAMIENTO_ERROR ("10", "No se puedo enrolar el dispositivo"),
+	APLICACION_ERROR ("11", "Esta aplicación no existe"),
 	TOKEN          ("98", "Token invalido"),
 	ERROR          ("99", "Error");	
 	

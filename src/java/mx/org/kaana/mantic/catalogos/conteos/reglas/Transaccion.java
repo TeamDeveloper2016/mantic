@@ -136,11 +136,11 @@ public class Transaccion extends IBaseTnx implements Serializable {
       DaoFactory.getInstance().insert(sesion, bitacora);
       List<TcManticConteosDetallesDto> items= (List<TcManticConteosDetallesDto>)DaoFactory.getInstance().toEntitySet(sesion, TcManticConteosDetallesDto.class, "TcManticConteosDetallesDto", "detalle", params);
       for (TcManticConteosDetallesDto item: items) {
+        LOG.error("Articulo: "+ item.getIdArticulo()+ " - "+ item.getCantidad()+ " ["+ item.getProcesado()+ "]");  
         if(Objects.equals(item.getProcesado(), null)) {
           regresar= this.toArticulo(sesion, item);
           item.setProcesado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
           DaoFactory.getInstance().update(sesion, item);
-          // LOG.error(item);
         } // if
         else
           regresar= Boolean.TRUE;

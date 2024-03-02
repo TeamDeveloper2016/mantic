@@ -398,7 +398,7 @@ public class CFDIFactory implements Serializable {
 		Client regresar= null;
 		Client cliente = null;
 		try {
-			cliente= loadCliente(detalleCliente);
+			cliente= this.loadCliente(detalleCliente);
 			if(Configuracion.getInstance().isEtapaProduccion() || Configuracion.getInstance().isEtapaPruebas() || Configuracion.getInstance().isEtapaDesarrollo())
 			  regresar= createClient(cliente);
 		} // try
@@ -428,9 +428,13 @@ public class CFDIFactory implements Serializable {
 		Client regresar= null;
 		Client cliente = null;
 		Client pivote  = null;
+    Boolean clean  = Boolean.FALSE;
 		try {
 			cliente= this.loadCliente(detalleCliente);
 			pivote = this.clientFindById(id);
+      clean  = Objects.equals(pivote, null);
+      if(clean)
+        pivote= this.createClient(detalleCliente);
 			pivote.setAddress(cliente.getAddress());
 			pivote.setCfdiUse(cliente.getCfdiUse());
 			pivote.setEmail(cliente.getEmail());
@@ -438,8 +442,12 @@ public class CFDIFactory implements Serializable {
 			pivote.setRfc(cliente.getRfc());
       pivote.setFiscalRegime(cliente.getFiscalRegime()); // CFDI 4.0
       pivote.setTaxZipCode(cliente.getTaxZipCode()); // CFDI 4.0
-			if(Configuracion.getInstance().isEtapaProduccion() || Configuracion.getInstance().isEtapaPruebas() || Configuracion.getInstance().isEtapaDesarrollo())
-			  regresar= this.facturama.Clients().Update(pivote, pivote.getId());
+      if(!clean) {
+			  if(Configuracion.getInstance().isEtapaProduccion() || Configuracion.getInstance().isEtapaPruebas() || Configuracion.getInstance().isEtapaDesarrollo())
+  			  regresar= this.facturama.Clients().Update(pivote, pivote.getId());
+      } // if  
+      else
+        regresar= pivote;
 		} // try
 		catch (Exception e) {			
 			LOG.error("Cliente: "+ detalleCliente);
@@ -451,8 +459,13 @@ public class CFDIFactory implements Serializable {
 	public Client clientFindById(String id) throws Exception, Exception {
 		Client regresar= null;
 		try {
-			if(Configuracion.getInstance().isEtapaProduccion() || Configuracion.getInstance().isEtapaPruebas() || Configuracion.getInstance().isEtapaDesarrollo())
+			if(Configuracion.getInstance().isEtapaProduccion() || Configuracion.getInstance().isEtapaPruebas() || Configuracion.getInstance().isEtapaDesarrollo()) {
 			  regresar= this.facturama.Clients().Retrieve(id);
+        // SI ES NULL SE DEBE DE LIMPIAR ID DE FACTURAMA
+        if(Objects.equals(regresar, null)) {
+          
+        } // if
+      } // if
 		} // try
 		catch (Exception e) {			
 			throw e;

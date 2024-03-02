@@ -92,9 +92,7 @@ public class Calendario extends Comun implements Serializable {
   @Override
   protected void init() {
     try {
-      //Calendar calendar= new GregorianCalendar(2023, 4, 14);
       Calendar calendar= Calendar.getInstance();
-			this.attrs.put("calendario", Calendar.getInstance());
       this.attrs.put("isAdmin", JsfBase.isAdminEncuestaOrAdmin());
       this.attrs.put("fechaInicio", new Date(calendar.getTimeInMillis()));
       this.attrs.put("hoy", Fecha.formatear(Fecha.DIA_FECHA));
@@ -107,7 +105,6 @@ public class Calendario extends Comun implements Serializable {
       this.toLoadCuentasAgendar();
       this.doLoadCuentasVentas();
       this.toLoadCalendario(Fecha.formatear(Fecha.FECHA_ESTANDAR, new Date(calendar.getTimeInMillis())));
-      this.attrs.put("particular", this.toEmptyTotales());
     } // try
     catch (Exception e) {
       JsfBase.addMessageError(e);

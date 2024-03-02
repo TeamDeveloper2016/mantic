@@ -68,12 +68,11 @@ public class Filtro extends Comun implements Serializable {
   @PostConstruct
   @Override
   protected void init() {
-		Long idEgreso= null;
+		Long idEgreso= (Long)JsfBase.getFlashAttribute("idEgreso");
     try {    	      
       this.attrs.put("descripcion", "");
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());  
 			this.loadEstatus();
-			idEgreso= (Long)JsfBase.getFlashAttribute("idEgreso");
 			if(idEgreso!= null) {
 				this.attrs.put("idEgreso", idEgreso);
 				this.doLoad();
@@ -89,9 +88,8 @@ public class Filtro extends Comun implements Serializable {
 
 	private void loadEstatus() {
 		List<UISelectItem>estatus= null;
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			estatus= UISelect.build("TcManticEgresosEstatusDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS);
 			estatus.add(0, new UISelectItem(-1L, "TODOS"));
@@ -101,15 +99,13 @@ public class Filtro extends Comun implements Serializable {
 		catch (Exception e) {			
 			throw e;
 		} // catch		
-	} // loadEstatus
+	} 
 	
   @Override
   public void doLoad() {
-    List<Columna> columns     = null;
-		Map<String, Object> params= null;
+    List<Columna> columns     = new ArrayList<>();
+		Map<String, Object> params= new HashMap<>();
     try {
-      columns= new ArrayList<>();
-			params = new HashMap<>();
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));			
       columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));			
@@ -130,7 +126,7 @@ public class Filtro extends Comun implements Serializable {
     } // finally		
   } // doLoad
 	
-	private String toCondicion(){
+	private String toCondicion() {
 		String regresar = null;
 		String search   = null;
 		StringBuilder sb= null;
@@ -193,7 +189,7 @@ public class Filtro extends Comun implements Serializable {
     return "/Paginas/Mantic/Catalogos/Masivos/importar".concat(Constantes.REDIRECIONAR);
 	} // doMasivo	
 	
-	public void doRegistraNota(){
+	public void doRegistraNota() {
 		Transaccion transaccion= null;
 		Entity seleccionado    = null;
 		try {
@@ -240,9 +236,8 @@ public class Filtro extends Comun implements Serializable {
 	
 	public StreamedContent getDocumento() {
 		StreamedContent regresar= null;		
-		Entity seleccionado     = null;				
+		Entity seleccionado     = (Entity) this.attrs.get("seleccionado");				
 		try {			
-			seleccionado= (Entity) this.attrs.get("seleccionado");						
 			regresar= this.toZipFile(this.toAllFiles(seleccionado), seleccionado.toString("consecutivo"), seleccionado.getKey());
 		} // try 
 		catch (Exception e) {
@@ -251,15 +246,13 @@ public class Filtro extends Comun implements Serializable {
     return regresar;		
 	} // getDocumento
 	
-	private List<ZipEgreso> toAllFiles(Entity seleccionado) throws Exception{
-		List<ZipEgreso> regresar  = null;
+	private List<ZipEgreso> toAllFiles(Entity seleccionado) throws Exception {
+		List<ZipEgreso> regresar  = new ArrayList<>();
 		List<String> namesFiles   = null;
-		Map<String, Object> params= null;		
+		Map<String, Object> params= new HashMap<>();		
 		List<Nombres> list        = null;
 		ZipEgreso pivote          = null;
 		try {			
-			regresar= new ArrayList<>();
-			params= new HashMap<>();
 			params.put("idEgreso", seleccionado.getKey());
 			for(ECuentasEgresos item: ECuentasEgresos.values()) {
         if(Objects.equals(item.getGroup(), 1)) {
@@ -297,7 +290,7 @@ public class Filtro extends Comun implements Serializable {
 			Methods.clean(params);
 		} // finally
 		return regresar;
-	} // toAllFiles
+	} 
 	
 	private StreamedContent toZipFile(List<ZipEgreso> files, String descripcion, Long idEgreso) {
 		String zipName                 = null;		
@@ -323,13 +316,11 @@ public class Filtro extends Comun implements Serializable {
     return regresar;
 	} // toZipFile
 	
-	private List<String> loadNotas(Long idEgreso) throws Exception{
-		List<String> regresar    = null;
+	private List<String> loadNotas(Long idEgreso) throws Exception {
+		List<String> regresar    = new ArrayList<>();
 		List<Entity> notas       = null;
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		try {
-			regresar= new ArrayList<>();
-			params= new HashMap<>();
 			params.put("idEgreso", idEgreso);
 			notas= DaoFactory.getInstance().toEntitySet("VistaEgresosDto", "observaciones", params, Constantes.SQL_TODOS_REGISTROS);
 			if(notas!= null && !notas.isEmpty()){
@@ -347,12 +338,10 @@ public class Filtro extends Comun implements Serializable {
 	} // loadNotas
 	
 	public void doLoadEstatus() {
-		Entity seleccionado          = null;
-		Map<String, Object>params    = null;
+		Entity seleccionado          = (Entity)this.attrs.get("seleccionado");
+		Map<String, Object>params    = new HashMap<>();
 		List<UISelectItem> allEstatus= null;
 		try {
-			seleccionado= (Entity)this.attrs.get("seleccionado");
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_egreso_estatus in (".concat(seleccionado.toString("estatusAsociados")).concat(")"));
 			allEstatus= UISelect.build("TcManticEgresosEstatusDto", params, "nombre", EFormatoDinamicos.MAYUSCULAS);			
 			this.attrs.put("allEstatus", allEstatus);
@@ -370,9 +359,8 @@ public class Filtro extends Comun implements Serializable {
 	public void doActualizarEstatus() {
 		Transaccion transaccion            = null;
 		TcManticEgresosBitacoraDto bitacora= null;
-		Entity seleccionado                = null;
+		Entity seleccionado                = (Entity)this.attrs.get("seleccionado");
 		try {
-			seleccionado= (Entity)this.attrs.get("seleccionado");			
 			bitacora= new TcManticEgresosBitacoraDto((String)this.attrs.get("justificacion"), new Long((String)this.attrs.get("estatus")), seleccionado.getKey(), JsfBase.getIdUsuario(), -1L);
 			transaccion= new Transaccion(bitacora);
 			if(transaccion.ejecutar(EAccion.COMPLEMENTAR))
@@ -407,13 +395,12 @@ public class Filtro extends Comun implements Serializable {
 	} // doRowToggle
   
   public void doLoadDetalle() {
-    List<Columna> columns     = null;
+    List<Columna> columns     = new ArrayList<>();
 	  Map<String, Object> params= new HashMap<>();	
     try {
 			Entity entity= (Entity)this.attrs.get("seleccionado");
 			params.put("sortOrder", "order by tc_mantic_notas_entradas.registro desc");
 			params.put("idEgreso", entity.toLong("idEgreso"));
-      columns= new ArrayList<>();
       columns.add(new Columna("proveedor", EFormatoDinamicos.MAYUSCULAS));    
       columns.add(new Columna("fechaFactura", EFormatoDinamicos.FECHA_CORTA));    
       columns.add(new Columna("total", EFormatoDinamicos.MILES_CON_DECIMALES));    
@@ -484,10 +471,9 @@ public class Filtro extends Comun implements Serializable {
 	} 
   
   public void doLoadDocumentos(Entity row) {
-    Map<String, Object> params = null;
+    Map<String, Object> params = new HashMap<>();
     try {      
       this.attrs.put("seleccionadoDetalle", row);
-      params = new HashMap<>();      
       params.put("idEgreso", row.toLong("idEgreso"));      
       params.put("idTipoDocumento", -1L);      
       this.doLoadImportados("VistaEgresosDto", "exportar", params);   
@@ -502,11 +488,10 @@ public class Filtro extends Comun implements Serializable {
   }
 
 	public List<UISelectEntity> doCompleteProveedor(String codigo) {
- 		List<Columna> columns     = null;
+ 		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
 		boolean buscaPorCodigo    = false;
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
