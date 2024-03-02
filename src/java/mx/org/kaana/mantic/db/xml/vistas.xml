@@ -5,6 +5,42 @@
 <process>
 	<dml> 
 		<unit id="VistaConteosDto">
+      <select id="versiones">
+select
+  tc_mantic_versiones.id_version as id_key,
+  tc_mantic_versiones.nombre,
+  tc_mantic_versiones.version,
+  tc_mantic_versiones.id_activa,
+  tc_mantic_versiones.vigencia,
+  tc_mantic_versiones.observaciones,
+  tc_mantic_versiones.registro
+from
+  tc_mantic_versiones
+where                
+  {condicion}
+{sortOrder}        
+      </select>
+      <select id="dispositivos">
+select
+  tc_mantic_dispositivos.id_dispositivo as id_key,
+  tc_mantic_dispositivos.imei,
+  tc_mantic_dispositivos.nombre,
+  tc_mantic_dispositivos.version,
+  tc_mantic_dispositivos.cuenta,
+  tc_mantic_dispositivos.dispositivo,
+  tc_mantic_dispositivos.semilla,
+  tc_mantic_dispositivos.id_activo,
+  tc_mantic_dispositivos.registro,
+  tc_mantic_versiones.id_activa,
+  tc_mantic_versiones.vigencia
+from
+  tc_mantic_dispositivos
+left join
+  tc_mantic_versiones on tc_mantic_dispositivos.id_version= tc_mantic_versiones.id_version
+where                
+  {condicion}
+{sortOrder}        
+      </select>
       <select id="lazy">
 select
   tc_mantic_conteos.id_conteo as id_key,
@@ -106,6 +142,7 @@ select
   tc_mantic_personas.cuenta,
   tc_mantic_personas.contrasenia as token,
   if(tc_janal_usuarios.id_perfil>= 3, 3, tc_janal_usuarios.id_perfil) as id_perfil,
+  tc_janal_usuarios.activo as activo,
   date_format(tc_janal_usuarios.registro, '%Y%m%d%h%i%S') as registro
 from
   tc_janal_usuarios

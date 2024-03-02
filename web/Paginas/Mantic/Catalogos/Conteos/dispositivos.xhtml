@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                template="/WEB-INF/plantillas/filtro.xhtml">
+	<ui:param name="titulo" value="Catálogo de dispositivos enrolados" />
+	<ui:define name="librerias">
+		<script type="text/javascript">
+			Janal.Control.fields = {
+				imei        : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+				nombre      : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-minusculas'},
+				dispositivo : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-minusculas'},
+				version     : {validaciones: 'libre', mascara: 'libre'},
+        cuenta      : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+        fechaInicio : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
+        fechaTermino: {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'}
+			};
+			
+			function reload() {
+			};				
+      
+			Janal.Control.Validations.prototype.onLoadCallBack= function() {
+				$janal.console('janal.onLoadCallBack.reload()');
+				setTimeout('reload();', 1000);
+			};
+      
+			$(document).ready(function() { });
+		</script>		
+	</ui:define>
+	<ui:define name="contenido">		
+		<div class="janal-align-right xs-pantalla janal-wid-100">
+			<p:commandButton icon="fa fa-search" value="Filtrar" iconPos="right" onstart="janal.togglePanel('panelBusqueda');" styleClass="janal-text-white janal-wid-100"/>
+		</div>			
+		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+			<div class="ui-grid-row janal-grid-row">
+				<div id="collapse-find" class="ui-grid-col-3">
+          <p:panel id="panelBusqueda" header="Búsqueda:" styleClass="lg-pantalla" toggleable="true" toggleOrientation="horizontal">
+						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
+						<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+              <p:outputLabel for="imei" value="IMEI:"/>
+              <p:inputText id="imei" placeholder="Ej. 0987654321" value="#{manticCatalogosConteosDispositivos.attrs.imei}" styleClass="janal-wid-100-txt"/> 
+							<p:outputLabel for="nombre" value="ID app:"/>
+              <p:inputText id="nombre" placeholder="Ej. mx.org.imox.bonanza" value="#{manticCatalogosConteosDispositivos.attrs.nombre}" styleClass="janal-wid-100-txt"/> 
+							<p:outputLabel for="cuenta" value="Cuenta:"/>							
+              <p:inputText id="cuenta" placeholder="Ej. juan.perez" value="#{manticCatalogosConteosDispositivos.attrs.cuenta}" styleClass="janal-wid-100-txt"/> 
+							<p:outputLabel for="dispositivo" value="Dispositivo:"/>							
+              <p:inputText id="dispositivo" placeholder="Ej. SAMSUNG GALAXY" value="#{manticCatalogosConteosDispositivos.attrs.nombre}" styleClass="janal-wid-100-txt"/> 
+							<p:outputLabel for="version" value="Versión:"/>							
+              <p:inputText id="version" placeholder="Ej. 0.0.1.0" value="#{manticCatalogosConteosDispositivos.attrs.version}" styleClass="janal-wid-100-txt"/> 
+              <p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
+							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{manticCatalogosConteosDispositivos.attrs.fechaInicio}" pattern="dd/MM/yyyy" locale="mx" converter="janal.convertidor.Calendario"/>
+              <p:outputLabel for="fechaTermino" value="Fecha término:"/>
+							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{manticCatalogosConteosDispositivos.attrs.fechaTermino}" pattern="dd/MM/yyyy" locale="mx" converter="janal.convertidor.Calendario"/>
+							<p:separator/>
+						</p:panelGrid>
+						<div class="janal-align-right">
+							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute(true);" process="@form" actionListener="#{manticCatalogosConteosDispositivos.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
+							<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b" icon="fa fa-filter" onstart="return janal.execute(true);" process="@form" actionListener="#{manticCatalogosConteosDispositivos.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
+						</div>
+					</p:panel>
+				</div>
+				<p:spacer width="5px"/>
+				<div id="collapse-content" class="ui-grid-col-9">
+					<div class="ui-grid-row janal-grid-row">
+            <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticCatalogosConteosDispositivos.lazyModel}" styleClass="janal-wid-100" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosConteosDispositivos.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosConteosDispositivos.lazyModel.rowCount gt manticCatalogosConteosDispositivos.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+							<p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
+							<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
+							<f:facet name="header">
+								<div class="lg-pantalla">
+									<p:menuButton value="Opciones">
+										<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+										<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+									</p:menuButton>
+								</div>	
+								<div class="xs-pantalla">
+									<p:commandButton icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+									<p:commandButton icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+								</div>	
+							</f:facet>												
+							<p:column styleClass="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.imei}">
+								<f:facet name="header">
+									<h:outputText value="IMEI"/>
+								</f:facet>
+								<h:outputText value="#{row['imei']}"/>
+							</p:column>														
+							<p:column styleClass="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.nombre}">
+								<f:facet name="header">
+									<h:outputText value="ID app"/>
+								</f:facet>
+								<h:outputText value="#{row['nombre']}"/>
+							</p:column>														
+							<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-6" sortBy="#{row.version}">
+								<f:facet name="header">
+									<h:outputText value="Versión"/>
+								</f:facet>
+								<h:outputText value="#{row['version']}"/>
+							</p:column>														
+							<p:column styleClass="janal-column-left MarAuto Responsive janal-wid-8" sortBy="#{row.cuenta}">
+								<f:facet name="header">
+									<h:outputText value="Cuenta"/>
+								</f:facet>
+								<h:outputText value="#{row['cuenta']}"/>
+							</p:column>														
+							<p:column styleClass="MarAuto Responsive" sortBy="#{row.dispositivo}">
+								<f:facet name="header">
+									<h:outputText value="Dispositivo"/>
+								</f:facet>
+								<h:outputText value="#{row['dispositivo']}"/>
+							</p:column>											
+							<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.semilla}">
+								<f:facet name="header">
+									<h:outputText value="semilla"/>
+								</f:facet>
+								<h:outputText value="#{row['semilla']}"/>
+							</p:column>			
+							<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-12" sortBy="#{row.registro}">
+								<f:facet name="header">
+									<h:outputText value="Fecha"/>
+								</f:facet>
+								<h:outputText value="#{row['registro']}"/>
+							</p:column>			
+							<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-3" sortBy="#{row.idActivo}">
+								<f:facet name="header">
+									<h:outputText value=""/>
+								</f:facet>
+								<h:graphicImage library="janal" name="icon/semaforos/#{row.idActivo eq '2'? 'circulo-rojo.png': 'circulo-verde.png'}" title="#{row.idActivo eq '2'? 'NO': 'SI'} ACTIVO"/>
+							</p:column>
+							<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-12" sortBy="#{row.vigencia}">
+								<f:facet name="header">
+									<h:outputText value="Vigencia"/>
+								</f:facet>
+								<h:outputText value="#{row['vigencia']}"/>
+							</p:column>			
+							<f:facet name="footer">
+								Total [#{manticCatalogosConteosDispositivos.lazyModel== null? 0: manticCatalogosConteosDispositivos.lazyModel.rowCount}] registros
+							</f:facet>
+						</p:dataTable>
+						<p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
+              <p:menuitem icon="fa fa-trash" value="Eliminar" actionListener="#{manticCatalogosConteosDispositivos.doEliminar()}" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>
+						</p:contextMenu>		
+          </div>  
+				</div>
+			</div>
+		</div>		           				
+	</ui:define>    
+	<ui:param name="textoConfirmacion" value="¿Esta seguro de eliminar el dispositvo?" />
+	<ui:param name="accionConfirmacion" value="#{manticCatalogosConteosDispositivos}"/>
+	<ui:param name="updateComponent" value="tabla"/>
+	<ui:param name="eventoConfirmacion" value="doEliminar"	/>	
+	<ui:param name="renderedConfirmacion" value="true"/>	
+	<ui:define name="detalleConfirmacion">
+		<h:panelGrid columns="2">
+			<p:outputLabel value="IMEI: "/>
+			<p:outputLabel value="#{manticCatalogosConteosDispositivos.attrs.seleccionado.imei}"/>
+			<p:outputLabel value="ID app: "/>
+			<p:outputLabel value="#{manticCatalogosConteosDispositivos.attrs.seleccionado.nombre}"/>
+			<p:outputLabel value="Cuenta: "/>
+			<p:outputLabel value="#{manticCatalogosConteosDispositivos.attrs.seleccionado.cuenta}"/>
+			<p:outputLabel value="Dispositivo: "/>
+			<p:outputLabel value="#{manticCatalogosConteosDispositivos.attrs.seleccionado.dispositivo}"/>
+			<p:outputLabel value="Versión: "/>
+			<p:outputLabel value="#{manticCatalogosConteosDispositivos.attrs.seleccionado.version}"/>
+			<p:outputLabel value="Fecha: "/>
+			<p:outputLabel value="#{manticCatalogosConteosDispositivos.attrs.seleccionado.registro}"/>
+		</h:panelGrid>			
+	</ui:define>
+</ui:composition>

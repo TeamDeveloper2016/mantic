@@ -19,7 +19,7 @@ public class Local implements Serializable {
 
   public static void main(String ... args) throws Exception {
     Planetas planetas= new Planetas();
-    //System.out.println(planetas.mercurio(1L, "19000101", "/Eb1AjylyNNfQBLodn6Jf6Stb8NM7Hw2"));
+    System.out.println(planetas.mercurio(1L, "19000101", "/Eb1AjylyNNfQBLodn6Jf6Stb8NM7Hw2"));
     //System.out.println(planetas.marte(1L, "19000101", "/Eb1AjylyNNfQBLodn6Jf6Stb8NM7Hw2"));
     //System.out.println(planetas.jupiter(1L, "19000101", "/Eb1AjylyNNfQBLodn6Jf6Stb8NM7Hw2"));
     //System.out.println(planetas.saturno(1L, "19000101", "/Eb1AjylyNNfQBLodn6Jf6Stb8NM7Hw2"));
@@ -56,6 +56,8 @@ public class Local implements Serializable {
 //    System.out.println(Decoder.toJson(conteo));
 
 //    System.out.println(planetas.solar(1L, "{\"idConteo\":15,\"idUsuario\":30,\"nombre\":\"dA++H9+7Mojx3kauKPxe7uMxTVtAN1S7\",\"registro\":\"20240216014726954\",\"idEmpresa\":1,\"idAlmacen\":1,\"semilla\":\"20240216015732085\",\"productos\":[{\"a\":237,\"b\":50,\"c\":\"ALP31\",\"d\":\"\",\"e\":\"20240216014810600\"},{\"a\":238,\"b\":50,\"c\":\"ALP30\",\"d\":\"\",\"e\":\"20240216014810600\"}],\"version\":\"0.0.1.3\"}", "/Eb1AjylyNNfQBLodn6Jf6Stb8NM7Hw2"));
+    System.out.println(planetas.galaxia("/Eb1AjylyNNfQBLodn6Jf6Stb8NM7Hw2", "012345678901234567890", "20240216014726954"));
+
   }
 
 }

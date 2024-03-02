@@ -22,18 +22,20 @@ public class Usuario implements Serializable {
   private String cuenta;
   private String token;
   private Long idPerfil;
+  private Long activo;
   private String registro;
 
   public Usuario() {
   }
 
-  public Usuario(Long idEmpresa, Long idUsuario, String nombre, String cuenta, String token, Long idPerfil) {
+  public Usuario(Long idEmpresa, Long idUsuario, String nombre, String cuenta, String token, Long idPerfil, Long activo) {
     this.idEmpresa = idEmpresa;
     this.idUsuario = idUsuario;
     this.nombre = nombre;
     this.cuenta = cuenta;
     this.token = token;
     this.idPerfil = idPerfil;
+    this.activo = activo;
     this.registro= Fecha.toRegistro();
   }
 
@@ -85,6 +87,14 @@ public class Usuario implements Serializable {
     this.idPerfil = idPerfil;
   }
 
+  public Long getActivo() {
+    return activo;
+  }
+
+  public void setActivo(Long activo) {
+    this.activo = activo;
+  }
+
   public String getRegistro() {
     return registro;
   }
@@ -120,7 +130,7 @@ public class Usuario implements Serializable {
 
   @Override
   public String toString() {
-    return "Usuario{" + "idEmpresa=" + idEmpresa + ", idUsuario=" + idUsuario + ", nombre=" + nombre + ", cuenta=" + cuenta + ", token=" + token + ", idPerfil=" + idPerfil + ", registro=" + registro + '}';
+    return "Usuario{" + "idEmpresa=" + idEmpresa + ", idUsuario=" + idUsuario + ", nombre=" + nombre + ", cuenta=" + cuenta + ", token=" + token + ", idPerfil=" + idPerfil + ", activo=" + activo + ", registro=" + registro + '}';
   }
     
 }

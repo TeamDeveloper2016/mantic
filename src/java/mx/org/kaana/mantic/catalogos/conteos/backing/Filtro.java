@@ -182,50 +182,8 @@ public class Filtro extends Comun implements Serializable {
 			throw e;
 		} // catch		
 		return regresar;
-	} // toCondicion
+	} 
 
-  public String doAccion(String accion) {
-    EAccion eaccion = null;
-    try {
-      eaccion = EAccion.valueOf(accion.toUpperCase());
-      JsfBase.setFlashAttribute("accion", eaccion);
-      JsfBase.setFlashAttribute("idArticulo", (eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR) || eaccion.equals(EAccion.COPIAR) || eaccion.equals(EAccion.ACTIVAR)) ? ((Entity) this.attrs.get("seleccionado")).getKey() : -1L);
-    } // try
-    catch (Exception e) {
-      Error.mensaje(e);
-      JsfBase.addMessageError(e);
-    } // catch
-    return "accion".concat(Constantes.REDIRECIONAR);
-  } // doAccion
-  
-	public void doOpenDialog(EAccion accion, Long idArticulo){
-		Map<String, List<String>> params= new HashMap<>();
-		List<String> options            = new ArrayList<>();		
-		try {						
-			options.add(accion.name());
-			options.add(idArticulo.toString());
-			params.put("data", options);
-			UIBackingUtilities.getCurrentInstance().openDialog("express");
-		} // try
-		catch (Exception e) {
-			JsfBase.addMessageError(e);
-			Error.mensaje(e);
-		} // catch
-	} // doOpenDialog
-	
-	public void onReturnValues(SelectEvent event) {
-		Object object     = event.getObject();
-		String[] respuesta= null;
-		try {
-			respuesta= ((String) object).split(Constantes.TILDE);			
-			JsfBase.addMessage("Articulos", respuesta[0], ETipoMensaje.valueOf(respuesta[1]));			
-		} // try
-		catch (Exception e) {			
-			JsfBase.addMessageError(e);
-			Error.mensaje(e);			
-		} // catch		
-	} // onReturnValues
-	
 	public List<UISelectEntity> doCompleteArticulo(String search) {
 		this.attrs.put("existe", null);
 		List<Columna> columns         = new ArrayList<>();

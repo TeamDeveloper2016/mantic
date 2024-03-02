@@ -385,6 +385,36 @@ public class Planetas implements Serializable {
     } // finally
     return regresar;
   }
+
+  // SERVICIO WEB PARA VERIFICAR SI UN DISPOSITOVO ESTA ACTIVO
+  public String galaxia(String atmosfera, String radio, String densidad) throws Exception {
+    String regresar           = Decoder.toJson(new Respuesta(ERespuesta.CORRECTO.getCodigo(), "Proceso correcto")); 
+    Map<String, Object> params= new HashMap<>();
+    try {
+      if(Objects.equals(BouncyEncryption.decrypt(TEXT_TOKEN), BouncyEncryption.decrypt(atmosfera))) {
+        params.put("imei", radio);
+        params.put("semilla", densidad);
+        Entity vigencia= (Entity)DaoFactory.getInstance().toEntity("TcManticDispositivosDto", "row", params);
+        if(vigencia!= null && !vigencia.isEmpty()) 
+          if(Objects.equals(vigencia.toLong("idActivo"), 1L))
+            regresar= Decoder.toJson(new Respuesta(ERespuesta.CORRECTO.getCodigo(), ERespuesta.CORRECTO.getDescripcion()));
+          else 
+            regresar= Decoder.toJson(new Respuesta(ERespuesta.NO_ACTIVO.getCodigo(), ERespuesta.NO_ACTIVO.getDescripcion()));
+        else
+          regresar= Decoder.toJson(new Respuesta(ERespuesta.DISPOSITIVO_ERROR.getCodigo(), ERespuesta.DISPOSITIVO_ERROR.getDescripcion()));
+      } // if
+      else
+        regresar= Decoder.toJson(new Respuesta(ERespuesta.TOKEN.getCodigo(), ERespuesta.TOKEN.getDescripcion()));
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      regresar= Decoder.toJson(new Respuesta(ERespuesta.DISPOSITIVO_ERROR.getCodigo(), e.getMessage()));
+    } // catch
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  }
   
   private String toEnrolar(Long idUsuario, String densidad) throws Exception {
     String id                 = Cadena.rellenar(String.valueOf(idUsuario), 3, '0', true);

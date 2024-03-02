@@ -31,11 +31,12 @@ where
     <unit id="TcManticDispositivosDto">
       <select id="row">
 select      
-  *
+  tc_mantic_dispositivos.id_dispositivo as id_key,      
+  tc_mantic_dispositivos.*
 from      
   tc_mantic_dispositivos
 where 
-  {condicion} 
+  imei= '{imei}' and semilla= '{semilla}'
       </select>
       <select id="identically">
 select      
