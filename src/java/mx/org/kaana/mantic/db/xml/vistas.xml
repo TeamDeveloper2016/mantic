@@ -766,6 +766,7 @@ group by
 				  tc_mantic_transferencias_multiples_detalles.id_transferencia_multiple_detalle as id_comodin,
 				  tc_mantic_transferencias_multiples_detalles.id_transferencia_multiple as id_orden_detalle,
           tc_mantic_transferencias_multiples_detalles.codigo as propio,
+          tc_mantic_articulos.id_completo,
           tc_mantic_transferencias_multiples_detalles.*,
           ifnull(tc_mantic_transferencias_multiples_detalles.cantidad, 0) as solicitados,
           tc_mantic_transferencias_multiples_detalles.cantidad as cuantos,
@@ -1560,6 +1561,7 @@ group by
 				  tc_mantic_confrontas.id_confronta as id_proveedor,
 				  tc_mantic_confrontas_detalles.id_transferencia_detalle as id_orden_detalle,
 					tc_mantic_confrontas_detalles.id_articulo,
+          tc_mantic_articulos.id_completo,
 				  0 as id_aplicar,
 					tc_mantic_confrontas_detalles.cantidad as descuentos,
 				  ifnull(tc_mantic_inventarios.stock, 0) as stock,
@@ -1573,6 +1575,8 @@ group by
 					tc_mantic_confrontas_detalles on tc_mantic_confrontas.id_confronta= tc_mantic_confrontas_detalles.id_confronta
 				inner join
 				  tc_mantic_transferencias_estatus on tc_mantic_transferencias.id_transferencia_estatus= tc_mantic_transferencias_estatus.id_transferencia_estatus
+				inner join
+				  tc_mantic_articulos on tc_mantic_confrontas_detalles.id_articulo= tc_mantic_articulos.id_articulo
 				left join
 				  tc_mantic_transferencias_detalles on tc_mantic_confrontas_detalles.id_transferencia_detalle= tc_mantic_transferencias_detalles.id_transferencia_detalle
 				left join
@@ -1708,6 +1712,7 @@ group by
 				  tc_mantic_confrontas_detalles.id_confronta_detalle as id_comodin,
 				  tc_mantic_confrontas_detalles.id_transferencia_detalle as id_orden_detalle,
 				  tc_mantic_confrontas_detalles.codigo as propio,
+          tc_mantic_articulos.id_completo,
           tc_mantic_confrontas_detalles.*,
           tc_mantic_confrontas_detalles.cantidad as cuantos,
           tc_mantic_confrontas_detalles.cantidad as inicial,
@@ -1804,6 +1809,7 @@ group by
 					tc_mantic_articulos.nombre, 
 					tc_mantic_transferencias_detalles.codigo, 
 					tc_mantic_transferencias_detalles.codigo as propio, 
+          tc_mantic_articulos.id_completo,
 				  tc_mantic_articulos.sat,
 					0 as costo, 
 					0 as valor, 
@@ -2160,7 +2166,8 @@ group by
           tc_mantic_servicios_detalles.id_servicio_detalle as id_key,
           tc_mantic_servicios_detalles.id_servicio_detalle,
           tc_mantic_servicios_detalles.id_servicio,
-          tc_mantic_servicios_detalles.id_articulo,          
+          tc_mantic_servicios_detalles.id_articulo,  
+          tc_mantic_articulos.id_completo, 
           tc_mantic_servicios_detalles.codigo,
           tc_mantic_servicios_detalles.propio,
           tc_mantic_servicios_detalles.concepto as nombre,
@@ -2179,7 +2186,9 @@ group by
           tc_mantic_servicios_detalles.sat,
           tc_mantic_servicios_detalles.registro
         from      
-          tc_mantic_servicios_detalles				
+          tc_mantic_servicios_detalles	
+        inner join
+          tc_mantic_articulos on tc_mantic_servicios_detalles.id_articulo= tc_mantic_articulos.id_articulo
         where      
           tc_mantic_servicios_detalles.id_servicio = {idServicio}
 				order by
@@ -7199,6 +7208,7 @@ order by
 				  tc_mantic_notas_entradas.id_nota_entrada as id_key,
           tc_mantic_notas_entradas.id_sin_iva as sin_iva, 
 					tc_mantic_notas_entradas.tipo_de_cambio, 
+          tc_mantic_articulos.id_completo,
 					tc_mantic_articulos.nombre, 
 					tc_mantic_notas_detalles.sat, 
 					tc_mantic_notas_detalles.codigo, 
@@ -7323,6 +7333,7 @@ order by
 				  tc_mantic_devoluciones_detalles.id_devolucion as id_comodin,
           tc_mantic_devoluciones_detalles.id_devolucion,
           tc_mantic_devoluciones_detalles.id_nota_detalle,
+          tc_mantic_articulos.id_completo,
           tc_mantic_notas_detalles.codigo,
           tc_mantic_notas_detalles.sat,
           tc_mantic_notas_detalles.nombre,
@@ -7342,6 +7353,8 @@ order by
           tc_mantic_devoluciones_detalles
         inner join
           tc_mantic_notas_detalles on tc_mantic_devoluciones_detalles.id_nota_detalle= tc_mantic_notas_detalles.id_nota_detalle
+        inner join
+          tc_mantic_articulos on tc_mantic_notas_detalles.id_articulo= tc_mantic_articulos.id_articulo
         where      
           tc_mantic_devoluciones_detalles.id_devolucion = {idDevolucion}
 				order by
@@ -7726,6 +7739,7 @@ order by
 				  tc_mantic_notas_detalles.id_nota_detalle as id_comodin,
           tc_mantic_notas_detalles.id_nota_entrada,
           tc_mantic_notas_detalles.id_articulo,
+          tc_mantic_articulos.id_completo,
           ifnull(tc_mantic_notas_detalles.codigo, (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_notas_detalles.id_articulo and tc_mantic_articulos_codigos.id_principal= 2 and tc_mantic_articulos_codigos.id_proveedor= {idProveedor} limit 0, 1)) as codigo,
           tc_mantic_notas_detalles.sat,
           tc_mantic_notas_detalles.nombre,
@@ -9228,6 +9242,7 @@ order by
 				  tc_mantic_ordenes_detalles.id_orden_detalle as id_comodin,
 					tc_mantic_ordenes_detalles.id_orden_detalle,
 					tc_mantic_ordenes_detalles.id_articulo,
+          tc_mantic_articulos.id_completo,
 					ifnull(tc_mantic_ordenes_detalles.codigo, tc_mantic_articulos_codigos.codigo) as codigo,
 					tc_mantic_ordenes_detalles.propio,
 					tc_mantic_ordenes_detalles.nombre,
@@ -11105,6 +11120,7 @@ order by
 				select 
 				  tc_mantic_articulos.id_articulo as id_key,
 				  tc_mantic_articulos.id_articulo,
+          tc_mantic_articulos.id_completo,
 				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio,
           tc_mantic_articulos.nombre,
 				  tc_mantic_articulos.precio,
@@ -11162,6 +11178,7 @@ order by
 				  tc_mantic_transferencias_detalles.id_transferencia_detalle as id_comodin,
 				  tc_mantic_transferencias_detalles.id_transferencia as id_orden_detalle,
           tc_mantic_transferencias_detalles.codigo as propio,
+          tc_mantic_articulos.id_completo,
           tc_mantic_transferencias_detalles.*,
           ifnull(tc_mantic_transferencias_detalles.cantidad, 0) as solicitados,
           tc_mantic_transferencias_detalles.cantidad as cuantos,
@@ -11500,6 +11517,7 @@ order by
 				select
 					tc_mantic_ventas_detalles.id_venta_detalle as id_key,
 					tc_mantic_ventas_detalles.id_venta_detalle as id_comodin,
+          tc_mantic_articulos.id_completo,
           tc_mantic_articulos.fabricante,
           tc_mantic_ventas_detalles.*,
           if(tc_mantic_ventas_detalles.factor= 1, 'menudeo', 'ESPECIAL') as descripcion_precio,
@@ -11526,6 +11544,7 @@ order by
 				select
 					tc_mantic_ventas_detalles.id_venta_detalle as id_key,
 					tc_mantic_ventas_detalles.id_venta_detalle as id_comodin,
+          tc_mantic_articulos.id_completo,
           tc_mantic_articulos.fabricante,
           tc_mantic_ventas_detalles.*,
           if(tc_mantic_ventas_detalles.factor= 1, 'menudeo', 'ESPECIAL') as descripcion_precio,
@@ -11550,6 +11569,7 @@ order by
 				select
 					tc_mantic_articulos.id_articulo as id_key,
 					tc_mantic_articulos.id_articulo,
+          tc_mantic_articulos.id_completo,
 					tc_mantic_articulos.id_empresa,
 					tc_mantic_articulos.nombre,
 					tc_mantic_articulos.descripcion,
@@ -11618,6 +11638,7 @@ order by
           tc_mantic_ventas_detalles.id_venta_detalle,
           tc_mantic_ventas_detalles.id_venta,
           tc_mantic_ventas_detalles.id_articulo,
+          tc_mantic_articulos.id_completo,
           tc_mantic_ventas_detalles.codigo,
           tc_mantic_ventas_detalles.sat,
           tc_mantic_ventas_detalles.nombre,          
@@ -11667,6 +11688,7 @@ order by
           tc_mantic_ventas_detalles.id_venta_detalle,
           tc_mantic_ventas_detalles.id_venta,
           tc_mantic_ventas_detalles.id_articulo,
+          tc_mantic_articulos.id_completo,
           tc_mantic_ventas_detalles.codigo,
           tc_mantic_ventas_detalles.sat,
           tc_mantic_ventas_detalles.nombre,          
@@ -11713,6 +11735,7 @@ order by
 			<select id="detalleGarantia">
 				select
 					tc_mantic_garantias_detalles.id_garantia_detalle as id_comodin,
+          tc_mantic_articulos.id_completo,
           tc_mantic_garantias_detalles.*,
 					tc_mantic_ventas_detalles.sat,
 					tc_mantic_ventas_detalles.nombre,
@@ -11856,6 +11879,7 @@ order by
 				select
 					tc_mantic_ventas_detalles.id_venta_detalle as id_key,
 					tc_mantic_ventas_detalles.id_venta_detalle as id_comodin,
+          tc_mantic_articulos.id_completo,
           tc_mantic_ventas_detalles.*,
 				  tc_mantic_ventas_detalles.importe as total,
           tc_mantic_ventas_detalles.cantidad as cuantos,
@@ -11991,6 +12015,7 @@ order by
 				select
 					tc_mantic_ventas_detalles.id_venta_detalle as id_key,
 					tc_mantic_ventas_detalles.id_venta_detalle as id_comodin,
+          tc_mantic_articulos.id_completo,
           tc_mantic_ventas_detalles.*,
           tc_mantic_ventas_detalles.cantidad as cuantos,
           tc_mantic_ventas_detalles.cantidad as inicial,

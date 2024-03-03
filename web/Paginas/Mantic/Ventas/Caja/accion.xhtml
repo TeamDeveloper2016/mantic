@@ -45,7 +45,7 @@
 				'bancoCredito'     : {validaciones: 'libre', mascara: 'libre', grupo: 'general', mensaje: 'Selecciona el banco de tu tarjeta de credito'},								
 				'debito'           : {validaciones: 'libre|max-valor({"cuanto": #{manticVentasCajaAccion.attrs.pago.limiteDebito}})', mascara: 'libre', grupo: 'general', mensaje:'La suma de los pagos que no son en efectivo sobrepasa al total.'},
 				'referenciaDebito' : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', mensaje:'Capturar la referencia de la tarjeta de debito'},
-				'bancoDebito'     : {validaciones: 'libre', mascara: 'libre', grupo: 'general', mensaje: 'Selecciona el banco de tu tarjeta de debito'},								
+				'bancoDebito'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general', mensaje: 'Selecciona el banco de tu tarjeta de debito'},								
 				'cheque'           : {validaciones: 'libre|max-valor({"cuanto": #{manticVentasCajaAccion.attrs.pago.limiteCheque}})', mascara: 'libre', grupo: 'general', mensaje:'La suma de los pagos que no son en efectivo sobrepasa al total.'},
 				'referenciaCheque' : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', mensaje:'Capturar la referencia del cheque'},
 				'bancoCheque'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general', mensaje: 'Selecciona el banco de tu cheque'},

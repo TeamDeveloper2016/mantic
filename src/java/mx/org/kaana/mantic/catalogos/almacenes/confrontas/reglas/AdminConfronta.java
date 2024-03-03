@@ -53,9 +53,8 @@ public final class AdminConfronta extends IAdminArticulos implements Serializabl
 	}
 
 	private void toLoadStockArticulos() throws Exception {
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			for (Articulo item: this.getArticulos()) {
   			params.put("idAlmacen", this.orden.getTransferencia().getIdAlmacen());
   			params.put("idArticulo", item.getIdArticulo());

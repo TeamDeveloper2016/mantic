@@ -75,9 +75,8 @@ public final class AdminFacturas extends IAdminArticulos implements Serializable
 	
 	public AdminFacturas(FacturaFicticia orden, List<Entity> tickets) throws Exception {
 		this.orden                = orden;		
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params= new HashMap<>();
 			// sacar los idVenta de todos los tickets seleccionados
 			StringBuilder sb= new StringBuilder(tickets== null || tickets.isEmpty()? "-1, ": "");
 			tickets.forEach((item) -> {

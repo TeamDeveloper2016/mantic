@@ -142,6 +142,7 @@
 									<div class="ui-grid-row janal-grid-row">
 										<div class="ui-grid-col-12">
 											<p:inputText id="keys" value="#{row['idArticulo']}" style="display:none"/>
+                      <p:inputText id="one" value="#{row['idCompleto']}" style="display:none"/>
                       <p:inputText id="locks" value="0" style="display:none"/>
 											<p:autoComplete id="codigos" widgetVar="listado" var="custom" itemLabel="#{custom.nombre}" inputStyleClass="janal-wid-90 key-down-event filas" itemValue="#{custom}" value="#{manticVentasCuentasAccion.attrs.articulo}" completeMethod="#{manticVentasCuentasAccion.doCompleteArticulo}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10">
 												<p:ajax event="itemSelect" update="panelTotales" oncomplete="jsArticulos.close();$('#source-image').attr('href', $('#icon-image').attr('src'));"/>												

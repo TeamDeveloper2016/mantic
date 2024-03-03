@@ -195,6 +195,7 @@
                 <div class="janal-wid-100-txt producto-search">
                   <div class="producto-input">
                     <p:inputText id="keys" value="#{row['idArticulo']}" style="display:none"/>
+                    <p:inputText id="one" value="#{row['idCompleto']}" style="display:none"/>
                     <p:inputText id="locks" value="0" style="display:none"/>
                     <p:autoComplete id="codigos" styleClass="janal-wid-100-txt" widgetVar="listado" var="custom" itemLabel="#{custom.nombre}" inputStyleClass="janal-wid-93 key-down-event filas" itemValue="#{custom}" value="#{manticClientesMovil.attrs.articulo}" completeMethod="#{manticClientesMovil.doCompleteArticuloPrecioCliente}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" forceSelection="true" placeholder="#{row['idArticulo'] eq -1? 'Buscar articulo ej. martillo': 'Teclear cantidad [Clic boton]'}">
                       <p:ajax event="itemSelect" process="@this" oncomplete="jsArticulos.close();"/>
