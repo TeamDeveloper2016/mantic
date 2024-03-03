@@ -21,6 +21,7 @@
 		discounts   : '\\:descuentos',
 		additionals : '\\:extras',
 		amounts     : '\\:cantidades',
+		ones        : '\\:one',
 		requested   : '\\:solicitados',
 		prices      : '\\:precios',
 		keys        : '\\:keys',
@@ -571,6 +572,9 @@
 		amount: function() {
 			return '#'+ this.joker+ this.cursor.index+ this.amounts;
 		},
+		one: function() {
+			return '#'+ this.joker+ this.cursor.index+ this.ones;
+		},
 		request: function() {
 			return '#'+ this.joker+ this.cursor.index+ this.requested;
 		},
@@ -726,8 +730,9 @@
 		},
 		asterisk: function() {
 			janal.console('jsArticulo.asterisk: ');
-			var value = this.get().trim();
+			var value= this.get().trim();
 			var temp = $(this.amount()).val();
+			var one  = $(this.one())!== undefined? $(this.one()).val(): 2;
 			if($(this.amount()) && value.length> 0 && this.isFlotante(value)) {
 			  $(this.amount()).val(value);
 				var ok= janal.precio($(this.amount()), value);
@@ -740,9 +745,13 @@
 					  var entero= Math.trunc(parseFloat(ok.value, 10)/ multiplo)+ (parseFloat(ok.value, 10)%multiplo> 0? 1: 0);
 						$(this.amount()).val(entero* multiplo);
 					} // if	
-					else 
+					else {
+            // significa que el articulo no se puede fraccionar en la cantidad
+      			janal.console('jsArticulo.asterisk.complete: ['+ one+ '] value: ['+ value+ '] temp: ['+ temp+ '] one: ['+ parseFloat(value).toFixed(one=== '1'? 0: janal.decimals)+ ']');
+    			  $(this.amount()).val(parseFloat(value).toFixed(one=== '1'? 0: janal.decimals));
 						if($(this.multiplo()).val()!== 1)
 						  $(this.multiplo()).val(1);
+          } // else  
     			janal.console('jsArticulo.refresh: ');
 					this.set('');
 	 				refresh(this.cursor.index);

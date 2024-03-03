@@ -70,6 +70,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	private String imagen;
 	private long idAlmacen;
 	private String almacen;
+	private long idCompleto;
 
 	public Articulo() {
 		this(-1L);
@@ -119,6 +120,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
     this.imagen      = "1/sin-foto.png";     
     this.idAlmacen   = -1L;
     this.almacen     = "";
+    this.idCompleto  = 1L;
 	}
 
 	public UISelectEntity getIdEntity() {
@@ -335,6 +337,14 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 
   public void setAlmacen(String almacen) {
     this.almacen = almacen;
+  }
+
+  public long getIdCompleto() {
+    return idCompleto;
+  }
+
+  public void setIdCompleto(long idCompleto) {
+    this.idCompleto = idCompleto;
   }
 
   public String getImporte$() {

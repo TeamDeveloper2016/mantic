@@ -223,6 +223,7 @@
                   <div class="ui-grid-row janal-grid-row">
                     <div class="ui-grid-col-12">
                       <p:inputText id="keys" value="#{row['idArticulo']}" style="display:none"/>
+                      <p:inputText id="one" value="#{row['idCompleto']}" style="display:none"/>
                       <p:inputText id="locks" value="0" style="display:none"/>
                       <p:autoComplete id="codigos" widgetVar="listado" var="custom" itemLabel="#{custom.nombre}" inputStyleClass="janal-wid-90 key-down-event filas" itemValue="#{custom}" value="#{manticVentasAccion.attrs.articulo}" completeMethod="#{manticVentasAccion.doCompleteArticuloPrecioCliente}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" forceSelection="true" placeholder="ej. CT123">
                         <p:ajax event="itemSelect" process="@this" oncomplete="jsArticulos.close();"/>

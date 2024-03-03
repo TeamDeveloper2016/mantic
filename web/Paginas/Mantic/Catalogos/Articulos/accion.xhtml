@@ -26,6 +26,10 @@
 				'contenedorGrupos\\:pesoEstimado'   : {validaciones: 'requerido', mascara: 'flotante'},
 				'contenedorGrupos\\:desperidicio'   : {validaciones: 'requerido', mascara: 'flotante'},
 				'contenedorGrupos\\:idTipoArticulo' : {validaciones: 'requerido', mascara: 'libre'},
+				'contenedorGrupos\\:idBarras'       : {validaciones: 'requerido', mascara: 'libre'},
+				'contenedorGrupos\\:idVigente'       : {validaciones: 'requerido', mascara: 'libre'},
+				'contenedorGrupos\\:idDescontinuado': {validaciones: 'requerido', mascara: 'libre'},
+				'contenedorGrupos\\:idCompleto'     : {validaciones: 'requerido', mascara: 'libre'},
 				'contenedorGrupos\\:meta'           : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
 				'contenedorGrupos\\:metaDescripcion': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
 				'contenedorGrupos\\:metaTeclado'    : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},				
@@ -155,6 +159,11 @@
 								<p:selectOneMenu id="idDescontinuado" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.idDescontinuado}" styleClass="janal-wid-100-txt">									
 									<f:selectItem itemLabel="SI" itemValue="1"/>
 									<f:selectItem itemLabel="NO" itemValue="2"/>
+								</p:selectOneMenu>								
+								<p:outputLabel for="idCompleto" value="Se fracciona:" styleClass="janal-color-black strong"/>
+								<p:selectOneMenu id="idCompleto" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.idCompleto}" styleClass="janal-wid-100-txt">
+									<f:selectItem itemLabel="NO" itemValue="1"/>
+									<f:selectItem itemLabel="SI" itemValue="2"/>
 								</p:selectOneMenu>								
               </p:panelGrid>
 						</p:tab>						

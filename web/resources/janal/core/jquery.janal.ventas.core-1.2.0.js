@@ -18,6 +18,7 @@
 		discounts   : '\\:descuentos',
 		additionals : '\\:extras',
 		amounts     : '\\:cantidades',
+		ones        : '\\:one',
 		requested   : '\\:solicitados',
 		prices      : '\\:precios',
 		keys        : '\\:keys',
@@ -62,7 +63,7 @@
 	  change      : [13, 27, 106, 107, 110, 111, 121, 188, 189, 191, 220, 222, 226],
 	  control     : [9, 13, 17, 27, 38, 40, 220, 118, 121, 122],
 		cursor: {
-			top: 1, // el top debera ser elementos que van de 0 a n-1
+			top: 1, // el top debera ser elementos que va de 0 a n-1
 			index: 0,
 			tmp: 0
 		},
@@ -998,6 +999,9 @@
 		amount: function() {
 			return '#'+ this.joker+ this.cursor.index+ this.amounts;
 		},
+		one: function() {
+			return '#'+ this.joker+ this.cursor.index+ this.ones;
+		},
 		description: function() {
 			return '#'+ this.joker+ this.cursor.index+ this.descriptions;
 		},
@@ -1161,14 +1165,18 @@
 		},
 		asterisk: function() {
 			janal.console('jsVentas.asterisk: ');
-			var value = this.get().trim();
+			var value= this.get().trim();
 			var temp = $(this.amount()).val();
+      var one  = $(this.one())!== undefined? $(this.one()).val(): 2;
 			if($(this.amount()) && value.length> 0 && this.isFlotante(value)) {
 			  $(this.amount()).val(value);
 				var ok= janal.precio($(this.amount()), value);
 				if(ok.error)
 				  $(this.amount()).val(temp);
 				else {
+    			janal.console('jsVentas.asterisk.complete: ['+ one+ '] value: ['+ value+ '] temp: ['+ temp+ '] one: ['+ parseFloat(value).toFixed(one=== '1'? 0: janal.decimals)+ ']');
+          // significa que el articulo no se puede fraccionar en la cantidad
+  			  $(this.amount()).val(parseFloat(value).toFixed(one=== '1'? 0: janal.decimals));
 					this.set('');
 	 				this.refreshAsterisk();
 				} // if

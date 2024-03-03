@@ -107,6 +107,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 				params.put("idAlmacen", this.adminOrden.getIdAlmacen());
 				temporal.setKey(articulo.toLong("idArticulo"));
 				temporal.setIdArticulo(articulo.toLong("idArticulo"));
+				temporal.setIdCompleto(articulo.toLong("idCompleto"));
 				temporal.setFabricante(articulo.toString("fabricante"));
 				temporal.setIdProveedor(this.adminOrden.getIdProveedor());
 				temporal.setIdRedondear(articulo.toLong("idRedondear"));
@@ -207,6 +208,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 			params.put("idAlmacen", this.adminOrden.getIdAlmacen());
 			temporal.setKey(articulo.getIdArticulo());
 			temporal.setIdArticulo(articulo.getIdArticulo());
+			temporal.setIdCompleto(articulo.getIdCompleto());
 			temporal.setFabricante(articulo.getFabricante());
 			temporal.setIdProveedor(this.adminOrden.getIdProveedor());
 			temporal.setIdRedondear(articulo.getIdRedondear());
@@ -255,7 +257,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 		finally {
 			Methods.clean(params);
 		} // finally
-	} // toMoveDataArt
+	} 
 	
 	public void doUpdateArticulo(String codigo, Integer index) {
 		List<Columna> columns         = new ArrayList<>();

@@ -799,6 +799,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 				params.put("idAlmacen", this.getAdminOrden().getIdAlmacen());
 				temporal.setKey(articulo.toLong("idArticulo"));
 				temporal.setIdArticulo(articulo.toLong("idArticulo"));
+				temporal.setIdCompleto(articulo.toLong("idCompleto"));
 				temporal.setFabricante(articulo.toString("fabricante"));
 				temporal.setIdProveedor(this.getAdminOrden().getIdProveedor());
 				temporal.setIdRedondear(articulo.toLong("idRedondear"));
@@ -862,6 +863,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 			params.put("idAlmacen", this.getAdminOrden().getIdAlmacen());
 			temporal.setKey(articulo.getIdArticulo());
 			temporal.setIdArticulo(articulo.getIdArticulo());
+			temporal.setIdCompleto(articulo.getIdCompleto());
 			temporal.setIdProveedor(this.getAdminOrden().getIdProveedor());
 			temporal.setIdRedondear(articulo.getIdRedondear());
 			Value codigo= (Value)DaoFactory.getInstance().toField("TcManticArticulosCodigosDto", "codigo", params, "codigo");
@@ -909,7 +911,8 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 		finally {
 			Methods.clean(params);
 		} // finally
-	} // toMoveDataArt  
+	} 
+  
 	@Override
 	public void doUpdateSolicitado(Long idArticulo) {
 		List<Columna> columns= new ArrayList<>();

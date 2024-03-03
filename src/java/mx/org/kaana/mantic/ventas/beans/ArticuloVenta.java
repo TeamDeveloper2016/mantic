@@ -161,7 +161,7 @@ public class ArticuloVenta extends Articulo implements Cloneable {
 		finally{
 			Methods.clean(params);
 		} // finally
-	} // toCalculateCostoPorCantidad
+	} 
 	
 	@Override
 	public double getDiferenciaCosto() {
