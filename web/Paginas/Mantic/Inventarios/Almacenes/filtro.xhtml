@@ -120,9 +120,9 @@
 								<f:selectItem itemLabel="NO" itemValue="2"/>
 							</p:selectOneMenu>								
               <p:outputLabel for="fechaInicio" value="Actualizado inicio:"/>
-							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticInventariosAlmacenesFiltro.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario"/>
+							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{manticInventariosAlmacenesFiltro.attrs.fechaInicio}" pattern="dd/MM/yyyy" locale="mx" converter="janal.convertidor.Calendario"/>
               <p:outputLabel for="fechaTermino" value="Actualizado término:"/>
-							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticInventariosAlmacenesFiltro.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario"/>
+							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{manticInventariosAlmacenesFiltro.attrs.fechaTermino}" pattern="dd/MM/yyyy" locale="mx" converter="janal.convertidor.Calendario"/>
 							<p:separator/>
 						</p:panelGrid>
 						<div class="janal-align-right">
@@ -143,19 +143,19 @@
 								</div>	
 								<div class="lg-pantalla">
 									<p:menuButton value="Opciones">
-										<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-										<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
-										<p:separator/>
 										<p:menuitem icon="fa fa-history" value="Importar" title="Carga masiva" action="#{manticInventariosAlmacenesFiltro.doMasivo()}" onstart="return janal.bloquear()"/>						
 										<p:separator/>
 										<p:menuitem icon="fa fa-file-excel-o" value="Exportar" onstart="return janal.bloquear();" action="#{manticInventariosAlmacenesFiltro.doExportarXls}" process="@this panelBusqueda" oncomplete="janal.desbloquear()"/>
 										<p:separator/>
+										<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+										<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 									</p:menuButton>
 								</div>	
 								<div class="xs-pantalla">
+									<p:commandButton icon="fa fa fa-history" title="Importar" action="#{manticInventariosAlmacenesFiltro.doMasivo()}" onstart="return janal.bloquear()"/>
+									<p:commandButton icon="fa fa-file-excel-o" title="Exportar catalogo" onstart="return janal.bloquear();" action="#{manticInventariosAlmacenesFiltro.doExportarXls}" process="@this panelBusqueda" oncomplete="janal.desbloquear()"/>
 									<p:commandButton icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 									<p:commandButton icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
-									<p:commandButton icon="fa fa-file-excel-o" title="Exportar catalogo" onstart="return janal.bloquear();" action="#{manticInventariosAlmacenesFiltro.doExportarXls}" process="@this panelBusqueda" oncomplete="janal.desbloquear()"/>
 								</div>	
 							</f:facet>												
 							<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.ejercicio}">

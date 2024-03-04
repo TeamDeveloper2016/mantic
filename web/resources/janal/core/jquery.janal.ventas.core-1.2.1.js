@@ -1269,7 +1269,14 @@
 			return false;	
 		},
 		calculateGarantia: function(active, index) {
-			janal.console('jsVentas.calculate: '+ this.current+ ' => '+ $(active).val());
+			janal.console('jsVentas.calculateGarantia: '+ this.current+ ' => '+ $(active).val());
+  	  var value= $(active).val();
+      if(value!== undefined && value.length> 0) {
+        var one  = $(this.one())!== undefined? $(this.one()).val(): 2;
+			  janal.console('jsVentas.calculateGarantia.complete: ['+ one+ '] value: ['+ value+ '] one: ['+ parseFloat(value).toFixed(one=== '1'? 0: janal.decimals)+ ']');
+        // significa que el articulo no se puede fraccionar en la cantidad
+		    $(active).val(parseFloat(value).toFixed(one=== '1'? 0: janal.decimals));
+      } // if
 			if($(active).val()!== this.current)
 				if(parseFloat($(active).val(), 10)!== parseFloat(this.current, 10))
   				this.refreshGarantia(index);

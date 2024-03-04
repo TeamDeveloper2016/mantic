@@ -24,6 +24,7 @@ import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.formato.Periodo;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -278,9 +279,11 @@ public class Conteos extends IBaseFilter implements Serializable {
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
 			this.attrs.put("ultimo", "");
 			this.attrs.put("idArticulo", null);
+			this.attrs.put("idCompleto", 2L);
 			if(articulo.size()> 1) {
 				this.image= LoadImages.getImage(articulo.toLong("idArticulo"));
   			this.attrs.put("idArticulo", articulo.toLong("idArticulo"));
+  			this.attrs.put("idCompleto", articulo.toLong("idCompleto"));
 				Entity solicitado= (Entity)DaoFactory.getInstance().toEntity("VistaKardexDto", "row", this.attrs);
 				if(solicitado!= null) {
 				  UIBackingUtilities.toFormatEntity(solicitado, columns);
@@ -772,5 +775,17 @@ public class Conteos extends IBaseFilter implements Serializable {
 			JsfBase.addMessageError(e);
     } // catch   
   }
-  
+ 
+  public void doCalculate() {
+		try {
+      TcManticInventariosDto vigente= (TcManticInventariosDto)this.attrs.get("vigente");
+      if(!Objects.equals(vigente, null) && Objects.equals((Long)this.attrs.get("idCompleto"), 1L)) {
+        vigente.setInicial(Numero.toAjustarDecimales(vigente.getInicial(), Boolean.TRUE));
+      } // if
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+		} // catch
+  } 
+
 }

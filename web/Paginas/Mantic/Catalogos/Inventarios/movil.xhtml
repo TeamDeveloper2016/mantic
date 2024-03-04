@@ -11,11 +11,11 @@
     <h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryKardexJs}"/>
     <script type="text/javascript">
 			Janal.Control.fields = {				
-				'almacen': {validaciones: 'requerido', mascara: 'libre'},
-				'inicial': {validaciones: 'requerido|flotante', mascara: 'libre'},
-				'minimo' : {validaciones: 'flotante|menor-a({"cual": "maximo"})', mascara: 'libre'},
-				'maximo' : {validaciones: 'flotante|mayor-a({"cual": "minimo"})', mascara: 'libre'},
-				'idAlmacenUbicacion' : {validaciones: 'requerido', mascara: 'libre'}
+				almacen: {validaciones: 'requerido', mascara: 'libre'},
+				inicial: {validaciones: 'requerido|flotante', mascara: 'libre'},
+				minimo : {validaciones: 'flotante|menor-a({"cual": "maximo"})', mascara: 'libre'},
+				maximo : {validaciones: 'flotante|mayor-a({"cual": "minimo"})', mascara: 'libre'},
+				idAlmacenUbicacion : {validaciones: 'requerido', mascara: 'libre'}
 			};
     </script>		
   </ui:define>

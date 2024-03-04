@@ -303,7 +303,8 @@
 												<p:commandLink process="@this" update="@(.filas) @(.recalculo)" actionListener="#{manticVentasGarantiasAccion.doReturnAllItems}" title="Clic para devolver todos los articulos">
 												  <h:outputText value="Cantidad"/>
 												</p:commandLink>
-											</f:facet>											
+											</f:facet>	
+                      <p:inputText id="one" value="#{row['idCompleto']}" style="display:none"/>
 											<p:inputText id="cantidadGarantia" value="#{row['cantidadGarantia']}" style="display:none"/>
 											<p:inputText id="cantidades" value="#{row['cantidad']}" styleClass="janal-wid-100-txt janal-column-right key-move-event key-event-sat filas" onblur="janal.precio($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'), '0'); jsArticulos.calculateGarantia($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'), #{index});"/>
 										</p:column>		

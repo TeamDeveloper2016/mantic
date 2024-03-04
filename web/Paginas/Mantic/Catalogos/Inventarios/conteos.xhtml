@@ -11,11 +11,11 @@
     <h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryKardexJs}"/>
     <script type="text/javascript">
 			Janal.Control.fields = {				
-				'almacen': {validaciones: 'requerido', mascara: 'libre'},
-				'inicial': {validaciones: 'requerido|flotante', mascara: 'libre'},
-				'minimo' : {validaciones: 'flotante|menor-a({"cual": "maximo"})', mascara: 'libre'},
-				'maximo' : {validaciones: 'flotante|mayor-a({"cual": "minimo"})', mascara: 'libre'},
-				'idAlmacenUbicacion' : {validaciones: 'requerido', mascara: 'libre'}
+				almacen: {validaciones: 'requerido', mascara: 'libre'},
+				inicial: {validaciones: 'requerido|flotante', mascara: 'libre'},
+				minimo : {validaciones: 'flotante|menor-a({"cual": "maximo"})', mascara: 'libre'},
+				maximo : {validaciones: 'flotante|mayor-a({"cual": "minimo"})', mascara: 'libre'},
+				idAlmacenUbicacion : {validaciones: 'requerido', mascara: 'libre'}
 			};
     </script>		
   </ui:define>
@@ -105,7 +105,9 @@
 									<p:inputText id="ejercicio" value="#{manticCatalogosInventariosConteos.attrs.vigente.ejercicio}" styleClass="janal-wid-96 filas" readonly="true"/>
 									<p:outputLabel for="inicial" value="Valor inicial:"/>
   								<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-98" columnClasses="janal-wid-95, janal-wid-5">
-										<p:inputNumber id="inicial" inputStyleClass="janal-wid-98 janal-column-right janal-key-kardex janal-color-orange" value="#{manticCatalogosInventariosConteos.attrs.vigente.inicial}" styleClass="filas" readonly="#{manticCatalogosInventariosConteos.habilitar}"/>	
+										<p:inputNumber id="inicial" inputStyleClass="janal-wid-98 janal-column-right janal-key-kardex janal-color-orange" value="#{manticCatalogosInventariosConteos.attrs.vigente.inicial}" styleClass="filas" readonly="#{manticCatalogosInventariosConteos.habilitar}">	
+  									  <p:ajax event="blur" listener="#{manticCatalogosInventariosConteos.doCalculate()}" process="@this" update="inicial"/>
+                    </p:inputNumber>  
 										<p:commandButton id="agregarInventario" process="@this @(.filas)" update="tabla" icon="fa fa-cart-plus" title="Agregar/Actualizar inventario" style="float:right;" styleClass="janal-key-kardex filas" action="#{manticCatalogosInventariosConteos.doConteo}" disabled="#{manticCatalogosInventariosConteos.habilitar}" onstart="return janal.execute();" oncomplete="$('#codigos_input').focus(); janal.desbloquear();"/>
 									</p:panelGrid>
   							  <p:outputLabel value="Ultimo movimiento:"/>
