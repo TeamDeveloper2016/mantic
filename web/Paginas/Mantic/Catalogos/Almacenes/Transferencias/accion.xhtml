@@ -57,7 +57,7 @@
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-99" columnClasses="janal-wid-col-130, janal-wid-100">
 								<p:outputLabel for="idAlmacenOrigen" value="Almacen origen:"/>
-                <p:selectOneMenu id="idAlmacenOrigen" tabindex="0" value="#{manticCatalogosAlmacenesTransferenciasAccion.transferencia.ikAlmacen}" var="almacen" converter="janal.convertidor.Entity" styleClass="janal-wid-98" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <p:selectOneMenu id="idAlmacenOrigen" tabindex="0" value="#{manticCatalogosAlmacenesTransferenciasAccion.transferencia.ikAlmacen}" var="almacen" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                   <p:ajax event="change" listener="#{manticCatalogosAlmacenesTransferenciasAccion.doUpdateAlmacenOrigen}" process="@this" update="@(.cantidad) @(.activa) @(.filas)" oncomplete="janal.refresh(); setTimeout(function() {$('#idArticulo_input').focus()}, 1000);"/>
                   <f:selectItems value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.almacenes}"  var="element" itemValue="#{element.key}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '-'} #{element.nombre}"/>
                   <p:column headerText="Clave">
@@ -89,6 +89,7 @@
 								<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-100, janal-wid-col-130 janal-column-right">
 								  <p:inputNumber id="cantidad" tabindex="2" inputStyleClass="janal-color-orange janal-column-right" styleClass="janal-wid-100-txt janal-key-cantidad cantidad refresh activa" value="#{manticCatalogosAlmacenesTransferenciasAccion.detalle.cantidad}" converter="javax.faces.Double" disabled="#{empty manticCatalogosAlmacenesTransferenciasAccion.attrs.origen}">
 									  <p:ajax event="keyup" listener="#{manticCatalogosAlmacenesTransferenciasAccion.doCalculate()}" process="@this" update="@(.filas)"/>
+									  <p:ajax event="blur" listener="#{manticCatalogosAlmacenesTransferenciasAccion.doCalculate()}" process="@this" update="cantidad"/>
 								  </p:inputNumber>
 									<p:outputLabel value="Sugerido: #{manticCatalogosAlmacenesTransferenciasAccion.attrs.sugerido}" styleClass="filas refresh"/>
 								</p:panelGrid>	
@@ -107,7 +108,7 @@
 									<p:inputText styleClass="janal-color-blue janal-wid-100-txt janal-column-right filas refresh" value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.origen== null? 0: manticCatalogosAlmacenesTransferenciasAccion.attrs.origen.maximo}" readonly="true"/>	
 								</p:panelGrid>
 								<p:outputLabel for="idAlmacenDestino" value="Almacen destino:"/>
-								<p:selectOneMenu id="idAlmacenDestino" value="#{manticCatalogosAlmacenesTransferenciasAccion.transferencia.ikDestino}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98 filas" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+								<p:selectOneMenu id="idAlmacenDestino" value="#{manticCatalogosAlmacenesTransferenciasAccion.transferencia.ikDestino}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt filas" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<p:ajax event="change" listener="#{manticCatalogosAlmacenesTransferenciasAccion.doUpdateAlmacenDestino}" process="@this" update="@(.filas)" oncomplete="janal.refresh();"/>
 									<f:selectItems value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.destinos}"  var="element" itemValue="#{element.key}" itemLabel="#{element.clave} - #{element.nombre}"/>
 									<p:column headerText="Clave">
@@ -153,7 +154,7 @@
 						</p:panelGrid>	
             <p:panel id="panelImage" header="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.origen.propio}" styleClass="TexAlCenter janal-wid-100-txt refresh" style="height:100%">
 							<a id="source-image" data-magnify="gallery" data-caption="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.origen.nombre}" data-group="icon-gallery" href="" title="Click para ver más grande la imagen">
-								<p:graphicImage id="icon-image" value="#{manticCatalogosAlmacenesTransferenciasAccion.image}" width="245" stream="false" style="cursor:zoom-in;width:100%;"/>
+								<p:graphicImage id="icon-image" value="#{manticCatalogosAlmacenesTransferenciasAccion.image}" width="245" height="345" stream="false" style="cursor:zoom-in;width:100%;"/>
 							</a>	
             </p:panel>
           </p:panelGrid>

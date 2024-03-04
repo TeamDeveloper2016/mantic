@@ -204,6 +204,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 				params.put("idAlmacen", getAdminOrden().getIdAlmacen());
 				temporal.setKey(articulo.toLong("idArticulo"));
 				temporal.setIdArticulo(articulo.toLong("idArticulo"));
+        temporal.setIdCompleto(articulo.toLong("idCompleto"));
 				temporal.setIdProveedor(getAdminOrden().getIdProveedor());
 				temporal.setIdRedondear(articulo.toLong("idRedondear"));
 				Value codigo= (Value)DaoFactory.getInstance().toField("TcManticArticulosCodigosDto", "codigo", params, "codigo");

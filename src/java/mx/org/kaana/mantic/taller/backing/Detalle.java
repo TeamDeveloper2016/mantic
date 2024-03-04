@@ -187,6 +187,7 @@ public class Detalle extends IBaseVenta implements Serializable {
 				temporal.setIdComodin(articulo.toLong("isArticulo"));
 				temporal.setKey(articulo.toLong("idArticulo"));
 				temporal.setIdArticulo(articulo.toLong("idArticulo"));
+        temporal.setIdCompleto(articulo.toLong("idCompleto"));
 				temporal.setIdProveedor(-1L);
 				temporal.setIdRedondear(articulo.toLong("idRedondear"));
 				temporal.setPropio(articulo.toString("propio"));

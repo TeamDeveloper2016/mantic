@@ -291,6 +291,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 				params.put("idAlmacen", this.getAdminOrden().getIdAlmacen());
 				temporal.setKey(articulo.toLong("idArticulo"));
 				temporal.setIdArticulo(articulo.toLong("idArticulo"));
+        temporal.setIdCompleto(articulo.toLong("idCompleto"));
 				temporal.setIdProveedor(-1L);
 				temporal.setIdRedondear(articulo.toLong("idRedondear"));
 				temporal.setCodigo(articulo.toString("propio"));

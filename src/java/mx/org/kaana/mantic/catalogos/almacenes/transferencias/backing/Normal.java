@@ -373,6 +373,7 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 				params.put("idAlmacen", this.getAdminOrden().getIdAlmacen());
 				temporal.setKey(articulo.toLong("idArticulo"));
 				temporal.setIdArticulo(articulo.toLong("idArticulo"));
+				temporal.setIdCompleto(articulo.toLong("idCompleto"));
 				temporal.setIdProveedor(-1L);
 				temporal.setCodigo(articulo.toString("propio"));
 				temporal.setPropio(articulo.toString("propio"));

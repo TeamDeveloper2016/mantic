@@ -20,6 +20,7 @@ import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -254,6 +255,8 @@ public class Accion extends IBaseAttribute implements Serializable {
 					else
 						if(stock< sugerido && stock> 0)
 							this.detalle.setCantidad(stock);
+          if(Objects.equals(this.detalle.getIdCompleto(), 1L)) 
+            this.detalle.setCantidad(Numero.toAjustarDecimales(this.detalle.getCantidad(), Boolean.TRUE));
 					this.attrs.put("nuevaExistenciaOrigen", stock- this.detalle.getCantidad());
 					this.attrs.put("nuevaExistenciaDestino", calculo+ this.detalle.getCantidad());
 					break;
@@ -366,8 +369,10 @@ public class Accion extends IBaseAttribute implements Serializable {
 				this.attrs.put("origen", seleccion);
 				this.attrs.put("idArticulo", seleccion.get("idArticulo"));
 				this.detalle.setIdArticulo(seleccion.toLong("idArticulo"));
+				this.detalle.setIdCompleto(seleccion.toLong("idCompleto"));
 				this.detalle.setPropio(seleccion.toString("propio"));
 				this.detalle.setNombre(seleccion.toString("nombre"));
+				this.detalle.setCantidad(1D);
 				this.image= LoadImages.getImage(seleccion.toLong("idArticulo"));
 				params.put("idArticulo", seleccion.toLong("idArticulo"));
 				params.put("idAlmacen", this.transferencia.getIdAlmacen());
