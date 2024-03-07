@@ -69,6 +69,7 @@
 		VK_PAGINATOR : 19,
 	  change       : [13, 19, 27, 106, 107, 110, 111, 188, 121, 189, 191, 220, 222, 226],
 	  teclas       : [9, 13, 17, 27, 33, 34, 35, 36, 38, 40, 220, 118, 121, 122],
+    CTRL_DECIMALS: 2,
 		cursor: {
 			top: 1, // el top debera ser elementos que van de 0 a n-1
 			index: 0,
@@ -747,8 +748,8 @@
 					} // if	
 					else {
             // significa que el articulo no se puede fraccionar en la cantidad
-      			janal.console('jsArticulo.asterisk.complete: ['+ one+ '] value: ['+ value+ '] temp: ['+ temp+ '] one: ['+ parseFloat(value).toFixed(one=== '1'? 0: janal.decimals)+ ']');
-    			  $(this.amount()).val(parseFloat(value).toFixed(one=== '1'? 0: janal.decimals));
+      			janal.console('jsArticulo.asterisk.complete: ['+ one+ '] value: ['+ value+ '] temp: ['+ temp+ '] one: ['+ parseFloat(value).toFixed(one=== '1'? $articulos.CTRL_DECIMALS: janal.decimals)+ ']');
+    			  $(this.amount()).val(parseFloat(value).toFixed(one=== '1'? $articulos.CTRL_DECIMALS: janal.decimals));
 						if($(this.multiplo()).val()!== 1)
 						  $(this.multiplo()).val(1);
           } // else  

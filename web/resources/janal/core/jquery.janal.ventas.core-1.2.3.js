@@ -58,10 +58,11 @@
 		VK_MAYOR    : 226,
 		VK_F7       : 118,
 		VK_F8       : 119,
-		VK_F10       : 121,
+		VK_F10      : 121,
 		VK_SAT	    : 188,
 	  change      : [13, 27, 106, 107, 110, 111, 121, 188, 189, 191, 220, 222, 226],
 	  control     : [9, 13, 17, 27, 38, 40, 220, 118, 121, 122],
+    CTRL_DECIMALS: 2,
 		cursor: {
 			top: 1, // el top debera ser elementos que va de 0 a n-1
 			index: 0,
@@ -1174,9 +1175,9 @@
 				if(ok.error)
 				  $(this.amount()).val(temp);
 				else {
-    			janal.console('jsVentas.asterisk.complete: ['+ one+ '] value: ['+ value+ '] temp: ['+ temp+ '] one: ['+ parseFloat(value).toFixed(one=== '1'? 0: janal.decimals)+ ']');
+    			janal.console('jsVentas.asterisk.complete: ['+ one+ '] value: ['+ value+ '] temp: ['+ temp+ '] one: ['+ parseFloat(value).toFixed(one=== '1'? $articulos.CTRL_DECIMALS: janal.decimals)+ ']');
           // significa que el articulo no se puede fraccionar en la cantidad
-  			  $(this.amount()).val(parseFloat(value).toFixed(one=== '1'? 0: janal.decimals));
+  			  $(this.amount()).val(parseFloat(value).toFixed(one=== '1'? $articulos.CTRL_DECIMALS: janal.decimals));
 					this.set('');
 	 				this.refreshAsterisk();
 				} // if
@@ -1272,10 +1273,10 @@
 			janal.console('jsVentas.calculateGarantia: '+ this.current+ ' => '+ $(active).val());
   	  var value= $(active).val();
       if(value!== undefined && value.length> 0) {
-        var one  = $(this.one())!== undefined? $(this.one()).val(): 2;
-			  janal.console('jsVentas.calculateGarantia.complete: ['+ one+ '] value: ['+ value+ '] one: ['+ parseFloat(value).toFixed(one=== '1'? 0: janal.decimals)+ ']');
+        var one= $(this.one())!== undefined? $(this.one()).val(): 2;
+			  janal.console('jsVentas.calculateGarantia.complete: ['+ one+ '] value: ['+ value+ '] one: ['+ parseFloat(value).toFixed(one=== '1'? $articulos.CTRL_DECIMALS: janal.decimals)+ ']');
         // significa que el articulo no se puede fraccionar en la cantidad
-		    $(active).val(parseFloat(value).toFixed(one=== '1'? 0: janal.decimals));
+		    $(active).val(parseFloat(value).toFixed(one=== '1'? $articulos.CTRL_DECIMALS: janal.decimals));
       } // if
 			if($(active).val()!== this.current)
 				if(parseFloat($(active).val(), 10)!== parseFloat(this.current, 10))

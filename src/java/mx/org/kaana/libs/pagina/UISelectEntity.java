@@ -1,5 +1,6 @@
 package mx.org.kaana.libs.pagina;
 
+import java.util.Objects;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 
@@ -26,7 +27,8 @@ public class UISelectEntity extends Entity {
   }
 
   public UISelectEntity(Entity entity) {
-    this.putAll(entity);
+    if(!Objects.equals(entity, null) && !entity.isEmpty())
+      this.putAll(entity);
     this.key= super.getKey();
   }
 

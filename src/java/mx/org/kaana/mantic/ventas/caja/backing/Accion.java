@@ -674,7 +674,7 @@ public class Accion extends IBaseVenta implements Serializable {
       JsfBase.addMessageError(e);
     } // catch
     return regresar;
-  } // doAceptarCotizacion
+  } 
 
 	private void loadCatalog() {
 		List<Columna> columns     = null;
@@ -754,20 +754,18 @@ public class Accion extends IBaseVenta implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch		
-	} // doAsignaCliente
+	} 
 		
 	public void doLoadTicketAbiertosPrincipal() {		
-		Map<String, Object>params= null;
-		List<Columna> campos     = null;
+		Map<String, Object>params= new HashMap<>();
+		List<Columna> columns    = new ArrayList<>();
 		try {			
-			campos= new ArrayList<>();
-			params= new HashMap<>();
 			params.put("sortOrder", "");
 			params.put("idEmpresa", this.attrs.get("idEmpresa"));			
-			campos.add(new Columna("cuenta", EFormatoDinamicos.MAYUSCULAS));
-			campos.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));
-			params.put(Constantes.SQL_CONDICION, toCondicion(false));
-			this.lazyCuentasAbiertas= new FormatLazyModel("VistaVentasDto", "lazy", params, campos);			
+			columns.add(new Columna("cuenta", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));
+			params.put(Constantes.SQL_CONDICION, this.toCondicion(Boolean.FALSE));
+			this.lazyCuentasAbiertas= new FormatLazyModel("VistaVentasDto", "lazy", params, columns);			
 			UIBackingUtilities.execute("PF('dlgOpenTickets').show();");			
 			UIBackingUtilities.resetDataTable("tablaTicketsAbiertos");
 		} // try
@@ -778,42 +776,39 @@ public class Accion extends IBaseVenta implements Serializable {
 		finally{
 			Methods.clean(params);
 		} // finally		
-	} // doLoadTicketAbiertosPrincipal
+	} 
 	
 	public void refreshTicketsAbiertos() {
-		Map<String, Object>params= null;
-		List<Columna>campos      = null;
+		Map<String, Object>params= new HashMap<>();
+		List<Columna>columns     = new ArrayList<>();
 		try {
-			params= new HashMap<>();
 			params.put("sortOrder", "");
 			params.put("idEmpresa", this.attrs.get("idEmpresa"));
-			campos= new ArrayList<>();
-			campos.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));
-			campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-			params.put(Constantes.SQL_CONDICION, toCondicion(true));			
-			this.attrs.put("ticketsAbiertos", UIEntity.build("VistaVentasDto", "lazy", params, campos, Constantes.SQL_TODOS_REGISTROS));
+			columns.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			params.put(Constantes.SQL_CONDICION, this.toCondicion(Boolean.TRUE));			
+			this.attrs.put("ticketsAbiertos", UIEntity.build("VistaVentasDto", "lazy", params, columns, Constantes.SQL_TODOS_REGISTROS));
 		} // try
 		catch (Exception e) {			
-			throw e;
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
 		} // catch		
 		finally{
 			Methods.clean(params);
 		} // finally
-	} // refreshTicketsAbiertos
+	} 
 	
 	@Override
 	public void doLoadTicketAbiertos() {		
 		List<UISelectEntity> ticketsAbiertos= null;
-		Map<String, Object>params           = null;
-		List<Columna> campos                = null;
-		List<Columna> columns               = null;
+		Map<String, Object>params           = new HashMap<>();
+		List<Columna> campos                = new ArrayList<>();
+		List<Columna> columns               = new ArrayList<>();
 		try {
 			this.loadRangoFechas(false);
 			this.loadCajas();			
-			params= new HashMap<>();			
 			params.put("sortOrder", "");
 			params.put("idEmpresa", this.attrs.get("idEmpresa"));
-			campos= new ArrayList<>();
 			campos.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));
 			campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			params.put(Constantes.SQL_CONDICION, toCondicion(true));
@@ -830,7 +825,6 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.setDomicilio(new Domicilio());
 			this.attrs.put("registroCliente", new TcManticClientesDto());
       this.setIkRegimenFiscal(new UISelectEntity(-1L));
-			columns= new ArrayList<>();
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
 			params.clear();
@@ -849,25 +843,25 @@ public class Accion extends IBaseVenta implements Serializable {
 		finally{
 			Methods.clean(params);
 		} // finally
-	} // doLoadTicketAbiertos
+	} 
 	
 	private String toCondicion(boolean all) {
-		StringBuilder regresar= null;
+		StringBuilder regresar= new StringBuilder();
 		Date fecha            = null;
 		try {
-			fecha= this.attrs.get("fecha")!= null && ((Object)this.attrs.get("fecha")) instanceof Date ? (Date) this.attrs.get("fecha") : new Date(Calendar.getInstance().getTimeInMillis());
-			regresar= new StringBuilder();
+			fecha= !Objects.equals(this.attrs.get("fecha"), null) && (this.attrs.get("fecha") instanceof Date)? (Date)this.attrs.get("fecha"): new Date(Calendar.getInstance().getTimeInMillis());
 			regresar.append(" date_format (tc_mantic_ventas.registro, '%Y%m%d')=".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, fecha)));
-			regresar.append(toCondicionEstatus(all));
+			regresar.append(this.toCondicionEstatus(all));
 		} // try
 		catch (Exception e) {			
-			throw e;
+			Error.mensaje(e);			
+			JsfBase.addMessageError(e);
 		} // catch		
 		return regresar.toString();
 	} // toCondicion	
 	
 	private String toCondicionEstatus(boolean all) {
-		StringBuilder regresar= new StringBuilder("");
+		StringBuilder regresar= new StringBuilder();
 		regresar.append(" and tc_mantic_ventas.candado = 2");
 		regresar.append(" and tc_mantic_ventas.id_venta_estatus in (");
 		regresar.append(EEstatusVentas.ELABORADA.getIdEstatusVenta());									
@@ -881,24 +875,22 @@ public class Accion extends IBaseVenta implements Serializable {
 		} // if
 		regresar.append(")");
 		return regresar.toString();
-	} // toCOndicionEstatus
+	} 
 	
 	public void doActualizaTicketsAbiertos() {
 		List<UISelectEntity> ticketsAbiertos= null;
 		List<UISelectEntity> ticketsVigentes= null;
-		Map<String, Object>params           = null;
-		List<Columna> campos                = null;
+		Map<String, Object>params           = new HashMap<>();
+		List<Columna> columns               = new ArrayList<>();
 		try {
 			if(this.attrs.get("titleTab").toString().equals("Articulos")) {
 				ticketsAbiertos= (List<UISelectEntity>) this.attrs.get("ticketsAbiertos");
-				params= new HashMap<>();
 				params.put("sortOrder", "");
 				params.put("idEmpresa", this.attrs.get("idEmpresa"));
-				campos= new ArrayList<>();
-				campos.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));
-				campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+				columns.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));
+				columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 				params.put(Constantes.SQL_CONDICION, toCondicion(true));
-				ticketsVigentes= UIEntity.build("VistaVentasDto", "lazy", params, campos, Constantes.SQL_TODOS_REGISTROS);
+				ticketsVigentes= UIEntity.build("VistaVentasDto", "lazy", params, columns, Constantes.SQL_TODOS_REGISTROS);
 				if(!ticketsVigentes.isEmpty()) {
 					for(UISelectEntity vigente: ticketsVigentes) {
 						if(!ticketsAbiertos.isEmpty()) {
@@ -912,24 +904,25 @@ public class Accion extends IBaseVenta implements Serializable {
 			} // if
 		} // try
 		catch (Exception e) {
-			JsfBase.addMessageError(e);
 			Error.mensaje(e);			
+			JsfBase.addMessageError(e);
 		} // catch		
-	} // doActualizaTicketsAbiertos
+	} 
 	
 	public void doAsignaTicketAbiertoDirecto() {
 		try {
-			this.attrs.put("facturarVenta", false);			
+			this.attrs.put("facturarVenta", Boolean.FALSE);			
 			this.refreshTicketsAbiertos();
-			this.attrs.put("ajustePreciosCliente", true);			
-			this.attrs.put("ticketAbierto", new UISelectEntity((Entity)this.attrs.get("selectedCuentaAbierta")));
+			this.attrs.put("ajustePreciosCliente", Boolean.TRUE);		
+      if(!Objects.equals(this.attrs.get("selectedCuentaAbierta"), null))
+			  this.attrs.put("ticketAbierto", new UISelectEntity((Entity)this.attrs.get("selectedCuentaAbierta")));
 			this.doAsignaTicketAbierto();
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
 			Error.mensaje(e);			
 		} // catch		
-	} // doAsignaTicketAbiertoDirecto
+	} 
 	
 	public void doAsignaTicketAbiertoCambioCliente() {
 		try {
@@ -950,7 +943,7 @@ public class Accion extends IBaseVenta implements Serializable {
 	
 	@Override
 	public void doAsignaTicketAbierto() {
-		Map<String, Object>params           = null;		
+		Map<String, Object>params           = new HashMap<>();		
 		UISelectEntity ticketAbierto        = null;
 		UISelectEntity ticketAbiertoPivote  = null;
 		List<UISelectEntity> ticketsAbiertos= null;
@@ -959,7 +952,6 @@ public class Accion extends IBaseVenta implements Serializable {
     MotorBusqueda motorBusqueda         = null;
 		try {			
 			ticketAbierto= (UISelectEntity) this.attrs.get("ticketAbierto");
-			params= new HashMap<>();
 			params.put("idVenta", ticketAbierto!= null? ticketAbierto.getKey(): -1L);
 			this.setDomicilio(new Domicilio());
 			this.attrs.put("registroCliente", new TcManticClientesDto());
@@ -1237,15 +1229,13 @@ public class Accion extends IBaseVenta implements Serializable {
 	
 	private void loadBancos() {
 		List<UISelectEntity> bancos= null;
-		Map<String, Object> params = null;
-		List<Columna> campos       = null;
+		Map<String, Object> params = new HashMap<>();
+		List<Columna> columns      = new ArrayList<>();
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-			campos= new ArrayList<>();
-			campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-			campos.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
-			bancos= UIEntity.build("TcManticBancosDto", "row", params, campos, Constantes.SQL_TODOS_REGISTROS);
+			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+			bancos= UIEntity.build("TcManticBancosDto", "row", params, columns, Constantes.SQL_TODOS_REGISTROS);
 			this.attrs.put("bancos", bancos);
 		} // try
 		catch (Exception e) {
@@ -1254,14 +1244,14 @@ public class Accion extends IBaseVenta implements Serializable {
 		} // catch		
 		finally{
 			Methods.clean(params);
+			Methods.clean(columns);
 		} // finally
 	} 
 	
 	private void loadTiposPagos() {
 		List<UISelectEntity> tiposPagos= null;
-		Map<String, Object>params      = null;
+		Map<String, Object>params      = new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			tiposPagos= UIEntity.build("TcManticTiposPagosDto", "row", params);
 			this.attrs.put("tiposPagos", tiposPagos);
@@ -1419,18 +1409,28 @@ public class Accion extends IBaseVenta implements Serializable {
 	private void loadCfdis() throws Exception {
 		UISelectEntity cfdiSeleccion= null;
 		Map<String, Object>params   = new HashMap<>();
-		List<Columna> campos        = new ArrayList<>();
-		params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-		campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-		campos.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
-		List<UISelectEntity> cfdis= UIEntity.build("TcManticUsosCfdiDto", Objects.equals(Configuracion.getInstance().getPropiedad("sistema.nivel.facturacion"), "4.0")? "rows": "row", params, campos, Constantes.SQL_TODOS_REGISTROS);
-		this.attrs.put("cfdis", cfdis);
-		for(UISelectEntity record: cfdis) {
-			if(Objects.equals(record.toString("clave"), GASTOS_GENERAL_CLAVE))
-				cfdiSeleccion= record;
-		} // for
-		this.attrs.put("cfdi", cfdiSeleccion);
-	} // loadCfdis
+		List<Columna> columns       = new ArrayList<>();
+    try { 
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      List<UISelectEntity> cfdis= UIEntity.build("TcManticUsosCfdiDto", Objects.equals(Configuracion.getInstance().getPropiedad("sistema.nivel.facturacion"), "4.0")? "rows": "row", params, columns, Constantes.SQL_TODOS_REGISTROS);
+      this.attrs.put("cfdis", cfdis);
+      for(UISelectEntity record: cfdis) {
+        if(Objects.equals(record.toString("clave"), GASTOS_GENERAL_CLAVE))
+          cfdiSeleccion= record;
+      } // for
+      this.attrs.put("cfdi", cfdiSeleccion);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+		finally{
+			Methods.clean(params);
+			Methods.clean(columns);
+		} // finally
+	} 
 	
 	private boolean doValidaCreditoVenta() throws Exception {
 		boolean regresar               = true;
@@ -1705,11 +1705,10 @@ public class Accion extends IBaseVenta implements Serializable {
 	private Pago toPago(AdminTickets adminTicket, Long idVenta) throws Exception {
 		Pago regresar            = null;
 		List<Entity> detallePago = null;
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		ETipoMediosPago medioPago= null;
 		try {
 			regresar= new Pago(adminTicket.getTotales());
-			params= new HashMap<>();
 			params.put("idVenta", idVenta);
 			detallePago= DaoFactory.getInstance().toEntitySet("TrManticVentaMedioPagoDto", "ticket", params, Constantes.SQL_TODOS_REGISTROS);
 			if(!detallePago.isEmpty()) {
@@ -1814,11 +1813,10 @@ public class Accion extends IBaseVenta implements Serializable {
 	}
 	
 	public void doUpdateTicketArticulos() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
 		boolean buscaPorCodigo    = false;
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
@@ -1853,16 +1851,14 @@ public class Accion extends IBaseVenta implements Serializable {
 
 	public void doMostrarDetalleTicket() {
 		Entity seleccionado      = null;
-		Map<String, Object>params= null;
-		List<Columna>campos      = null;
+		Map<String, Object>params= new HashMap<>();
+		List<Columna>columns     = new ArrayList<>();
 		try {
 			seleccionado= (Entity) this.attrs.get("seleccionDetalle");									
-			params= new HashMap<>();
 			if(seleccionado!= null && !seleccionado.isEmpty()) {
 				params.put("idVenta", seleccionado.getKey());
-				campos= new ArrayList<>();
-				campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-				this.lazyDetalleTicket= new FormatLazyModel("VistaTcManticVentasDetallesDto", "detalle", params, campos);
+				columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+				this.lazyDetalleTicket= new FormatLazyModel("VistaTcManticVentasDetallesDto", "detalle", params, columns);
 				UIBackingUtilities.resetDataTable("tablaDetalleTicket");
 				//this.seleccionDetalleTicket= (Entity) DaoFactory.getInstance().toEntity("TcManticVentasDto", "detalle", params);
 				this.attrs.put("medioPagoDetalleTicket", doTipoMedioPago(seleccionado));						
@@ -1875,7 +1871,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		} // catch		
 		finally{
 			Methods.clean(params);
-			Methods.clean(campos);
+			Methods.clean(columns);
 		} // finally
 	} // doMostrarDetalleTicket
 	
