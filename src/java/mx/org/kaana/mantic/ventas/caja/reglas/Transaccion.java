@@ -15,7 +15,6 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EBooleanos;
-import mx.org.kaana.kajool.enums.EEtapaServidor;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
@@ -45,6 +44,8 @@ import mx.org.kaana.mantic.db.dto.TcManticCajasDto;
 import mx.org.kaana.mantic.db.dto.TcManticCierresAlertasDto;
 import mx.org.kaana.mantic.db.dto.TcManticCierresCajasDto;
 import mx.org.kaana.mantic.db.dto.TcManticCierresDto;
+import mx.org.kaana.mantic.db.dto.TcManticClientesBitacoraDto;
+import mx.org.kaana.mantic.db.dto.TcManticClientesDeudasDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.db.dto.TcManticFacturasDto;
 import mx.org.kaana.mantic.db.dto.TcManticInventariosDto;
@@ -174,7 +175,25 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		Long idEstatusVenta= null;
 		try {						
 			this.totalDetalle= 0D;
-			switch(accion) {					
+			switch(accion) {			
+				case COMPLEMENTAR:
+					this.getOrden().setCandado(EBooleanos.NO.getIdBooleano());
+          if(this.getOrden().getIdBanco()!= null && this.getOrden().getIdBanco()<= 0L)
+            this.getOrden().setIdBanco(null);
+          if(this.getOrden().getIdTipoMedioPago()!= null && this.getOrden().getIdTipoMedioPago()<= 0L)
+            this.getOrden().setIdTipoMedioPago(null);
+          if(this.getOrden().getIdTipoPago()!= null && this.getOrden().getIdTipoPago()<= 0L)
+            this.getOrden().setIdTipoPago(null);
+					regresar= this.actualizarClienteVenta(sesion);
+					this.toFillArticulos(sesion, this.getArticulos());
+					this.validarCabecera(sesion);
+          if(this.getOrden().getIdBanco()== null)
+            this.getOrden().setIdBanco(-1L);
+          if(this.getOrden().getIdTipoMedioPago()== null)
+            this.getOrden().setIdTipoMedioPago(-1L);
+          if(this.getOrden().getIdTipoPago()== null)
+            this.getOrden().setIdTipoPago(-1L);
+					break;
 				case RESTAURAR:				
 					regresar= this.procesarCancela(sesion);
 					break;
@@ -236,6 +255,9 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 				case TRANSFORMACION:
 					regresar= this.assignStatusAutomatico(sesion);
 					break;
+        case DESTRANSFORMACION:
+          regresar= this.processNotificacionCredito(sesion);
+          break;
 			} // switch
 			if(!regresar)
         throw new Exception(getMessageError());
@@ -1394,6 +1416,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
     boolean regresar          = false;
     Map<String, Object> params= new HashMap<>();
 		List<TrManticVentaMedioPagoDto> pagos= null;
+    Double suma               = 0D;
 		try {									
       TcManticVentasDto venta= (TcManticVentasDto)DaoFactory.getInstance().findById(sesion, TcManticVentasDto.class, this.idVenta);
         // CANCELAR LA FACTURA ACTUAL PARA GENERAR LA NUEVA FACTURA
@@ -1409,25 +1432,37 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
       params.put("idVenta", this.idVenta);
       pagos= (List<TrManticVentaMedioPagoDto>)DaoFactory.getInstance().toEntitySet(sesion, TrManticVentaMedioPagoDto.class, "TrManticVentaMedioPagoDto", "detalle", params);
       if(pagos!= null && !pagos.isEmpty()) {
-        TrManticVentaMedioPagoDto item= pagos.get(0);
-        // REGISTRAR EN CAJA EL PAGO EN NEGATIVO DEL IMPORTE DEL TICKET ORIGINAL
-        TrManticVentaMedioPagoDto clon= (TrManticVentaMedioPagoDto)item.clone();
-        item.setKey(-1L);
-        clon.setIdCierre(this.idCierreVigente);
-        clon.setIdVentaMedioPago(-1L);
-        clon.setIdVenta(venta.getIdVenta());
-        clon.setImporte(clon.getTotal()* -1D);
-        clon.setTotal(clon.getTotal()* -1D);
-        clon.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
-        clon.setObservaciones("SE CANCELO EL TICKET ["+ this.getOrden().getTicket()+ "]");
-        DaoFactory.getInstance().insert(sesion, clon);
+        for (TrManticVentaMedioPagoDto item: pagos) {
+          // REGISTRAR EN CAJA EL PAGO EN NEGATIVO DEL IMPORTE DEL TICKET ORIGINAL
+          suma   += item.getImporte();
+          TrManticVentaMedioPagoDto clon= (TrManticVentaMedioPagoDto)item.clone();
+          item.setKey(-1L);
+          clon.setIdCierre(this.idCierreVigente);
+          clon.setIdVentaMedioPago(-1L);
+          clon.setIdVenta(venta.getIdVenta());
+          clon.setImporte(clon.getTotal()* -1D);
+          clon.setTotal(clon.getTotal()* -1D);
+          clon.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+          clon.setObservaciones("SE CANCELO EL TICKET ["+ this.getOrden().getTicket()+ "]");
+          DaoFactory.getInstance().insert(sesion, clon);
+        } // for
       } // if
       // CANCELAR EL TICKET ANTERIOR PARA QUE NO SE PUEDA HACER OTRA DEVOLUCION 
       venta.setIdVentaEstatus(EEstatusVentas.CANCELADA.getIdEstatusVenta());
       venta.setObservaciones((this.getOrden().getObservaciones()!= null? "": this.getOrden().getObservaciones().concat(", ")).concat("TICKET CANCELADO"));
       DaoFactory.getInstance().update(sesion, venta);
       this.registraBitacora(sesion, venta.getIdVenta(), venta.getIdVentaEstatus(), "TICKET CANCELADO");
-      regresar= true;
+      // AQUI FALTA DESCONTAR EL TOTAL DE LA VENTA DEL CIERRE DE CAJA ACTIVO EN EL IMPORTE ACUMULADO Y EN EL SALDO
+			TcManticCierresCajasDto	caja= (TcManticCierresCajasDto)DaoFactory.getInstance().findById(sesion, TcManticCierresCajasDto.class, this.idCierreVigente);
+      if(caja!= null) {
+    	  caja.setSaldo(Numero.toRedondearSat((caja.getDisponible()+ caja.getAcumulado())- suma));
+			  caja.setAcumulado(Numero.toRedondearSat(caja.getAcumulado()- suma));
+    	  DaoFactory.getInstance().update(sesion, caja);
+      } // if
+      // METER REVERSA SOBRE LOS INVENTARIOS ASOCIADOS AL ALMACEN DE DONDE SALIERON LOS ARTICULOS
+      this.toCancelarStockArticulos(sesion, venta);
+      // METER DE REVERSA LA CUENTA POR COBRAR SI ES QUE ESTA TIENE UNA ASOCIADA
+      regresar= this.toCancelarCuentaCobrar(sesion, venta);
     } // try
     catch (Exception e) {
       throw e;
@@ -1521,24 +1556,191 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
     return regresar;
   }
 
-  private void processNotificacionCredito(Session sesion) throws Exception {
+  private Boolean processNotificacionCredito(Session sesion) throws Exception {
+    Boolean regresar= Boolean.FALSE;
     try {      
-      sesion.flush();
       NotificaCliente notifica= new NotificaCliente(sesion,
         this.ventaFinalizada.getCliente().getIdCliente(), // Long idCliente, 
         this.ventaFinalizada.getCliente().getRazonSocial(), // String razonSocial, 
         null, // String correos, 
-        EReportes.valueOf("CUENTAS_POR_COBRAR"), // EReportes reportes, 
-        ECorreos.valueOf("CREDITO"), // ECorreos correo, 
+        EReportes.CUENTAS_POR_COBRAR, // EReportes reportes, 
+        ECorreos.CREDITO, // ECorreos correo, 
         true, // boolean notifica
         this.ventaFinalizada.getTicketVenta().getIdVenta() // idVenta
       );
       notifica.doSendMail();
       notifica.doSendWhatsup();
+      regresar= Boolean.TRUE;
     } // try
     catch (Exception e) {
       throw e;
     } // catch	
+    return regresar;
   }
-    
+
+  private boolean toCancelarStockArticulos(Session sesion, TcManticVentasDto venta) throws Exception {
+		TcManticAlmacenesArticulosDto almacenArticulo= null;
+		TcManticArticulosDto articuloVenta           = null;		
+		Map<String, Object>params                    = new HashMap<>();
+		Double stock                                 = 0D;
+    List<Articulo> articulos                     = null; 
+		boolean regresar                             = Boolean.FALSE;
+		try {			
+      params.put("idVenta", venta.getIdVenta());
+		  articulos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(sesion, Articulo.class, "TcManticVentasDetallesDto", "detalle", params);
+      if(!Objects.equals(articulos, null) && !articulos.isEmpty()) {
+        for(Articulo item: articulos) {
+          params.put(Constantes.SQL_CONDICION, "id_articulo="+ item.getIdArticulo()+ " and id_almacen="+ venta.getIdAlmacen());
+          almacenArticulo= (TcManticAlmacenesArticulosDto) DaoFactory.getInstance().toEntity(sesion, TcManticAlmacenesArticulosDto.class, "TcManticAlmacenesArticulosDto", "row", params);
+          if(almacenArticulo!= null) {
+            stock= almacenArticulo.getStock();
+            almacenArticulo.setStock(almacenArticulo.getStock()+ item.getCantidad());
+            DaoFactory.getInstance().update(sesion, almacenArticulo);
+          } // if
+          else {
+            stock= 0D;
+            this.toCancelarAlmacenArticulo(sesion, venta.getIdAlmacen(), item.getIdArticulo(), item.getCantidad());
+          } // else					      
+          this.toCancelarMovimiento(sesion, venta.getTicket(), venta.getIdAlmacen(), item.getCantidad(), item.getIdArticulo(), stock, JsfBase.getIdUsuario());
+          articuloVenta= (TcManticArticulosDto) DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, item.getIdArticulo());
+          articuloVenta.setStock(articuloVenta.getStock()+ item.getCantidad());
+          if(DaoFactory.getInstance().update(sesion, articuloVenta)>= 1L)
+            this.toCancelarInventario(sesion, venta.getIdAlmacen(), item.getIdArticulo(), item.getCantidad());
+        } // for
+      } // if
+			regresar= Boolean.TRUE;		
+		} // try		
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} 
+
+	private boolean toCancelarInventario(Session sesion, Long idAlmacen, Long idArticulo, Double cantidad) throws Exception {
+		boolean regresar                 = false;
+		TcManticInventariosDto inventario= null;
+		Map<String, Object>params        = new HashMap<>();
+		try {
+			params.put("idAlmacen", idAlmacen);
+			params.put("idArticulo", idArticulo);
+			inventario= (TcManticInventariosDto) DaoFactory.getInstance().toEntity(sesion, TcManticInventariosDto.class, "TcManticInventariosDto", "inventario", params);
+			if(inventario!= null) {
+				inventario.setSalidas(inventario.getSalidas()- cantidad);
+				inventario.setStock(inventario.getStock()+ cantidad);
+				regresar= DaoFactory.getInstance().update(sesion, inventario)>= 1L;
+			} // if
+			else {
+				inventario= new TcManticInventariosDto();
+				inventario.setEjercicio(Long.valueOf(Fecha.getAnioActual()));
+				inventario.setEntradas(0D);
+				inventario.setIdAlmacen(idAlmacen);
+				inventario.setIdArticulo(idArticulo);
+				inventario.setIdUsuario(JsfBase.getIdUsuario());
+				inventario.setInicial(cantidad);
+				inventario.setSalidas(0D);
+				inventario.setStock(0D);
+				inventario.setIdAutomatico(1L);
+				regresar= DaoFactory.getInstance().insert(sesion, inventario)>= 1L;
+			} // else				
+		} // try
+		finally {			
+			Methods.clean(params);
+		} // catch		
+		return regresar;
+	} 
+
+	private boolean toCancelarAlmacenArticulo(Session sesion, Long idAlmacen, Long idArticulo, Double cantidad) throws Exception {
+		boolean regresar= Boolean.FALSE;
+		TcManticAlmacenesArticulosDto almacenArticulo= new TcManticAlmacenesArticulosDto();
+		almacenArticulo.setIdAlmacen(idAlmacen);
+		almacenArticulo.setIdArticulo(idArticulo);
+		almacenArticulo.setIdUsuario(JsfBase.getIdUsuario());
+		almacenArticulo.setMaximo(0D);
+		almacenArticulo.setMinimo(0D);
+		almacenArticulo.setStock(cantidad);
+		almacenArticulo.setIdAlmacenUbicacion(toIdAlmacenUbicacion(sesion));
+		regresar= DaoFactory.getInstance().insert(sesion, almacenArticulo)>= 1L;		
+		return regresar;
+	} 
+
+	private void toCancelarMovimiento(Session sesion, String ticket, Long idAlmacen, Double cantidad, Long idArticulo, Double stock, Long idUsuario) throws Exception {
+		Double calculo= Numero.toRedondearSat(stock+ cantidad) ;
+		TcManticMovimientosDto movimiento= new TcManticMovimientosDto(
+      ticket,    // String consecutivo, 
+      9L,        // Long idTipoMovimiento, ES UNA CANCELACION
+      idUsuario, // Long idUsuario, 
+      idAlmacen, // Long idAlmacen, 
+      -1L,       // Long idMovimiento, 
+      cantidad,  // Double cantidad, 
+      idArticulo,// Long idArticulo, 
+      stock,     // Double stock, 
+      calculo,   // Double calculo
+      "SE CANCELO LA VENTA" // String observaciones
+    );
+	  DaoFactory.getInstance().insert(sesion, movimiento); 
+	} 
+
+  private boolean toCancelarCuentaCobrar(Session sesion, TcManticVentasDto venta) throws Exception {  
+    boolean regresar          = Boolean.FALSE;
+    Map<String, Object> params= new HashMap<>();
+		TcManticClientesDeudasDto deuda= null;		
+    try {      
+      params.put("idVenta", venta.getIdVenta());      
+      deuda= (TcManticClientesDeudasDto)DaoFactory.getInstance().toEntity(sesion, TcManticClientesDeudasDto.class, "TcManticClientesDeudasDto", "detalle", params);
+      if(!Objects.equals(deuda, null)) {      
+        params.put("idUsuario", JsfBase.getIdUsuario());      
+        Entity usuario= (Entity)DaoFactory.getInstance().toEntity(sesion, "VistaUsuariosDto", "perfilUsuario", params);
+        deuda.setIdClienteEstatus(5L); // CANCELAR
+        deuda.setObservaciones(Objects.equals(deuda.getObservaciones(), null)?  
+          "DEUDA CANECELADA POR ".concat(usuario.toString("nombreCompleto")): 
+          deuda.getObservaciones().concat(", DEUDA CANECELADA POR ").concat(usuario.toString("nombreCompleto"))
+        );
+        DaoFactory.getInstance().update(sesion, deuda);
+        TcManticClientesBitacoraDto movimiento= new TcManticClientesBitacoraDto(
+          -1L, // Long idClienteBitacora, 
+          deuda.getIdClienteEstatus(), // Long idClienteEstatus, 
+          "DEUDA CANECELADA", // String justificacion, 
+          JsfBase.getIdUsuario(), // Long idUsuario, 
+          deuda.getIdClienteDeuda() // Long idClienteDeuda
+        );
+        DaoFactory.getInstance().insert(sesion, movimiento);
+        // ENVIAR EL ESTADO DE CUENTA ACTUALIZADO POR CORREO O CELULAR
+        this.toNotificacionCredito(sesion, venta);
+      } // if
+      regresar= Boolean.TRUE;
+    } // try
+    catch (Exception e) {
+      throw e;      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  }
+
+  private Boolean toNotificacionCredito(Session sesion, TcManticVentasDto venta) throws Exception {
+    Boolean regresar= Boolean.FALSE;
+    try {      
+      TcManticClientesDto cliente= (TcManticClientesDto)DaoFactory.getInstance().findById(sesion, TcManticClientesDto.class, venta.getIdCliente());
+      String razonSocial= Objects.equals(cliente.getIdTipoCliente(), 1L)? 
+         cliente.getRazonSocial(): cliente.getRazonSocial()+ (Objects.equals(cliente.getPaterno(), null)? "": " "+ cliente.getPaterno())+ (Objects.equals(cliente.getMaterno(), null)? "": " "+ cliente.getMaterno());
+      NotificaCliente notifica= new NotificaCliente(sesion,
+        venta.getIdCliente(), // Long idCliente, 
+        razonSocial, // String razonSocial, 
+        null, // String correos, 
+        EReportes.CUENTAS_POR_COBRAR, // EReportes reportes, 
+        ECorreos.CREDITO, // ECorreos correo, 
+        true, // boolean notifica
+        venta.getIdVenta() // idVenta
+      );
+      notifica.doSendMail();
+      notifica.doSendWhatsup();
+      regresar= Boolean.TRUE;
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    return regresar;
+  }
+      
 }

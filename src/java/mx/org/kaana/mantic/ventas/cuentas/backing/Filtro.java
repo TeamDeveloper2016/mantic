@@ -46,13 +46,13 @@ public class Filtro extends IBaseFilter implements Serializable {
 	private Reporte reporte;
 	
 	public void doReporte(String nombre) throws Exception{
-    Parametros comunes = null;
+    Parametros comunes           = null;
 		Map<String, Object>params    = null;
 		Map<String, Object>parametros= null;
 		EReportes reporteSeleccion   = null;
     Entity seleccionado          = null;
 		try{		
-      params= toPrepare();
+      params= this.toPrepare();
       params.put("sortOrder", "order by tc_mantic_ventas.id_empresa, tc_mantic_ventas.ejercicio, tc_mantic_ventas.orden");
 			reporteSeleccion= EReportes.valueOf(nombre);
       if(reporteSeleccion.equals(EReportes.CUENTAS_DETALLE)){
@@ -104,8 +104,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.attrs.put("idVenta", JsfBase.getFlashAttribute("idVenta"));
       this.attrs.put("sortOrder", "order by tc_mantic_ventas.id_empresa, tc_mantic_ventas.ejercicio, tc_mantic_ventas.orden");
-			toLoadCatalog();
-			loadEstatusVentas();
+			this.toLoadCatalog();
+			this.loadEstatusVentas();
       if(this.attrs.get("idVenta")!= null) 
 			  this.doLoad();
     } // try
@@ -117,10 +117,9 @@ public class Filtro extends IBaseFilter implements Serializable {
  
   @Override
   public void doLoad() {
-    List<Columna> columns     = null;
+    List<Columna> columns     = new ArrayList<>();
 		Map<String, Object> params= toPrepare();
     try {
-      columns = new ArrayList<>();
       columns.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
@@ -137,7 +136,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       Methods.clean(params);
       Methods.clean(columns);
     } // finally		
-  } // doLoad
+  } 
 
   public String doAccion(String accion) {
     EAccion eaccion= null;
@@ -169,7 +168,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch			
-  } // doEliminar
+  } 
 
 	protected Map<String, Object> toPrepare() {
 	  Map<String, Object> regresar= new HashMap<>();	
@@ -201,11 +200,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 	}
 	
 	protected void toLoadCatalog() {
-		List<Columna> columns     = null;
-    Map<String, Object> params= null;
+		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
     try {
-			params = new HashMap<>();
-			columns= new ArrayList<>();
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
         params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
 			else
@@ -229,13 +226,11 @@ public class Filtro extends IBaseFilter implements Serializable {
     }// finally
 	}
 	
-	private void loadEstatusVentas(){		
-		List<Columna> columns     = null;
-		Map<String, Object> params= null;
+	private void loadEstatusVentas() {		
+		List<Columna> columns     = new ArrayList<>();
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, toCondicionEstatus());
-			columns= new ArrayList<>();
 			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			this.attrs.put("estatusFiltro", (List<UISelectEntity>) UIEntity.build("TcManticVentasEstatusDto", "row", params, columns));
 			this.attrs.put("idVentaEstatus", new UISelectEntity("-1"));
@@ -243,14 +238,13 @@ public class Filtro extends IBaseFilter implements Serializable {
 		catch (Exception e) {			
 			throw e;
 		} // catch		
-	} // loadEstatusVentas
+	} 
 	
 	private String toCondicionEstatus(){
-		StringBuilder regresar = null;
+		StringBuilder regresar = new StringBuilder();
 		String estatusAppend   = "";
 		String condicionEstatus= "";
 		try {
-			regresar= new StringBuilder();
 			regresar.append("tc_mantic_ventas_estatus.id_venta_estatus in (");
 			for(EEstatusVentas estatus : EEstatusVentas.values()){
 				if(EEstatusVentas.ELABORADA.equals(estatus) || EEstatusVentas.ABIERTA.equals(estatus))
@@ -258,22 +252,22 @@ public class Filtro extends IBaseFilter implements Serializable {
 			} // for
 			regresar.append(estatusAppend.substring(0, estatusAppend.length()-1));
 			regresar.append(")");
-			condicionEstatus= regresar.toString().concat(" and tc_mantic_ventas.vigencia is null");
+			condicionEstatus= regresar.toString();
+			// condicionEstatus= regresar.toString().concat(" and tc_mantic_ventas.vigencia is null");
 			this.attrs.put("condicionEstatus", condicionEstatus);
 		} // try
 		catch (Exception e) {			
 			throw e;
 		} // catch		
 		return regresar.toString();
-	} // toCondicionEstatus
+	} 
 
 	public void doLoadEstatus(){
 		Entity seleccionado          = null;
-		Map<String, Object>params    = null;
+		Map<String, Object>params    = new HashMap<>();
 		List<UISelectItem> allEstatus= null;
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_venta_estatus in (".concat(seleccionado.toString("estatusAsociados")).concat(") and id_venta_estatus not in (").concat(EEstatusVentas.COTIZACION.getIdEstatusVenta().toString()).concat(")"));
 			allEstatus= UISelect.build("TcManticVentasEstatusDto", params, "nombre", EFormatoDinamicos.MAYUSCULAS);			
 			this.attrs.put("allEstatus", allEstatus);
@@ -286,7 +280,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		finally {
 			Methods.clean(params);
 		} // finally
-	} // doLoadEstatus
+	} 
 	
 	public void doActualizarEstatus() {
 		Transaccion transaccion           = null;
@@ -295,7 +289,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
 			TcManticVentasDto orden= (TcManticVentasDto)DaoFactory.getInstance().findById(TcManticVentasDto.class, seleccionado.getKey());
-			bitacora= new TcManticVentasBitacoraDto(-1L, (String)this.attrs.get("justificacion"), JsfBase.getIdUsuario(), seleccionado.getKey(), Long.valueOf(this.attrs.get("estatus").toString()), orden.getConsecutivo(), orden.getTotal());
+			bitacora   = new TcManticVentasBitacoraDto(-1L, (String)this.attrs.get("justificacion"), JsfBase.getIdUsuario(), seleccionado.getKey(), Long.valueOf(this.attrs.get("estatus").toString()), orden.getConsecutivo(), orden.getTotal());
 			transaccion= new Transaccion(bitacora);
 			if(transaccion.ejecutar(EAccion.JUSTIFICAR))
 				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);
@@ -309,5 +303,6 @@ public class Filtro extends IBaseFilter implements Serializable {
 		finally {
 			this.attrs.put("justificacion", "");
 		} // finally
-	}	// doActualizaEstatus
+	}	
+  
 }

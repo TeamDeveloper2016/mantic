@@ -271,6 +271,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			} // switch		
       columns.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("total", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+			params.put("idCierre", cierre.getIdCierre());
       this.attrs.put("creditos", UIEntity.build("VistaCierresCajasDto", "creditos", params, columns));
  			this.attrs.put("idCredito", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("creditos")));
   		this.attrs.put("totalCreditos", ((List<UISelectEntity>)this.attrs.get("creditos")).size());

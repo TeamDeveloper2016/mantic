@@ -664,6 +664,7 @@ public class Conteos extends IBaseFilter implements Serializable {
           this.attrs.put("tipoDocumento", "de la nota de entrada");
 					break;
 				case 2: // VENTAS
+				case 9: // CANCELACION
 					Long idVenta= this.toFindIdKey(consecutivo.toString("consecutivo"), "TcManticVentasDto", "ticket");
       		params.put("idVenta", idVenta);
 					documento= (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "venta", params, columns, Constantes.SQL_TODOS_REGISTROS);
