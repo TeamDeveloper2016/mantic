@@ -41,7 +41,7 @@ public class Entity extends HashMap<String, Value> implements IValue, IBaseDto, 
     if (this.containsKey(name))
       regresar = get(name);
 		else
-      throw new RuntimeException("El nombre de campo [".concat(name).concat("] no existe."));
+      throw new RuntimeException("El nombre de campo [".concat(name).concat("] no existe"));
     return regresar.getData() == null ? "" : regresar.getData().toString();
   }
 
@@ -59,7 +59,7 @@ public class Entity extends HashMap<String, Value> implements IValue, IBaseDto, 
     if (this.containsKey(name))
       regresar = get(name);
     else
-      throw new RuntimeException("El nombre de campo [".concat(name).concat("] no existe."));
+      throw new RuntimeException("El nombre de campo [".concat(name).concat("] no existe"));
     return regresar;
   }
 
@@ -108,15 +108,15 @@ public class Entity extends HashMap<String, Value> implements IValue, IBaseDto, 
 
   @Override
   public Map<String, Object> toMap() {
-    Map<String, Object> regresar = new HashMap<String, Object>();
-    for(Map.Entry<String, Value> entry : this.entrySet())
+    Map<String, Object> regresar = new HashMap<>();
+    for(Map.Entry<String, Value> entry: this.entrySet())
       regresar.put(entry.getKey(), entry.getValue());
     return regresar;
   }
 
   public Map<String, Object> toBdFieldMap() {
-    Map<String, Object> regresar = new HashMap<String, Object>();
-    for(Map.Entry<String, Value> entry : this.entrySet())
+    Map<String, Object> regresar = new HashMap<>();
+    for(Map.Entry<String, Value> entry: this.entrySet())
       regresar.put(entry.getValue().getField(), entry.getValue().getData());
     return regresar;
   }
@@ -130,7 +130,7 @@ public class Entity extends HashMap<String, Value> implements IValue, IBaseDto, 
   public String toAllKeys() {
     StringBuilder regresar = new StringBuilder();
     regresar.append(Constantes.SEPARADOR);
-    for(Map.Entry<String, Value> entry : this.entrySet()) {
+    for(Map.Entry<String, Value> entry: this.entrySet()) {
       if (entry.getValue().getName().toLowerCase().startsWith(Constantes.CAMPO_LLAVE)) {
         regresar.append(entry.getValue().getName());
         regresar.append("~");
@@ -138,7 +138,7 @@ public class Entity extends HashMap<String, Value> implements IValue, IBaseDto, 
         regresar.append(Constantes.SEPARADOR);
       } // if
     } // for
-    return regresar.length() > 1 ? regresar.toString() : "";
+    return regresar.length()> 1? regresar.toString(): "";
   }
 
   @Override
@@ -153,7 +153,7 @@ public class Entity extends HashMap<String, Value> implements IValue, IBaseDto, 
         count++;
       } // if
     } // for
-    return regresar.length() > 1 ? count > 1 ? regresar.toString() : regresar.substring(1, regresar.length() - 1) : "";
+    return regresar.length() > 1? count> 1 ? regresar.toString(): regresar.substring(1, regresar.length() - 1): "";
   }
 
   @Override
@@ -164,7 +164,7 @@ public class Entity extends HashMap<String, Value> implements IValue, IBaseDto, 
   public String toValues() {
     StringBuilder regresar = new StringBuilder();
     regresar.append("[");
-    for(Map.Entry<String, Value> entry : this.entrySet()) {
+    for(Map.Entry<String, Value> entry: this.entrySet()) {
       regresar.append(entry.getValue().getName());
       regresar.append("=");
       if (entry.getValue().getData() != null) {
@@ -180,37 +180,37 @@ public class Entity extends HashMap<String, Value> implements IValue, IBaseDto, 
   @Override
   public String toString(String name) {
     Object regresar = toObject(name);
-    return regresar != null ? regresar.toString() : null;
+    return regresar != null ? regresar.toString(): null;
   }
 
   @Override
   public Long toLong(String name) {		
     Object regresar = toObject(name);
-    return regresar != null ? ((Number) regresar).longValue() : null;
+    return regresar != null ? ((Number) regresar).longValue(): null;
   }
 
   @Override
   public Integer toInteger(String name) {
     Object regresar = toObject(name);
-    return regresar != null ? ((Number) regresar).intValue() : null;
+    return regresar != null ? ((Number) regresar).intValue(): null;
   }
 
   @Override
   public Double toDouble(String name) {
     Object regresar = toObject(name);
-    return regresar != null ? ((Number) regresar).doubleValue() : null;
+    return regresar != null ? ((Number) regresar).doubleValue(): null;
   }
 
   @Override
   public Float toFloat(String name) {
     Object regresar = toObject(name);
-    return regresar != null ? ((Number) regresar).floatValue() : null;
+    return regresar != null ? ((Number) regresar).floatValue(): null;
   }
 
   @Override
   public Short toShort(String name) {
     Object regresar = toObject(name);
-    return regresar != null ? ((Number) regresar).shortValue() : null;
+    return regresar != null ? ((Number) regresar).shortValue(): null;
   }
 
   @Override
@@ -222,19 +222,19 @@ public class Entity extends HashMap<String, Value> implements IValue, IBaseDto, 
   @Override
   public Date toDate(String name) {
     Object regresar = toObject(name);
-    return regresar != null ? (Date) regresar : null;
+    return regresar != null ? (Date) regresar: null;
   }
 
   @Override
   public Timestamp toTimestamp(String name) {
     Object regresar = toObject(name);
-    return regresar != null ? (Timestamp) regresar : null;
+    return regresar != null ? (Timestamp) regresar: null;
   }
 
   @Override
   public Time toTime(String name) {
     Object regresar = toObject(name);
-    return regresar != null ? (Time) regresar : null;
+    return regresar != null ? (Time) regresar: null;
   }
 
   @Override
