@@ -4888,6 +4888,7 @@ order by
 					tc_mantic_articulos.id_redondear,
 					tc_mantic_articulos.id_vigente,
 					tc_mantic_articulos.id_descontinuado,
+					tc_mantic_articulos.id_completo,
 					tc_mantic_articulos.actualizado,
           tc_mantic_articulos.id_articulo_impuesto,
 					tc_mantic_articulos.registro

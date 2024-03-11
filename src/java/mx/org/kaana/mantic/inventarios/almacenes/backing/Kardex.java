@@ -194,6 +194,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
 					this.attrs.put("idRedondear", solicitado.toLong("idRedondear")== 1L);
 					this.attrs.put("idVigente", solicitado.toLong("idVigente")== 1L);
 					this.attrs.put("idDescontinuado", solicitado.toLong("idDescontinuado")== 1L);
+					this.attrs.put("idCompleto", solicitado.toLong("idCompleto")== 1L);
         	this.attrs.put("sat", solicitado.toString("sat"));
         	this.attrs.put("ultimo", solicitado.toString("actualizado"));
 					Periodo periodo= new Periodo();
@@ -232,6 +233,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
 				this.attrs.put("idRedondear", false);
 				this.attrs.put("idVigente", false);
 				this.attrs.put("idDescontinuado", true);
+				this.attrs.put("idCompleto", true);
       	this.attrs.put("sat", Constantes.CODIGO_SAT);
        	this.attrs.put("ultimo", "");
 				this.attrs.put("ultimoCosto", 0.0D);
@@ -1100,9 +1102,9 @@ public class Kardex extends IBaseAttribute implements Serializable {
     try {			
 			transaccion = new Transaccion((Long)this.attrs.get("idArticulo"), -1L, (Boolean)this.attrs.get("idVigente")? 1L: 2L, -1L);
 			if (transaccion.ejecutar(eaccion))
-				JsfBase.addMessage("Se modificò el atributo de vigencia del articulo.", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Se modificò el atributo de vigencia del articulo", ETipoMensaje.INFORMACION);
 			else 
-				JsfBase.addMessage("Ocurrió un error al hacer el cambio de vigente.", ETipoMensaje.ERROR);      			
+				JsfBase.addMessage("Ocurrió un error al hacer el cambio de vigente", ETipoMensaje.ERROR);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -1116,9 +1118,25 @@ public class Kardex extends IBaseAttribute implements Serializable {
     try {			
 			transaccion = new Transaccion((Long)this.attrs.get("idArticulo"), -1L, -1L, (Boolean)this.attrs.get("idDescontinuado")? 1L: 2L);
 			if (transaccion.ejecutar(eaccion))
-				JsfBase.addMessage("Se cambio el atributo de descontinuado del articulo.", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Se cambio el atributo de descontinuado del articulo", ETipoMensaje.INFORMACION);
 			else 
-				JsfBase.addMessage("Ocurrió un error al hacer el cambio de descontinuado.", ETipoMensaje.ERROR);      			
+				JsfBase.addMessage("Ocurrió un error al hacer el cambio de descontinuado", ETipoMensaje.ERROR);      			
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+	}
+
+	public void doChangeCompleto() {
+    Transaccion transaccion= null;
+		EAccion eaccion        = EAccion.COMPLETO;
+    try {			
+			transaccion = new Transaccion((Long)this.attrs.get("idArticulo"), -1L, -1L, (Boolean)this.attrs.get("idCompleto")? 1L: 2L);
+			if (transaccion.ejecutar(eaccion))
+				JsfBase.addMessage("Se cambio el atributo de completo del articulo", ETipoMensaje.INFORMACION);
+			else 
+				JsfBase.addMessage("Ocurrió un error al hacer el cambio de completo", ETipoMensaje.ERROR);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);

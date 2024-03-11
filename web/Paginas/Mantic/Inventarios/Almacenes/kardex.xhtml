@@ -170,7 +170,7 @@
 										<p:inputText id="ulitmoCambio" value="#{manticInventariosAlmacenesKardex.attrs.ultimo}" styleClass="janal-wid-90 filas" readonly="true"/>
 										<p:spacer width="1px"/><p:separator/>
 									</p:panelGrid>		
-									<p:panelGrid columns="6" layout="grid" styleClass="janal-wid-100">		
+                  <p:panelGrid columns="8" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-15, janal-wid-10, janal-wid-15, janal-wid-10, janal-wid-15, janal-wid-10, janal-wid-15">		
 										<p:outputLabel for="idRedondear" value="Redondear:"/>
 										<p:inputSwitch id="idRedondear" styleClass="janal-wid-100-txt filas" value="#{manticInventariosAlmacenesKardex.attrs.idRedondear}" offLabel="NO" onLabel="SI" disabled="#{empty manticInventariosAlmacenesKardex.attrs.articulo.propio}">
 											<p:ajax listener="#{manticInventariosAlmacenesKardex.doChangeRedondear}" process="@this" update="@none" />
@@ -182,6 +182,10 @@
 										<p:outputLabel for="idDescontinuado" value="Descontinuado:" styleClass="janal-color-blue strong filas"/>
 										<p:inputSwitch id="idDescontinuado" styleClass="janal-wid-100-txt janal-color-blue strong filas" value="#{manticInventariosAlmacenesKardex.attrs.idDescontinuado}" offLabel="NO" onLabel="SI" disabled="#{empty manticInventariosAlmacenesKardex.attrs.articulo.propio}">
 											<p:ajax listener="#{manticInventariosAlmacenesKardex.doChangeDescontinuado}" process="@this" update="@none" />
+										</p:inputSwitch>	
+										<p:outputLabel for="idCompleto" value="Completo:" styleClass="janal-color-blue strong filas"/>
+										<p:inputSwitch id="idCompleto" styleClass="janal-wid-100-txt janal-color-blue strong filas" value="#{manticInventariosAlmacenesKardex.attrs.idCompleto}" offLabel="NO" onLabel="SI" disabled="#{empty manticInventariosAlmacenesKardex.attrs.articulo.propio}">
+											<p:ajax listener="#{manticInventariosAlmacenesKardex.doChangeCompleto}" process="@this" update="@none" />
 										</p:inputSwitch>	
 									</p:panelGrid>
 								</p:panelGrid>

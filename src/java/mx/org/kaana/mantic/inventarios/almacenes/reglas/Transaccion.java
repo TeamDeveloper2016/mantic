@@ -158,6 +158,12 @@ public class Transaccion extends IBaseTnx {
 					articulo.setActualizado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 					regresar= DaoFactory.getInstance().update(sesion, articulo)>= 1L;
 					break;
+				case COMPLETO:
+					articulo= (TcManticArticulosDto)DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, this.idArticulo);
+					articulo.setIdCompleto(this.idDescontinuado);
+					articulo.setActualizado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+					regresar= DaoFactory.getInstance().update(sesion, articulo)>= 1L;
+					break;
 				case COMPLEMENTAR:
 					articulo= (TcManticArticulosDto)DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, this.idArticulo);
 					articulo.setSat(this.sat);
