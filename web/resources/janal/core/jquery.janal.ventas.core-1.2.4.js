@@ -62,7 +62,7 @@
 		VK_SAT	    : 188,
 	  change      : [13, 27, 106, 107, 110, 111, 121, 188, 189, 191, 220, 222, 226],
 	  control     : [9, 13, 17, 27, 38, 40, 220, 118, 121, 122],
-    CTRL_DECIMALS: 2,
+    CTRL_DECIMALS: 0,
 		cursor: {
 			top: 1, // el top debera ser elementos que va de 0 a n-1
 			index: 0,

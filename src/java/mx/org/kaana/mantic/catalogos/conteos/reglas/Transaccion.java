@@ -199,11 +199,15 @@ public class Transaccion extends IBaseTnx implements Serializable {
         inventario.setEntradas(0D);
         inventario.setSalidas(0D);
         inventario.setStock(0D);
+        inventario.setIdAutomatico(2L);
+        inventario.setIdVerificado(1L);
         inventario.setIdUsuario(this.conteo.getIdUsuario());
         inventario.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
       } // if
       else {
         inventario.setInicial(item.getCantidad());
+        inventario.setIdAutomatico(2L);
+        inventario.setIdVerificado(1L);
         inventario.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
       } // else  
       almacen.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));

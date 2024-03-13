@@ -275,7 +275,7 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 
 	@Override
 	public void doLoadFaltantes() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
@@ -286,7 +286,6 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 				String nombre= ((String)this.attrs.get("lookForFaltantes")).replaceAll(Constantes.CLEAN_SQL, "").trim();
 				params.put("codigoFaltante", nombre.toUpperCase());
 			} // else
-			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("costo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));

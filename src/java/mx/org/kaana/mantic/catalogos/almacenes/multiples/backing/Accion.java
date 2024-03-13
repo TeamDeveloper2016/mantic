@@ -120,7 +120,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
   			JsfBase.setFlashAttribute("idTransferenciaMultiple", ((Multiple)this.getAdminOrden().getOrden()).getIdTransferenciaMultiple());
 			} // if
 			else 
-				JsfBase.addMessage("Ocurrió un error al registrar la transferencia de articulos.", ETipoMensaje.ALERTA);      			
+				JsfBase.addMessage("Ocurrió un error al registrar la transferencia de articulos", ETipoMensaje.ALERTA);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -372,6 +372,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
   protected void toMoveData(UISelectEntity articulo, Integer index) throws Exception {
 		Articulo temporal         = this.getAdminOrden().getArticulos().get(index);
 		Map<String, Object> params= new HashMap<>();
+    StringBuilder sb          = new StringBuilder(); 
 		try {
 			if(articulo.size()> 1) {
         // RECUPERAR EL ELEMENTO DE LA POSICION DEL ID_ALMACEN_DESTINO 
@@ -398,17 +399,21 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 				temporal.setDescuento("");
 				temporal.setExtras("");				
 				// recuperar el stock de articulos en el almacen origen
-				Value origen= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
-				temporal.setStock(origen== null? 0D: origen.toDouble());
+				Entity source= (Entity)DaoFactory.getInstance().toEntity("TcManticInventariosDto", "stock", params);
+        if(Objects.equals(source, null) || Objects.equals(source.toLong("idAutomatico"), 1L) || !Objects.equals(source.toDouble("inicial"), 0D))
+          sb.append("El almacen fuente no tiene un conteo, ");
+				temporal.setStock(source== null || source.isEmpty()? 0D: source.toDouble("stock"));
 				// el almacen origen no tiene conteo 
-				temporal.setSolicitado(origen== null);
+				temporal.setSolicitado(source== null || source.isEmpty() || Objects.equals(source.toDouble("inicial"), 0D));
 				// recuperar el stock de articulos en el almacen destino
 				params.put("idAlmacen", ((Multiple)this.getAdminOrden().getOrden()).getIkDestino().getKey());
-				origen= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
-				temporal.setValor(origen== null? 0D: origen.toDouble());
+				Entity target= (Entity)DaoFactory.getInstance().toEntity("TcManticInventariosDto", "stock", params);
+        if(Objects.equals(target, null) || Objects.equals(target.toLong("idAutomatico"), 1L) || !Objects.equals(target.toDouble("inicial"), 0D))
+          sb.append("El almacen destino no tiene un conteo  ");
+				temporal.setValor(target== null|| target.isEmpty()? 0D: target.toDouble("stock"));
 				// el almacen destino no tiene conteo
-				temporal.setCostoLibre(origen== null);
-				origen= (Value)DaoFactory.getInstance().toField("TcManticAlmacenesArticulosDto", "umbral", params, "maximo");
+				temporal.setCostoLibre(target== null || target.isEmpty() || Objects.equals(target.toDouble("inicial"), 0D));
+				Value origen= (Value)DaoFactory.getInstance().toField("TcManticAlmacenesArticulosDto", "umbral", params, "maximo");
 				// recuperar el maximo del catalogo de articulos
 				if(origen== null) {
 					TcManticArticulosDto item= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, articulo.toLong("idArticulo"));
@@ -434,6 +439,8 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 				} // if	
 				UIBackingUtilities.execute("jsArticulos.erase();jsArticulos.callback('"+ articulo.getKey()+ "');");
 				this.getAdminOrden().toCalculate(index);
+        
+        temporal.setComentarios(sb.length()== 0? null: sb.substring(0, sb.length()- 2));
 			} // if	
 			else
 				temporal.setNombre("<span class='janal-color-orange'>EL ARTICULO NO EXISTE EN EL CATALOGO !</span>");
@@ -448,8 +455,8 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		try {
     	List<UISelectEntity> articulos= (List<UISelectEntity>)this.attrs.get("articulos");
       if(articulos!= null && !articulos.isEmpty()) {
-        UISelectEntity articulo       = (UISelectEntity)this.attrs.get("articulo");
-        UISelectEntity encontrado     = (UISelectEntity)this.attrs.get("encontrado");
+        UISelectEntity articulo  = (UISelectEntity)this.attrs.get("articulo");
+        UISelectEntity encontrado= (UISelectEntity)this.attrs.get("encontrado");
         if(encontrado!= null) {
           articulo= encontrado;
           this.attrs.remove("encontrado");

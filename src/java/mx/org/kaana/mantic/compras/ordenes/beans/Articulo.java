@@ -71,6 +71,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	private long idAlmacen;
 	private String almacen;
 	private long idCompleto;
+  private String comentarios;
 
 	public Articulo() {
 		this(-1L);
@@ -121,6 +122,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
     this.idAlmacen   = -1L;
     this.almacen     = "";
     this.idCompleto  = 1L;
+    this.comentarios = "";
 	}
 
 	public UISelectEntity getIdEntity() {
@@ -345,6 +347,14 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 
   public void setIdCompleto(long idCompleto) {
     this.idCompleto = idCompleto;
+  }
+
+  public String getComentarios() {
+    return comentarios;
+  }
+
+  public void setComentarios(String comentarios) {
+    this.comentarios = comentarios;
   }
 
   public String getImporte$() {

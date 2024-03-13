@@ -137,6 +137,8 @@ public class Conteos extends IBaseFilter implements Serializable {
 				vigente.setEntradas(0D);
 				vigente.setSalidas(0D);
 				vigente.setStock(0D);
+				vigente.setIdAutomatico(2L);
+				vigente.setIdVerificado(1L);
   			vigente.setIdUsuario(JsfBase.getIdUsuario());
 				vigente.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 			} // if

@@ -47,14 +47,13 @@ public class Conteos extends IBaseFilter implements Serializable {
  
   @Override
   public void doLoad() {
-    List<Columna> columns     = null;
+    List<Columna> columns     = new ArrayList<>();
 		Map<String, Object> params= null;
 		Double ventas             = 1D;
 		Double utilidad           = 1D;
     try {
 			params = this.toPrepare();
       params.put("sortOrder", "order by tc_mantic_inventarios.id_almacen, tc_mantic_articulos.nombre");
-      columns= new ArrayList<>();
       columns.add(new Columna("nombreEmpresa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("almacen", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
@@ -118,10 +117,9 @@ public class Conteos extends IBaseFilter implements Serializable {
 	} // toPrepare
 	
 	protected void toLoadCatalog() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
         params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
 			else
@@ -145,12 +143,10 @@ public class Conteos extends IBaseFilter implements Serializable {
 	}
 	
 	public List<UISelectEntity> doCompleteCodigo(String query) {
-		List<Columna> columns       = null;
-    Map<String, Object> params  = null;
+		List<Columna> columns       = new ArrayList<>();
+    Map<String, Object> params  = new HashMap<>();
 		List<UISelectEntity> codigos= null;
     try {
-			params= new HashMap<>();
-			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			String search= query; 
