@@ -33,6 +33,7 @@ import org.apache.poi.hssf.util.HSSFColor;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.procesos.mantenimiento.contadores.reglas.Ayudas;
+import static mx.org.kaana.libs.pagina.JsfBase.getAutentifica;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 /**
@@ -396,5 +397,16 @@ public class UtilAplicacion {
 	public String getModulo() {
 		return JsfBase.getCodigoModulo();
 	}
+  
+  public String getPerfil() {
+    String regresar= "";
+    try {
+      regresar = JsfBase.getAutentifica().getPersona().getDescripcionPerfil().toUpperCase();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+    } // catch
+    return regresar;
+  }
 	
 }

@@ -196,7 +196,7 @@
 								</p:panel>
 							</p:panelGrid>	
 						</p:tab>						            						            																																																
-						<p:tab title="Costos">
+            <p:tab title="Costos" rendered="#{kajoolUtilAplicacion.perfil ne 'ALMACENISTA'}">
 							<div class="ui-grid-row janal-grid-row">
 								<div class="ui-grid-col-2 janal-column-center">
  									<p:outputLabel value="Último costo:"/><br/>

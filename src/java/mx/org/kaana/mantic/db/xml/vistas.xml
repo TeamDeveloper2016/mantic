@@ -7459,45 +7459,38 @@ order by
 				  tc_janal_meses.id_mes				  
 			</select>	
 			<select id="facturas">
-        select
-					tc_mantic_notas_entradas.id_nota_entrada as id_key,
-					tc_mantic_notas_archivos.ejercicio,
-					tc_mantic_notas_archivos.mes,
-				  tc_janal_meses.nombre,
-					tc_mantic_notas_entradas.id_nota_entrada,
-          tc_mantic_notas_entradas.id_empresa,
-					tc_mantic_notas_entradas.consecutivo,
-					tc_mantic_empresas.nombre as empresa,
-					tc_mantic_proveedores.razon_social,
-					tc_mantic_notas_entradas.total,
-					tc_mantic_notas_entradas.registro     
-        from
-          tc_mantic_notas_archivos
-				inner join
-					tc_janal_meses on tc_mantic_notas_archivos.mes= tc_janal_meses.id_mes          
-        inner join
-          tc_mantic_notas_entradas on tc_mantic_notas_archivos.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada       
-        inner join
-          tc_mantic_empresas on tc_mantic_notas_entradas.id_empresa= tc_mantic_empresas.id_empresa         
-        inner join
-          tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor= tc_mantic_proveedores.id_proveedor         
-        where
-					tc_mantic_notas_entradas.id_empresa in ({idEmpresa})
-					and tc_mantic_notas_archivos.id_principal= 1
-					and {condicion}
-				group by
-					tc_mantic_notas_entradas.id_nota_entrada,
-					tc_mantic_notas_archivos.ejercicio,
-					tc_mantic_notas_archivos.mes,
-				  tc_janal_meses.nombre,
-					tc_mantic_notas_entradas.id_nota_entrada,
-          tc_mantic_notas_entradas.id_empresa,
-					tc_mantic_notas_entradas.consecutivo,
-					tc_mantic_empresas.clave,
-					tc_mantic_proveedores.razon_social,
-					tc_mantic_notas_entradas.total,
-					tc_mantic_notas_entradas.registro     
-				{sortOrder}				
+select
+  tc_mantic_notas_entradas.id_nota_entrada as id_key,
+  tc_mantic_notas_archivos.ejercicio,
+  tc_mantic_notas_archivos.mes,
+  tc_janal_meses.nombre,
+  tc_mantic_notas_entradas.id_nota_entrada,
+  tc_mantic_notas_entradas.id_empresa,
+  tc_mantic_notas_entradas.consecutivo,
+  tc_mantic_empresas.nombre as empresa,
+  tc_mantic_proveedores.razon_social,
+  tc_mantic_notas_entradas.total,
+  tc_mantic_notas_entradas.registro     
+from
+  tc_mantic_notas_archivos
+inner join
+  tc_janal_meses on tc_mantic_notas_archivos.mes= tc_janal_meses.id_mes          
+inner join
+  tc_mantic_notas_entradas on tc_mantic_notas_archivos.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada       
+inner join
+  tc_mantic_empresas on tc_mantic_notas_entradas.id_empresa= tc_mantic_empresas.id_empresa         
+inner join
+  tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor= tc_mantic_proveedores.id_proveedor         
+where
+  tc_mantic_notas_entradas.id_empresa in ({idEmpresa})
+  and tc_mantic_notas_archivos.id_principal= 1
+  and {condicion}
+group by
+  tc_mantic_notas_entradas.id_nota_entrada,
+  tc_janal_meses.nombre,
+  tc_mantic_empresas.clave,
+  tc_mantic_proveedores.razon_social
+{sortOrder}				
 			</select>
 			<select id="exportar">
         select
@@ -7800,34 +7793,35 @@ order by
 				  tc_mantic_notas_detalles.registro
       </select>
       <select id="proveedor">
-        select      
-				  tc_mantic_articulos.id_articulo as id_key,
-				  tc_mantic_articulos_codigos.id_proveedor,
-				  tc_mantic_articulos.id_articulo,
-					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio,
-				  tc_mantic_articulos_codigos.codigo,
-				  tc_mantic_articulos.nombre,
-				  tc_mantic_articulos.descripcion,
-				  tc_mantic_articulos.iva,
-				  tc_mantic_articulos.sat,
-				  tc_mantic_articulos.precio,
-				  0 as descuento,
-				  1 as cantidad,
-				  tc_mantic_articulos.id_redondear,
-				  tc_mantic_articulos.precio as valor
-        from      
-          tc_mantic_articulos
-        inner join
-          tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo= tc_mantic_articulos_codigos.id_articulo
-        left join
-          tc_mantic_notas_detalles on tc_mantic_articulos.id_articulo= tc_mantic_notas_detalles.id_articulo
-        left join
-          tc_mantic_notas_entradas on tc_mantic_notas_detalles.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada
-        where   
-          tc_mantic_articulos_codigos.id_proveedor= {idProveedor}
-          and {condicion}
-				order by
-				  tc_mantic_notas_entradas.registro desc
+select      
+  tc_mantic_articulos.id_articulo as id_key,
+  tc_mantic_articulos_codigos.id_proveedor,
+  tc_mantic_articulos.id_articulo,
+  tc_mantic_articulos.id_completo,
+  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio,
+  tc_mantic_articulos_codigos.codigo,
+  tc_mantic_articulos.nombre,
+  tc_mantic_articulos.descripcion,
+  tc_mantic_articulos.iva,
+  tc_mantic_articulos.sat,
+  tc_mantic_articulos.precio,
+  0 as descuento,
+  1 as cantidad,
+  tc_mantic_articulos.id_redondear,
+  tc_mantic_articulos.precio as valor
+from      
+  tc_mantic_articulos
+inner join
+  tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo= tc_mantic_articulos_codigos.id_articulo
+left join
+  tc_mantic_notas_detalles on tc_mantic_articulos.id_articulo= tc_mantic_notas_detalles.id_articulo
+left join
+  tc_mantic_notas_entradas on tc_mantic_notas_detalles.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada
+where   
+  tc_mantic_articulos_codigos.id_proveedor= {idProveedor}
+  and {condicion}
+order by
+  tc_mantic_notas_entradas.registro desc
 			</select>
 			<select id="proveedores">
         select
@@ -7854,83 +7848,85 @@ order by
 		</unit>
 		<unit id="VistaOrdenesComprasDto">
 			<select id="exportar">
-     		select 
-					tc_mantic_articulos_codigos.id_articulo_codigo as id_key,
-					tc_mantic_productos.id_producto,
-				  tc_mantic_articulos.id_articulo,
-				  tc_mantic_articulos_codigos.codigo as propio,
-				  tc_mantic_productos_detalles.descripcion as nombre,
-				  tc_mantic_productos_detalles.medida,
-				  tc_mantic_articulos.precio,
-				  tc_mantic_articulos.menudeo,
-				  tc_mantic_articulos.medio_mayoreo,
-				  tc_mantic_articulos.mayoreo,
-				  tc_mantic_articulos.iva,
-          if({porcentaje}= -1, tc_mantic_articulos.menudeo, round(tc_mantic_articulos.precio* (1+ (tc_mantic_articulos.iva/100))* (1+ ({porcentaje}/ 100)), 4)) as especial,
-				  concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre) as categoria,
-				  tc_mantic_productos_marcas.nombre as marca
-				from 
-					tc_mantic_articulos
-				inner join 
-					tc_mantic_empresas on tc_mantic_articulos.id_empresa= tc_mantic_empresas.id_empresa								
-				left join
-				  tc_mantic_imagenes on tc_mantic_articulos.id_imagen= tc_mantic_imagenes.id_imagen
-				left join
-				  tc_mantic_productos_detalles on tc_mantic_articulos.id_articulo= tc_mantic_productos_detalles.id_articulo
-        left join
-          tc_mantic_articulos_codigos on tc_mantic_articulos_codigos.id_articulo_codigo= tc_mantic_productos_detalles.id_articulo_codigo
-				left join
-				  tc_mantic_productos on tc_mantic_productos.id_producto= tc_mantic_productos_detalles.id_producto
-				left join
-				  tc_mantic_productos_categorias on tc_mantic_productos.id_producto_categoria= tc_mantic_productos_categorias.id_producto_categoria
-				left join
- 				  tc_mantic_productos_marcas on tc_mantic_productos.id_producto_marca= tc_mantic_productos_marcas.id_producto_marca
-				where 
-				  tc_mantic_articulos.id_articulo_tipo= 1
-				  and tc_mantic_articulos.id_vigente= 1
-				  and (concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre) like '%{codigo}%' or tc_mantic_productos_marcas.nombre like '%{codigo}%')
-				{sortOrder}        
+select 
+  tc_mantic_articulos_codigos.id_articulo_codigo as id_key,
+  tc_mantic_productos.id_producto,
+  tc_mantic_articulos.id_articulo,
+  tc_mantic_articulos.id_completo,
+  tc_mantic_articulos_codigos.codigo as propio,
+  tc_mantic_productos_detalles.descripcion as nombre,
+  tc_mantic_productos_detalles.medida,
+  tc_mantic_articulos.precio,
+  tc_mantic_articulos.menudeo,
+  tc_mantic_articulos.medio_mayoreo,
+  tc_mantic_articulos.mayoreo,
+  tc_mantic_articulos.iva,
+  if({porcentaje}= -1, tc_mantic_articulos.menudeo, round(tc_mantic_articulos.precio* (1+ (tc_mantic_articulos.iva/100))* (1+ ({porcentaje}/ 100)), 4)) as especial,
+  concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre) as categoria,
+  tc_mantic_productos_marcas.nombre as marca
+from 
+  tc_mantic_articulos
+inner join 
+  tc_mantic_empresas on tc_mantic_articulos.id_empresa= tc_mantic_empresas.id_empresa								
+left join
+  tc_mantic_imagenes on tc_mantic_articulos.id_imagen= tc_mantic_imagenes.id_imagen
+left join
+  tc_mantic_productos_detalles on tc_mantic_articulos.id_articulo= tc_mantic_productos_detalles.id_articulo
+left join
+  tc_mantic_articulos_codigos on tc_mantic_articulos_codigos.id_articulo_codigo= tc_mantic_productos_detalles.id_articulo_codigo
+left join
+  tc_mantic_productos on tc_mantic_productos.id_producto= tc_mantic_productos_detalles.id_producto
+left join
+  tc_mantic_productos_categorias on tc_mantic_productos.id_producto_categoria= tc_mantic_productos_categorias.id_producto_categoria
+left join
+  tc_mantic_productos_marcas on tc_mantic_productos.id_producto_marca= tc_mantic_productos_marcas.id_producto_marca
+where 
+  tc_mantic_articulos.id_articulo_tipo= 1
+  and tc_mantic_articulos.id_vigente= 1
+  and (concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre) like '%{codigo}%' or tc_mantic_productos_marcas.nombre like '%{codigo}%')
+{sortOrder}        
       </select>
 			<select id="galeria">
-				select 
-					tc_mantic_articulos_codigos.id_articulo_codigo as id_key,
-				  tc_mantic_articulos.id_articulo,
-				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio,
-				  tc_mantic_productos.nombre,
-          ifnull(tc_mantic_imagenes.id_imagen, -1) as id_imagen,
-				  concat(tc_mantic_articulos.id_empresa, '/', ifnull(tc_mantic_imagenes.archivo, 'sin-foto.png')) as archivo,
-				  max(ifnull(tc_mantic_productos_detalles.id_producto, 0)) as id_producto,
-				  concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre) as categoria,
-				  tc_mantic_productos_marcas.nombre as marca,
-          count(distinct(tc_mantic_productos_detalles.id_producto_detalle)) as partidas     
-				from 
-					tc_mantic_articulos
-				inner join
-					tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo= tc_mantic_articulos_codigos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1
-				inner join 
-					tc_mantic_empresas on tc_mantic_articulos.id_empresa = tc_mantic_empresas.id_empresa								
-				left join
-				  tc_mantic_imagenes on tc_mantic_articulos.id_imagen= tc_mantic_imagenes.id_imagen
-				left join
-				  tc_mantic_productos_detalles on tc_mantic_articulos.id_articulo= tc_mantic_productos_detalles.id_articulo
-				left join
-				  tc_mantic_productos on tc_mantic_productos.id_producto= tc_mantic_productos_detalles.id_producto
-				left join
-				  tc_mantic_productos_categorias on tc_mantic_productos.id_producto_categoria= tc_mantic_productos_categorias.id_producto_categoria
-				left join
- 				  tc_mantic_productos_marcas on tc_mantic_productos.id_producto_marca= tc_mantic_productos_marcas.id_producto_marca
-				where 
-				  tc_mantic_articulos.id_articulo_tipo= 1
-				  and tc_mantic_articulos.id_vigente= 1
-				  and (
-            concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre) like '%{codigo}%' 
-            or tc_mantic_productos_marcas.nombre like '%{codigo}%'
-            or tc_mantic_productos_marcas.descripcion like '%{codigo}%'
-          )
-				group by
-				  tc_mantic_productos.id_producto 
-				order by 
-				  tc_mantic_productos.nombre
+select 
+  tc_mantic_articulos_codigos.id_articulo_codigo as id_key,
+  tc_mantic_articulos.id_articulo,
+  tc_mantic_articulos.id_completo,
+  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio,
+  tc_mantic_productos.nombre,
+  ifnull(tc_mantic_imagenes.id_imagen, -1) as id_imagen,
+  concat(tc_mantic_articulos.id_empresa, '/', ifnull(tc_mantic_imagenes.archivo, 'sin-foto.png')) as archivo,
+  max(ifnull(tc_mantic_productos_detalles.id_producto, 0)) as id_producto,
+  concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre) as categoria,
+  tc_mantic_productos_marcas.nombre as marca,
+  count(distinct(tc_mantic_productos_detalles.id_producto_detalle)) as partidas     
+from 
+  tc_mantic_articulos
+inner join
+  tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo= tc_mantic_articulos_codigos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1
+inner join 
+  tc_mantic_empresas on tc_mantic_articulos.id_empresa = tc_mantic_empresas.id_empresa								
+left join
+  tc_mantic_imagenes on tc_mantic_articulos.id_imagen= tc_mantic_imagenes.id_imagen
+left join
+  tc_mantic_productos_detalles on tc_mantic_articulos.id_articulo= tc_mantic_productos_detalles.id_articulo
+left join
+  tc_mantic_productos on tc_mantic_productos.id_producto= tc_mantic_productos_detalles.id_producto
+left join
+  tc_mantic_productos_categorias on tc_mantic_productos.id_producto_categoria= tc_mantic_productos_categorias.id_producto_categoria
+left join
+  tc_mantic_productos_marcas on tc_mantic_productos.id_producto_marca= tc_mantic_productos_marcas.id_producto_marca
+where 
+  tc_mantic_articulos.id_articulo_tipo= 1
+  and tc_mantic_articulos.id_vigente= 1
+  and (
+    concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre) like '%{codigo}%' 
+    or tc_mantic_productos_marcas.nombre like '%{codigo}%'
+    or tc_mantic_productos_marcas.descripcion like '%{codigo}%'
+  )
+group by
+  tc_mantic_productos.id_producto 
+order by 
+  tc_mantic_productos.nombre
       </select>  
 			<select id="porAmbos">
 				select 

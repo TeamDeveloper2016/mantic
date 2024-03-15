@@ -516,12 +516,11 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	}
 	
 	private void toCheckProveedor(boolean checkItems) {
-		Articulo faltante        = null;
-		int relacionados         = this.attrs.get("relacionados")== null? 0: (int)this.attrs.get("relacionados");
-		Integer idTipoComparacion= (Integer)this.attrs.get("idTipoComparacion");
-	  Map<String, Object> params=null;
+		Articulo faltante         = null;
+		int relacionados          = this.attrs.get("relacionados")== null? 0: (int)this.attrs.get("relacionados");
+		Integer idTipoComparacion = (Integer)this.attrs.get("idTipoComparacion");
+	  Map<String, Object> params= new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put("idProveedor", this.getAdminOrden().getIdProveedor());
 		  List<Articulo> faltantes= (List<Articulo>)this.attrs.get("faltantes");
 			int x= 0;
@@ -557,6 +556,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 						disponibles.get(0).put("facturado", new Value("facturado", true));
 						disponibles.get(0).put("disponible", new Value("disponible", false));
 						disponibles.get(0).put("fabricante", new Value("fabricante", ""));
+						disponibles.get(0).put("idCompleto", new Value("idCompleto", 1L));
 						this.attrs.put("encontrado", disponibles.get(0));
 						this.attrs.put("omitirMensaje", disponibles.get(0).toLong("idArticulo"));
 						this.doFindArticulo(this.getAdminOrden().getArticulos().size()- 1);
