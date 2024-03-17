@@ -69,7 +69,7 @@
 		VK_PAGINATOR : 19,
 	  change       : [13, 19, 27, 106, 107, 110, 111, 188, 121, 189, 191, 220, 222, 226],
 	  teclas       : [9, 13, 17, 27, 33, 34, 35, 36, 38, 40, 220, 118, 121, 122],
-    CTRL_DECIMALS: 2,
+    CTRL_DECIMALS: 0,
 		cursor: {
 			top: 1, // el top debera ser elementos que van de 0 a n-1
 			index: 0,

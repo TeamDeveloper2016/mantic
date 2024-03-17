@@ -51,7 +51,8 @@
 	<ui:define name="contenido">
 		<p:hotkey bind="esc" handler="if($('#primefacesmessagedlg > div.ui-dialog-titlebar > a.ui-dialog-titlebar-icon')){$('#primefacesmessagedlg > div.ui-dialog-titlebar > a.ui-dialog-titlebar-icon').click();}"/>
 		<p:remoteCommand name="cleanFiles" actionListener="#{manticArchivosProcesar.doCleanFiles}" process="@this"/>
-		<p:remoteCommand name="viewFile" actionListener="#{manticArchivosProcesar.doViewFile}" process="@this" update="@(.viewXML)" onstart="return janal.bloquear();" oncomplete="PF('dlgXML').show();"/>
+		<p:remoteCommand name="viewFile" actionListener="#{manticArchivosProcesar.doViewFile}" process="@this" update="@(.viewXML)" onstart="return janal.bloquear()" oncomplete="PF('dlgXML').show();"/>
+		<p:remoteCommand name="reload" actionListener="#{manticArchivosProcesar.doLoad}" process="@this" update="contenedorGrupos:referencias" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
@@ -60,12 +61,12 @@
 						<p:outputLabel value="LA CARGA DE ARCHIVOS XML'S SE (AUTO)GUARDO EL DIA #{manticArchivosProcesar.attrs.autoSave} HRS.&lt;br/&gt;" style="display: #{empty(manticArchivosProcesar.attrs.autoSave)? 'none': ''}" styleClass="recalculo janal-color-orange" escape="false"/>
 					</div>
 					<p:tabView id="contenedorGrupos">
-            <p:ajax event="tabChange" listener="#{manticArchivosProcesar.doTabChange}" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+            <p:ajax event="tabChange" listener="#{manticArchivosProcesar.doTabChange}" process="@this" update="contenedorGrupos:referencias contenedorGrupos:conceptos" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 						<p:tab title="Importar">
 							<p:fileUpload fileUploadListener="#{manticArchivosProcesar.doFileUpload}" 
 								mode="advanced" process="@this" update="contenedorGrupos:documentos contenedorGrupos:referencias contenedorGrupos:conceptos @(.importado)" label="Selecciona XML" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="3145728"
                 multiple="multiple" allowTypes="#{manticArchivosProcesar.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100 janal-upload-frame" sequential="true" 
-								invalidSizeMessage="El tamaño máximo permitido del archivo es de 3 MB" invalidFileMessage="Solo se permiten archivos en formato #{manticArchivosProcesar.attrs.formatos}" oncomplete="janal.desbloquear()"/>
+								invalidSizeMessage="El tamaño máximo permitido del archivo es de 3 MB" invalidFileMessage="Solo se permiten archivos en formato #{manticArchivosProcesar.attrs.formatos}" oncomplete="janal.desbloquear()" />
 							<br/>
               <p:dataTable lazy="false" id="documentos" var="row" rowIndexVar="index" value="#{manticArchivosProcesar.listado}" paginator="true" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" styleClass="janal-wid-100-txt importado" reflow="true" paginatorPosition="bottom" rowKey="#{row.id}">
                 <f:facet name="header">
@@ -74,7 +75,7 @@
                     <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('contenedorGrupos\\:dataXlsDocumentos', 'contenedorGrupos\\:documentos')" oncomplete="janal.desbloquear()"/>
                   </p:menuButton>
                 </f:facet>
-                <p:column styleClass="janal-column-left MarAuto Responsive janal-fix-5">
+                <p:column styleClass="janal-column-left MarAuto Responsive janal-fix-2">
                   <f:facet name="header">
                     <h:outputText value="No."/>
                   </f:facet>
@@ -115,69 +116,69 @@
               </h:commandLink>	                  
 						</p:tab>
 						<p:tab title="Documento(s)">
-              <p:dataTable lazy="false" id="referencias" var="row" rowIndexVar="index" value="#{manticArchivosProcesar.referencias}" paginator="true" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" styleClass="janal-wid-100-txt importado" reflow="true" paginatorPosition="bottom" rowKey="#{row.id}">
+              <p:dataTable lazy="true" id="referencias" var="row" rowIndexVar="index" value="#{manticArchivosProcesar.lazyModel}" paginator="true" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" styleClass="janal-wid-100-txt importado" reflow="true" paginatorPosition="bottom">
                 <f:facet name="header">
                   <p:menuButton value="Opciones">
                     <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('contenedorGrupos\\:dataPdfReferencias', 'contenedorGrupos\\:referencias')" oncomplete="janal.desbloquear()"/>
                     <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('contenedorGrupos\\:dataXlsReferencias', 'contenedorGrupos\\:referencias')" oncomplete="janal.desbloquear()"/>
                   </p:menuButton>
                 </f:facet>
-                <p:column styleClass="janal-column-left MarAuto Responsive janal-fix-5">
+                <p:column styleClass="janal-column-left MarAuto Responsive janal-fix-3">
                   <f:facet name="header">
                     <h:outputText value="No."/>
                   </f:facet>
                   <h:outputText value="#{index+ 1}."/>
                 </p:column>
-                <p:column styleClass="janal-column-left MarAuto Responsive janal-wid-6">
+                <p:column styleClass="janal-column-left MarAuto Responsive janal-wid-6" sortBy="#{row.folio}">
                   <f:facet name="header">
                     <h:outputText value="Factura"/>
                   </f:facet>
                   <h:outputText value="#{row.folio}"/>
                 </p:column>                    
-                <p:column styleClass="MarAuto Responsive janal-column-left janal-wid-8">
+                <p:column styleClass="MarAuto Responsive janal-column-left janal-wid-8" sortBy="#{row.rfc}">
                   <f:facet name="header">
                     <h:outputText value="RFC"/>
                   </f:facet>
                   <h:outputText value="#{row.rfc}"/>
                 </p:column>                    
-                <p:column styleClass="MarAuto Responsive janal-column-left">
+                <p:column styleClass="MarAuto Responsive janal-column-left" sortBy="#{row.emisor}">
                   <f:facet name="header">
                     <h:outputText value="Emisor"/>
                   </f:facet>
                   <h:outputText value="#{row.emisor}"/>
                 </p:column>                    
-                <p:column styleClass="MarAuto Responsive janal-column-center janal-wid-13">
-                  <f:facet name="header">
-                    <h:outputText value="Fecha"/>
-                  </f:facet>
-                  <h:outputText value="#{row.fecha}"/>
-                </p:column>                    
-                <p:column styleClass="MarAuto Responsive janal-column-right janal-wid-8">
+                <p:column styleClass="MarAuto Responsive janal-column-right janal-wid-8" sortBy="#{row.total}">
                   <f:facet name="header">
                     <h:outputText value="Total"/>
                   </f:facet>
                   <h:outputText value="#{row.total}"/>
                 </p:column>              
-                <p:column styleClass="MarAuto Responsive janal-column-left janal-wid-25">
+                <p:column styleClass="MarAuto Responsive janal-column-left janal-wid-25" sortBy="#{row.uuid}">
                   <f:facet name="header">
                     <h:outputText value="Sello"/>
                   </f:facet>
                   <h:outputText value="#{row.uuid}"/>
                 </p:column>                    
-                <p:column styleClass="MarAuto Responsive janal-column-center janal-wid-5">
+                <p:column styleClass="MarAuto Responsive janal-column-center janal-wid-5" sortBy="#{row.tipo}">
                   <f:facet name="header">
                     <h:outputText value="Tipo"/>
                   </f:facet>
                   <h:outputText value="#{row.tipo}"/>
                 </p:column>                    
-                <p:column styleClass="MarAuto Responsive janal-column-left janal-wid-2 janal-display-none">
+                <p:column styleClass="MarAuto Responsive janal-column-left janal-wid-2 janal-display-none" sortBy="#{row.archivo}">
                   <f:facet name="header">
                     <h:outputText value="Archivo"/>
                   </f:facet>
                   <h:outputText value="#{row.archivo}"/>
                 </p:column>                    
+                <p:column styleClass="MarAuto Responsive janal-column-center janal-wid-12" sortBy="#{row.fecha}">
+                  <f:facet name="header">
+                    <h:outputText value="Fecha"/>
+                  </f:facet>
+                  <h:outputText value="#{row.fecha}"/>
+                </p:column>                    
                 <f:facet name="footer">
-                  <p:outputLabel value="Total [#{manticArchivosProcesar.referencias.size()}] registros"/>
+                  <p:outputLabel value="Total [#{manticArchivosProcesar.lazyModel== null? 0: manticArchivosProcesar.lazyModel.rowCount}] registros"/>
                 </f:facet>
               </p:dataTable>
               <h:commandLink id="dataPdfReferencias">                    
@@ -188,99 +189,99 @@
               </h:commandLink>	                  
 						</p:tab>
 						<p:tab title="Concepto(s)">
-              <p:dataTable lazy="false" id="conceptos" var="row" rowIndexVar="index" value="#{manticArchivosProcesar.conceptos}" paginator="true" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" styleClass="janal-wid-100-txt importado" reflow="true" paginatorPosition="bottom" rowKey="#{row.id}">
+              <p:dataTable lazy="true" id="conceptos" var="row" rowIndexVar="index" value="#{manticArchivosProcesar.lazyDetalle}" paginator="true" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" styleClass="janal-wid-100-txt importado" reflow="true" paginatorPosition="bottom">
                 <f:facet name="header">
                   <p:menuButton value="Opciones">
                     <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('contenedorGrupos\\:dataPdfConceptos', 'contenedorGrupos\\:conceptos')" oncomplete="janal.desbloquear()"/>
                     <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('contenedorGrupos\\:dataXlsConceptos', 'contenedorGrupos\\:conceptos')" oncomplete="janal.desbloquear()"/>
                   </p:menuButton>
                 </f:facet>
-                <p:column styleClass="janal-column-left MarAuto Responsive janal-fix-5">
+                <p:column styleClass="janal-column-left MarAuto Responsive janal-fix-2">
                   <f:facet name="header">
                     <h:outputText value="No."/>
                   </f:facet>
                   <h:outputText value="#{index+ 1}."/>
                 </p:column>
-                <p:column styleClass="janal-column-left MarAuto Responsive janal-wid-6">
+                <p:column styleClass="janal-column-left MarAuto Responsive janal-wid-6" sortBy="#{row.folio}">
                   <f:facet name="header">
                     <h:outputText value="Factura"/>
                   </f:facet>
                   <h:outputText value="#{row.folio}"/>
                 </p:column>                    
-                <p:column styleClass="MarAuto Responsive janal-column-left janal-wid-6">
+                <p:column styleClass="MarAuto Responsive janal-column-left janal-wid-6" sortBy="#{row.noIdentificacion}">
                   <f:facet name="header">
                     <h:outputText value="Clave"/>
                   </f:facet>
                   <h:outputText value="#{row.noIdentificacion}"/>
                 </p:column>                    
-                <p:column styleClass="MarAuto Responsive janal-column-right janal-wid-6">
-                  <f:facet name="header">
-                    <h:outputText value="Cantidad"/>
-                  </f:facet>
-                  <h:outputText value="#{row.cantidad}"/>
-                </p:column>                 
-                <p:column styleClass="MarAuto Responsive janal-column-right janal-wid-6">
-                  <f:facet name="header">
-                    <h:outputText value="Unitario"/>
-                  </f:facet>
-                  <h:outputText value="#{row.precioUnitario}"/>
-                </p:column>                    
-                <p:column styleClass="MarAuto Responsive janal-column-left">
+                <p:column styleClass="MarAuto Responsive janal-column-left" sortBy="#{row.descripcion}">
                   <f:facet name="header">
                     <h:outputText value="Descripción"/>
                   </f:facet>
                   <h:outputText value="#{row.descripcion}"/>
                 </p:column>     
-                <p:column styleClass="MarAuto Responsive">
+                <p:column styleClass="MarAuto Responsive" sortBy="#{row.proveedor}">
                   <f:facet name="header">
                     <h:outputText value="Proveedor"/>
                   </f:facet>
                   <h:outputText value="#{row.proveedor}"/>
                 </p:column>                    
-                <p:column styleClass="MarAuto Responsive janal-column-right janal-wid-10">
-                  <f:facet name="header">
-                    <h:outputText value="Fecha"/>
-                  </f:facet>
-                  <h:outputText value="#{row.fecha}"/>
-                </p:column>                    
-                <p:column styleClass="MarAuto Responsive janal-column-right janal-wid-6">
-                  <f:facet name="header">
-                    <h:outputText value="Total"/>
-                  </f:facet>
-                  <h:outputText value="#{row.total}"/>
-                </p:column>                    
-                <p:column styleClass="janal-column-left MarAuto Responsive janal-wid-2 janal-display-none">
+                <p:column styleClass="janal-column-left MarAuto Responsive janal-wid-2 janal-display-none" sortBy="#{row.tipo}">
                   <f:facet name="header">
                     <h:outputText value="Tipo"/>
                   </f:facet>
                   <h:outputText value="#{row.tipo}"/>
                 </p:column>                    
-                <p:column styleClass="MarAuto Responsive janal-column-left janal-wid-2 janal-display-none" >
+                <p:column styleClass="MarAuto Responsive janal-column-left janal-wid-2 janal-display-none" sortBy="#{row.archivo}">
                   <f:facet name="header">
                     <h:outputText value="Archivo"/>
                   </f:facet>
                   <h:outputText value="#{row.archivo}"/>
                 </p:column>           
-                <p:column styleClass="MarAuto Responsive janal-column-right janal-wid-2 janal-display-none" exportable="false">
+                <p:column styleClass="MarAuto Responsive janal-column-right janal-wid-6" sortBy="#{row.precioUnitario}">
+                  <f:facet name="header">
+                    <h:outputText value="Unitario"/>
+                  </f:facet>
+                  <h:outputText value="#{row.precioUnitario}"/>
+                </p:column>                    
+                <p:column styleClass="MarAuto Responsive janal-column-right janal-wid-6" sortBy="#{row.cantidad}">
+                  <f:facet name="header">
+                    <h:outputText value="Cantidad"/>
+                  </f:facet>
+                  <h:outputText value="#{row.cantidad}"/>
+                </p:column>                 
+                <p:column styleClass="MarAuto Responsive janal-column-right janal-wid-2 janal-display-none" sortBy="#{row.tasaImpuesto}" exportable="false">
                   <f:facet name="header">
                     <h:outputText value="Impuesto"/>
                   </f:facet>
                   <h:outputText value="#{row.tasaImpuesto}"/>
                 </p:column>                    
-                <p:column styleClass="MarAuto Responsive janal-column-right janal-wid-8" exportable="false">
+                <p:column styleClass="MarAuto Responsive janal-column-right janal-wid-8" sortBy="#{row.subtotal}" exportable="false">
                   <f:facet name="header">
                     <h:outputText value="Sub total"/>
                   </f:facet>
                   <h:outputText value="#{row.subtotal}"/>
                 </p:column>                    
-                <p:column styleClass="MarAuto Responsive janal-column-right janal-wid-6" exportable="false">
+                <p:column styleClass="MarAuto Responsive janal-column-right janal-wid-6" sortBy="#{row.iva}" exportable="false">
                   <f:facet name="header">
                     <h:outputText value="IVA"/>
                   </f:facet>
                   <h:outputText value="#{row.iva}"/>
                 </p:column>                 
+                <p:column styleClass="MarAuto Responsive janal-column-right janal-wid-6" sortBy="#{row.total}">
+                  <f:facet name="header">
+                    <h:outputText value="Total"/>
+                  </f:facet>
+                  <h:outputText value="#{row.total}"/>
+                </p:column>                    
+                <p:column styleClass="MarAuto Responsive janal-column-center janal-wid-10" sortBy="#{row.fecha}">
+                  <f:facet name="header">
+                    <h:outputText value="Fecha"/>
+                  </f:facet>
+                  <h:outputText value="#{row.fecha}"/>
+                </p:column>                    
                 <f:facet name="footer">
-                  <p:outputLabel value="Total [#{manticArchivosProcesar.conceptos.size()}] registros"/>
+                  <p:outputLabel value="Total [#{manticArchivosProcesar.lazyDetalle== null? 0: manticArchivosProcesar.lazyDetalle.rowCount}] registros"/>
                 </f:facet>
               </p:dataTable>
               <h:commandLink id="dataPdfConceptos">                    

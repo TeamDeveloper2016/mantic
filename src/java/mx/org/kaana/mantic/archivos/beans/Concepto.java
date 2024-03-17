@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.Random;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.libs.formato.Global;
+import mx.org.kaana.mantic.db.dto.TcManticDocumentosDetallesDto;
 
 /**
  *@company KAANA
@@ -15,28 +16,11 @@ import mx.org.kaana.libs.formato.Global;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public class Concepto implements Serializable {
+public class Concepto extends TcManticDocumentosDetallesDto implements Serializable {
 
   private static final long serialVersionUID = 6070990482487756522L;
 
   private Long id;
-  private String folio;
-  private String tipo;
-  private String claveProducto;
-  private String noIdentificacion;
-  private String descripcion;
-  private String claveUnidad;
-  private String unidad;
-  private String precioUnitario;
-  private String cantidad;
-  private String tasaImpuesto;
-  private String descuento;
-  private String subtotal;
-  private String iva;
-  private String total;
-  private String archivo;
-  private String fecha;
-  private String proveedor;
 
   public Concepto() {
     this(new Random().nextLong());
@@ -52,23 +36,23 @@ public class Concepto implements Serializable {
   
   public Concepto(Long id, String folio, String tipo, String claveProducto, String noIdentificacion, String descripcion, String claveUnidad, String unidad, String precioUnitario, String cantidad, String tasaImpuesto, String subtotal, String descuento, String iva, String total, String archivo, String fecha, String proveedor) {
     this.id = id;
-    this.folio = folio;
-    this.tipo = tipo;
-    this.claveProducto = claveProducto;
-    this.noIdentificacion = noIdentificacion;
-    this.descripcion = descripcion;
-    this.claveUnidad = claveUnidad;
-    this.unidad = unidad;
-    this.precioUnitario = precioUnitario;
-    this.cantidad = cantidad;
-    this.tasaImpuesto = tasaImpuesto;
-    this.subtotal = subtotal;
-    this.descuento = descuento;
-    this.iva = iva;
-    this.total = total;
-    this.archivo = archivo;
-    this.fecha = fecha;
-    this.proveedor = proveedor;
+    this.setFolio(folio);
+    this.setTipo(tipo);
+    this.setClaveProducto(claveProducto);
+    this.setNoIdentificacion(noIdentificacion);
+    this.setDescripcion(descripcion);
+    this.setClaveUnidad(claveUnidad);
+    this.setUnidad(unidad);
+    this.setPrecioUnitario(precioUnitario);
+    this.setCantidad(cantidad);
+    this.setTasaImpuesto(tasaImpuesto);
+    this.setSubtotal(subtotal);
+    this.setDescuento(descuento);
+    this.setIva(iva);
+    this.setTotal(total);
+    this.setArchivo(archivo);
+    this.setFecha(fecha);
+    this.setProveedor(proveedor);
   }
 
   public Long getId() {
@@ -77,142 +61,6 @@ public class Concepto implements Serializable {
 
   public void setId(Long id) {
     this.id = id;
-  }
-
-  public String getFolio() {
-    return folio;
-  }
-
-  public void setFolio(String folio) {
-    this.folio = folio;
-  }
-
-  public String getTipo() {
-    return tipo;
-  }
-
-  public void setTipo(String tipo) {
-    this.tipo = tipo;
-  }
-
-  public String getClaveProducto() {
-    return claveProducto;
-  }
-
-  public void setClaveProducto(String claveProducto) {
-    this.claveProducto = claveProducto;
-  }
-
-  public String getNoIdentificacion() {
-    return noIdentificacion;
-  }
-
-  public void setNoIdentificacion(String noIdentificacion) {
-    this.noIdentificacion = noIdentificacion;
-  }
-
-  public String getDescripcion() {
-    return descripcion;
-  }
-
-  public void setDescripcion(String descripcion) {
-    this.descripcion = descripcion;
-  }
-
-  public String getClaveUnidad() {
-    return claveUnidad;
-  }
-
-  public void setClaveUnidad(String claveUnidad) {
-    this.claveUnidad = claveUnidad;
-  }
-
-  public String getUnidad() {
-    return unidad;
-  }
-
-  public void setUnidad(String unidad) {
-    this.unidad = unidad;
-  }
-
-  public String getPrecioUnitario() {
-    return precioUnitario;
-  }
-
-  public void setPrecioUnitario(String precioUnitario) {
-    this.precioUnitario = precioUnitario;
-  }
-
-  public String getCantidad() {
-    return cantidad;
-  }
-
-  public void setCantidad(String cantidad) {
-    this.cantidad = cantidad;
-  }
-
-  public String getTasaImpuesto() {
-    return tasaImpuesto;
-  }
-
-  public void setTasaImpuesto(String tasaImpuesto) {
-    this.tasaImpuesto = tasaImpuesto;
-  }
-
-  public String getSubtotal() {
-    return subtotal;
-  }
-
-  public void setSubtotal(String subtotal) {
-    this.subtotal = subtotal;
-  }
-
-  public String getDescuento() {
-    return descuento;
-  }
-
-  public void setDescuento(String descuento) {
-    this.descuento = descuento;
-  }
-
-  public String getIva() {
-    return iva;
-  }
-
-  public void setIva(String iva) {
-    this.iva = iva;
-  }
-
-  public String getTotal() {
-    return total;
-  }
-
-  public void setTotal(String total) {
-    this.total = total;
-  }
-
-  public String getArchivo() {
-    return archivo;
-  }
-
-  public void setArchivo(String archivo) {
-    this.archivo = archivo;
-  }
-
-  public String getFecha() {
-    return fecha;
-  }
-
-  public void setFecha(String fecha) {
-    this.fecha = fecha;
-  }
-
-  public String getProveedor() {
-    return proveedor;
-  }
-
-  public void setProveedor(String proveedor) {
-    this.proveedor = proveedor;
   }
 
   @Override
@@ -242,7 +90,12 @@ public class Concepto implements Serializable {
 
   @Override
   public String toString() {
-    return "Concepto{" + "id=" + id + ", folio=" + folio + ", tipo=" + tipo + ", claveProducto=" + claveProducto + ", noIdentificacion=" + noIdentificacion + ", descripcion=" + descripcion + ", claveUnidad=" + claveUnidad + ", unidad=" + unidad + ", precioUnitario=" + precioUnitario + ", cantidad=" + cantidad + ", tasaImpuesto=" + tasaImpuesto + ", descuento=" + descuento + ", subtotal=" + subtotal + ", iva=" + iva + ", total=" + total + ", archivo=" + archivo + '}';
+    return "Concepto{" + "id=" + id + ", "+ super.toString()+ '}';
   }
 
+  @Override
+  public Class toHbmClass() {
+    return TcManticDocumentosDetallesDto.class;
+  }
+  
 }

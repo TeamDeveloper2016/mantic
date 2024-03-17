@@ -3,6 +3,7 @@ package mx.org.kaana.mantic.archivos.beans;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.Random;
+import mx.org.kaana.mantic.db.dto.TcManticDocumentosDto;
 
 /**
  *@company KAANA
@@ -12,20 +13,11 @@ import java.util.Random;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public class Referencia implements Serializable {
+public class Referencia extends TcManticDocumentosDto implements Serializable {
 
   private static final long serialVersionUID = 3027054165774572203L;
   
   private Long id;
-  private String folio;
-  private String rfc;
-  private String emisor;
-  private String receptor;
-  private String uuid;
-  private String fecha;
-  private String tipo;
-  private String total;
-  private String archivo;
 
   public Referencia() {
     this(new Random().nextLong());
@@ -41,15 +33,15 @@ public class Referencia implements Serializable {
   
   public Referencia(Long id, String folio, String rfc, String emisor, String uuid, String fecha, String tipo, String total, String receptor, String archivo) {
     this.id = id;
-    this.folio = folio;
-    this.rfc = rfc;
-    this.emisor = emisor;
-    this.uuid = uuid;
-    this.fecha = fecha;
-    this.tipo = tipo;
-    this.total = total;
-    this.receptor = receptor;
-    this.archivo = archivo;
+    this.setFolio(folio);
+    this.setRfc(rfc);
+    this.setEmisor(emisor);
+    this.setUuid(uuid);
+    this.setFecha(fecha);
+    this.setTipo(tipo);
+    this.setTotal(total);
+    this.setReceptor(receptor);
+    this.setArchivo(archivo);
   }
 
   public Long getId() {
@@ -58,78 +50,6 @@ public class Referencia implements Serializable {
 
   public void setId(Long id) {
     this.id = id;
-  }
-
-  public String getFolio() {
-    return folio;
-  }
-
-  public void setFolio(String folio) {
-    this.folio = folio;
-  }
-
-  public String getRfc() {
-    return rfc;
-  }
-
-  public void setRfc(String rfc) {
-    this.rfc = rfc;
-  }
-
-  public String getEmisor() {
-    return emisor;
-  }
-
-  public void setEmisor(String emisor) {
-    this.emisor = emisor;
-  }
-
-  public String getReceptor() {
-    return receptor;
-  }
-
-  public void setReceptor(String receptor) {
-    this.receptor = receptor;
-  }
-
-  public String getUuid() {
-    return uuid;
-  }
-
-  public void setUuid(String uuid) {
-    this.uuid = uuid;
-  }
-
-  public String getFecha() {
-    return fecha;
-  }
-
-  public void setFecha(String fecha) {
-    this.fecha = fecha;
-  }
-
-  public String getTipo() {
-    return tipo;
-  }
-
-  public void setTipo(String tipo) {
-    this.tipo = tipo;
-  }
-
-  public String getTotal() {
-    return total;
-  }
-
-  public void setTotal(String total) {
-    this.total = total;
-  }
-
-  public String getArchivo() {
-    return archivo;
-  }
-
-  public void setArchivo(String archivo) {
-    this.archivo = archivo;
   }
 
   @Override
@@ -159,7 +79,12 @@ public class Referencia implements Serializable {
 
   @Override
   public String toString() {
-    return "Referencia{" + "id=" + id + ", folio=" + folio + ", rfc=" + rfc + ", emisor=" + emisor + ", receptor=" + receptor + ", uuid=" + uuid + ", fecha=" + fecha + ", tipo=" + tipo + ", total=" + total + ", archivo=" + archivo + '}';
+    return "Referencia{" + "id=" + id + ", "+ super.toString() + '}';
   }
 
+  @Override
+  public Class toHbmClass() {
+    return TcManticDocumentosDto.class;
+  }
+  
 }

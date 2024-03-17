@@ -7,6 +7,64 @@
   </model>
 
   <dml>
+    <unit id="TcManticDocumentosDto">
+      <select id="identically">
+select      
+  *
+from      
+  tc_mantic_documentos
+where      
+  id_documento = {idDocumento}
+      </select>
+      <select id="lazy">
+select      
+  tc_mantic_documentos.id_documento as id_key,
+  tc_mantic_documentos.*
+from      
+  tc_mantic_documentos
+where 
+  tc_mantic_documentos.semilla= '{semilla}' 
+{sortOrder}
+      </select>
+      <delete id="rows">
+delete from 
+  tc_mantic_documentos
+where
+  semilla&lt;= '{semilla}'
+      </delete>
+    </unit>    
+    <unit id="TcManticDocumentosDetallesDto">
+      <select id="lazy">
+select      
+  tc_mantic_documentos_detalles.id_documento_detalle as id_key,        
+  tc_mantic_documentos_detalles.*
+from      
+  tc_mantic_documentos_detalles
+inner join
+  tc_mantic_documentos on tc_mantic_documentos_detalles.id_documento= tc_mantic_documentos.id_documento
+where 
+  tc_mantic_documentos.semilla= '{semilla}'
+{sortOrder}        
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_mantic_documentos_detalles
+where      
+  id_documento_detalle = {idDocumentoDetalle}
+      </select>
+      <delete id="rows">
+delete 
+  tc_mantic_documentos_detalles
+from 
+  tc_mantic_documentos_detalles        
+inner join
+  tc_mantic_documentos on tc_mantic_documentos_detalles.id_documento= tc_mantic_documentos.id_documento
+where
+  tc_mantic_documentos.semilla= '{semilla}'
+      </delete>
+    </unit>    
     <unit id="TcManticVersionesDto">
       <select id="row">
 select      

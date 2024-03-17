@@ -26,6 +26,7 @@ public enum EPerfiles {
   ALMACENISTA            ("Almacenista", "VistaIndicadoresPerfilesDto", "avanceCapturistas", "Porcentaje de avance", "nacional", "nacional");
 
   private static final Map<Integer, EPerfiles> lookup = new HashMap<>();
+  
   private String descripcion;
   private String vista;
   private String idVista;

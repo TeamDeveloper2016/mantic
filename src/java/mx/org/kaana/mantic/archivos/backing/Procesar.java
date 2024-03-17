@@ -3,12 +3,18 @@ package mx.org.kaana.mantic.archivos.backing;
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
+import mx.org.kaana.kajool.reglas.comun.Columna;
+import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.archivo.Archivo;
@@ -19,11 +25,14 @@ import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import mx.org.kaana.libs.recurso.Configuracion;
+import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.archivos.beans.Concepto;
 import mx.org.kaana.mantic.archivos.beans.Documento;
 import mx.org.kaana.mantic.archivos.beans.Referencia;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 import mx.org.kaana.mantic.comun.IBaseStorage;
+import mx.org.kaana.mantic.db.dto.TcManticDocumentosDetallesDto;
+import mx.org.kaana.mantic.db.dto.TcManticDocumentosDto;
 import mx.org.kaana.mantic.inventarios.comun.IBaseImportar;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.TabChangeEvent;
@@ -43,23 +52,19 @@ public class Procesar extends IBaseImportar implements IBaseStorage, Serializabl
 	private static final Log LOG              = LogFactory.getLog(Procesar.class);
   private static final long serialVersionUID= 327393488565639327L;
 
+  private FormatCustomLazy lazyDetalle;  
   private List<Documento> listado;
-  private List<Referencia> referencias;
-  private List<Concepto> conceptos;
   private List<String> todos;
   private String source;
   private Integer count;
+  private String semilla;
+
+  public FormatCustomLazy getLazyDetalle() {
+    return lazyDetalle;
+  }
 
   public List<Documento> getListado() {
     return listado;
-  }
-
-  public List<Referencia> getReferencias() {
-    return referencias;
-  }
-
-  public List<Concepto> getConceptos() {
-    return conceptos;
   }
 
   public List<String> getTodos() {
@@ -69,31 +74,43 @@ public class Procesar extends IBaseImportar implements IBaseStorage, Serializabl
 	@PostConstruct
   @Override
   protected void init() {		
+    Map<String, Object> params= new HashMap<>();
     try {
+      this.semilla    = Fecha.getRegistro();
 			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_XML);
       this.listado    = new ArrayList<>();
-      this.referencias= new ArrayList<>();
-      this.conceptos  = new ArrayList<>();
       this.todos      = new ArrayList<>();
       this.source     = Configuracion.getInstance().getPropiedadSistemaServidor("sat");
       this.count      = 1;
+      String fecha= Fecha.getRegistro(-1);
+      params.put("semilla", fecha.substring(0, 8).concat("235959999"));
+      DaoFactory.getInstance().deleteAll(TcManticDocumentosDetallesDto.class, params);
+      DaoFactory.getInstance().deleteAll(TcManticDocumentosDto.class, params);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
-  } // init
+    finally {
+      Methods.clean(params);
+    } // finally
+  } 
 
   @Override
   public void doLoad() {		
+    List<Columna> columns     = new ArrayList<>();
+		Map<String, Object> params= new HashMap<>();
     try {
-      
+      columns.add(new Columna("folio", EFormatoDinamicos.MAYUSCULAS));                 
+      params.put("semilla", this.semilla);
+      this.lazyModel = new FormatCustomLazy("TcManticDocumentosDto", params, columns);
+      UIBackingUtilities.resetDataTable("referencias");
     } // try
     catch (Exception e) {
-      Error.mensaje(e);
       JsfBase.addMessageError(e);
+      Error.mensaje(e);
     } // catch		
-  } // init
+  } 
 
   public String doAceptar() {  
     return null;
@@ -134,7 +151,7 @@ public class Procesar extends IBaseImportar implements IBaseStorage, Serializabl
           ));
           this.toReadFactura(result, Boolean.TRUE, 1D);
           // CARGAR LOS DATOS DE LA FACTURA
-          this.referencias.add(new Referencia(
+          Referencia referencia= new Referencia(
             this.getFactura().getFolio(), // String folio, 
             this.getEmisor().getRfc(), // String rfc
             this.getEmisor().getNombre(), // String emisor, 
@@ -144,10 +161,12 @@ public class Procesar extends IBaseImportar implements IBaseStorage, Serializabl
             this.getFactura().getTotal(), // String total, 
             this.getReceptor().getNombre(), // String receptor
             event.getFile().getFileName().toUpperCase() // String archivo     
-          ));
+          );
+          referencia.setSemilla(this.semilla);
+          DaoFactory.getInstance().insert(referencia);
           // CARGAR LOS DATOS DE LOS CONCEPTOS
           for (mx.org.kaana.mantic.libs.factura.beans.Concepto item: this.getFactura().getConceptos()) {
-            this.conceptos.add(new Concepto(
+            Concepto concepto= new Concepto(
               this.getFactura().getFolio(), // String folio      
               this.getFactura().getTipoDeComprobante(), // String tipo
               item.getClaveProdServ(), // String claveProducto, 
@@ -165,7 +184,9 @@ public class Procesar extends IBaseImportar implements IBaseStorage, Serializabl
               event.getFile().getFileName().toUpperCase(), // String archivo
               Fecha.toFechaSat(this.getFactura().getFecha()), // String fecha
               this.getEmisor().getNombre() // String proveedor
-            ));
+            );
+            concepto.setIdDocumento(referencia.getIdDocumento());
+            DaoFactory.getInstance().insert(concepto);
           } // for
           this.toSaveFileRecord(original, ruta, path.toString(), this.listado.get(this.listado.size()- 1).getXml().getName());            
           this.getFactura().getConceptos().clear();
@@ -195,9 +216,11 @@ public class Procesar extends IBaseImportar implements IBaseStorage, Serializabl
   }
 
 	public void doTabChange(TabChangeEvent event) {
-		if(event.getTab().getTitle().equals("Importar")) {
-      
-    } // if
+		if(event.getTab().getTitle().equals("Documento(s)")) 
+      this.doLoad();
+    else
+		  if(event.getTab().getTitle().equals("Concepto(s)")) 
+        this.doLoadDetalle();
   }  
   
   public void doCleanFiles() {
@@ -219,6 +242,20 @@ public class Procesar extends IBaseImportar implements IBaseStorage, Serializabl
     super.finalize(); 
     this.doCleanFiles();
   }
-	
+
+  public void doLoadDetalle() {		
+    List<Columna> columns     = new ArrayList<>();
+		Map<String, Object> params= new HashMap<>();
+    try {
+      columns.add(new Columna("folio", EFormatoDinamicos.MAYUSCULAS));                 
+      params.put("semilla", this.semilla);
+      this.lazyDetalle = new FormatCustomLazy("TcManticDocumentosDetallesDto", params, columns);
+      UIBackingUtilities.resetDataTable("conceptos");
+    } // try
+    catch (Exception e) {
+      JsfBase.addMessageError(e);
+      Error.mensaje(e);
+    } // catch		
+  } 
   
 }

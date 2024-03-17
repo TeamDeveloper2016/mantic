@@ -47,10 +47,16 @@ public class Fecha {
 	protected Fecha (){
 	}
 	
-  public static String getRegistro() {
+  public static String getRegistro(int dias) {
     Calendar fecha = Calendar.getInstance();
+    if(dias!= 0)
+      fecha.add(Calendar.DATE, dias);
     return formatear("yyyyMMddHHmmssS", fecha.getTime());
-  } // getPatron
+  } 
+
+  public static String getRegistro() {
+    return getRegistro(0);
+  } 
 
   public static Date getRegistroTypeDate() {
     Calendar fecha = Calendar.getInstance();

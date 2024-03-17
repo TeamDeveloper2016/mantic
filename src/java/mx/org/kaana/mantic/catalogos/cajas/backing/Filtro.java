@@ -53,10 +53,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 
   @Override
   public void doLoad() {
-    List<Columna> columns     = null;
+    List<Columna> columns     = new ArrayList<>();
 		Map<String, Object> params= this.toPrepare();
     try {
-      columns = new ArrayList<>();
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));                 
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));                 
       columns.add(new Columna("nombreEmpresa", EFormatoDinamicos.MAYUSCULAS));                 
