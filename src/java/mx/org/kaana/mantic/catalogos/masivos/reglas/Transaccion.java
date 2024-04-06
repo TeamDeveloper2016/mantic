@@ -1787,10 +1787,9 @@ public class Transaccion extends IBaseTnx {
 	} // toArticulos		
 	
 	private void toAffectAlmacenes(Session sesion, TcManticAlmacenesArticulosDto almacen, TcManticInventariosDto inventario) throws Exception {
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		double stock              = inventario.getInicial();
 		try {
-			params=new HashMap<>();
 			almacen.setStock(inventario.getInicial());
 			if(almacen.isValid()) 
 				DaoFactory.getInstance().update(sesion, almacen);

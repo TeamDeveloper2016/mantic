@@ -2182,7 +2182,8 @@ group by
 			</select>				
 			<select id="diariasTotales">
 select
-  sum(tt_mantic_general.total+ tt_mantic_general.deduccion) as total
+  tc_mantic_empresas.id_empresa as id_key,
+  ifnull(sum(tt_mantic_general.total+ tt_mantic_general.deduccion), 0) as total
 from (
   select
     tc_mantic_empresas.id_empresa,

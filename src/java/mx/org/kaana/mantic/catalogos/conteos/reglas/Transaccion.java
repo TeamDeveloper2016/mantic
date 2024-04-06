@@ -238,9 +238,9 @@ public class Transaccion extends IBaseTnx implements Serializable {
         this.conteo.getIdUsuario(), // Long idUsuario, 
         almacen.getIdAlmacen(), // Long idAlmacen, 
         -1L, // Long idMovimiento, 
-        0D, // Double cantidad, 
+        item.getCantidad(), // Double cantidad, 
         inventario.getIdArticulo(), // Long idArticulo, 
-        inventario.getInicial(), // Double stock, 
+        inventario.getStock(), // Double stock, 
         Numero.toRedondearSat(inventario.getInicial()), // Double calculo
         null // String observaciones
       );

@@ -708,7 +708,7 @@ public class Conteos extends IBaseFilter implements Serializable {
       		params.put("idMovimiento", consecutivo.getKey());
 					documento= (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "ver", params, columns, Constantes.SQL_TODOS_REGISTROS);
           this.attrs.put("documentos", documento);
-          this.attrs.put("tipoDocumento", "del conteo ".concat(Objects.equals(consecutivo.toLong("idTipoMovimiento"), 8L)? "remotos": ""));
+          this.attrs.put("tipoDocumento", "de(los) conteos ".concat(Objects.equals(consecutivo.toLong("idTipoMovimiento"), 8L)? "remotos": ""));
 					break;
 			} // switch
 			if(documento!= null && !documento.isEmpty()) {

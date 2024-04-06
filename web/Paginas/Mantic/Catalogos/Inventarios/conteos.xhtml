@@ -377,22 +377,22 @@
 					<p:column headerText="Destino" styleClass="janal-wid-15 documento" rendered="#{manticCatalogosInventariosConteos.attrs.idTipoDocumento eq 4}">
 						<p:outputLabel value="#{item.destino}"/>
 					</p:column>   
-					<p:column headerText="Precio" styleClass="janal-wid-13 janal-column-right" rendered="#{not(manticCatalogosInventariosConteos.attrs.idTipoDocumento eq 6) and not(manticCatalogosInventariosConteos.attrs.idTipoDocumento eq 4)}">
+					<p:column headerText="Precio" styleClass="janal-wid-13 janal-column-right" rendered="#{not(manticCatalogosInventariosConteos.attrs.idTipoDocumento eq 6) and not(manticCatalogosInventariosConteos.attrs.idTipoDocumento eq 8) and not(manticCatalogosInventariosConteos.attrs.idTipoDocumento eq 4)}">
 						<p:outputLabel value="#{item.precio}"/>
 					</p:column>   
-					<p:column headerText="Impuestos" styleClass="janal-wid-10 janal-column-right documento" rendered="#{not(manticCatalogosInventariosConteos.attrs.idTipoDocumento eq 6) and not(manticCatalogosInventariosConteos.attrs.idTipoDocumento eq 4)}">
+					<p:column headerText="Impuestos" styleClass="janal-wid-10 janal-column-right documento" rendered="#{not(manticCatalogosInventariosConteos.attrs.idTipoDocumento eq 6) and not(manticCatalogosInventariosConteos.attrs.idTipoDocumento eq 8) and not(manticCatalogosInventariosConteos.attrs.idTipoDocumento eq 4)}">
 						<p:outputLabel value="#{item.impuestos}"/>
 					</p:column>   
-					<p:column headerText="Importe" styleClass="janal-wid-13 janal-column-right documento" rendered="#{not(manticCatalogosInventariosConteos.attrs.idTipoDocumento eq 6) and not(manticCatalogosInventariosConteos.attrs.idTipoDocumento eq 4)}">
+					<p:column headerText="Importe" styleClass="janal-wid-13 janal-column-right documento" rendered="#{not(manticCatalogosInventariosConteos.attrs.idTipoDocumento eq 6) and not(manticCatalogosInventariosConteos.attrs.idTipoDocumento eq 8) and not(manticCatalogosInventariosConteos.attrs.idTipoDocumento eq 4)}">
 						<p:outputLabel value="#{item.importe}"/>
 					</p:column>   
-					<p:column headerText="Salidas" styleClass="janal-wid-10 janal-column-right documento" rendered="#{manticCatalogosInventariosConteos.attrs.idTipoDocumento eq 6}">
+					<p:column headerText="Salidas" styleClass="janal-wid-10 janal-column-right documento" rendered="#{manticCatalogosInventariosConteos.attrs.idTipoDocumento eq 6 or manticCatalogosInventariosConteos.attrs.idTipoDocumento eq 8}">
 						<p:outputLabel value="#{item.salidas}"/>
 					</p:column>   
-					<p:column headerText="Stock" styleClass="janal-wid-10 janal-column-right documento" rendered="#{manticCatalogosInventariosConteos.attrs.idTipoDocumento eq 6}">
+					<p:column headerText="Stock" styleClass="janal-wid-10 janal-column-right documento" rendered="#{manticCatalogosInventariosConteos.attrs.idTipoDocumento eq 6 or manticCatalogosInventariosConteos.attrs.idTipoDocumento eq 8}">
 						<p:outputLabel value="#{item.stock}"/>
 					</p:column>   
-					<p:column headerText="Registro" styleClass="janal-wid-15 janal-column-right documento" rendered="#{manticCatalogosInventariosConteos.attrs.idTipoDocumento eq 4 or manticCatalogosInventariosConteos.attrs.idTipoDocumento eq 6}">
+					<p:column headerText="Registro" styleClass="janal-wid-15 janal-column-right documento" rendered="#{manticCatalogosInventariosConteos.attrs.idTipoDocumento eq 4 or manticCatalogosInventariosConteos.attrs.idTipoDocumento eq 6 or manticCatalogosInventariosConteos.attrs.idTipoDocumento eq 8}">
 						<p:outputLabel value="#{item.registro}"/>
 					</p:column>   
 				</p:dataTable>

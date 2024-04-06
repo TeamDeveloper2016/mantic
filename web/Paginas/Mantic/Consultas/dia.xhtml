@@ -10,9 +10,10 @@
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
-        'idEmpresa'  : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},        				
-  			'fechaInicio': {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'}        
-				'idMedioPago': {validaciones: 'libre', mascara: 'libre', grupo: 'general'}        
+        'idEmpresa'   : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},        				
+  			'fechaInicio' : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'}        
+  			'fechaTermino': {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'}        
+				'idMedioPago' : {validaciones: 'libre', mascara: 'libre', grupo: 'general'}        
       };							
     </script>		
 		<style>
@@ -33,7 +34,7 @@
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" >
               <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticConsultasDia.attrs.isMatriz}"/>
               <p:selectOneMenu id="idEmpresa" value="#{manticConsultasDia.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                <f:selectItems value="#{manticConsultasDia.attrs.sucursales}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{element.titulo eq ''? '': '|'} #{element.titulo}"/>
+                <f:selectItems value="#{manticConsultasDia.attrs.sucursales}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{element.clave eq ''? '': '|'} #{element.titulo}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>   
@@ -41,8 +42,10 @@
                   <h:outputText value="#{item.nombre}"/>
                 </p:column>   
               </p:selectOneMenu>  
-							<p:outputLabel for="fechaInicio" value="Fecha:"/>
-							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100"  value="#{manticConsultasDia.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" locale="mx" converter="janal.convertidor.Calendario"/>              							
+							<p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
+							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100"  value="#{manticConsultasDia.attrs.fechaInicio}" pattern="dd/MM/yyyy" locale="mx" converter="janal.convertidor.Calendario"/>              							
+							<p:outputLabel for="fechaTermino" value="Fecha termino:"/>
+							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100"  value="#{manticConsultasDia.attrs.fechaTermino}" pattern="dd/MM/yyyy" locale="mx" converter="janal.convertidor.Calendario"/>              							
 							<p:outputLabel for="idMedioPago" value="Forma de pago:"/>
               <p:selectOneMenu id="idMedioPago" value="#{manticConsultasDia.attrs.idMedioPago}" styleClass="janal-wid-96">								
                 <f:selectItems value="#{manticConsultasDia.attrs.mediosPago}"/>              

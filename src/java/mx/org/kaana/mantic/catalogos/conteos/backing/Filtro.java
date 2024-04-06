@@ -158,9 +158,9 @@ public class Filtro extends Comun implements Serializable {
 		  		sb.append("(concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) regexp '").append(nombre).append(".*' or tc_mantic_personas.cuenta regexp '").append(nombre).append(".*') and ");				
 				} // if	
 			if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
-				sb.append("(tc_mantic_conteos.fecha>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
+				sb.append("(substr(tc_mantic_conteos.fecha, 1, 8)>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
 			if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
-				sb.append("(tc_mantic_conteos.fecha<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
+				sb.append("(substr(tc_mantic_conteos.fecha, 1, 8)<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
 			if(!Cadena.isVacio(this.attrs.get("idAlmacen")) && !this.attrs.get("idAlmacen").toString().equals("-1"))
   		  regresar.put("almacen", " and (tc_mantic_conteos.id_almacen= "+ ((UISelectEntity)this.attrs.get("idAlmacen")).getKey()+ ")");
 			else

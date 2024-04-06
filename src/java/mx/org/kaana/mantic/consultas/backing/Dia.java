@@ -17,6 +17,7 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.procesos.acceso.beans.Sucursal;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
@@ -104,9 +105,9 @@ public class Dia extends IBaseFilter implements Serializable {
 		Entity total= null;
     try {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
-			this.attrs.put("idEmpresa", new UISelectEntity(JsfBase.getAutentifica().getEmpresa().getIdEmpresa()));
       this.attrs.put("sortOrder", "order by tc_mantic_ventas.registro desc");
 			this.attrs.put("fechaInicio", new Date(Calendar.getInstance().getTimeInMillis()));
+			this.attrs.put("fechaTermino", new Date(Calendar.getInstance().getTimeInMillis()));
 			this.toLoadCatalog();      
 			total= new Entity();
 			total.put("total", new Value("total", 0L));
@@ -175,7 +176,9 @@ public class Dia extends IBaseFilter implements Serializable {
           break;
       } // switch
       if(!Cadena.isVacio(this.attrs.get("fechaInicio"))) 
-        sb.append("(date_format(tc_mantic_ventas.registro, '%Y%m%d')= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");			
+        sb.append("(date_format(tc_mantic_ventas.registro, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");			
+      if(!Cadena.isVacio(this.attrs.get("fechaTermino"))) 
+        sb.append("(date_format(tc_mantic_ventas.registro, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");			
       if(!Objects.equals(((UISelectEntity)this.attrs.get("idEmpresa")).getKey(), -1L))
         regresar.put("idEmpresa", ((UISelectEntity)this.attrs.get("idEmpresa")).getKey());
       else
@@ -213,8 +216,9 @@ public class Dia extends IBaseFilter implements Serializable {
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      this.attrs.put("sucursales", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));			
-			this.attrs.put("idEmpresa", this.toDefaultSucursal((List<UISelectEntity>)this.attrs.get("sucursales")));
+      List<UISelectEntity> sucursales= (List<UISelectEntity>) UIEntity.seleccione("TcManticEmpresasDto", "empresas", params, columns, "titulo");
+      this.attrs.put("sucursales", sucursales);			
+			this.attrs.put("idEmpresa", UIBackingUtilities.toFirstKeySelectEntity(sucursales));
 			this.doLoadMediosPagos();
     } // try
     catch (Exception e) {
