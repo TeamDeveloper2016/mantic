@@ -171,11 +171,10 @@ public class Transaccion extends IBaseTnx {
 	
 	public boolean verificarCierreCaja(Session sesion) throws Exception {
 		boolean regresar         = true;
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		TcManticCierresDto cierre= null;
 		TcManticCierresDto nuevo = null;
 		try {
-			params= new HashMap<>();
 			params.put("estatusAbierto", CIERRE_ACTIVO);
 			params.put("idEmpresa", this.detalleGarantia.getTicketVenta().getIdEmpresa());
 			params.put("idCaja", this.detalleGarantia.getIdCaja());			
@@ -199,10 +198,9 @@ public class Transaccion extends IBaseTnx {
 	} // verificarCierreCaja
 	
 	private void toCierreActivo(Session sesion, Long idTipoMedioPago, Double totalPago) throws Exception {
-		Map<String, Object>params     = null;
+		Map<String, Object>params     = new HashMap<>();
 		TcManticCierresCajasDto cierre= null;
 		try {
-			params= new HashMap<>();
 			params.put("idCierre", this.idCierreVigente);
 			params.put("medioPago", idTipoMedioPago);
 			cierre= (TcManticCierresCajasDto) DaoFactory.getInstance().toEntity(sesion, TcManticCierresCajasDto.class, "TcManticCierresCajasDto", "cajaMedioPago", params);			
@@ -220,10 +218,9 @@ public class Transaccion extends IBaseTnx {
 	
 	private TcManticCierresDto toCierreNuevo(Session sesion) throws Exception {
 		TcManticCierresDto regresar= null;
-		TcManticCierresDto registro= null;
+		TcManticCierresDto registro= new TcManticCierresDto();
 		Cierre cierreNuevo         = null;
 		try {			
-			registro= new TcManticCierresDto();			
 			registro.setEjercicio(Long.valueOf(Fecha.getAnioActual()));
 			registro.setIdCierreEstatus(1L);
 			registro.setIdDiferencias(2L);
@@ -240,8 +237,7 @@ public class Transaccion extends IBaseTnx {
 	} // toCierreNuevo		
 	
 	private boolean generarGarantia(Session sesion, Long idEstatusGarantia) throws Exception {
-		boolean regresar         = false;
-		Map<String, Object>params= null;		
+		boolean regresar= false;
 		try {							
 			this.loadGarantia(sesion, idEstatusGarantia);			
 			if(DaoFactory.getInstance().insert(sesion, this.garantiaDto)>= 1L){				
@@ -253,7 +249,6 @@ public class Transaccion extends IBaseTnx {
 			throw e;
 		} // catch		
 		finally{
-			Methods.clean(params);
 			this.messageError= "Error al registrar el pago de la garantía";
 		} // finally			
 		return regresar;
@@ -285,9 +280,8 @@ public class Transaccion extends IBaseTnx {
 		
 	private Siguiente toSiguiente(Session sesion) throws Exception {
 		Siguiente regresar        = null;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("ejercicio", this.getCurrentYear());
 			params.put("operador", this.getCurrentSign());
 			Value next= DaoFactory.getInstance().toField(sesion, "TcManticGarantiasDto", "siguiente", params, "siguiente");
@@ -334,9 +328,8 @@ public class Transaccion extends IBaseTnx {
 	} // registrarPagos	
 	
 	private void toPagoGarantia(Session sesion, Double total, String observaciones, boolean credito) throws Exception {
-		TrManticGarantiaMedioPagoDto pago= null;
+		TrManticGarantiaMedioPagoDto pago= new TrManticGarantiaMedioPagoDto();
 		try {						
-			pago= new TrManticGarantiaMedioPagoDto();
 			pago.setIdCierre(this.idCierreVigente);
 			pago.setIdGarantia(this.garantiaDto.getIdGarantia());
 			pago.setIdTipoMedioPago(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago());
@@ -359,9 +352,8 @@ public class Transaccion extends IBaseTnx {
 	
 	private boolean executeAccionCredito(Session sesion) throws Exception {
 		boolean regresar         = false;	
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		try {
-			params= new HashMap<>();
 			switch(this.detalleGarantia.getAccionCredito()) {
 				case COMPLETO:
 					regresar= this.caseOneCredito(sesion);
@@ -423,10 +415,9 @@ public class Transaccion extends IBaseTnx {
 	private boolean caseOneCredito(Session sesion) throws Exception {
 		boolean regresar                      = false;
 		TcManticClientesDeudasDto deudaCliente= null;
-		Map<String, Object>params             = null;
+		Map<String, Object>params             = new HashMap<>();
 		String observaciones                  = null;
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_venta=" + this.detalleGarantia.getIdVenta());
 			deudaCliente= (TcManticClientesDeudasDto) DaoFactory.getInstance().toEntity(sesion, TcManticClientesDeudasDto.class, params);			
 			deudaCliente.setIdClienteEstatus(EEstatusClientes.FINALIZADA.getIdEstatus());
@@ -474,10 +465,9 @@ public class Transaccion extends IBaseTnx {
 	private boolean caseFourCredito(Session sesion) throws Exception {
 		boolean regresar                      = false;
 		TcManticClientesDeudasDto deudaCliente= null;
-		Map<String, Object>params             = null;
+		Map<String, Object>params             = new HashMap<>();
 		String observaciones                  = null;
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_venta=" + this.detalleGarantia.getIdVenta());
 			deudaCliente= (TcManticClientesDeudasDto) DaoFactory.getInstance().toEntity(sesion, TcManticClientesDeudasDto.class, params);
 			observaciones= (Cadena.isVacio(deudaCliente.getObservaciones())? "": deudaCliente.getObservaciones()).concat(". ACTUALIZACIÓN DEL IMPORTE DE LA DEUDA POR UNA DEVOLUCIÓN PARCIAL DE ARTICULOS. FECHA ").concat(Fecha.formatear(Fecha.FECHA_HORA_CORTA));
@@ -498,11 +488,10 @@ public class Transaccion extends IBaseTnx {
 	private boolean caseFiveCredito(Session sesion) throws Exception {
 		boolean regresar                      = false;
 		TcManticClientesDeudasDto deudaCliente= null;
-		Map<String, Object>params             = null;
+		Map<String, Object>params             = new HashMap<>();
 		String observaciones                  = null;
 		boolean devolucionEfectivo            = false;
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_venta=" + this.detalleGarantia.getIdVenta());
 			deudaCliente= (TcManticClientesDeudasDto) DaoFactory.getInstance().toEntity(sesion, TcManticClientesDeudasDto.class, params);			
 			devolucionEfectivo= this.detalleGarantia.getPagoGarantia().getTipoDevolucion().equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago());
@@ -558,10 +547,9 @@ public class Transaccion extends IBaseTnx {
 	private boolean caseEightCredito(Session sesion) throws Exception {
 		boolean regresar                      = false;
 		TcManticClientesDeudasDto deudaCliente= null;
-		Map<String, Object>params             = null;
+		Map<String, Object>params             = new HashMap<>();
 		String observaciones                  = null;
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_venta=" + this.detalleGarantia.getIdVenta());
 			deudaCliente= (TcManticClientesDeudasDto) DaoFactory.getInstance().toEntity(sesion, TcManticClientesDeudasDto.class, params);			
 			deudaCliente.setIdClienteEstatus(EEstatusClientes.FINALIZADA.getIdEstatus());
@@ -582,7 +570,7 @@ public class Transaccion extends IBaseTnx {
 	private boolean procesarPagoGeneral(Session sesion, Double pago, boolean efectivo) throws Exception {		
 		boolean regresar         = true;
 		List<Entity> deudas      = null;		
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		Double saldo             = 1D;
 		Double saldoDeuda        = 0D;				
 		Double pagoParcial       = 0D;				
@@ -611,7 +599,6 @@ public class Transaccion extends IBaseTnx {
 						idEstatus= (abono * -1) > 0 ? EEstatusClientes.PARCIALIZADA.getIdEstatus() : idEstatus;
 					} // if
 					if(registrarPago(sesion, deuda.getKey(), pagoParcial)) {
-						params= new HashMap<>();
 						params.put("saldo", abono);
 						params.put("idClienteEstatus", idEstatus);
 						DaoFactory.getInstance().update(sesion, TcManticClientesDeudasDto.class, deuda.getKey(), params);
@@ -631,9 +618,8 @@ public class Transaccion extends IBaseTnx {
 	
 	private List<Entity> toDeudas(Session sesion) throws Exception {
 		List<Entity> regresar    = null;
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put("idCliente", this.detalleGarantia.getIdCliente());
 			params.put("idVenta", this.detalleGarantia.getIdVenta());			
 			params.put("estatus", EEstatusClientes.FINALIZADA.getIdEstatus());			
@@ -651,11 +637,10 @@ public class Transaccion extends IBaseTnx {
 	} // toDeudas	
 	
 	private boolean registrarPago(Session sesion, Long idClienteDeuda, Double pagoParcial) throws Exception {
-		TcManticClientesPagosDto registroPago= null;
+		TcManticClientesPagosDto registroPago= new TcManticClientesPagosDto();
 		boolean regresar                     = false;
 		Siguiente orden                      = null;
 		try {
-			registroPago= new TcManticClientesPagosDto();
 			registroPago.setIdClienteDeuda(idClienteDeuda);
 			registroPago.setIdUsuario(JsfBase.getIdUsuario());
 			registroPago.setObservaciones("PAGO APLICADO A LA DEUDA GENERAL DEL CLIENTE COMO SALDO A FAVOR DE UNA DEVOLUCIÓN. PAGO GENERAL POR $".concat(pagoParcial.toString()));
@@ -676,9 +661,8 @@ public class Transaccion extends IBaseTnx {
 	
 	private Siguiente toSiguiente(Session sesion, Long idCliente) throws Exception {
 		Siguiente regresar        = null;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("ejercicio", this.getCurrentYear());
 			params.put("idEmpresa", ((TcManticClientesDto)DaoFactory.getInstance().findById(sesion, TcManticClientesDto.class, idCliente)).getIdEmpresa());
 			params.put("operador", this.getCurrentSign());
@@ -697,13 +681,12 @@ public class Transaccion extends IBaseTnx {
 	private boolean alterarStockArticulos(Session sesion, List<ArticuloVenta> arts) throws Exception {
 		TcManticAlmacenesArticulosDto almacenArticulo= null;
 		TcManticArticulosDto articuloVenta           = null;		
-		Map<String, Object>params                    = null;
+		Map<String, Object>params                    = new HashMap<>();
 		boolean regresar                             = false;
 		int count                                    = 0; 
 		Double stock                                 = 0D;
 		try {			
-			params= new HashMap<>();
-			for(ArticuloVenta articulo: arts){
+			for(ArticuloVenta articulo: arts) {
 				stock= 0D;
 				params.put(Constantes.SQL_CONDICION, "id_articulo="+ articulo.getIdArticulo()+ " and id_almacen="+ this.garantia.getTicketVenta().getIdAlmacen());
 				almacenArticulo= (TcManticAlmacenesArticulosDto) DaoFactory.getInstance().toEntity(sesion, TcManticAlmacenesArticulosDto.class, "TcManticAlmacenesArticulosDto", "row", params);
@@ -716,7 +699,7 @@ public class Transaccion extends IBaseTnx {
 					stock= 0D;
 					regresar= generarAlmacenArticulo(sesion, articulo.getIdArticulo(), articulo.getCantidad());
 				} // else				
-				registrarMovimiento(sesion, this.garantia.getTicketVenta().getIdAlmacen(), articulo.getCantidad(), articulo.getIdArticulo(), stock, this.garantia.getTicketVenta().getIdUsuario());
+				this.registrarMovimiento(sesion, this.garantia.getTicketVenta().getIdAlmacen(), articulo.getCantidad(), articulo.getIdArticulo(), stock, this.garantia.getTicketVenta().getIdUsuario());
 				if(regresar) {
 					articuloVenta= (TcManticArticulosDto) DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, articulo.getIdArticulo());
 					articuloVenta.setStock(articuloVenta.getStock() + articulo.getCantidad());
@@ -777,9 +760,8 @@ public class Transaccion extends IBaseTnx {
 	private Long toIdAlmacenUbicacion(Session sesion) throws Exception {
 		Long regresar                            = -1L;
 		TcManticAlmacenesUbicacionesDto ubicacion= null;
-		Map<String, Object>params                = null;		
+		Map<String, Object>params                = new HashMap<>();		
 		try {
-			params= new HashMap<>();
 			params.put("idAlmacen", this.garantia.getTicketVenta().getIdAlmacen());
 			ubicacion= (TcManticAlmacenesUbicacionesDto) DaoFactory.getInstance().toEntity(sesion, TcManticAlmacenesUbicacionesDto.class, "TcManticAlmacenesUbicacionesDto", "general", params);
 			if(ubicacion!= null)
@@ -802,9 +784,8 @@ public class Transaccion extends IBaseTnx {
 	private boolean actualizaInventario(Session sesion, Long idArticulo, Double cantidad) throws Exception {
 		boolean regresar                 = false;
 		TcManticInventariosDto inventario= null;
-		Map<String, Object>params        = null;
+		Map<String, Object>params        = new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put("idAlmacen", this.garantia.getTicketVenta().getIdAlmacen());
 			params.put("idArticulo", idArticulo);
 			inventario= (TcManticInventariosDto) DaoFactory.getInstance().toEntity(sesion, TcManticInventariosDto.class, "TcManticInventariosDto", "inventario", params);
@@ -844,5 +825,6 @@ public class Transaccion extends IBaseTnx {
 			throw e;
 		} // catch		
 		return regresar;
-	} // registrarBitacora	
+	}
+  
 }

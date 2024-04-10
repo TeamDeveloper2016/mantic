@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/filtro.xhtml">
+  <ui:param name="titulo" value="Reiniciar el servidor" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+			Janal.Control.fields = {				
+			};		
+    </script>    
+  </ui:define>
+  <ui:define name="contenido">		
+    <p:fieldset legend="¿Esta seguro de hacerlo?"> 
+      <p:panelGrid columns="1" layout="grid" columnClasses="janal-wid-col-200 janal-column-center">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{kajoolMantenimientoConfiguracionReiniciar.doAceptar}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
+      </p:panelGrid>
+    </p:fieldset>  
+  </ui:define>
+	<ui:param name="componenteBloqueo" value="aceptar"/>
+</ui:composition>

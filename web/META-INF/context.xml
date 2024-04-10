@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context path="/KAANA">
     <Resource name="BeanManager" auth="Container" type="javax.enterprise.inject.spi.BeanManager" factory="org.jboss.weld.resources.ManagerObjectFactory"/>
-  <!-- KAANA -->
+  <!-- KAANA
     <Resource auth="Container" driverClassName="org.mariadb.jdbc.Driver" maxActive="100" maxIdle="30" maxWait="10000" name="jdbc/manticDS" username="ferreter_super" password="super2018" type="javax.sql.DataSource" url="jdbc:mysql://ferreteriabonanza.com:3306/ferreter_production?zeroDateTimeBehavior=convertToNull&amp;useUnicode=true&amp;characterEncoding=utf8mb4&amp;connectionCollation=utf8mb4_spanish_ci"/>
-   
+    -->
   <!-- XULHA
     <Resource auth="Container" driverClassName="org.mariadb.jdbc.Driver" maxActive="100" maxIdle="30" maxWait="10000" name="jdbc/manticDS" username="ferreter_track" password="track2018" type="javax.sql.DataSource" url="jdbc:mysql://ferreteriabonanza.com:3306/ferreter_testing?zeroDateTimeBehavior=convertToNull&amp;useUnicode=true&amp;characterEncoding=utf8mb4&amp;connectionCollation=utf8mb4_spanish_ci"/>
    -->

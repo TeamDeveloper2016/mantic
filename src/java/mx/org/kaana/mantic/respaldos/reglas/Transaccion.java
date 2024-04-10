@@ -44,7 +44,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 	private TcManticRespaldosDto respaldo;
 
 	public Transaccion() {
-	 this("GENERACION DEL RESPALDO AUTOMATICO");
+	  this("GENERACION DEL RESPALDO AUTOMATICO");
 	}
 
 	public Transaccion(String observacion) {

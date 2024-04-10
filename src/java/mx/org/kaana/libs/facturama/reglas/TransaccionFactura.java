@@ -500,7 +500,7 @@ public class TransaccionFactura extends IBaseTnx {
       throw e;
     } // catch
 		return regresar;
-	} // actualizarFacturaAutomatico
+	} 
 	
 	public boolean actualizarFacturaAutomatico(Session sesion, Long id, Long idUsuario, Long idEstatus) throws Exception {
     return this.actualizarFacturaAutomatico(sesion, id, idUsuario, idEstatus, 1L, null);

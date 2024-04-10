@@ -31,6 +31,7 @@ import mx.org.kaana.mantic.ws.imox.beans.Inventario;
 import mx.org.kaana.mantic.ws.imox.beans.Item;
 import mx.org.kaana.mantic.ws.imox.beans.Items;
 import mx.org.kaana.mantic.ws.imox.beans.Producto;
+import mx.org.kaana.mantic.ws.imox.beans.Transferencia;
 import mx.org.kaana.mantic.ws.imox.beans.Ubicacion;
 import mx.org.kaana.mantic.ws.imox.beans.Usuario;
 import mx.org.kaana.mantic.ws.publicar.beans.Respuesta;
@@ -416,6 +417,28 @@ public class Planetas implements Serializable {
     return regresar;
   }
   
+  // SERVICIO WEB PARA REGISTRAR UNA TRANSFERENCIA
+  public String eclipse(Long radio, String densidad, String atmosfera) throws Exception {
+    String regresar           = Decoder.toJson(new Respuesta(ERespuesta.CORRECTO.getCodigo(), "Proceso correcto")); 
+    Map<String, Object> params= new HashMap<>();
+    Respuesta respuesta       = null;
+    try {
+      respuesta= this.toRespueta(this.neptuno(atmosfera, radio));
+      if(Objects.equals(respuesta.getCodigo(), ERespuesta.CORRECTO.getCodigo())) 
+        regresar= Decoder.toJson(new Respuesta(ERespuesta.CORRECTO.getCodigo(), this.toAplicarTransferencia(radio, densidad)));
+      else
+        regresar= Decoder.toJson(respuesta);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      regresar= Decoder.toJson(new Respuesta(ERespuesta.ERROR.getCodigo(), e.getMessage()));
+    } // catch
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  }
+  
   private String toEnrolar(Long idUsuario, String densidad) throws Exception {
     String id                 = Cadena.rellenar(String.valueOf(idUsuario), 3, '0', true);
     String regresar           = id.concat(Fecha.toRegistro());
@@ -674,6 +697,113 @@ public class Planetas implements Serializable {
     return regresar;
   }
 
+  private String toAplicarTransferencia(Long idUsuario, String densidad) throws Exception {
+    String id                 = Cadena.rellenar(String.valueOf(idUsuario), 3, '0', true);
+    String regresar           = id.concat(Fecha.toRegistro());
+    Map<String, Object> params= new HashMap<>();
+    Transaction transaction   = null;
+    Session session           = null;
+		try {
+      LOG.error("TRANSFERENCIA: ["+ densidad+ "]");
+			session    = SessionFactoryFacade.getInstance().getSession(-1L);
+			transaction= session.beginTransaction();
+			session.clear();
+      Transferencia items= this.toTransferencia(densidad);
+//      TcManticConteosDto conteo= new TcManticConteosDto(
+//        densidad, // String conteos, 
+//        items.getRegistro(), // String fecha, 
+//        new Long(items.getProductos().size()), // Long articulos, 
+//        items.getIdUsuario(), // Long idUsuario, 
+//        -1L, // Long idConteo, 
+//        null, // Timestamp procesado, 
+//        items.getIdConteo(), // Long idReferencia, 
+//        BouncyEncryption.decrypt(items.getNombre()), // String nombre, 
+//        1L, // Long idConteoEstatus, 
+//        regresar, // String token
+//        items.getIdEmpresa(), // Long idEmpresa
+//        items.getIdAlmacen(), // Long idAlmacen
+//        items.getSemilla(), // String semilla
+//        items.getVersion() // String version
+//      );
+//      params.put("semilla", conteo.getSemilla());
+//      params.put("idUsuario", conteo.getIdUsuario());
+//      params.put("idReferencia", conteo.getIdReferencia());
+//      params.put("nombre", conteo.getNombre());
+//      TcManticConteosDto existe= (TcManticConteosDto)DaoFactory.getInstance().toEntity(TcManticConteosDto.class, "TcManticConteosDto", "identically", params);
+//      if(Objects.equals(existe, null)) {
+//        // INSERTAR EL REGISTRO DE LOS CONTEOS PARA DESPUES VERFICAR SI SE INTEGRARON
+//        DaoFactory.getInstance().insert(session, conteo);
+//        TcManticConteosBitacoraDto bitacora= new TcManticConteosBitacoraDto(
+//          null, // String justificacion, 
+//          conteo.getIdUsuario(), // Long idUsuario, 
+//          conteo.getIdConteo(), // Long idConteo, 
+//          -1L, // Long idConteoBitacora, 
+//          conteo.getIdConteoEstatus() // Long idConteoEstatus
+//        );
+//        DaoFactory.getInstance().insert(session, bitacora);
+//      } // if
+//      else {
+//        regresar= existe.getToken();
+//        if(existe.getArticulos()!= items.getProductos().size()) {
+//          existe.setConteos(densidad);
+//          existe.setArticulos(new Long(items.getProductos().size()));
+//          DaoFactory.getInstance().update(session, existe);
+//        } // if
+//        conteo.setIdConteo(existe.getIdConteo());
+//        TcManticConteosBitacoraDto bitacora= new TcManticConteosBitacoraDto(
+//          "SE ENVIO UNA ACTUALIZACIÓN", // String justificacion, 
+//          conteo.getIdUsuario(), // Long idUsuario, 
+//          conteo.getIdConteo(), // Long idConteo, 
+//          -1L, // Long idConteoBitacora, 
+//          conteo.getIdConteoEstatus() // Long idConteoEstatus
+//        );
+//        DaoFactory.getInstance().insert(session, bitacora);
+//      } // if
+//      for (Cantidad item: items.getProductos()) {
+//        TcManticConteosDetallesDto detalle= new TcManticConteosDetallesDto(
+//          item.getRegistro(), // String fecha, 
+//          -1L, // Long idConteoDetalle, 
+//          conteo.getIdConteo(), // Long idConteo, 
+//          null, // Timestamp procesado, 
+//          item.getCantidad(), // Double cantidad, 
+//          item.getIdProducto(), // Long idArticulo, 
+//          item.getDescripcion(), // String nombre
+//          item.getCodigo() // String codigo
+//        );
+//        params.put("idConteo", conteo.getIdConteo());
+//        params.put("idArticulo", item.getIdProducto());
+//        TcManticConteosDetallesDto copia= (TcManticConteosDetallesDto)DaoFactory.getInstance().toEntity(TcManticConteosDetallesDto.class, "TcManticConteosDetallesDto", "identically", params);
+//        if(Objects.equals(copia, null)) 
+//          DaoFactory.getInstance().insert(session, detalle);
+//        else
+//          if(Objects.equals(copia.getProcesado(), null)) {
+//            copia.setCantidad(item.getCantidad());
+//            copia.setFecha(item.getRegistro());
+//            copia.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+//            DaoFactory.getInstance().update(session, copia);
+//          } // if  
+//      } // for
+			transaction.commit();
+		} // try
+		catch (Exception e) {
+      LOG.error("SOLICITUD: "+ densidad);
+      Error.mensaje(e);
+			if (transaction!= null) {
+				transaction.rollback();
+			} // if
+			throw e;
+		} // catch
+		finally {
+      Methods.clean(params);
+			if (session!= null) {
+				session.close();
+			} // if
+			transaction= null;
+			session    = null;
+		} // finally    
+    return regresar;
+  }
+  
   private Respuesta toRespueta(String msg) {
     Gson gson = new Gson();
     return gson.fromJson(msg, Respuesta.class);
@@ -682,6 +812,11 @@ public class Planetas implements Serializable {
   private Conteo toConteo(String msg) {
     Gson gson = new Gson();
     return gson.fromJson(msg, Conteo.class);
+  }
+  
+  private Transferencia toTransferencia(String msg) {
+    Gson gson = new Gson();
+    return gson.fromJson(msg, Transferencia.class);
   }
   
   private Items toItems(String msg) {
