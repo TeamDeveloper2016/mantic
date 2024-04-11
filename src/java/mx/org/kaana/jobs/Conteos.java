@@ -66,8 +66,6 @@ public class Conteos extends IBaseJob implements Serializable {
           } // for
           LOG.error("---------------------------------------------------------------");
         } // if
-        params.put("sucursales", "1,2,3");
-        params.put("fecha", Fecha.getMinutosEstandar(-5));
         List<Entity> transferencias= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaConteosDto", "transferencias", params, 500L);
         if(transferencias!= null && !transferencias.isEmpty()) {
           LOG.error("----------------ENTRO A TRANSFERECIAS REMOTAS------------------");
@@ -77,11 +75,11 @@ public class Conteos extends IBaseJob implements Serializable {
             if(!Objects.equals(transferencia, null)) {
               operacion= new Operacion(transferencia);
               try {
-                // operacion.ejecutar(EAccion.PROCESAR);
+                operacion.ejecutar(EAccion.PROCESAR);
               } // try
               catch(Exception e) {
                 Error.mensaje(e); 
-                // operacion.ejecutar(EAccion.DESACTIVAR);
+                operacion.ejecutar(EAccion.DESACTIVAR);
               } // catch
               finally {
                 operacion= null;
@@ -93,7 +91,7 @@ public class Conteos extends IBaseJob implements Serializable {
 	  } // try
 		catch(Exception e) {
 			Error.mensaje(e);
-      LOG.error("Ocurrio un error al realizar el registro de conteos remotos");
+      LOG.error("Ocurrio un error al realizar el registro de conteos/transferencias remotos");
 		} // catch	
 		finally {
 			Methods.clean(params);

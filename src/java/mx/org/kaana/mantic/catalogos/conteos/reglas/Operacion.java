@@ -56,6 +56,8 @@ public class Operacion extends ComunInventarios implements Serializable {
 		boolean regresar          = Boolean.FALSE;
 		Map<String, Object> params= new HashMap<>();
 		try {
+      this.idUsuario= this.transferencia.getIdUsuario();
+      this.idEmpresa= this.transferencia.getIdEmpresa();
 			switch(accion) {
 				case PROCESAR:
           regresar= this.toProcesar(sesion);
@@ -121,7 +123,7 @@ public class Operacion extends ComunInventarios implements Serializable {
       DaoFactory.getInstance().update(sesion, this.transferencia);
       this.bitacora= new TcManticTransferenciasBitacoraDto(
         -1L, // Long idTransferenciaBitacora, 
-        this.messageError, // String justificacion, 
+        null, // String justificacion, 
         this.transferencia.getIdUsuario(), // Long idUsuario, 
         null, // Long idTransporto, 
         this.transferencia.getIdTransferenciaEstatus(), // Long idTransferenciaEstatus, 
@@ -144,7 +146,7 @@ public class Operacion extends ComunInventarios implements Serializable {
       DaoFactory.getInstance().update(sesion, this.transferencia);
       this.bitacora= new TcManticTransferenciasBitacoraDto(
         -1L, // Long idTransferenciaBitacora, 
-        this.messageError, // String justificacion, 
+        null, // String justificacion, 
         this.transferencia.getIdUsuario(), // Long idUsuario, 
         null, // Long idTransporto, 
         this.transferencia.getIdTransferenciaEstatus(), // Long idTransferenciaEstatus, 

@@ -307,10 +307,12 @@ public class Filtro extends Comun implements Serializable {
 	} // doLoadEstatus
 	
 	public void doActualizarEstatus() {
-  	if(Objects.equals((String)this.attrs.get("estatus"), "5") || Objects.equals((String)this.attrs.get("estatus"), "10"))
-      this.toTransaccion(Long.valueOf((String)this.attrs.get("estatus")));
+    Long idEstatus= Long.valueOf((String)this.attrs.get("estatus"));
+    Long idTransferenciaEstatus= ((Entity)this.attrs.get("seleccionado")).toLong("estatus");
+  	if(Objects.equals(idTransferenciaEstatus, 5L) || Objects.equals(idTransferenciaEstatus, 10L))
+      this.toOperacion(idEstatus);
     else
-      this.toOperacion(Long.valueOf((String)this.attrs.get("estatus")));
+      this.toTransaccion(idEstatus);
   }
   
 	private void toTransaccion(Long idEstatus) {

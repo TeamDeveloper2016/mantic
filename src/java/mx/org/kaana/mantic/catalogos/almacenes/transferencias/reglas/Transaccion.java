@@ -64,6 +64,8 @@ public class Transaccion extends ComunInventarios implements Serializable {
     try {			
     	this.messageError    = "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" para transferencia de articulos.");
   		Siguiente consecutivo= null;
+      this.idUsuario= JsfBase.getIdUsuario();
+      this.idEmpresa= JsfBase.getAutentifica().getEmpresa().getIdEmpresa();
       switch (accion) {
         case ACTIVAR:
         case AGREGAR:

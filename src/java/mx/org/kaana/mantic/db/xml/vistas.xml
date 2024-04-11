@@ -167,7 +167,7 @@ select
   concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as nombre,
   tc_mantic_personas.cuenta,
   tc_mantic_personas.contrasenia as token,
-  if(tc_janal_usuarios.id_perfil>= 3, 3, tc_janal_usuarios.id_perfil) as id_perfil,
+  if(tc_janal_usuarios.id_perfil&gt;= 3, 3, tc_janal_usuarios.id_perfil) as id_perfil,
   tc_janal_usuarios.activo as activo,
   date_format(tc_janal_usuarios.registro, '%Y%m%d%h%i%S') as registro
 from
@@ -189,7 +189,8 @@ select
   tc_mantic_almacenes_articulos.id_almacen_ubicacion as id_ubicacion,
   group_concat(tc_mantic_articulos_codigos.codigo separator '|') as codigos,
   if(tc_mantic_articulos.id_descontinuado= 2, 1, 2) as id_activo,
-  date_format(tc_mantic_articulos.registro, '%Y%m%d%h%i%S') as registro
+  date_format(tc_mantic_articulos.registro, '%Y%m%d%h%i%S') as registro,
+  tc_mantic_articulos.precio
 from
   tc_mantic_articulos
 inner join
@@ -257,7 +258,7 @@ select
   tc_janal_usuarios.id_usuario,
   concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as nombre,
   tc_janal_usuarios.activo,
-  if(tc_janal_usuarios.id_perfil>= 3, 3, tc_janal_usuarios.id_perfil) as id_perfil,
+  if(tc_janal_usuarios.id_perfil&gt;= 3, 3, tc_janal_usuarios.id_perfil) as id_perfil,
   date_format(tc_janal_usuarios.registro, '%Y%m%d%h%i%S') as registro
 from
   tc_janal_usuarios
@@ -299,7 +300,8 @@ select
   tc_mantic_articulos.nombre,
   if(tc_mantic_articulos.id_descontinuado= 2, 1, 2) as id_activo,
   group_concat(tc_mantic_articulos_codigos.codigo separator '|') as codigos,
-  date_format(tc_mantic_articulos.registro, '%Y%m%d%h%i%S') as registro
+  date_format(tc_mantic_articulos.registro, '%Y%m%d%h%i%S') as registro,
+  tc_mantic_articulos.precio
 from
   tc_mantic_articulos
 inner join
@@ -9266,7 +9268,7 @@ order by
 				     inner join tc_mantic_ordenes_compras on tc_mantic_ordenes_detalles.id_orden_compra= tc_mantic_ordenes_compras.id_orden_compra 
 				      and tc_mantic_ordenes_compras.id_orden_estatus in (3,4,5)
 				      and tc_mantic_ordenes_compras.id_proveedor= {idProveedor}
-				      and date_format(tc_mantic_ordenes_compras.registro, '%Y%m%d')>= '{mes}')				
+				      and date_format(tc_mantic_ordenes_compras.registro, '%Y%m%d')%gt;= '{mes}')				
 				order by
 				  tc_mantic_faltantes.registro desc
 			</select>

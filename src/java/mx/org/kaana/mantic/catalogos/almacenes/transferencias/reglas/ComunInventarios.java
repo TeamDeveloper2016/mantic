@@ -9,7 +9,6 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Numero;
-import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesArticulosDto;
@@ -31,6 +30,8 @@ public abstract class ComunInventarios extends IBaseTnx implements Serializable 
 	protected List<Articulo> articulos;
   protected TcManticTransferenciasBitacoraDto bitacora;
   protected String messageError;
+  protected Long idUsuario;
+  protected Long idEmpresa;
 	
 	protected Long toUbicacion(Session sesion, Long idAlmacen, Long idArticulo) throws Exception {
 		Long regresar             = -1L;
@@ -42,7 +43,7 @@ public abstract class ComunInventarios extends IBaseTnx implements Serializable 
 			if(ubicacion== null) {
 				TcManticAlmacenesUbicacionesDto general= (TcManticAlmacenesUbicacionesDto)DaoFactory.getInstance().findFirst(sesion, TcManticAlmacenesUbicacionesDto.class, params, "general");
 				if(general== null) {
-					general= new TcManticAlmacenesUbicacionesDto("GENERAL", "", "GENERAL", "", "", JsfBase.getAutentifica().getPersona().getIdUsuario(), idAlmacen, -1L);
+					general= new TcManticAlmacenesUbicacionesDto("GENERAL", "", "GENERAL", "", "", this.idUsuario, idAlmacen, -1L);
 					DaoFactory.getInstance().insert(sesion, general);
 				} // if	
 				regresar= general.getIdAlmacenUbicacion();
@@ -98,7 +99,7 @@ public abstract class ComunInventarios extends IBaseTnx implements Serializable 
 			TcManticMovimientosDto movimiento= new TcManticMovimientosDto(
 			  consecutivo, // String consecutivo, 
 				4L, // Long idTipoMovimiento, 
-				JsfBase.getIdUsuario(), // Long idUsuario, 
+				this.idUsuario, // Long idUsuario, 
 				idAlmacen, // Long idAlmacen, 
 				-1L, // Long idMovimiento, 
 				articulo.getCantidad(), // Double cantidad, 
@@ -155,7 +156,7 @@ public abstract class ComunInventarios extends IBaseTnx implements Serializable 
 			TcManticMovimientosDto movimiento= new TcManticMovimientosDto(
 			  consecutivo, // String consecutivo, 
 				4L, // Long idTipoMovimiento, 
-				JsfBase.getIdUsuario(), // Long idUsuario, 
+				this.idUsuario, // Long idUsuario, 
 				idAlmacen, // Long idAlmacen, 
 				-1L, // Long idMovimiento, 
 				articulo.getCantidad()* -1, // Double cantidad, 
@@ -212,7 +213,7 @@ public abstract class ComunInventarios extends IBaseTnx implements Serializable 
 				TcManticMovimientosDto movimiento= new TcManticMovimientosDto(
 					consecutivo, // String consecutivo, 
 					4L, // Long idTipoMovimiento, 
-					JsfBase.getIdUsuario(), // Long idUsuario, 
+					this.idUsuario, // Long idUsuario, 
 					idDestino, // Long idAlmacen, 
 					-1L, // Long idMovimiento, 
 					diferencia, // Double cantidad, 
@@ -223,11 +224,10 @@ public abstract class ComunInventarios extends IBaseTnx implements Serializable 
 				);
 				DaoFactory.getInstance().insert(sesion, movimiento);
 
-				Long idEmpresa= JsfBase.getAutentifica().getEmpresa().getIdEmpresa();
 				params.put("idAlmacen", idDestino);
 				Value empresa= DaoFactory.getInstance().toField(sesion, "TcManticAlmacenesDto", "empresa", params, "idEmpresa");
 				if(empresa.getData()!= null)
-					idEmpresa= empresa.toLong();
+					this.idEmpresa= empresa.toLong();
 				// QUITAR DE LAS VENTAS PERDIDAS LOS ARTICULOS QUE FUERON YA SURTIDOS EN EL ALMACEN
 				params.put("idArticulo", articulo.getIdArticulo());
 				params.put("idEmpresa", idEmpresa);
@@ -249,7 +249,7 @@ public abstract class ComunInventarios extends IBaseTnx implements Serializable 
     TcManticAlmacenesArticulosDto regresar= new TcManticAlmacenesArticulosDto(
 			umbrales.getMinimo(), // Double minimo, 
 			-1L, // Long idAlmacenArticulo, 
-			JsfBase.getIdUsuario(), // Long idUsuario, 
+			this.idUsuario, // Long idUsuario, 
 			idAlmacen, // Long idAlmacen, 
 			umbrales.getMaximo(), // Double maximo, 
 			this.toUbicacion(sesion, idAlmacen, articulo.getIdArticulo()), // Long idAlmacenUbicacion, 
@@ -262,7 +262,7 @@ public abstract class ComunInventarios extends IBaseTnx implements Serializable 
 		
 	protected TcManticInventariosDto toCreateInvetario(Session sesion, Articulo articulo, Long idAlmacen, boolean inicial) throws Exception {
     TcManticInventariosDto regresar= new TcManticInventariosDto(
-			JsfBase.getIdUsuario(), // Long idUsuario, 
+			this.idUsuario, // Long idUsuario, 
 			idAlmacen, // Long idAlmacen, 
 			inicial? articulo.getCantidad(): 0D, // Double entradas, 
 			-1L, // Long idInventario, 

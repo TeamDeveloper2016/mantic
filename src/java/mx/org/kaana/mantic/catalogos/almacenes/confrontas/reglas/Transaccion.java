@@ -1,5 +1,6 @@
 package mx.org.kaana.mantic.catalogos.almacenes.confrontas.reglas;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -26,9 +27,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 
-public class Transaccion extends ComunInventarios {
+public class Transaccion extends ComunInventarios implements Serializable {
 
 	private static final Log LOG= LogFactory.getLog(Transaccion.class);
+  private static final long serialVersionUID = -623150336470893500L;
 
   private TcManticConfrontasDto dto;
   private TcManticTransferenciasDto transferencia;
@@ -47,6 +49,8 @@ public class Transaccion extends ComunInventarios {
     	this.messageError = "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" para transferencia de articulos.");
   		Siguiente consecutivo= null;
 			this.transferencia= (TcManticTransferenciasDto)DaoFactory.getInstance().findById(sesion, TcManticTransferenciasDto.class, this.dto.getIdTransferencia());
+      this.idUsuario= JsfBase.getIdUsuario();
+      this.idEmpresa= JsfBase.getAutentifica().getEmpresa().getIdEmpresa();
       switch (accion) {
 				case ACTIVAR:
 				case AGREGAR:

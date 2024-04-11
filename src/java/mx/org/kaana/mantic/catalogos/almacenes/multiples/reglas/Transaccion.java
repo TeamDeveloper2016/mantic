@@ -1,5 +1,6 @@
 package mx.org.kaana.mantic.catalogos.almacenes.multiples.reglas;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -24,9 +25,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 
-public class Transaccion extends ComunInventarios {
+public class Transaccion extends ComunInventarios implements Serializable {
 
 	private static final Log LOG=LogFactory.getLog(Transaccion.class);
+  private static final long serialVersionUID = 4988285590107621583L;
 	
   private TcManticTransferenciasMultiplesDto dto;
 	private Long idTransferenciaMultiplesEstatus;
