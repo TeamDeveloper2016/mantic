@@ -46,6 +46,8 @@ public class TcManticTransferenciasDetallesDto implements IBaseDto, Serializable
   private String nombre;
   @Column (name="caja")
   private Long caja;
+  @Column (name="procesado")
+  private Timestamp procesado;
   @Column (name="registro")
   private Timestamp registro;
 
@@ -54,11 +56,11 @@ public class TcManticTransferenciasDetallesDto implements IBaseDto, Serializable
   }
 
   public TcManticTransferenciasDetallesDto(Long key) {
-    this(null, null, new Long(-1L), null, null, null, null, 1L);
+    this(null, null, new Long(-1L), null, null, null, null, 1L, null);
     setKey(key);
   }
 
-  public TcManticTransferenciasDetallesDto(String codigo, Double cantidades, Long idTransferenciaDetalle, Double cantidad, Long idArticulo, Long idTransferencia, String nombre, Long caja) {
+  public TcManticTransferenciasDetallesDto(String codigo, Double cantidades, Long idTransferenciaDetalle, Double cantidad, Long idArticulo, Long idTransferencia, String nombre, Long caja, Timestamp procesado) {
     setCodigo(codigo);
     setCantidades(cantidades);
     setIdTransferenciaDetalle(idTransferenciaDetalle);
@@ -66,6 +68,7 @@ public class TcManticTransferenciasDetallesDto implements IBaseDto, Serializable
     setIdArticulo(idArticulo);
     setIdTransferencia(idTransferencia);
     setNombre(nombre);
+    setProcesado(procesado);
 		this.caja= caja;
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
@@ -134,6 +137,14 @@ public class TcManticTransferenciasDetallesDto implements IBaseDto, Serializable
 		this.caja=caja;
 	}
 
+  public Timestamp getProcesado() {
+    return procesado;
+  }
+
+  public void setProcesado(Timestamp procesado) {
+    this.procesado = procesado;
+  }
+
   public void setRegistro(Timestamp registro) {
     this.registro = registro;
   }
@@ -173,6 +184,8 @@ public class TcManticTransferenciasDetallesDto implements IBaseDto, Serializable
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getCaja());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getProcesado());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
   	return regresar.toString();
@@ -189,14 +202,15 @@ public class TcManticTransferenciasDetallesDto implements IBaseDto, Serializable
 		regresar.put("idTransferencia", getIdTransferencia());
 		regresar.put("nombre", getNombre());
 		regresar.put("caja", getCaja());
+		regresar.put("procesado", getProcesado());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
-    Object[] regresar = new Object[]{
-    getCodigo(), getCantidades(), getIdTransferenciaDetalle(), getCantidad(), getIdArticulo(), getIdTransferencia(), getNombre(), getCaja(), getRegistro()
+    Object[] regresar = new Object[] {
+      getCodigo(), getCantidades(), getIdTransferenciaDetalle(), getCantidad(), getIdArticulo(), getIdTransferencia(), getNombre(), getCaja(), getProcesado(), getRegistro()
     };
     return regresar;
   }

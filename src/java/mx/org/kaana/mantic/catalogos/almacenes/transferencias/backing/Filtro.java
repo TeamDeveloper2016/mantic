@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
@@ -39,6 +40,7 @@ import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
 import mx.org.kaana.mantic.catalogos.almacenes.transferencias.reglas.Transaccion;
+import mx.org.kaana.mantic.catalogos.conteos.reglas.Operacion;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.db.dto.TcManticTransferenciasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticTransferenciasDto;
@@ -53,6 +55,8 @@ import org.primefaces.model.StreamedContent;
 public class Filtro extends Comun implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428879L;
+  
+  private EAccion accion;
   private Reporte reporte;
 
 	public Boolean getIsAutorizar() {
@@ -71,11 +75,10 @@ public class Filtro extends Comun implements Serializable {
 		StreamedContent regresar= null;
 		Xls xls                 = null;
 		String template         = "CONTEOS";
-		Map<String, Object> params=null;
+		Map<String, Object> params=new HashMap<>();
 		try {
 			String salida  = EFormatos.XLS.toPath().concat(Archivo.toFormatNameFile(template).concat(".")).concat(EFormatos.XLS.name().toLowerCase());
   		String fileName= JsfBase.getRealPath("").concat(salida);
-			params         = new HashMap<>();
 			params.put("idTransferencia", this.attrs.get("seleccionado")!= null? ((Entity)this.attrs.get("seleccionado")).toLong("idTransferencia"): -1L);
       xls= new Xls(fileName, new Modelo(params, "VistaConfrontasDto", "origen", template), "CODIGO,NOMBRE,FECHA,STOCK");	
 			if(xls.procesar()) {
@@ -100,6 +103,17 @@ public class Filtro extends Comun implements Serializable {
     return regresar;
   }	
 	
+  public Boolean getAdmin() {
+    Boolean regresar= Boolean.FALSE;
+    try {
+      regresar= JsfBase.isAdminEncuestaOrAdmin();
+    } // try
+    catch(Exception e) {
+      regresar= Boolean.FALSE;
+    } // catch
+    return regresar;
+  }
+  
   @PostConstruct
   @Override
   protected void init() {
@@ -110,6 +124,7 @@ public class Filtro extends Comun implements Serializable {
 			this.toLoadCatalog();
       if(this.attrs.get("idTransferencia")!= null) 
 			  this.doLoad();
+      this.accion= EAccion.PROCESAR;
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -164,6 +179,8 @@ public class Filtro extends Comun implements Serializable {
 		  sb.append("(date_format(tc_mantic_transferencias.registro, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
 		if(!Cadena.isVacio(this.attrs.get("idTransferenciaEstatus")) && !this.attrs.get("idTransferenciaEstatus").toString().equals("-1"))
   		sb.append("(tc_mantic_transferencias.id_transferencia_estatus= ").append(this.attrs.get("idTransferenciaEstatus")).append(") and ");
+		if(!Cadena.isVacio(this.attrs.get("idTransferenciaTipo")) && !this.attrs.get("idTransferenciaTipo").toString().equals("-1"))
+  		sb.append("(tc_mantic_transferencias.id_transferencia_tipo= ").append(this.attrs.get("idTransferenciaTipo")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
 		  regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
 		else
@@ -194,6 +211,8 @@ public class Filtro extends Comun implements Serializable {
 			columns.remove(0);
       this.attrs.put("catalogo", (List<UISelectEntity>) UIEntity.build("TcManticTransferenciasEstatusDto", "row", params, columns));
 			this.attrs.put("idTransferenciasEstatus", new UISelectEntity("-1"));
+      this.attrs.put("tipos", (List<UISelectEntity>) UIEntity.build("TcManticTransferenciasTiposDto", "row", params, columns));
+			this.attrs.put("idTransferenciaTipo", new UISelectEntity("-1"));
 			this.toLoadPersonas();
     } // try
     catch (Exception e) {
@@ -268,11 +287,10 @@ public class Filtro extends Comun implements Serializable {
   
   public void doLoadEstatus() {
 		Entity seleccionado          = null;
-		Map<String, Object>params    = null;
+		Map<String, Object>params    = new HashMap<>();
 		List<UISelectItem> allEstatus= null;
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_transferencia_estatus in (".concat(seleccionado.toString("estatusAsociados")).concat(")"));
 			allEstatus= UISelect.build("TcManticTransferenciasEstatusDto", params, "nombre", EFormatoDinamicos.MAYUSCULAS);			
 			this.attrs.put("allEstatusAsigna", allEstatus);
@@ -289,18 +307,25 @@ public class Filtro extends Comun implements Serializable {
 	} // doLoadEstatus
 	
 	public void doActualizarEstatus() {
+  	if(Objects.equals((String)this.attrs.get("estatus"), "5") || Objects.equals((String)this.attrs.get("estatus"), "10"))
+      this.toTransaccion(Long.valueOf((String)this.attrs.get("estatus")));
+    else
+      this.toOperacion(Long.valueOf((String)this.attrs.get("estatus")));
+  }
+  
+	private void toTransaccion(Long idEstatus) {
 		Transaccion transaccion= null;
 		Entity seleccionado    = null;
 		Long idTransporto      = null;
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
-			idTransporto  = this.attrs.get("idTransporto")!= null && ((Entity)this.attrs.get("idTransporto")).getKey()> 0L? ((Entity)this.attrs.get("idTransporto")).getKey(): JsfBase.getIdUsuario();
+			idTransporto= this.attrs.get("idTransporto")!= null && ((Entity)this.attrs.get("idTransporto")).getKey()> 0L? ((Entity)this.attrs.get("idTransporto")).getKey(): JsfBase.getIdUsuario();
 			TcManticTransferenciasBitacoraDto bitacora= null;
-			if(((String)this.attrs.get("estatus")).equals("3"))
-			  bitacora= new TcManticTransferenciasBitacoraDto(-1L, (String)this.attrs.get("justificacion"), JsfBase.getIdUsuario(), idTransporto, Long.valueOf((String)this.attrs.get("estatus")), seleccionado.getKey());
+			if(Objects.equals((String)this.attrs.get("estatus"), "3"))
+			  bitacora= new TcManticTransferenciasBitacoraDto(-1L, (String)this.attrs.get("justificacion"), JsfBase.getIdUsuario(), idTransporto, idEstatus, seleccionado.getKey());
 			else
-			  bitacora= new TcManticTransferenciasBitacoraDto(-1L, (String)this.attrs.get("justificacion"), JsfBase.getIdUsuario(), null, Long.valueOf((String)this.attrs.get("estatus")), seleccionado.getKey());
-			transaccion = new Transaccion((TcManticTransferenciasDto)DaoFactory.getInstance().findById(TcManticTransferenciasDto.class, seleccionado.getKey()), bitacora);
+			  bitacora= new TcManticTransferenciasBitacoraDto(-1L, (String)this.attrs.get("justificacion"), JsfBase.getIdUsuario(), null, idEstatus, seleccionado.getKey());
+			transaccion= new Transaccion((TcManticTransferenciasDto)DaoFactory.getInstance().findById(TcManticTransferenciasDto.class, seleccionado.getKey()), bitacora);
 			if(transaccion.ejecutar(EAccion.REGISTRAR)) 
 				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);
 			else
@@ -315,6 +340,28 @@ public class Filtro extends Comun implements Serializable {
 		} // finally
 	}	// doActualizaEstatus
 
+	private void toOperacion(Long idEstatus) {
+		Operacion operacion= null;
+		Entity seleccionado= null;
+		try {
+			seleccionado= (Entity)this.attrs.get("seleccionado");
+			TcManticTransferenciasBitacoraDto bitacora= null;
+  	  bitacora= new TcManticTransferenciasBitacoraDto(-1L, (String)this.attrs.get("justificacion"), JsfBase.getIdUsuario(), null, idEstatus, seleccionado.getKey());
+			operacion = new Operacion((TcManticTransferenciasDto)DaoFactory.getInstance().findById(TcManticTransferenciasDto.class, seleccionado.getKey()), bitacora);
+			if(operacion.ejecutar(EAccion.JUSTIFICAR)) 
+				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);
+			else
+				JsfBase.addMessage("Cambio estatus", "Ocurrio un error al realizar el cambio de estatus", ETipoMensaje.ERROR);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+		finally{
+			this.attrs.put("justificacion", "");
+		} // finally
+	}	
+
   public void doReporte(String nombre) throws Exception {
     Parametros comunes = null;
 		Map<String, Object>parametros= null;
@@ -322,9 +369,9 @@ public class Filtro extends Comun implements Serializable {
     Entity seleccionado          = null;
     Map<String, Object>params    = null;
 		try {		
-      params= toPrepare();
+      params= this.toPrepare();
       seleccionado = ((Entity)this.attrs.get("seleccionado"));
-      if(seleccionado != null){
+      if(seleccionado != null) {
         params.put("idKeyTransferencia", seleccionado.getKey());
         comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), seleccionado.toLong("idAlmacen"), seleccionado.toLong("idDestino"));
       }
@@ -383,12 +430,11 @@ public class Filtro extends Comun implements Serializable {
 	} 
 
 	public void doUpdateArticulos() {
-		List<Columna> columns         = null;
+		List<Columna> columns         = new ArrayList<>();
     Map<String, Object> params    = new HashMap<>();
 		List<UISelectEntity> articulos= null;
 		boolean buscaPorCodigo        = false;
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
@@ -431,10 +477,9 @@ public class Filtro extends Comun implements Serializable {
 	}	
 
 	public void doAlmacenes() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
 			if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
 				params.put("sucursales", this.attrs.get("idEmpresa"));
 			else
@@ -495,5 +540,60 @@ public class Filtro extends Comun implements Serializable {
 	public String toColor(Entity row) {
 		return ""; // row.toDouble("perdidos")> 0D? "janal-tr-orange": "";
 	} 
-   
+
+  public void doProcesar() {
+    this.accion= EAccion.PROCESAR;
+    this.attrs.put("titulo", "¿ Está seguro de procesar la transferencia seleccionado ?");
+  }
+  
+  public void doEliminar() {
+    this.accion= EAccion.DEPURAR;
+    this.attrs.put("titulo", "¿ Está seguro de eliminar la transferencia seleccionado ?");
+  }
+  
+  public void doEjecutar() {
+    switch(this.accion) {
+      case PROCESAR:
+        this.toProcesar();
+        break;
+      case DEPURAR:
+        this.toEliminar();
+        break;
+    } // switch
+  }
+  
+  private void toProcesar() {
+    Operacion operacion= null;
+    Entity seleccionado= (Entity) this.attrs.get("seleccionado");
+    try {
+      TcManticTransferenciasDto transferencia= (TcManticTransferenciasDto)DaoFactory.getInstance().findById(TcManticTransferenciasDto.class, seleccionado.getKey());
+      operacion = new Operacion(transferencia);
+      if (operacion.ejecutar(this.accion)) 
+        JsfBase.addMessage("Procesar transferencia", "La transferencia fue procesada correctamente", ETipoMensaje.ERROR);
+      else
+        JsfBase.addMessage("Procesar transferencia", "Ocurrió un error al procesar la transferencia", ETipoMensaje.ERROR);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch		
+  } 
+ 
+  private void toEliminar() {
+    Operacion operacion= null;
+		Entity seleccionado= (Entity)this.attrs.get("seleccionado");
+    try {
+      TcManticTransferenciasDto transferencia= (TcManticTransferenciasDto)DaoFactory.getInstance().findById(TcManticTransferenciasDto.class, seleccionado.getKey());
+      operacion = new Operacion(transferencia);
+      if (operacion.ejecutar(this.accion)) 
+        JsfBase.addMessage("Eliminar transferencia", "La transferencia fue eliminada correctamente", ETipoMensaje.ERROR);
+      else
+        JsfBase.addMessage("Eliminar transferencia", "Ocurrió un error al eliminar la transferencia", ETipoMensaje.ERROR);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch		
+  }
+  
 }

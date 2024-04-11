@@ -62,17 +62,21 @@ public class TcManticTransferenciasDto implements IBaseDto, Serializable {
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 	@Column (name="id_transferencia")
   private Long idTransferencia;
+  @Column (name="id_remoto")
+  private String idRemoto;
+  @Column (name="procesado")
+  private Timestamp procesado;
 
   public TcManticTransferenciasDto() {
     this(new Long(-1L));
   }
 
   public TcManticTransferenciasDto(Long key) {
-    this(null, 1L, null, null, null, null, null, null, null, null, null, new Long(-1L));
+    this(null, 1L, null, null, null, null, null, null, null, null, null, new Long(-1L), null, null);
     setKey(key);
   }
 
-  public TcManticTransferenciasDto(Long idSolicito, Long idTransferenciaEstatus, Long idTransferenciaTipo, Long ejercicio, String consecutivo, Long idUsuario, Long idAlmacen, String observaciones, Long idDestino, Long idEmpresa, Long orden, Long idTransferencia) {
+  public TcManticTransferenciasDto(Long idSolicito, Long idTransferenciaEstatus, Long idTransferenciaTipo, Long ejercicio, String consecutivo, Long idUsuario, Long idAlmacen, String observaciones, Long idDestino, Long idEmpresa, Long orden, Long idTransferencia, String idRemoto, Timestamp procesado) {
     setIdSolicito(idSolicito);
     setIdTransferenciaEstatus(idTransferenciaEstatus);
     setIdTransferenciaTipo(idTransferenciaTipo);
@@ -86,6 +90,8 @@ public class TcManticTransferenciasDto implements IBaseDto, Serializable {
     setIdEmpresa(idEmpresa);
     setOrden(orden);
     setIdTransferencia(idTransferencia);
+    setIdRemoto(idRemoto);
+    setProcesado(procesado);
   }
 	
   public void setIdSolicito(Long idSolicito) {
@@ -192,6 +198,22 @@ public class TcManticTransferenciasDto implements IBaseDto, Serializable {
     return idTransferencia;
   }
 
+  public String getIdRemoto() {
+    return idRemoto;
+  }
+
+  public void setIdRemoto(String idRemoto) {
+    this.idRemoto = idRemoto;
+  }
+
+  public Timestamp getProcesado() {
+    return procesado;
+  }
+
+  public void setProcesado(Timestamp procesado) {
+    this.procesado = procesado;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -232,6 +254,10 @@ public class TcManticTransferenciasDto implements IBaseDto, Serializable {
 		regresar.append(getOrden());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdTransferencia());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdRemoto());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getProcesado());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -252,13 +278,15 @@ public class TcManticTransferenciasDto implements IBaseDto, Serializable {
 		regresar.put("idEmpresa", getIdEmpresa());
 		regresar.put("orden", getOrden());
 		regresar.put("idTransferencia", getIdTransferencia());
+		regresar.put("idRemoto", getIdRemoto());
+		regresar.put("procesado", getProcesado());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
-    Object[] regresar = new Object[]{
-    getIdSolicito(), getIdTransferenciaEstatus(), getIdTransferenciaTipo(), getEjercicio(), getRegistro(), getConsecutivo(), getIdUsuario(), getIdAlmacen(), getObservaciones(), getIdDestino(), getIdEmpresa(), getOrden(), getIdTransferencia()
+    Object[] regresar = new Object[] {
+      getIdSolicito(), getIdTransferenciaEstatus(), getIdTransferenciaTipo(), getEjercicio(), getRegistro(), getConsecutivo(), getIdUsuario(), getIdAlmacen(), getObservaciones(), getIdDestino(), getIdEmpresa(), getOrden(), getIdTransferencia(), getIdRemoto(), getProcesado()
     };
     return regresar;
   }

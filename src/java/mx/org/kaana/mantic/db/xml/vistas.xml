@@ -132,6 +132,32 @@ group by
 order by
   tc_mantic_conteos.registro        
       </select>
+      <select id="transferencias">
+select
+  tc_mantic_transferencias.id_transferencia as id_key,
+  tc_mantic_transferencias.id_transferencia,
+  tc_mantic_transferencias.observaciones as nombre,
+  date_format(tc_mantic_transferencias_detalles.registro,'%d/%m/%Y %H:%i:%S') as fecha,
+  concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as usuario
+from
+  tc_mantic_transferencias
+inner join
+  tc_mantic_transferencias_detalles on tc_mantic_transferencias.id_transferencia= tc_mantic_transferencias_detalles.id_transferencia
+inner join
+	tc_janal_usuarios on tc_mantic_transferencias.id_usuario= tc_janal_usuarios.id_usuario
+inner join
+	tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+where
+  tc_mantic_transferencias.id_empresa in ({sucursales})
+  and tc_mantic_transferencias.id_transferencia_estatus= 5
+  and tc_mantic_transferencias.id_transferencia_tipo= 3
+  and date_format(tc_mantic_transferencias_detalles.registro,'%Y%m%d%H%i%S')&lt;= '{fecha}'
+  and tc_mantic_transferencias.id_remoto is not null
+group by
+  tc_mantic_transferencias.id_transferencia
+order by
+  tc_mantic_transferencias.registro   
+      </select>
     </unit>  
 		<unit id="VistaPlanetasDto">
 			<select id="mercurio">
@@ -11103,7 +11129,8 @@ order by
           tc_mantic_transferencias_estatus.nombre nombre_estatus,
           tc_mantic_transferencias_estatus.estatus_asociados,
 				  tc_mantic_transferencias_tipos.id_transferencia_tipo,
-				  tc_mantic_transferencias_tipos.nombre as tipo
+				  tc_mantic_transferencias_tipos.nombre as tipo,
+          tc_mantic_transferencias.id_remoto
         from
           tc_mantic_transferencias
         inner join

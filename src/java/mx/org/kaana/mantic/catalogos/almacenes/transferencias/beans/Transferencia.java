@@ -36,7 +36,7 @@ public class Transferencia extends TcManticTransferenciasDto implements Serializ
 	}
 
 	public Transferencia(Long idSolicito, Long idTransferenciaEstatus, Long idTransferenciaTipo, Long ejercicio, String consecutivo, Long idUsuario, Long idAlmacen, String observaciones, Long idDestino, Long idEmpresa, Long orden, Long idTransferencia) {
-		super(idSolicito, idTransferenciaEstatus, idTransferenciaTipo, ejercicio, consecutivo, idUsuario, idAlmacen, observaciones, idDestino, idEmpresa, orden, idTransferencia);
+		super(idSolicito, idTransferenciaEstatus, idTransferenciaTipo, ejercicio, consecutivo, idUsuario, idAlmacen, observaciones, idDestino, idEmpresa, orden, idTransferencia, null, null);
 		this.ikEmpresa = new UISelectEntity(idEmpresa);
 		this.ikAlmacen = new UISelectEntity(idAlmacen);
 		this.ikDestino = new UISelectEntity(idDestino);

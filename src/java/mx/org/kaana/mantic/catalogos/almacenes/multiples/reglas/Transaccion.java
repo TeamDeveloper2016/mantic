@@ -199,7 +199,9 @@ public class Transaccion extends ComunInventarios {
         idDestino, // Long idDestino, 
         this.dto.getIdEmpresa(), // Long idEmpresa, 
         consecutivo.getOrden(), // Long orden, 
-        -1L // Long idTransferencia              
+        -1L, // Long idTransferencia              
+        null, // String idRemoto
+        null // Timestamp procesado      
       );
       DaoFactory.getInstance().insert(sesion, transferencia);
       for (TcManticTransferenciasMultiplesDetallesDto item: detalles) {
@@ -211,7 +213,8 @@ public class Transaccion extends ComunInventarios {
           item.getIdArticulo(), // Long idArticulo, 
           transferencia.getIdTransferencia(), // Long idTransferencia, 
           item.getNombre(), // String nombre, 
-          item.getCaja() // Long caja
+          item.getCaja(), // Long caja
+          null // Timestamp procesado
         );
         DaoFactory.getInstance().insert(sesion, detalle);
       } // for

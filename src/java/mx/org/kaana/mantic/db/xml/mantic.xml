@@ -7,6 +7,19 @@
   </model>
 
   <dml>
+    <unit id="TcManticTransferenciasTiposDto">
+      <select id="row">
+select      
+  tc_mantic_transferencias_tipos.id_transferencia_tipo as id_key,
+  tc_mantic_transferencias_tipos.*
+from      
+  tc_mantic_transferencias_tipos
+where 
+  {condicion} 
+order by 
+  nombre
+      </select>
+    </unit>      
     <unit id="TcManticDocumentosDto">
       <select id="identically">
 select      
@@ -1728,6 +1741,28 @@ where
         where      
           id_articulo = {idArticulo} and id_transferencia = {idTransferencia}
       </select>
+      <select id="detalle">
+select      
+  tc_mantic_transferencias_detalles.id_transferencia_detalle as id_key,
+  tc_mantic_transferencias_detalles.*
+from      
+  tc_mantic_transferencias_detalles
+where      
+  id_transferencia = {idTransferencia}
+      </select>
+      <select id="remoto">
+select      
+  tc_mantic_transferencias_detalles.id_transferencia_detalle as id_key,
+  tc_mantic_transferencias_detalles.*
+from      
+  tc_mantic_transferencias_detalles
+where      
+  id_articulo = {idArticulo} 
+  and id_transferencia = {idTransferencia}
+      </select>
+			<delete id="rows">
+delete from tc_mantic_transferencias_detalles where id_transferencia= {idTransferencia}
+			</delete>
     </unit>
     <unit id="TcManticMasivasBitacoraDto">
       <select id="row">
@@ -4394,6 +4429,18 @@ where
 				  id_imagen= {idImagen}
 				  and id_articulo!= {idArticulo}
 			</select>	
+			<select id="remoto">
+select 
+  tc_mantic_articulos.id_articulo as id_key,
+  tc_mantic_articulos.nombre,
+  ifnull(tc_mantic_articulos_codigos.codigo, 'NODEFINIDO') as codigo
+from
+  tc_mantic_articulos
+left join
+  tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo= tc_mantic_articulos_codigos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1
+where
+ tc_mantic_articulos.id_articulo= {idArticulo}
+			</select>	
 			<update id="rows">
 				update 
 				  tc_mantic_articulos
@@ -6979,6 +7026,15 @@ where
           id_empresa= {idEmpresa}
           and consecutivo= '{consecutivo}'
       </select>
+      <select id="remoto">
+select      
+  tc_mantic_transferencias.id_transferencia as id_key,
+  tc_mantic_transferencias.*
+from      
+  tc_mantic_transferencias
+where      
+  id_remoto= '{idRemoto}'
+      </select>
       <select id="siguiente">
         select
 					max(orden)+ 1 as siguiente
@@ -7027,6 +7083,9 @@ where
 				  tc_mantic_transferencias.id_empresa= {idEmpresa}
           and tc_mantic_transferencias.consecutivo = '{consecutivo}'
       </select>
+			<delete id="rows">
+delete from tc_mantic_transferencias where id_transferencia= {idTransferencia}
+			</delete>
     </unit>
     <unit id="TcManticTransferenciasBitacoraDto">
       <select id="row">
@@ -7059,20 +7118,20 @@ where
           tc_mantic_transferencias_bitacora.id_transferencia_estatus
       </select>
 			<delete id="rows">
-				delete from tc_mantic_transferencias_bitacora where id_transferencia= {idTransferencia}
+delete from tc_mantic_transferencias_bitacora where id_transferencia= {idTransferencia}
 			</delete>
     </unit>
     <unit id="TcManticTransferenciasEstatusDto">
       <select id="row">
-        select      
-          tc_mantic_transferencias_estatus.id_transferencia_estatus as id_key,
-					tc_mantic_transferencias_estatus.*
-        from      
-          tc_mantic_transferencias_estatus
-        where 
-          {condicion} 
-				order by 
-					id_transferencia_estatus
+select      
+  tc_mantic_transferencias_estatus.id_transferencia_estatus as id_key,
+  tc_mantic_transferencias_estatus.*
+from      
+  tc_mantic_transferencias_estatus
+where 
+  {condicion} 
+order by 
+  id_transferencia_estatus
       </select>
       <select id="identically">
         select      

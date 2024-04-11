@@ -412,9 +412,9 @@ public class Filtro extends Comun implements Serializable {
       TcManticConteosDto conteo= (TcManticConteosDto)DaoFactory.getInstance().findById(TcManticConteosDto.class, seleccionado.getKey());
       transaccion = new Transaccion(conteo);
       if (transaccion.ejecutar(this.accion)) 
-        JsfBase.addMessage("Eliminar articulo", "El conteo fue procesado correctamente", ETipoMensaje.ERROR);
+        JsfBase.addMessage("Procesar conteo", "El conteo fue procesado correctamente", ETipoMensaje.ERROR);
       else
-        JsfBase.addMessage("Eliminar articulo", "Ocurrió un error al procesar el conteo", ETipoMensaje.ERROR);
+        JsfBase.addMessage("Procesar conteo", "Ocurrió un error al procesar el conteo", ETipoMensaje.ERROR);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -429,9 +429,9 @@ public class Filtro extends Comun implements Serializable {
       TcManticConteosDto conteo= (TcManticConteosDto)DaoFactory.getInstance().findById(TcManticConteosDto.class, seleccionado.getKey());
       transaccion = new Transaccion(conteo);
       if (transaccion.ejecutar(this.accion)) 
-        JsfBase.addMessage("Eliminar articulo", "El conteo fue eliminado correctamente", ETipoMensaje.ERROR);
+        JsfBase.addMessage("Eliminar conteo", "El conteo fue eliminado correctamente", ETipoMensaje.ERROR);
       else
-        JsfBase.addMessage("Eliminar articulo", "Ocurrió un error al eliminar el conteo", ETipoMensaje.ERROR);
+        JsfBase.addMessage("Eliminar conteo", "Ocurrió un error al eliminar el conteo", ETipoMensaje.ERROR);
     } // try
     catch (Exception e) {
       Error.mensaje(e);

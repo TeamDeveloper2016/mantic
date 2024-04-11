@@ -1,5 +1,6 @@
 package mx.org.kaana.mantic.catalogos.almacenes.transferencias.reglas;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,19 +23,19 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 
-public abstract class ComunInventarios extends IBaseTnx {
+public abstract class ComunInventarios extends IBaseTnx implements Serializable  {
 
 	private static final Log LOG=LogFactory.getLog(ComunInventarios.class);
+  private static final long serialVersionUID = -4549651568967285260L;
 	
 	protected List<Articulo> articulos;
   protected TcManticTransferenciasBitacoraDto bitacora;
   protected String messageError;
 	
 	protected Long toUbicacion(Session sesion, Long idAlmacen, Long idArticulo) throws Exception {
-		Long regresar= -1L;
-		Map<String, Object> params= null;
+		Long regresar             = -1L;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("idAlmacen", idAlmacen);
 			params.put("idArticulo", idArticulo);
 			TcManticAlmacenesArticulosDto ubicacion= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().findFirst(sesion, TcManticAlmacenesArticulosDto.class, params, "ubicacion");
@@ -63,15 +64,10 @@ public abstract class ComunInventarios extends IBaseTnx {
 		this.toMovimientosAlmacenDestino(sesion, consecutivo, idDestino, articulo, umbrales, articulo.getCantidad());
 	}
 	
-//	protected void toAutorizarAlmacenOrigen(Session sesion, String consecutivo, Long idAlmacen, Articulo articulo, TcManticArticulosDto umbrales, Long idTransferenciaEstatus) throws Exception {
-//    this.toAutorizarAlmacenOrigen(sesion, consecutivo, idAlmacen, articulo, umbrales, idTransferenciaEstatus, false);
-//  }
-  
 	protected void toAutorizarAlmacenOrigen(Session sesion, String consecutivo, Long idAlmacen, Articulo articulo, TcManticArticulosDto umbrales, Long idTransferenciaEstatus) throws Exception {
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
     Double stock              = 0D;
 		try {
-			params=new HashMap<>();
 			//Afectar el almacen original restando los articulos que fueron extraidos
 			params.put("idAlmacen", idAlmacen);
 			params.put("idArticulo", articulo.getIdArticulo());
@@ -94,7 +90,7 @@ public abstract class ComunInventarios extends IBaseTnx {
       
 			TcManticAlmacenesArticulosDto origen= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().findIdentically(TcManticAlmacenesArticulosDto.class, params);
 			if(origen== null) 
-				origen= this.toCreateAlmacenArticulo(sesion, articulo, idAlmacen, umbrales);
+				origen= this.toCreateAlmacenArticulo(sesion, articulo, idAlmacen, umbrales, 0D);
       origen.setStock(inventario.getStock());
 			DaoFactory.getInstance().update(sesion, origen);
 
@@ -126,10 +122,9 @@ public abstract class ComunInventarios extends IBaseTnx {
 	}
   
 	protected void toMovimientosAlmacenOrigen(Session sesion, String consecutivo, Long idAlmacen, Articulo articulo, TcManticArticulosDto umbrales, Long idTransferenciaEstatus) throws Exception {
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
     Double stock              = 0D; 
 		try {
-			params=new HashMap<>();
 			//Afectar el almacen original restando los articulos que fueron extraidos
 			params.put("idAlmacen", idAlmacen);
 			params.put("idArticulo", articulo.getIdArticulo());
@@ -152,7 +147,7 @@ public abstract class ComunInventarios extends IBaseTnx {
       
 			TcManticAlmacenesArticulosDto origen= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().findIdentically(TcManticAlmacenesArticulosDto.class, params);
 			if(origen== null) 
-				origen= this.toCreateAlmacenArticulo(sesion, articulo, idAlmacen, umbrales);
+				origen= this.toCreateAlmacenArticulo(sesion, articulo, idAlmacen, umbrales, articulo.getCantidad());
       origen.setStock(inventario.getStock());
 			DaoFactory.getInstance().update(sesion, origen);
 
@@ -184,11 +179,10 @@ public abstract class ComunInventarios extends IBaseTnx {
 	}
 	
 	protected void toMovimientosAlmacenDestino(Session sesion, String consecutivo, Long idDestino, Articulo articulo, TcManticArticulosDto umbrales, Double diferencia) throws Exception {
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
     Double stock              = 0D;
 		try {
 			//Afectar el almacen destino sumando los articulos que fueron agregados
-			params=new HashMap<>();
 			params.put("idAlmacen", idDestino);
 			params.put("idArticulo", articulo.getIdArticulo());
 			params.put("consecutivo", consecutivo);
@@ -210,7 +204,7 @@ public abstract class ComunInventarios extends IBaseTnx {
         // afectar el almacen con la cantidad que se tiene en el stock
 				TcManticAlmacenesArticulosDto origen= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().findIdentically(sesion, TcManticAlmacenesArticulosDto.class, params);
 				if(origen== null) 
-					origen= this.toCreateAlmacenArticulo(sesion, articulo, idDestino, umbrales);
+					origen= this.toCreateAlmacenArticulo(sesion, articulo, idDestino, umbrales, articulo.getCantidad());
         origen.setStock(inventario.getStock());
 				DaoFactory.getInstance().update(sesion, origen);
         
@@ -251,7 +245,7 @@ public abstract class ComunInventarios extends IBaseTnx {
 		} // finally
 	}
 	
-	protected TcManticAlmacenesArticulosDto toCreateAlmacenArticulo(Session sesion, Articulo articulo, Long idAlmacen, TcManticArticulosDto umbrales) throws Exception {
+	protected TcManticAlmacenesArticulosDto toCreateAlmacenArticulo(Session sesion, Articulo articulo, Long idAlmacen, TcManticArticulosDto umbrales, Double stock) throws Exception {
     TcManticAlmacenesArticulosDto regresar= new TcManticAlmacenesArticulosDto(
 			umbrales.getMinimo(), // Double minimo, 
 			-1L, // Long idAlmacenArticulo, 
@@ -260,7 +254,7 @@ public abstract class ComunInventarios extends IBaseTnx {
 			umbrales.getMaximo(), // Double maximo, 
 			this.toUbicacion(sesion, idAlmacen, articulo.getIdArticulo()), // Long idAlmacenUbicacion, 
 			articulo.getIdArticulo(), // Long idArticulo, 
-			0D // Double stock
+			stock // Double stock
 		);
 		DaoFactory.getInstance().insert(sesion, regresar);
 		return regresar;

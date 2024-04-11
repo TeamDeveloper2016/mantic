@@ -1,5 +1,6 @@
 package mx.org.kaana.mantic.catalogos.almacenes.transferencias.reglas;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -22,9 +23,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 
-public class Transaccion extends ComunInventarios {
+public class Transaccion extends ComunInventarios implements Serializable {
 
 	private static final Log LOG=LogFactory.getLog(Transaccion.class);
+  private static final long serialVersionUID = -5795360019231558776L;
 	
   private TcManticTransferenciasDto dto;
 	private Long idTransferenciaEstatus;
@@ -112,9 +114,8 @@ public class Transaccion extends ComunInventarios {
 
 	private Siguiente toSiguiente(Session sesion) throws Exception {
 		Siguiente regresar        = null;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("ejercicio", this.getCurrentYear());
 			params.put("idEmpresa", this.dto.getIdEmpresa());
 			params.put("operador", this.getCurrentSign());

@@ -12,7 +12,7 @@ import java.util.Objects;
  * @author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public class Transferencia extends Conteo implements Serializable {
+public class Transferencia extends Items implements Serializable {
 
   private static final long serialVersionUID = -8330660760447754833L;
 

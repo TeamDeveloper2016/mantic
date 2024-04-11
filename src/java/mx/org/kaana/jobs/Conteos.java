@@ -22,7 +22,9 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.conteos.reglas.Transaccion;
+import mx.org.kaana.mantic.catalogos.conteos.reglas.Operacion;
 import mx.org.kaana.mantic.db.dto.TcManticConteosDto;
+import mx.org.kaana.mantic.db.dto.TcManticTransferenciasDto;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.quartz.JobExecutionContext;
@@ -37,6 +39,7 @@ public class Conteos extends IBaseJob implements Serializable {
 	public void procesar(JobExecutionContext jec) throws JobExecutionException {
 		Map<String, Object> params= new HashMap<>();
     Transaccion transaccion   = null;
+    Operacion operacion       = null;
 		try {
 			if(Configuracion.getInstance().isEtapaProduccion()) {
         params.put("sucursales", "1,2,3");
@@ -61,8 +64,31 @@ public class Conteos extends IBaseJob implements Serializable {
               } // finally
             } // if
           } // for
-          LOG.error("---------------------------------------------------------");
+          LOG.error("---------------------------------------------------------------");
         } // if
+        params.put("sucursales", "1,2,3");
+        params.put("fecha", Fecha.getMinutosEstandar(-5));
+        List<Entity> transferencias= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaConteosDto", "transferencias", params, 500L);
+        if(transferencias!= null && !transferencias.isEmpty()) {
+          LOG.error("----------------ENTRO A TRANSFERECIAS REMOTAS------------------");
+          for (Entity item: transferencias) {
+            LOG.error("Transferencia: "+ item.toString("nombre")+ " - "+ item.toString("fecha")+ " de "+ item.toString("usuario"));  
+            TcManticTransferenciasDto transferencia= (TcManticTransferenciasDto)DaoFactory.getInstance().findById(TcManticTransferenciasDto.class, item.toLong("idTransferencia"));
+            if(!Objects.equals(transferencia, null)) {
+              operacion= new Operacion(transferencia);
+              try {
+                // operacion.ejecutar(EAccion.PROCESAR);
+              } // try
+              catch(Exception e) {
+                Error.mensaje(e); 
+                // operacion.ejecutar(EAccion.DESACTIVAR);
+              } // catch
+              finally {
+                operacion= null;
+              } // finally
+            } // if 
+          } // for
+        } // if  
       } // if
 	  } // try
 		catch(Exception e) {
