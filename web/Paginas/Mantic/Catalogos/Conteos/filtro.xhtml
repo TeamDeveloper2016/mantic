@@ -232,6 +232,8 @@
               <p:menuitem icon="fa fa-trash" value="Eliminar" actionListener="#{manticCatalogosConteosFiltro.doEliminar()}" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{manticCatalogosConteosFiltro.admin}"/>
               <p:separator rendered="#{fn:contains('|1|4|5|', manticCatalogosConteosFiltro.attrs.seleccionado.idConteoEstatus)}"/>
               <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosConteosFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|4|5|', manticCatalogosConteosFiltro.attrs.seleccionado.idConteoEstatus)}"/>
+              <p:separator/>
+              <p:menuitem value="Min max" icon="fa fa-balance-scale" onstart="return janal.bloquear()" process="@this tabla" action="#{manticCatalogosConteosFiltro.doUmbrales}"/>
 						</p:contextMenu>		
           </div>  
 					<div class="ui-grid-row janal-grid-row">

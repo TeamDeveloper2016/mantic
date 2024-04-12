@@ -185,6 +185,10 @@ public final class Constantes {
     return Constantes.REGISTROS_MAX_PAGINA;
   }
 
+  public Integer getREGISTROS_MAX_TABLA() {
+    return Constantes.REGISTROS_MAX_TABLA;
+  }
+
   public Integer getREGISTROS_TOPE_PAGINA() {
     return Constantes.REGISTROS_TOPE_PAGINA;
   }

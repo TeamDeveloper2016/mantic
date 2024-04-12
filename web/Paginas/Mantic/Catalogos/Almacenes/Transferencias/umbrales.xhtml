@@ -11,6 +11,11 @@
 	<ui:define name="librerias">
     <script type="text/javascript">
 			Janal.Control.fields = {
+        'contenedorGrupos\\:consecutivo': {validaciones: 'libre', mascara: 'libre'},
+        'contenedorGrupos\\:idEmpresa': {validaciones: 'libre', mascara: 'libre'},
+        'contenedorGrupos\\:idTransferenciaTipo': {validaciones: 'libre', mascara: 'libre'},
+        'contenedorGrupos\\:idAlmacenOrigen': {validaciones: 'libre', mascara: 'libre'},
+        'contenedorGrupos\\:idAlmacenDestino': {validaciones: 'libre', mascara: 'libre'}
 			};
       
       $(document).ready(function() {
@@ -30,8 +35,16 @@
               <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">	
                 <p:outputLabel for="consecutivo" value="Consecutivo:"/>  
                 <p:inputText id="consecutivo" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlmacenesTransferenciasUmbrales.transferencia.consecutivo}" readonly="true"/>
-                <p:outputLabel for="idEmpresa" value="Empresa:"/>  
-                <p:inputText id="idEmpresa" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlmacenesTransferenciasUmbrales.transferencia.empresa}" readonly="true"/>
+                <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100">	
+                  <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">	
+                    <p:outputLabel for="idEmpresa" value="Empresa:"/>  
+                    <p:inputText id="idEmpresa" styleClass="janal-wid-100-txt janal-column-center" value="#{manticCatalogosAlmacenesTransferenciasUmbrales.transferencia.empresa}" readonly="true"/>
+                  </p:panelGrid>
+                  <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">	
+                    <p:outputLabel for="idTransferenciaTipo" value="Tipo:"/>  
+                    <p:inputText id="idTransferenciaTipo" styleClass="janal-wid-100-txt janal-column-center" value="#{manticCatalogosAlmacenesTransferenciasUmbrales.transferencia.tipo}" readonly="true"/>
+                  </p:panelGrid>
+                </p:panelGrid>
                 <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100">	
                   <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">	
                     <p:outputLabel for="idAlmacenOrigen" value="Almacen origen:"/>  
@@ -46,10 +59,10 @@
             </p:tab>  
 					  <p:tab title="Umbrales">
               <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-50, janal-wid-50">	
-  							<p:dataTable id="fuente" var="row" value="#{manticCatalogosAlmacenesTransferenciasUmbrales.fuentes}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.idArticulo}" styleClass="fuente janal-wid-99" rowIndexVar="index" rowStyleClass="#{manticCatalogosAlmacenesTransferenciasUmbrales.toColor(row)}">
+  							<p:dataTable id="fuente" var="row" value="#{manticCatalogosAlmacenesTransferenciasUmbrales.fuentes}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_MAX_TABLA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.idArticulo}" styleClass="fuente janal-wid-99" rowIndexVar="index" rowStyleClass="#{manticCatalogosAlmacenesTransferenciasUmbrales.toColor(row)}">
                   <f:facet name="header">
                     <div style="float: left">
-                      <p:outputLabel value="#{manticCatalogosAlmacenesTransferenciasUmbrales.transferencia.nombreOrigen}" styleClass="janal-color-white"/>
+                      <p:outputLabel value="[FUENTE] #{manticCatalogosAlmacenesTransferenciasUmbrales.transferencia.nombreOrigen}" styleClass="janal-color-white"/>
                     </div>  
                     <p:menuButton value="Opciones">
                       <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('contenedorGrupos\\:dataPdfFuente', 'contenedorGrupos\\:fuente')" oncomplete="janal.desbloquear()"/>
@@ -75,12 +88,12 @@
                     <p:outputLabel value="#{row.nombre}"/>
                   </p:column>
                   <p:column styleClass="MarAuto Responsive">
-                    <p:inputNumber inputStyleClass="janal-wid-100-txt janal-column-right min-#{row.idArticulo} #{row.action eq 'UPDATE'? 'janal-color-blue': ''}" value="#{row['minimo']}" emptyValue="zero" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double" minValue="0">
+                    <p:inputNumber inputStyleClass="janal-wid-100-txt janal-column-right min-#{row.idArticulo} #{row.action eq 'UPDATE'? 'janal-font-bold janal-color-black': ''}" value="#{row['minimo']}" emptyValue="zero" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double" minValue="0">
                       <p:ajax event="change" listener="#{manticCatalogosAlmacenesTransferenciasUmbrales.doChangeMinimo(row)}" process="@this" update="@(.min-#{row.idArticulo})"/>
                     </p:inputNumber>  
                   </p:column>
                   <p:column styleClass="MarAuto Responsive">
-                    <p:inputNumber inputStyleClass="janal-wid-100-txt janal-column-right max-#{row.idArticulo} #{row.action eq 'UPDATE'? 'janal-color-blue': ''}" value="#{row['maximo']}" emptyValue="zero" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double" minValue="0">
+                    <p:inputNumber inputStyleClass="janal-wid-100-txt janal-column-right max-#{row.idArticulo} #{row.action eq 'UPDATE'? 'janal-font-bold janal-color-black': ''}" value="#{row['maximo']}" emptyValue="zero" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double" minValue="0">
                       <p:ajax event="change" listener="#{manticCatalogosAlmacenesTransferenciasUmbrales.doChangeMinimo(row)}" process="@this" update="@(.max-#{row.idArticulo})"/>
                     </p:inputNumber>  
                   </p:column>
@@ -92,10 +105,10 @@
                   </f:facet>
                 </p:dataTable>  
                 
-  							<p:dataTable id="destino" var="row" value="#{manticCatalogosAlmacenesTransferenciasUmbrales.destinos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.idArticulo}" styleClass="destino  janal-wid-99" rowIndexVar="index" rowStyleClass="#{manticCatalogosAlmacenesTransferenciasUmbrales.toColor(row)}">
+  							<p:dataTable id="destino" var="row" value="#{manticCatalogosAlmacenesTransferenciasUmbrales.destinos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_MAX_TABLA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.idArticulo}" styleClass="destino  janal-wid-99" rowIndexVar="index" rowStyleClass="#{manticCatalogosAlmacenesTransferenciasUmbrales.toColor(row)}">
                   <f:facet name="header">
                     <div style="float: left">
-                      <p:outputLabel value="#{manticCatalogosAlmacenesTransferenciasUmbrales.transferencia.nombreDestino}" styleClass="janal-color-white"/>
+                      <p:outputLabel value="[DESTINO] #{manticCatalogosAlmacenesTransferenciasUmbrales.transferencia.nombreDestino}" styleClass="janal-color-white"/>
                     </div>  
                     <p:menuButton value="Opciones">
                       <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('contenedorGrupos\\:dataPdfDestino', 'contenedorGrupos\\:destino')" oncomplete="janal.desbloquear()"/>
@@ -121,12 +134,12 @@
                     <p:outputLabel value="#{row.nombre}"/>
                   </p:column>
                   <p:column styleClass="MarAuto Responsive">
-                    <p:inputNumber inputStyleClass="janal-wid-100-txt janal-column-right min-#{row.idArticulo} #{row.action eq 'UPDATE'? 'janal-color-blue': ''}" value="#{row['minimo']}" emptyValue="zero" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double" minValue="0">
+                    <p:inputNumber inputStyleClass="janal-wid-100-txt janal-column-right min-#{row.idArticulo} #{row.action eq 'UPDATE'? 'janal-font-bold janal-color-black': ''}" value="#{row['minimo']}" emptyValue="zero" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double" minValue="0">
                       <p:ajax event="change" listener="#{manticCatalogosAlmacenesTransferenciasUmbrales.doChangeMinimo(row)}" process="@this" update="@(.min-#{row.idArticulo})"/>
                     </p:inputNumber>  
                   </p:column>
                   <p:column styleClass="MarAuto Responsive">
-                    <p:inputNumber inputStyleClass="janal-wid-100-txt janal-column-right max-#{row.idArticulo} #{row.action eq 'UPDATE'? 'janal-color-blue': ''}" value="#{row['maximo']}" emptyValue="zero" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double" minValue="0">
+                    <p:inputNumber inputStyleClass="janal-wid-100-txt janal-column-right max-#{row.idArticulo} #{row.action eq 'UPDATE'? 'janal-font-bold janal-color-black': ''}" value="#{row['maximo']}" emptyValue="zero" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double" minValue="0">
                       <p:ajax event="change" listener="#{manticCatalogosAlmacenesTransferenciasUmbrales.doChangeMinimo(row)}" process="@this" update="@(.max-#{row.idArticulo})"/>
                     </p:inputNumber>  
                   </p:column>

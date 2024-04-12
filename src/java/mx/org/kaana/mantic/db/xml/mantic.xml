@@ -4459,10 +4459,18 @@ where
 					id_imagen= {idImagen}
 			</select>
 			<update id="cleanImage">
-update from tc_mantic_articulos set id_imagen= null where id_articulo= {idArticulo}
+update tc_mantic_articulos set id_imagen= null where id_articulo= {idArticulo}
 			</update>
 			<update id="verificado">
-update from tc_mantic_articulos set id_verificado= 2 where id_articulo= {idArticulo}
+update 
+  tc_mantic_articulos 
+set 
+  minimo= {minimo},        
+  maximo= {maximo},
+  id_verificado= 1,
+  actualizado= current_timestamp
+where 
+  id_articulo= {idArticulo}
 			</update>
     </unit>
 		<unit id="TcManticArticulosCodigosDto">
@@ -5365,14 +5373,14 @@ group by
 delete from tc_mantic_almacenes_articulos where id_almacen={idAlmacen} 
       </delete>
 			<update id="rows">
-update from 
+update  
   tc_mantic_almacenes_articulos 
 set
   minimo= {minimo},        
   maximo= {maximo}        
 where 
-  id_almacen={idAlmacen} 
-  and id_articulo={idArticulo}       
+  id_almacen= {idAlmacen} 
+  and id_articulo= {idArticulo}       
       </update>
     </unit>
 		<unit id="TcManticProveedoresBancosDto">

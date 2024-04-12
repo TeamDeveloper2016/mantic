@@ -69,6 +69,10 @@ public class Transaccion extends ComunInventarios implements Serializable {
     this.destinos= destinos;
   }
   
+	public Transaccion(List<Umbral> fuentes) {
+    this.fuentes = fuentes;
+  }
+  
   @Override
   protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
     boolean regresar= false;

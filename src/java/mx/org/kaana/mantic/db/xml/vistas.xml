@@ -5,6 +5,33 @@
 <process>
 	<dml> 
 		<unit id="VistaConteosDto">
+			<select id="umbrales">
+select
+  tc_mantic_almacenes_articulos.id_almacen_articulo as id_key,
+  tc_mantic_almacenes_articulos.id_almacen,
+  tc_mantic_almacenes_articulos.id_articulo,
+  tc_mantic_articulos_codigos.codigo,
+  tc_mantic_articulos.nombre,
+  tc_mantic_almacenes_articulos.minimo,
+  tc_mantic_almacenes_articulos.maximo,
+  tc_mantic_articulos.id_verificado
+from 
+  tc_mantic_conteos
+inner join
+  tc_mantic_conteos_detalles on tc_mantic_conteos.id_conteo= tc_mantic_conteos_detalles.id_conteo
+inner join
+  tc_mantic_almacenes_articulos on tc_mantic_conteos_detalles.id_articulo= tc_mantic_almacenes_articulos.id_articulo
+inner join
+  tc_mantic_articulos on tc_mantic_almacenes_articulos.id_articulo= tc_mantic_articulos.id_articulo
+inner join
+  tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo= tc_mantic_articulos_codigos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1
+where
+  tc_mantic_conteos.id_conteo= {idConteo}
+  and tc_mantic_almacenes_articulos.id_almacen= {idAlmacen}
+group by
+  tc_mantic_almacenes_articulos.id_almacen,
+  tc_mantic_almacenes_articulos.id_articulo
+      </select>         
       <select id="versiones">
 select
   tc_mantic_versiones.id_version as id_key,
@@ -45,6 +72,7 @@ where
 select
   tc_mantic_conteos.id_conteo as id_key,
   tc_mantic_conteos.id_conteo,
+  tc_mantic_conteos.id_almacen,
   tc_mantic_empresas.nombre as empresa,  
   tc_mantic_almacenes.nombre as almacen,
   upper(tc_mantic_conteos.nombre) as nombre,
@@ -727,6 +755,33 @@ group by
 			</select>				
     </unit>  
 		<unit id="VistaTransferenciasMultiplesDto">
+			<select id="umbrales">
+select
+  tc_mantic_almacenes_articulos.id_almacen_articulo as id_key,
+  tc_mantic_almacenes_articulos.id_almacen,
+  tc_mantic_almacenes_articulos.id_articulo,
+  tc_mantic_articulos_codigos.codigo,
+  tc_mantic_articulos.nombre,
+  tc_mantic_almacenes_articulos.minimo,
+  tc_mantic_almacenes_articulos.maximo,
+  tc_mantic_articulos.id_verificado
+from 
+  tc_mantic_transferencias
+inner join
+  tc_mantic_transferencias_detalles on tc_mantic_transferencias.id_transferencia= tc_mantic_transferencias_detalles.id_transferencia
+inner join
+  tc_mantic_almacenes_articulos on tc_mantic_transferencias_detalles.id_articulo= tc_mantic_almacenes_articulos.id_articulo
+inner join
+  tc_mantic_articulos on tc_mantic_almacenes_articulos.id_articulo= tc_mantic_articulos.id_articulo
+inner join
+  tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo= tc_mantic_articulos_codigos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1
+where
+  tc_mantic_transferencias.id_transferencia= {idTransferencia}
+  and tc_mantic_almacenes_articulos.id_almacen= {idAlmacen}
+group by
+  tc_mantic_almacenes_articulos.id_almacen,
+  tc_mantic_almacenes_articulos.id_articulo
+			</select>      
       <select id="lazy">
         select 
           tc_mantic_transferencias_multiples.id_transferencia_multiple as id_key,
