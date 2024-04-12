@@ -597,5 +597,10 @@ public class Filtro extends Comun implements Serializable {
       JsfBase.addMessageError(e);
     } // catch		
   }
+
+  public String doUmbrales() {
+		JsfBase.setFlashAttribute("idTransferencia", ((Entity)this.attrs.get("seleccionado")).getKey());
+		return "umbrales".concat(Constantes.REDIRECIONAR);
+	}	
   
 }

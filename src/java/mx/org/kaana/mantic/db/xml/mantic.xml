@@ -4442,12 +4442,12 @@ where
  tc_mantic_articulos.id_articulo= {idArticulo}
 			</select>	
 			<update id="rows">
-				update 
-				  tc_mantic_articulos
-				set
-				  iva= {iva}
-				where
-				  id_empresa in ({sucursales}) and id_iva= 1
+update from 
+  tc_mantic_articulos
+set
+  iva= {iva}
+where
+  id_empresa in ({sucursales}) and id_iva= 1
 			</update>
 			<select id="findImage">
 				select 
@@ -4459,7 +4459,10 @@ where
 					id_imagen= {idImagen}
 			</select>
 			<update id="cleanImage">
-				update tc_mantic_articulos set id_imagen= null where id_articulo= {idArticulo}
+update from tc_mantic_articulos set id_imagen= null where id_articulo= {idArticulo}
+			</update>
+			<update id="verificado">
+update from tc_mantic_articulos set id_verificado= 2 where id_articulo= {idArticulo}
 			</update>
     </unit>
 		<unit id="TcManticArticulosCodigosDto">
@@ -5331,9 +5334,46 @@ where
         where 
           id_articulo={idArticulo} and id_almacen = {idAlmacen}
       </select>			
+			<select id="umbrales">
+select
+  tc_mantic_almacenes_articulos.id_almacen_articulo as id_key,
+  tc_mantic_almacenes_articulos.id_almacen,
+  tc_mantic_almacenes_articulos.id_articulo,
+  tc_mantic_articulos_codigos.codigo,
+  tc_mantic_articulos.nombre,
+  tc_mantic_almacenes_articulos.minimo,
+  tc_mantic_almacenes_articulos.maximo,
+  tc_mantic_articulos.id_verificado
+from 
+  tc_mantic_transferencias
+inner join
+  tc_mantic_transferencias_detalles on tc_mantic_transferencias.id_transferencia= tc_mantic_transferencias_detalles.id_transferencia
+inner join
+  tc_mantic_almacenes_articulos on tc_mantic_transferencias_detalles.id_articulo= tc_mantic_almacenes_articulos.id_articulo
+inner join
+  tc_mantic_articulos on tc_mantic_almacenes_articulos.id_articulo= tc_mantic_articulos.id_articulo
+inner join
+  tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo= tc_mantic_articulos_codigos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1
+where
+  tc_mantic_transferencias.id_transferencia= {idTransferencia}
+  and tc_mantic_almacenes_articulos.id_almacen= {idAlmacen}
+group by
+  tc_mantic_almacenes_articulos.id_almacen,
+  tc_mantic_almacenes_articulos.id_articulo
+			</select>
 			<delete id="rows">
-        delete from tc_mantic_almacenes_articulos where id_almacen={idAlmacen} 
+delete from tc_mantic_almacenes_articulos where id_almacen={idAlmacen} 
       </delete>
+			<update id="rows">
+update from 
+  tc_mantic_almacenes_articulos 
+set
+  minimo= {minimo},        
+  maximo= {maximo}        
+where 
+  id_almacen={idAlmacen} 
+  and id_articulo={idArticulo}       
+      </update>
     </unit>
 		<unit id="TcManticProveedoresBancosDto">
       <select id="row">

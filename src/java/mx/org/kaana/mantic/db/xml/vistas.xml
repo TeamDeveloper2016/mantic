@@ -11116,6 +11116,8 @@ order by
           tc_mantic_transferencias.id_transferencia as id_key,
           tc_mantic_transferencias.id_transferencia,
 				  tc_mantic_transferencias.consecutivo,
+          tc_mantic_empresas.id_empresa,
+          tc_mantic_empresas.nombre as empresa,
           tc_mantic_transferencias.id_almacen,
           tc_mantic_transferencias.id_destino,
           origen.nombre as nombre_origen,

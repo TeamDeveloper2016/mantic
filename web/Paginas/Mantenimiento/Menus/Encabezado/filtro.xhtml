@@ -20,7 +20,7 @@
       <p:dataTable lazy="true" id="tabla" var="row" rows="200" widgetVar="kajoolTable" rowIndexVar="index" selectionMode="single" selection="#{kajoolMantenimientoMenusEncabezadoFiltro.seleccionado}" rowKey="#{row.idMenuEncabezado}" styleClass="janal-content-table"  value="#{kajoolMantenimientoMenusEncabezadoFiltro.lazyModel}" reflow="true" >
         <p:ajax event="rowDblselect"  listener="#{kajoolMantenimientoMenusEncabezadoFiltro.doActualizarChildren}" onstart="return janal.bloquear();" update=":datos:tabla,:datos:seguimiento" process="@this" oncomplete="janal.desbloquear();"/>
         <f:facet name="header">
-          <p:menuButton   value="Opciones">
+          <p:menuButton value="Opciones">
             <p:menuitem value="Agregar" action="#{kajoolMantenimientoMenusEncabezadoFiltro.doActualizar('AGREGAR')}" icon="fa fa-plus" title="Agregar opción a menú" ajax="false" />
             <p:separator/>
             <p:menuitem value="Reasignar claves" icon="fa fa-edit" actionListener="#{kajoolMantenimientoMenusEncabezadoFiltro.doReasignarClaves}" process="@this" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>

@@ -6,14 +6,18 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.almacenes.transferencias.beans.Umbral;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
+import mx.org.kaana.mantic.db.dto.TcManticAlmacenesArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticFaltantesDto;
 import mx.org.kaana.mantic.db.dto.TcManticTransferenciasBitacoraDto;
@@ -31,6 +35,8 @@ public class Transaccion extends ComunInventarios implements Serializable {
   private TcManticTransferenciasDto dto;
 	private Long idTransferenciaEstatus;
 	private Long idFaltante;
+  private List<Umbral> fuentes;
+  private List<Umbral> destinos;
 
 	public Transaccion(Long idFaltante) {
 		this(new TcManticTransferenciasDto(-1L));
@@ -58,6 +64,11 @@ public class Transaccion extends ComunInventarios implements Serializable {
 		this.idTransferenciaEstatus= idTransferenciaEstatus;
 	}
 
+	public Transaccion(List<Umbral> fuentes, List<Umbral> destinos) {
+    this.fuentes = fuentes;
+    this.destinos= destinos;
+  }
+  
   @Override
   protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
     boolean regresar= false;
@@ -103,6 +114,12 @@ public class Transaccion extends ComunInventarios implements Serializable {
 					if(regresar)
             regresar= DaoFactory.getInstance().insert(sesion, this.bitacora).intValue()> 0;
           // throw new RuntimeException("ERROR PROVACADO INTENCIONALMENTE");
+          break;
+        case PROCESAR:
+          regresar= this.toProcesar(sesion, this.fuentes) && this.toProcesar(sesion, this.destinos);
+          break;
+        case REPROCESAR:
+          regresar= this.toProcesar(sesion, this.fuentes);
           break;
       } // switch
       if(!regresar) 
@@ -168,5 +185,30 @@ public class Transaccion extends ComunInventarios implements Serializable {
 				} // if
 		} // for
 	}
-		
+
+  private Boolean toProcesar(Session sesion, List<Umbral> articulos) throws Exception {
+    Boolean regresar          = Boolean.FALSE;
+    Map<String, Object> params= new HashMap<>();
+    try {  
+      for (Umbral item: articulos) {
+        params.put("idAlmacen", item.getIdAlmacen());      
+        params.put("idArticulo", item.getIdArticulo());      
+        params.put("minimo", item.getMinimo());      
+        params.put("maximo", item.getMaximo());      
+        if(Objects.equals(item.getAction(), ESql.UPDATE)) {
+          DaoFactory.getInstance().updateAll(sesion, TcManticAlmacenesArticulosDto.class, params);
+          DaoFactory.getInstance().updateAll(sesion, TcManticArticulosDto.class, params, "verificado");
+        } // if  
+      } // for
+      regresar= Boolean.TRUE;
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  }
+  
 }

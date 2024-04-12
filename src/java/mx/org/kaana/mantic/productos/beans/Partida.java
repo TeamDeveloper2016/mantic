@@ -171,14 +171,12 @@ public final class Partida extends TcManticProductosDetallesDto implements Seria
   }
 
   protected void toLoadCodigos(Boolean first, String tipoVenta) {
-		List<Columna> columns     = null;
-    Map<String, Object> params= null;
+		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
     try {      
-			columns= new ArrayList<>();
       columns.add(new Columna("menudeo", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("medioMayoreo", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("mayoreo", EFormatoDinamicos.MILES_CON_DECIMALES));
-      params = new HashMap<>();      
       params.put("idArticulo", this.getIdArticulo());      
       this.codigos= UIEntity.build("VistaProductosDto", "codigos", params, columns, Constantes.SQL_TODOS_REGISTROS);
       if(codigos!= null && !codigos.isEmpty()) {

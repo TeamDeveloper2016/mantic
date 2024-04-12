@@ -91,7 +91,7 @@ public class Conteos extends IBaseJob implements Serializable {
 	  } // try
 		catch(Exception e) {
 			Error.mensaje(e);
-      LOG.error("Ocurrio un error al realizar el registro de conteos/transferencias remotos");
+      LOG.error("Ocurrio un error en los conteos / transferencias remotos");
 		} // catch	
 		finally {
 			Methods.clean(params);
