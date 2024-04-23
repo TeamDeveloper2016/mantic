@@ -11,11 +11,9 @@
 	<ui:define name="librerias">
     <script type="text/javascript">
 			Janal.Control.fields = {
-        'contenedorGrupos\\:nombre': {validaciones: 'libre', mascara: 'libre'},
         'contenedorGrupos\\:idEmpresa': {validaciones: 'libre', mascara: 'libre'},
         'contenedorGrupos\\:idAlmacen': {validaciones: 'libre', mascara: 'libre'},
-        'contenedorGrupos\\:version': {validaciones: 'libre', mascara: 'libre'},
-        'contenedorGrupos\\:usuario': {validaciones: 'libre', mascara: 'libre'}
+        'contenedorGrupos\\:nombre'   : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}
 			};
       
       $(document).ready(function() {
@@ -33,35 +31,47 @@
           <p:accordionPanel id="contenedorGrupos" activeIndex="1" multiple="true">
 					  <p:tab title="Generales">
               <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">	
-                <p:outputLabel for="nombre" value="Conteo:"/>  
-                <p:inputText id="nombre" styleClass="janal-wid-100-txt" value="#{manticCatalogosConteosUmbrales.conteo.nombre}" readonly="true"/>
                 <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100">	
                   <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">	
-                    <p:outputLabel for="idEmpresa" value="Empresa:"/>  
-                    <p:inputText id="idEmpresa" styleClass="janal-wid-100-txt janal-column-center" value="#{manticCatalogosConteosUmbrales.conteo.empresa}" readonly="true"/>
+                    <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{sessionScope.autentifica.empresa.matriz}"/>
+                    <p:selectOneMenu id="idEmpresa" value="#{manticCatalogosConteosAjustes.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="sucursales janal-wid-99" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                      <p:ajax event="change" listener="#{manticCatalogosConteosAjustes.doLoadAlmacenes}" process="@this" update="idAlmacen"/>
+                      <f:selectItems value="#{manticCatalogosConteosAjustes.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+                      <p:column headerText="Clave">
+                        <h:outputText value="#{item.clave}"/>
+                      </p:column>   
+                      <p:column headerText="Nombre">
+                        <h:outputText value="#{item.nombre}"/>
+                      </p:column>   
+                    </p:selectOneMenu>
                   </p:panelGrid>
                   <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">	
                     <p:outputLabel for="idAlmacen" value="Almacen:"/>  
-                    <p:inputText id="idAlmacen" styleClass="janal-wid-100-txt janal-column-center" value="#{manticCatalogosConteosUmbrales.conteo.almacen}" readonly="true"/>
+                    <p:selectOneMenu id="idAlmacen" value="#{manticCatalogosConteosAjustes.attrs.idAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                      <p:ajax event="change" listener="#{manticCatalogosConteosAjustes.doLoad}" process="@this nombre" update="fuente @(.articulos)"/>
+                      <f:selectItems value="#{manticCatalogosConteosAjustes.attrs.almacenes}"  var="element" itemValue="#{element.key}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+                      <p:column headerText="Clave">
+                        <h:outputText value="#{item.clave}"/>
+                      </p:column>   
+                      <p:column headerText="Nombre">
+                        <h:outputText value="#{item.nombre}"/>
+                      </p:column>   
+                    </p:selectOneMenu>
                   </p:panelGrid>
                 </p:panelGrid>
-                <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100">	
-                  <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">	
-                    <p:outputLabel for="version" value="Fecha | Versión:"/>  
-                    <p:inputText id="version" styleClass="janal-wid-100-txt janal-column-center" value="#{manticCatalogosConteosUmbrales.conteo.fecha} | #{manticCatalogosConteosUmbrales.conteo.version}" readonly="true"/>
-                  </p:panelGrid>
-                  <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">	
-                    <p:outputLabel for="usuario" value="Usuario:"/>  
-                    <p:inputText id="usuario" styleClass="janal-wid-100-txt janal-column-center" value="#{manticCatalogosConteosUmbrales.conteo.usuario}" readonly="true"/>
-                  </p:panelGrid>
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">	
+                  <p:outputLabel for="nombre" value="Buscar por articulo:"/>  
+                  <p:inputText id="nombre" placeholder="Ej. ABRAZADERA ó AA451" styleClass="janal-wid-100-txt" value="#{manticCatalogosConteosAjustes.attrs.nombre}">
+                    <p:ajax event="keyup" listener="#{manticCatalogosConteosAjustes.doLoad}" process="@this" update="fuente" onstart="return $('#contenedorGrupos\\:nombre').val().trim().length> 1;"/>                    
+                  </p:inputText>  
                 </p:panelGrid>
               </p:panelGrid>
             </p:tab>  
 					  <p:tab title="Umbrales">
-              <p:dataTable id="fuente" var="row" value="#{manticCatalogosConteosUmbrales.fuentes}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_MAX_TABLA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.idArticulo}" styleClass="fuente janal-wid-100-txt" rowIndexVar="index" rowStyleClass="#{manticCatalogosConteosUmbrales.toColor(row)}">
+              <p:dataTable id="fuente" var="row" value="#{manticCatalogosConteosAjustes.fuentes}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_MAX_TABLA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.idArticulo}" styleClass="fuente janal-wid-100-txt" rowIndexVar="index" rowStyleClass="#{manticCatalogosConteosAjustes.toColor(row)}">
                 <f:facet name="header">
                   <div style="float: left">
-                    <p:outputLabel value="#{manticCatalogosConteosUmbrales.conteo.almacen}" styleClass="janal-color-white"/>
+                    <p:outputLabel value="#{manticCatalogosConteosAjustes.attrs.idAlmacen.nombre}" styleClass="janal-color-white articulos"/>
                   </div>  
                   <p:menuButton value="Opciones">
                     <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('contenedorGrupos\\:dataPdfFuente', 'contenedorGrupos\\:fuente')" oncomplete="janal.desbloquear()"/>
@@ -88,19 +98,19 @@
                 </p:column>
                 <p:column styleClass="MarAuto Responsive">
                   <p:inputNumber inputStyleClass="janal-wid-100-txt janal-column-right min-#{row.idArticulo} #{row.action eq 'UPDATE'? 'janal-font-bold janal-color-black': ''}" value="#{row['minimo']}" emptyValue="zero" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double" minValue="0">
-                    <p:ajax event="change" listener="#{manticCatalogosConteosUmbrales.doChangeMinimo(row)}" process="@this" update="@(.min-#{row.idArticulo})"/>
+                    <p:ajax event="change" listener="#{manticCatalogosConteosAjustes.doChangeMinimo(row)}" process="@this" update="@(.min-#{row.idArticulo})"/>
                   </p:inputNumber>  
                 </p:column>
                 <p:column styleClass="MarAuto Responsive">
                   <p:inputNumber inputStyleClass="janal-wid-100-txt janal-column-right max-#{row.idArticulo} #{row.action eq 'UPDATE'? 'janal-font-bold janal-color-black': ''}" value="#{row['maximo']}" emptyValue="zero" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double" minValue="0">
-                    <p:ajax event="change" listener="#{manticCatalogosConteosUmbrales.doChangeMinimo(row)}" process="@this" update="@(.max-#{row.idArticulo})"/>
+                    <p:ajax event="change" listener="#{manticCatalogosConteosAjustes.doChangeMinimo(row)}" process="@this" update="@(.max-#{row.idArticulo})"/>
                   </p:inputNumber>  
                 </p:column>
                 <p:column styleClass="MarAuto Responsive janal-column-center">
                    <p:graphicImage library="janal" name="icon/semaforos/#{row.idVerificado eq '1'? 'circulo-verde.png': 'circulo-rojo.png'}" title="Articulo #{row.idVerificado eq '1' ? 'verificado': 'no verificado'}" styleClass="min-#{row.idArticulo} max-#{row.idArticulo}"/> 
                 </p:column>
                 <f:facet name="footer">
-                  <p:outputLabel value="Total [#{manticCatalogosConteosUmbrales.fuentes.size()}] registros"/>
+                  <p:outputLabel value="Total [#{manticCatalogosConteosAjustes.fuentes.size()}] registros"/>
                 </f:facet>
               </p:dataTable>  
               <h:commandLink id="dataPdfFuente">                    
@@ -118,12 +128,10 @@
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" update="@form" action="#{manticCatalogosConteosUmbrales.doAceptar}" onstart="return janal.execute();" oncomplete="janal.desbloquear();"/>
-      <p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticCatalogosConteosUmbrales.doCancelar}" ajax="false"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" update="@form" action="#{manticCatalogosConteosAjustes.doAceptar}" onstart="return janal.execute();" oncomplete="janal.desbloquear();"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" update="@form" action="#{manticCatalogosConteosUmbrales.doAceptar}" onstart="return janal.execute();" oncomplete="janal.desbloquear();"/>
-			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticCatalogosConteosUmbrales.doCancelar}" ajax="false"/>
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" update="@form" action="#{manticCatalogosConteosAjustes.doAceptar}" onstart="return janal.execute();" oncomplete="janal.desbloquear();"/>
 		</div>		
 	</ui:define>
 </ui:composition>

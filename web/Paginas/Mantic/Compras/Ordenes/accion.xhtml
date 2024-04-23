@@ -121,7 +121,7 @@
 								<p:outputLabel for="idSucursal" value="Sucursal:" rendered="#{sessionScope.autentifica.empresa.matriz}"/>
 								<p:selectOneMenu id="idSucursal" value="#{manticComprasOrdendesAccion.adminOrden.orden.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="sucursales janal-wid-99" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<p:ajax event="change" listener="#{manticComprasOrdendesAccion.doLoadAlmacenes}" process="@this" update="idAlmacen"/>
-									<f:selectItems value="#{manticComprasOrdendesAccion.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '-'} #{element.nombre}"/>
+									<f:selectItems value="#{manticComprasOrdendesAccion.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
 									</p:column>   
@@ -135,7 +135,7 @@
                 <p:outputLabel for="idAlmacen" value="Almacen:"/>
 								<p:selectOneMenu id="idAlmacen" value="#{manticComprasOrdendesAccion.adminOrden.orden.ikAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<p:ajax event="change" listener="#{manticComprasOrdendesAccion.doUpdateAlmacen}" process="@this" update="tabla @(.total) @(.recalculo)"/>
-									<f:selectItems value="#{manticComprasOrdendesAccion.attrs.almacenes}"  var="element" itemValue="#{element.key}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '-'} #{element.nombre}"/>
+									<f:selectItems value="#{manticComprasOrdendesAccion.attrs.almacenes}"  var="element" itemValue="#{element.key}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
 									</p:column>   
@@ -554,7 +554,7 @@
 						<p:tab title="Faltantes almacen">
 							<p:dataTable id="faltantes" var="row" value="#{manticComprasOrdendesAccion.attrs.faltantes}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_MAX_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_MAX_CADA_PAGINA}" paginator="true" reflow="true" rowKey="#{row.key}" styleClass="paginated" rowIndexVar="index" paginatorPosition="bottom">
 								<f:facet name="header">
-									<p:inputText id="lookFaltantes" placeholder="Filtrar un articulo: ej. ABRAZADERA ó AA451" value="#{manticComprasOrdendesAccion.attrs.lookForFaltantes}" styleClass="janal-fix-85" style="float: left;">
+									<p:inputText id="lookFaltantes" placeholder="Ej. ABRAZADERA ó AA451" value="#{manticComprasOrdendesAccion.attrs.lookForFaltantes}" styleClass="janal-fix-85" style="float: left;">
 										<p:ajax event="keyup" listener="#{manticComprasOrdendesAccion.doLookForFaltantes}" process="@this" update="faltantes" onstart="return $('#contenedorGrupos\\:faltantes\\:lookFaltantes').val().trim().length> 1;"/>
 									</p:inputText>
                   <div class="lg-pantalla">

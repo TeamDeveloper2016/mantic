@@ -8300,7 +8300,8 @@ order by
 					-1 as id_proveedor,
 					tc_mantic_almacenes_articulos.stock,
 					tc_mantic_almacenes_articulos.minimo,
-					tc_mantic_almacenes_articulos.maximo
+					tc_mantic_almacenes_articulos.maximo,
+          tc_mantic_articulos.id_verificado
 				from
 					tc_mantic_articulos
 				inner join
@@ -8362,6 +8363,8 @@ order by
     (select
       tc_mantic_articulos.id_articulo as id_key,
       tc_mantic_articulos.id_articulo,
+      tc_mantic_almacenes.id_empresa,
+      tc_mantic_almacenes.id_almacen,
       -1 as id_orden_detalle,
       tc_mantic_articulos_codigos.codigo as propio,
       tc_mantic_articulos.nombre,
@@ -8377,7 +8380,8 @@ order by
       tc_mantic_almacenes_articulos.maximo- tc_mantic_almacenes_articulos.stock as cantidad,
       tc_mantic_almacenes_articulos.stock,
       tc_mantic_almacenes_articulos.minimo,
-      tc_mantic_almacenes_articulos.maximo
+      tc_mantic_almacenes_articulos.maximo,
+      tc_mantic_articulos.id_verificado
     from
       tc_mantic_articulos
     inner join
@@ -8404,6 +8408,8 @@ order by
     select
        id_key,
        id_articulo,
+       id_empresa,
+       id_almacen,
        id_orden_detalle,
        propio,
        nombre,
@@ -8419,11 +8425,14 @@ order by
        cantidad,
        stock,
        minimo,
-       maximo      
+       maximo,
+       id_verificado  
     from (
       select
         tc_mantic_articulos.id_articulo as id_key,
         tc_mantic_articulos.id_articulo,
+        tc_mantic_articulos.id_empresa,
+        tc_mantic_almacenes.id_almacen,
         tc_mantic_ordenes_detalles.id_orden_detalle,
         tc_mantic_articulos_codigos.codigo as propio,
         tc_mantic_articulos.nombre,
@@ -8439,7 +8448,8 @@ order by
         tc_mantic_almacenes_articulos.maximo- tc_mantic_almacenes_articulos.stock as cantidad,
         tc_mantic_almacenes_articulos.stock,
         tc_mantic_almacenes_articulos.minimo,
-        tc_mantic_almacenes_articulos.maximo
+        tc_mantic_almacenes_articulos.maximo,
+        tc_mantic_articulos.id_verificado
       from
         tc_mantic_articulos
       inner join
@@ -8464,7 +8474,7 @@ order by
         and tc_mantic_inventarios.id_automatico= 2
         and tc_mantic_almacenes_articulos.stock &lt;= tc_mantic_almacenes_articulos.minimo
         and tc_mantic_articulos_codigos.id_principal= 1
-        and (tc_mantic_articulos.nombre regexp '.*{codigoFaltante}.*' or upper(tc_mantic_articulos_codigos.codigo) regexp '{codigoFaltante}.*')										
+        and (tc_mantic_articulos.nombre regexp '{codigoFaltante}.*' or upper(tc_mantic_articulos_codigos.codigo) regexp '{codigoFaltante}.*')										
         and (tc_mantic_ordenes_compras.id_orden_estatus in (3,4,5,7) or tc_mantic_ordenes_compras.id_orden_estatus is null)
       order by
         tc_mantic_articulos.nombre, tc_mantic_ordenes_detalles.registro desc
@@ -9267,7 +9277,7 @@ where
   and tc_mantic_articulos.id_descontinuado= 2
   and tc_mantic_articulos.id_vigente= 1
   and tc_mantic_faltantes.id_empresa= {idSucursal}
-  and (tc_mantic_articulos.nombre regexp '.*{codigoPerdido}.*' or upper(tc_mantic_articulos_codigos.codigo) regexp '.*{codigoPerdido}.*')				
+  and (tc_mantic_articulos.nombre regexp '{codigoPerdido}.*' or upper(tc_mantic_articulos_codigos.codigo) regexp '{codigoPerdido}.*')				
 order by
   tc_mantic_faltantes.registro desc
 			</select>
@@ -9314,7 +9324,6 @@ order by
 				  and tc_mantic_articulos.id_descontinuado= 2
 				  and tc_mantic_articulos.id_vigente= 1
 				  and tc_mantic_faltantes.id_empresa= {idSucursal}
-          and (tc_mantic_articulos.nombre regexp '.*' or upper(tc_mantic_articulos_codigos.codigo) regexp '.*')				
           and tc_mantic_articulos.id_articulo not in 
 				    (select 
 				      tc_mantic_ordenes_detalles.id_articulo 
@@ -9323,7 +9332,7 @@ order by
 				     inner join tc_mantic_ordenes_compras on tc_mantic_ordenes_detalles.id_orden_compra= tc_mantic_ordenes_compras.id_orden_compra 
 				      and tc_mantic_ordenes_compras.id_orden_estatus in (3,4,5)
 				      and tc_mantic_ordenes_compras.id_proveedor= {idProveedor}
-				      and date_format(tc_mantic_ordenes_compras.registro, '%Y%m%d')%gt;= '{mes}')				
+				      and date_format(tc_mantic_ordenes_compras.registro, '%Y%m%d')&gt;= '{mes}')				
 				order by
 				  tc_mantic_faltantes.registro desc
 			</select>

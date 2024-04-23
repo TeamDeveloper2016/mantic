@@ -88,8 +88,8 @@
 								<p:outputLabel for="cantidad" value="Cantidad:"/>
 								<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-100, janal-wid-col-130 janal-column-right">
 								  <p:inputNumber id="cantidad" tabindex="2" inputStyleClass="janal-color-orange janal-column-right" styleClass="janal-wid-100-txt janal-key-cantidad cantidad refresh activa" value="#{manticCatalogosAlmacenesTransferenciasAccion.detalle.cantidad}" converter="javax.faces.Double" disabled="#{empty manticCatalogosAlmacenesTransferenciasAccion.attrs.origen}">
-									  <p:ajax event="keyup" listener="#{manticCatalogosAlmacenesTransferenciasAccion.doCalculate()}" process="@this" update="@(.filas)"/>
-									  <p:ajax event="blur" listener="#{manticCatalogosAlmacenesTransferenciasAccion.doCalculate()}" process="@this" update="cantidad"/>
+									  <p:ajax event="keyup" listener="#{manticCatalogosAlmacenesTransferenciasAccion.doCalculate(true)}" process="@this" update="@(.filas)"/>
+									  <p:ajax event="blur" listener="#{manticCatalogosAlmacenesTransferenciasAccion.doCalculate(true)}" process="@this" update="cantidad"/>
 								  </p:inputNumber>
 									<p:outputLabel value="Sugerido: #{manticCatalogosAlmacenesTransferenciasAccion.attrs.sugerido}" styleClass="filas refresh"/>
 								</p:panelGrid>	

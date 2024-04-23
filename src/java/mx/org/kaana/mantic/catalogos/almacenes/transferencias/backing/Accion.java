@@ -225,7 +225,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // finally 
   }
   
-  public void doCalculate() {
+  public void doCalculate(Boolean evento) {
 		try {
 			UISelectEntity articulo= (UISelectEntity)this.attrs.get("origen");
 			Entity destino         = (Entity)this.attrs.get("destino");
@@ -250,11 +250,14 @@ public class Accion extends IBaseAttribute implements Serializable {
 				case 8:
 					sugerido= maximo- calculo< 0? 0D: maximo- calculo;
 					this.attrs.put("sugerido", sugerido);
-					if(stock> sugerido && sugerido> 0D)
-						this.detalle.setCantidad(sugerido);
+					if(stock> sugerido && sugerido> 0D) {
+            if(!evento)
+						  this.detalle.setCantidad(sugerido);
+          } // if  
 					else
 						if(stock< sugerido && stock> 0)
-							this.detalle.setCantidad(stock);
+              if(!evento)
+			  				this.detalle.setCantidad(stock);
           if(Objects.equals(this.detalle.getIdCompleto(), 1L)) 
             this.detalle.setCantidad(Numero.toAjustarDecimales(this.detalle.getCantidad(), Boolean.TRUE));
 					this.attrs.put("nuevaExistenciaOrigen", stock- this.detalle.getCantidad());
@@ -307,7 +310,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
       this.attrs.put("idDestino", this.transferencia.getIdDestino());
       this.attrs.put("destino", (Entity) DaoFactory.getInstance().toEntity("VistaAlmacenesTransferenciasDto", "articulo", this.attrs));
-			this.doCalculate();
+			this.doCalculate(false);
     } // try
 		catch (Exception e) {
 			Error.mensaje(e);
