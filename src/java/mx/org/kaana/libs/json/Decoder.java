@@ -125,4 +125,9 @@ public final class Decoder {
     return gson.toJson(serializable);
   }
 	
+  public static String clean(Serializable serializable) throws Exception {
+  	Gson gson= new GsonBuilder().registerTypeAdapter(String.class, new StringTypeAdapter()).create();
+    return gson.toJson(serializable);
+  }
+	
 }

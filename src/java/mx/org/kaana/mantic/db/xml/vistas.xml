@@ -188,6 +188,142 @@ order by
       </select>
     </unit>  
 		<unit id="VistaPlanetasDto">
+			<select id="asteroide">
+select * from
+  (select
+    tc_mantic_articulos.id_articulo as id_key,
+    tc_mantic_articulos.id_articulo as id_producto,
+    tc_mantic_almacenes.id_empresa,
+    tc_mantic_almacenes.id_almacen,
+    tc_mantic_articulos_codigos.codigo,
+    tc_mantic_articulos.nombre,
+    tc_mantic_almacenes_articulos.minimo,
+    tc_mantic_almacenes_articulos.maximo,
+    tc_mantic_almacenes_articulos.maximo- tc_mantic_almacenes_articulos.stock as segerido,
+    tc_mantic_almacenes_articulos.stock,
+    date_format(tc_mantic_articulos.actualizado, '%Y%m%d%h%i%S') as registro
+  from
+    tc_mantic_articulos
+  inner join
+    tc_mantic_almacenes_articulos on tc_mantic_articulos.id_articulo= tc_mantic_almacenes_articulos.id_articulo
+  inner join
+    tc_mantic_almacenes on tc_mantic_almacenes_articulos.id_almacen= tc_mantic_almacenes.id_almacen
+  inner join 
+    tc_mantic_inventarios on tc_mantic_articulos.id_articulo= tc_mantic_inventarios.id_articulo and tc_mantic_inventarios.id_almacen= {idAlmacen}
+  inner join
+    tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo= tc_mantic_articulos_codigos.id_articulo
+  where 
+    tc_mantic_almacenes.id_empresa in ({sucursales})
+    and tc_mantic_almacenes.id_almacen= {idAlmacen}
+    and tc_mantic_articulos.id_descontinuado= 2
+    and tc_mantic_articulos.id_vigente= 1
+    and tc_mantic_inventarios.id_automatico= 2
+    and tc_mantic_almacenes_articulos.stock &lt;= tc_mantic_almacenes_articulos.minimo
+    and tc_mantic_articulos_codigos.id_principal= 1
+    and tc_mantic_articulos.id_articulo not in 
+    (select tc_mantic_ordenes_detalles.id_articulo from tc_mantic_ordenes_detalles inner join tc_mantic_ordenes_compras on tc_mantic_ordenes_detalles.id_orden_compra= tc_mantic_ordenes_compras.id_orden_compra and tc_mantic_ordenes_compras.id_orden_estatus in (3,4,5,7))
+union						
+  select
+     id_key,
+     id_articulo,
+     id_empresa,
+     id_almacen,
+     codigo,
+     nombre,
+     minimo,
+     maximo,
+     sugerido,
+     stock,
+     id_orden_detalle
+  from (
+    select
+      tc_mantic_articulos.id_articulo as id_key,
+      tc_mantic_articulos.id_articulo,
+      tc_mantic_articulos.id_empresa,
+      tc_mantic_almacenes.id_almacen,
+      tc_mantic_articulos.nombre,
+      tc_mantic_articulos_codigos.codigo,
+      tc_mantic_almacenes_articulos.minimo,
+      tc_mantic_almacenes_articulos.maximo,
+      tc_mantic_almacenes_articulos.maximo- tc_mantic_almacenes_articulos.stock as sugerido,
+      tc_mantic_almacenes_articulos.stock,
+      date_format(tc_mantic_articulos.actualizado, '%Y%m%d%h%i%S') as registro,
+      tc_mantic_ordenes_detalles.id_orden_detalle
+    from
+      tc_mantic_articulos
+    inner join
+      tc_mantic_almacenes_articulos on tc_mantic_articulos.id_articulo= tc_mantic_almacenes_articulos.id_articulo
+    inner join
+      tc_mantic_almacenes on tc_mantic_almacenes_articulos.id_almacen= tc_mantic_almacenes.id_almacen
+    inner join 
+      tc_mantic_inventarios on tc_mantic_articulos.id_articulo= tc_mantic_inventarios.id_articulo and tc_mantic_inventarios.id_almacen= {idAlmacen}
+    inner join
+      tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo= tc_mantic_articulos_codigos.id_articulo
+    left join	
+      tc_mantic_ordenes_detalles on tc_mantic_articulos.id_articulo= tc_mantic_ordenes_detalles.id_articulo
+    left join 
+      tc_mantic_ordenes_compras on tc_mantic_ordenes_detalles.id_orden_compra= tc_mantic_ordenes_compras.id_orden_compra
+    left join
+      tc_mantic_ordenes_estatus on tc_mantic_ordenes_estatus.id_orden_estatus= tc_mantic_ordenes_compras.id_orden_estatus
+    where 
+      tc_mantic_almacenes.id_empresa in ({sucursales})
+      and tc_mantic_almacenes.id_almacen= {idAlmacen}
+      and tc_mantic_articulos.id_descontinuado= 2
+      and tc_mantic_articulos.id_vigente= 1
+      and tc_mantic_inventarios.id_automatico= 2
+      and tc_mantic_almacenes_articulos.stock &lt;= tc_mantic_almacenes_articulos.minimo
+      and tc_mantic_articulos_codigos.id_principal= 1
+      and (tc_mantic_ordenes_compras.id_orden_estatus in (3,4,5,7) or tc_mantic_ordenes_compras.id_orden_estatus is null)
+    order by
+      tc_mantic_articulos.nombre, tc_mantic_ordenes_detalles.registro desc
+  ) as faltantes
+  inner join (
+    select 
+      max(tc_mantic_ordenes_detalles.id_orden_detalle) as id_maximo_detalle,
+      tc_mantic_ordenes_detalles.id_articulo as id_maximo_articulo
+    from 
+      tc_mantic_ordenes_detalles 
+    inner join
+      tc_mantic_ordenes_compras on tc_mantic_ordenes_detalles.id_orden_compra= tc_mantic_ordenes_compras.id_orden_compra   
+     where
+       (tc_mantic_ordenes_compras.id_orden_estatus in (3,4,5,7) or tc_mantic_ordenes_compras.id_orden_estatus is null)
+    group by
+      tc_mantic_ordenes_detalles.id_articulo  
+    order by  
+      tc_mantic_ordenes_detalles.id_articulo      
+  ) as ultimo on faltantes.id_orden_detalle= ultimo.id_maximo_detalle and faltantes.id_articulo= ultimo.id_maximo_articulo
+) as compras
+order by
+  codigo        
+      </select>  
+			<select id="cometa">
+select      
+  tc_mantic_articulos.id_articulo as id_key,
+  tc_mantic_articulos.id_articulo as id_producto,
+  tc_mantic_faltantes.id_empresa,
+  tc_mantic_articulos.nombre,
+  tc_mantic_articulos_codigos.codigo,
+  tc_mantic_articulos.minimo,
+  tc_mantic_articulos.maximo,
+  tc_mantic_faltantes.cantidad as sugerido,
+  -1 as stock,
+  date_format(tc_mantic_faltantes.registro, '%Y%m%d%h%i%S') as registro
+from      
+  tc_mantic_faltantes
+inner join 
+  tc_mantic_empresas on tc_mantic_faltantes.id_empresa = tc_mantic_empresas.id_empresa
+inner join
+  tc_mantic_articulos on tc_mantic_faltantes.id_articulo= tc_mantic_articulos.id_articulo
+left join
+  tc_mantic_articulos_codigos on tc_mantic_faltantes.id_articulo= tc_mantic_articulos_codigos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1
+where 
+  tc_mantic_faltantes.id_vigente= 1
+  and tc_mantic_articulos.id_descontinuado= 2
+  and tc_mantic_articulos.id_vigente= 1
+  and tc_mantic_faltantes.id_empresa in ({sucursales})
+order by
+  tc_mantic_faltantes.registro desc        
+			</select >
 			<select id="mercurio">
 select
   tr_mantic_empresa_personal.id_empresa,

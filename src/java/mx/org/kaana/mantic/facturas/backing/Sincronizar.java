@@ -50,7 +50,7 @@ public class Sincronizar extends IBaseAttribute implements Serializable {
    			UIBackingUtilities.execute("janal.alert('Se transfirieron ["+ transferir.getCount()+ "] facturas del portal de facturama');");
 			} // if
 			else 
-				JsfBase.addMessage("Ocurrió un error al transferir las facturas.", ETipoMensaje.ERROR);      			
+				JsfBase.addMessage("Ocurrió un error al transferir las facturas", ETipoMensaje.ERROR);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);

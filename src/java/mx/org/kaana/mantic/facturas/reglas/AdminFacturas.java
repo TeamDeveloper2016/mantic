@@ -118,9 +118,17 @@ public final class AdminFacturas extends IAdminArticulos implements Serializable
 							pivote.setCantidad(pivote.getCantidad()+ articulo.getCantidad());
 							if(devoluciones.toLong()> 0D) {
 								double cantidad= articulo.getCantidad()- devoluciones.toLong();
-								double unitario= articulo.getImporte()/ cantidad;
-								pivote.setImporte(Numero.toRedondearSat(pivote.getImporte()+ (unitario* cantidad)));
-								pivote.setTotal(Numero.toRedondearSat(pivote.getTotal()+ (unitario* cantidad)));
+                // SI SE DEVUELVEN TODOS LOS ARTICULOS ENTONCES EL PRECIO UNITARIO ES EL VALOR ORIGINAL ENTRE SU CANTIDAD
+                double unitario= 0D;
+                if(Objects.equal(cantidad, 0D)) {
+	  						  pivote.setImporte(Numero.toRedondearSat(pivote.getImporte()+ articulo.getImporte()));
+  								pivote.setTotal(Numero.toRedondearSat(pivote.getTotal()+ articulo.getImporte()));
+                } // if
+                else {
+								  unitario= articulo.getImporte()/ cantidad;
+	  						  pivote.setImporte(Numero.toRedondearSat(pivote.getImporte()+ (unitario* cantidad)));
+  								pivote.setTotal(Numero.toRedondearSat(pivote.getTotal()+ (unitario* cantidad)));
+                } // if
 							} // if
 							else {
 								pivote.setImporte(pivote.getImporte()+ articulo.getImporte());

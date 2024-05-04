@@ -55,8 +55,11 @@ public class Local implements Serializable {
 //    conteo.getProductos().add(new Cantidad(3L, 999D, ""));
 //    System.out.println(Decoder.toJson(conteo));
 
-    System.out.println(planetas.eclipse(1L, "{\"idConteo\":7,\"idUsuario\":30,\"nombre\":\"dA++H9+7Mojx3kauKPxe7uMxTVtAN1S7\",\"registro\":\"20240216014726954\",\"idEmpresa\":1,\"idAlmacen\":1,\"idFuente\":2,\"semilla\":\"20240216015732085\",\"productos\":[{\"a\":237,\"b\":50,\"c\":\"ALP31\",\"d\":\"\",\"e\":\"20240216014810600\"},{\"a\":238,\"b\":50,\"c\":\"ALP30\",\"d\":\"\",\"e\":\"20240216014810600\"}],\"version\":\"0.0.1.5\"}", "/Eb1AjylyNNfQBLodn6Jf6Stb8NM7Hw2"));
+//    System.out.println(planetas.eclipse(1L, "{\"idConteo\":7,\"idUsuario\":30,\"nombre\":\"dA++H9+7Mojx3kauKPxe7uMxTVtAN1S7\",\"registro\":\"20240216014726954\",\"idEmpresa\":1,\"idAlmacen\":1,\"idFuente\":2,\"semilla\":\"20240216015732085\",\"productos\":[{\"a\":237,\"b\":50,\"c\":\"ALP31\",\"d\":\"\",\"e\":\"20240216014810600\"},{\"a\":238,\"b\":50,\"c\":\"ALP30\",\"d\":\"\",\"e\":\"20240216014810600\"}],\"version\":\"0.0.1.5\"}", "/Eb1AjylyNNfQBLodn6Jf6Stb8NM7Hw2"));
 //    System.out.println(planetas.galaxia("/Eb1AjylyNNfQBLodn6Jf6Stb8NM7Hw2", "012345678901234567890", "20240216014726954"));
+
+//    System.out.println(planetas.asteroide(1L, "1", "/Eb1AjylyNNfQBLodn6Jf6Stb8NM7Hw2", 2L));
+    System.out.println(planetas.cometa(1L, "1", "/Eb1AjylyNNfQBLodn6Jf6Stb8NM7Hw2"));
   }
 
 }

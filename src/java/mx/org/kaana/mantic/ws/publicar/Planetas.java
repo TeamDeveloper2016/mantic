@@ -37,6 +37,7 @@ import mx.org.kaana.mantic.ws.imox.beans.Empresa;
 import mx.org.kaana.mantic.ws.imox.beans.Inventario;
 import mx.org.kaana.mantic.ws.imox.beans.Item;
 import mx.org.kaana.mantic.ws.imox.beans.Items;
+import mx.org.kaana.mantic.ws.imox.beans.Partida;
 import mx.org.kaana.mantic.ws.imox.beans.Producto;
 import mx.org.kaana.mantic.ws.imox.beans.Transferencia;
 import mx.org.kaana.mantic.ws.imox.beans.Ubicacion;
@@ -424,7 +425,7 @@ public class Planetas implements Serializable {
     return regresar;
   }
   
-  // SERVICIO WEB PARA REGISTRAR UNA TRANSFERENCIA
+  // SERVICIO WEB PARA REGISTRAR UNA TRANSFERENCIA REMOTA ENTRE ALMACENES
   public String eclipse(Long radio, String densidad, String atmosfera) throws Exception {
     String regresar           = Decoder.toJson(new Respuesta(ERespuesta.CORRECTO.getCodigo(), "Proceso correcto")); 
     Map<String, Object> params= new HashMap<>();
@@ -861,5 +862,62 @@ public class Planetas implements Serializable {
   protected String getCurrentSign() {
 		return Configuracion.getInstance().isEtapaDesarrollo()? ">": "<=";
 	}	
+
+  // SERVICIO WEB PARA DESCARGAR LOS FALTANTES DE ALMACEN
+  public String asteroide(Long radio, String densidad, String atmosfera, Long nucleo) throws Exception {
+    String regresar           = Decoder.toJson(new Respuesta(ERespuesta.CORRECTO.getCodigo(), "Proceso correcto")); 
+    Map<String, Object> params= new HashMap<>();
+    Respuesta respuesta       = null;
+    try {
+      respuesta= this.toRespueta(this.neptuno(atmosfera, radio));
+      if(Objects.equals(respuesta.getCodigo(), ERespuesta.CORRECTO.getCodigo())) {
+        params.put("sucursales", densidad); // idEmpresa
+        params.put("idAlmacen", nucleo); // idAlmacen
+        ArrayList<Partida> productos= (ArrayList<Partida>)DaoFactory.getInstance().toEntitySet(Partida.class, "VistaPlanetasDto", "asteroide", params, -1L);
+        if(productos!= null && !productos.isEmpty()) 
+          regresar= Decoder.toJson(new Respuesta(ERespuesta.CORRECTO.getCodigo(), Decoder.clean(productos)));
+        else
+          regresar= Decoder.toJson(new Respuesta(ERespuesta.SIN_PRODUCTOS.getCodigo(), ERespuesta.SIN_PRODUCTOS.getDescripcion()));
+      } // if
+      else
+        regresar= Decoder.toJson(respuesta);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      regresar= Decoder.toJson(new Respuesta(ERespuesta.ERROR.getCodigo(), e.getMessage()));
+    } // catch
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  }
+  
+  // SERVICIO WEB PARA DESCARGAR LA VENTAS PERDIDAS
+  public String cometa(Long radio, String densidad, String atmosfera) throws Exception {
+    String regresar           = Decoder.toJson(new Respuesta(ERespuesta.CORRECTO.getCodigo(), "Proceso correcto")); 
+    Map<String, Object> params= new HashMap<>();
+    Respuesta respuesta       = null;
+    try {
+      respuesta= this.toRespueta(this.neptuno(atmosfera, radio));
+      if(Objects.equals(respuesta.getCodigo(), ERespuesta.CORRECTO.getCodigo())) {
+  			params.put("sucursales", densidad); // idEmpresa
+        ArrayList<Partida> productos =(ArrayList<Partida>)DaoFactory.getInstance().toEntitySet(Partida.class, "VistaPlanetasDto", "cometa", params, -1L);
+        if(productos!= null && !productos.isEmpty()) 
+          regresar= Decoder.toJson(new Respuesta(ERespuesta.CORRECTO.getCodigo(), Decoder.clean(productos)));
+        else
+          regresar= Decoder.toJson(new Respuesta(ERespuesta.SIN_PRODUCTOS.getCodigo(), ERespuesta.SIN_PRODUCTOS.getDescripcion()));
+      } // if
+      else
+        regresar= Decoder.toJson(respuesta);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      regresar= Decoder.toJson(new Respuesta(ERespuesta.ERROR.getCodigo(), e.getMessage()));
+    } // catch
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  }
   
 }

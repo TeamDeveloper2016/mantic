@@ -7,34 +7,38 @@ import mx.org.kaana.libs.formato.Fecha;
 /**
  * @company KAANA
  * @project KAJOOL (Control system polls)
- * @date 15/01/2024
- * @time 11:42:10 AM 
+ * @date 04/05/2024
+ * @time 14:00:10 PM 
  * @author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public class Producto implements Serializable {
+public class Partida implements Serializable {
 
-  private static final long serialVersionUID = 8449185207269928086L;
+  private static final long serialVersionUID = 8449185207269928081L;
 
   private Long idProducto;
   private String nombre;
   private Long idAlmacen;
-  private Long idUbicacion;
-  private String codigos;
-  private Long idActivo;
+  private String codigo;
+  private double min;
+  private double max;
+  private double sugerido;
+  private double stock;
   private String registro;
 
-  public Producto() {
-    this(-1L, null, -1L, -1L, null, 2L);
+  public Partida() {
+    this(-1L, null, -1L, null, 0D, 0D, 1D, 1D);
   }
 
-  public Producto(Long idProducto, String nombre, Long idAlmacen, Long idUbicacion, String codigos, Long idActivo) {
+  public Partida(Long idProducto, String nombre, Long idAlmacen, String codigo, double min, double max, double sugerido, double stock) {
     this.idProducto = idProducto;
     this.nombre = nombre;
     this.idAlmacen = idAlmacen;
-    this.idUbicacion = idUbicacion;
-    this.codigos = codigos;
-    this.idActivo = idActivo;
+    this.codigo = codigo;
+    this.min = min;
+    this.max = max;
+    this.sugerido = sugerido;
+    this.stock = stock;
     this.registro = Fecha.toRegistro();
   }
 
@@ -62,28 +66,44 @@ public class Producto implements Serializable {
     this.idAlmacen = idAlmacen;
   }
 
-  public Long getIdUbicacion() {
-    return idUbicacion;
+  public String getCodigo() {
+    return codigo;
   }
 
-  public void setIdUbicacion(Long idUbicacion) {
-    this.idUbicacion = idUbicacion;
+  public void setCodigo(String codigo) {
+    this.codigo = codigo;
   }
 
-  public String getCodigos() {
-    return codigos;
+  public double getMin() {
+    return min;
   }
 
-  public void setCodigos(String codigos) {
-    this.codigos = codigos;
+  public void setMin(double min) {
+    this.min = min;
   }
 
-  public Long getIdActivo() {
-    return idActivo;
+  public double getMax() {
+    return max;
   }
 
-  public void setIdActivo(Long idActivo) {
-    this.idActivo = idActivo;
+  public void setMax(double max) {
+    this.max = max;
+  }
+
+  public double getSugerido() {
+    return sugerido;
+  }
+
+  public void setSugerido(double sugerido) {
+    this.sugerido = sugerido;
+  }
+
+  public double getStock() {
+    return stock;
+  }
+
+  public void setStock(double stock) {
+    this.stock = stock;
   }
 
   public String getRegistro() {
@@ -112,7 +132,7 @@ public class Producto implements Serializable {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    final Producto other = (Producto) obj;
+    final Partida other = (Partida) obj;
     if (!Objects.equals(this.idProducto, other.idProducto)) {
       return false;
     }
@@ -121,8 +141,7 @@ public class Producto implements Serializable {
 
   @Override
   public String toString() {
-    return "Producto{" + "idProducto=" + idProducto + ", nombre=" + nombre + ", idAlmacen=" + idAlmacen + ", idUbicacion=" + idUbicacion + ", codigos=" + codigos + ", idActivo=" + idActivo + ", registro=" + registro + '}';
+    return "Partida{" + "idProducto=" + idProducto + ", nombre=" + nombre + ", idAlmacen=" + idAlmacen + ", codigo=" + codigo + ", min=" + min + ", max=" + max + ", sugerido=" + sugerido + ", stock=" + stock + ", registro=" + registro + '}';
   }
 
-  
 }
