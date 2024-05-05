@@ -34,8 +34,8 @@
                 <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100">	
                   <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">	
                     <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{sessionScope.autentifica.empresa.matriz}"/>
-                    <p:selectOneMenu id="idEmpresa" value="#{manticCatalogosConteosAjustes.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="sucursales janal-wid-99" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                      <p:ajax event="change" listener="#{manticCatalogosConteosAjustes.doLoadAlmacenes}" process="@this" update="idAlmacen"/>
+                    <p:selectOneMenu id="idEmpresa" value="#{manticCatalogosConteosAjustes.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="sucursales janal-wid-95" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                      <p:ajax event="change" listener="#{manticCatalogosConteosAjustes.doLoadAlmacenes}" process="@this" update="idAlmacen fuente  @(.articulos)"/>
                       <f:selectItems value="#{manticCatalogosConteosAjustes.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
                       <p:column headerText="Clave">
                         <h:outputText value="#{item.clave}"/>
@@ -47,7 +47,7 @@
                   </p:panelGrid>
                   <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">	
                     <p:outputLabel for="idAlmacen" value="Almacen:"/>  
-                    <p:selectOneMenu id="idAlmacen" value="#{manticCatalogosConteosAjustes.attrs.idAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                    <p:selectOneMenu id="idAlmacen" value="#{manticCatalogosConteosAjustes.attrs.idAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-95" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                       <p:ajax event="change" listener="#{manticCatalogosConteosAjustes.doLoad}" process="@this nombre" update="fuente @(.articulos)"/>
                       <f:selectItems value="#{manticCatalogosConteosAjustes.attrs.almacenes}"  var="element" itemValue="#{element.key}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
                       <p:column headerText="Clave">
@@ -59,16 +59,16 @@
                     </p:selectOneMenu>
                   </p:panelGrid>
                 </p:panelGrid>
-                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">	
-                  <p:outputLabel for="nombre" value="Buscar por articulo:"/>  
-                  <p:inputText id="nombre" placeholder="Ej. ABRAZADERA ó AA451" styleClass="janal-wid-100-txt" value="#{manticCatalogosConteosAjustes.attrs.nombre}">
-                    <p:ajax event="keyup" listener="#{manticCatalogosConteosAjustes.doLoad}" process="@this" update="fuente" onstart="return $('#contenedorGrupos\\:nombre').val().trim().length> 1;"/>                    
-                  </p:inputText>  
-                </p:panelGrid>
               </p:panelGrid>
             </p:tab>  
-					  <p:tab title="Umbrales">
-              <p:dataTable id="fuente" var="row" value="#{manticCatalogosConteosAjustes.fuentes}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_MAX_TABLA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.idArticulo}" styleClass="fuente janal-wid-100-txt" rowIndexVar="index" rowStyleClass="#{manticCatalogosConteosAjustes.toColor(row)}">
+            <p:tab title="Umbrales">
+              <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">	
+                <p:outputLabel for="nombre" value="Buscar por articulo:"/>  
+                <p:inputText id="nombre" placeholder="Ej. ABRAZADERA ó AA451" styleClass="janal-wid-100-txt" value="#{manticCatalogosConteosAjustes.attrs.nombre}">
+                  <p:ajax event="keyup" listener="#{manticCatalogosConteosAjustes.doLoad}" process="@this" update="fuente" onstart="return $('#contenedorGrupos\\:nombre').val().trim().length> 1;"/>                    
+                </p:inputText>  
+              </p:panelGrid>
+              <p:dataTable id="fuente" var="row" value="#{manticCatalogosConteosAjustes.fuentes}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_MAX_TABLA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_MAX_TABLA}" paginator="false" reflow="true" rowKey="#{row.idArticulo}" styleClass="fuente janal-wid-100-txt" rowIndexVar="index" rowStyleClass="#{manticCatalogosConteosAjustes.toColor(row)}">
                 <f:facet name="header">
                   <div style="float: left">
                     <p:outputLabel value="#{manticCatalogosConteosAjustes.attrs.idAlmacen.nombre}" styleClass="janal-color-white articulos"/>
