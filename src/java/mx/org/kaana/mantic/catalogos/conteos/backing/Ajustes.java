@@ -189,5 +189,11 @@ public class Ajustes extends IBaseAttribute implements Serializable {
     } // finally
 	}
 
+  @Override
+  protected void finalize() throws Throwable {
+    super.finalize(); 
+    Methods.clean(this.fuentes);
+  }
+
 }
 
