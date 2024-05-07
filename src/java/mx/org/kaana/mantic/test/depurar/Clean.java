@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
-import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosCodigosDto;
@@ -28,13 +27,12 @@ public class Clean {
 	private static final Log LOG=LogFactory.getLog(Clean.class);
 	
 	public static void main(String[] args) throws FileNotFoundException, IOException {
-		File file=new File("D:\\Temporal\\Mantic\\depurar_duplicados_desarrollo.txt");
-		BufferedReader br=new BufferedReader(new FileReader(file));
-		String st= null;
-		int count= 0;
-		Map<String, Object> params=null;
+		File file        = new File("D:\\Temporal\\Mantic\\depurar_duplicados_desarrollo.txt");
+		BufferedReader br= new BufferedReader(new FileReader(file));
+		String st        = null;
+		int count        = 0;
+		Map<String, Object> params=new HashMap<>();
 		try {
-			params=new HashMap<>();
 			while ((st= br.readLine())!=null) {
 				String[] tokens= st.split(";");
 				params.put("idArticulo", tokens[0]);

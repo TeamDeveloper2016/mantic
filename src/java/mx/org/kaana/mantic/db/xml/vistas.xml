@@ -301,6 +301,7 @@ select
   tc_mantic_articulos.id_articulo as id_key,
   tc_mantic_articulos.id_articulo as id_producto,
   tc_mantic_faltantes.id_empresa,
+  tc_mantic_almacenes.id_almacen,
   tc_mantic_articulos.nombre,
   tc_mantic_articulos_codigos.codigo,
   tc_mantic_articulos.minimo,
@@ -310,6 +311,8 @@ select
   date_format(tc_mantic_faltantes.registro, '%Y%m%d%h%i%S') as registro
 from      
   tc_mantic_faltantes
+inner join 
+  tc_mantic_almacenes on tc_mantic_faltantes.id_empresa = tc_mantic_almacenes.id_empresa and tc_mantic_almacenes.id_principal= 1
 inner join 
   tc_mantic_empresas on tc_mantic_faltantes.id_empresa = tc_mantic_empresas.id_empresa
 inner join
