@@ -60,18 +60,18 @@ public final class AdminGarantia extends IAdminArticulos implements Serializable
 				case CONSULTAR:
 					Map<String, Object>params= new HashMap<>();
 					params.put("idGarantia", idGarantia);
-					arts= (List<ArticuloVenta>)DaoFactory.getInstance().toEntitySet(ArticuloVenta.class, "VistaTcManticGarantiasArticulosDto", "detalleGarantia", params); 
+					arts= (List<ArticuloVenta>)DaoFactory.getInstance().toEntitySet(ArticuloVenta.class, "VistaGarantiasDto", "detalleGarantia", params); 
 					this.setArticulos(arts);
 					this.validatePrecioArticulo();
 					break;				
 				case ASIGNAR:
-					arts= (List<ArticuloVenta>)DaoFactory.getInstance().toEntitySet(ArticuloVenta.class, "VistaTcManticGarantiasArticulosDto", "detalleCantidad", orden.toMap());
+					arts= (List<ArticuloVenta>)DaoFactory.getInstance().toEntitySet(ArticuloVenta.class, "VistaGarantiasDto", "detalleCantidad", orden.toMap());
 					this.setArticulos(arts);
 					this.validatePrecioArticulo();
 					this.validaArticulos();
 					break;
 				default:
-					arts= (List<ArticuloVenta>)DaoFactory.getInstance().toEntitySet(ArticuloVenta.class, "VistaTcManticGarantiasArticulosDto", "detalle", orden.toMap());
+					arts= (List<ArticuloVenta>)DaoFactory.getInstance().toEntitySet(ArticuloVenta.class, "VistaGarantiasDto", "detalle", orden.toMap());
 					this.setArticulos(arts);
 					this.validatePrecioArticulo();
 					this.validaArticulos();

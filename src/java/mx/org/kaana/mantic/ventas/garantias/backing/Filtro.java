@@ -21,7 +21,6 @@ import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
-import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
@@ -34,18 +33,19 @@ import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.db.dto.TcManticGarantiasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticGarantiasDto;
 import mx.org.kaana.mantic.enums.EReportes;
+import mx.org.kaana.mantic.ventas.comun.IBaseTicket;
 import org.primefaces.context.RequestContext;
 
 @Named(value= "manticVentasGarantiasFiltro")
 @ViewScoped
-public class Filtro extends IBaseFilter implements Serializable {
+public class Filtro extends IBaseTicket implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428332L;
 	private Reporte reporte;
 	
 	public Reporte getReporte() {
 		return reporte;
-	}	// getReporte
+	}	
 	
   @PostConstruct
   @Override
@@ -54,8 +54,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.attrs.put("idGarantia", JsfBase.getFlashAttribute("idGarantia"));
-      this.attrs.put("sortOrder", "order by tc_mantic_garantias.registro desc");
-			toLoadCatalog();
+			this.toLoadCatalog();
       if(this.attrs.get("idGarantia")!= null){
 			  this.doLoad();
 				this.attrs.put("idGarantia", null);
@@ -69,11 +68,10 @@ public class Filtro extends IBaseFilter implements Serializable {
  
   @Override
   public void doLoad() {
-    List<Columna> columns     = null;
-		Map<String, Object> params= toPrepare();
+    List<Columna> columns     = new ArrayList<>();
+		Map<String, Object> params= this.toPrepare();
     try {
-			params.put("sortOrder", this.attrs.get("sortOrder"));
-      columns = new ArrayList<>();
+			params.put("sortOrder", "order by tc_mantic_garantias.registro desc");
       columns.add(new Columna("nombreEmpresa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("total", EFormatoDinamicos.MONEDA_CON_DECIMALES));
@@ -108,9 +106,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 	
   public void doEliminar() {
 		Transaccion transaccion = null;
-		Entity seleccionado     = null;
+		Entity seleccionado     = (Entity) this.attrs.get("seleccionado");
 		try {
-			seleccionado= (Entity) this.attrs.get("seleccionado");			
 			transaccion= new Transaccion(new TcManticGarantiasDto(seleccionado.getKey()), this.attrs.get("justificacionEliminar").toString());
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
 				JsfBase.addMessage("Eliminar", "La garantia se ha eliminado correctamente.", ETipoMensaje.ERROR);
@@ -149,10 +146,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 	}
 	
 	protected void toLoadCatalog() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
         params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
 			else
@@ -179,15 +175,12 @@ public class Filtro extends IBaseFilter implements Serializable {
 	}
 	
 	public void doReporte() throws Exception {
-		Map<String, Object>params    = null;
-		Map<String, Object>parametros= null;
-		EReportes reporteSeleccion   = null;
+		Map<String, Object>params    = new HashMap<>();
+		Map<String, Object>parametros= new HashMap<>();
+		EReportes reporteSeleccion   = EReportes.ORDEN_COMPRA;
 		try{				
-			reporteSeleccion= EReportes.ORDEN_COMPRA;
 			this.reporte= JsfBase.toReporte();
-			params= new HashMap<>();
 			params.put("idGarantia", ((Entity)this.attrs.get("seleccionado")).getKey());			
-			parametros= new HashMap<>();
 			parametros.put("REPORTE_EMPRESA", JsfBase.getAutentifica().getEmpresa().getNombreCorto());
 		  parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
 			parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
@@ -213,12 +206,10 @@ public class Filtro extends IBaseFilter implements Serializable {
 	} // doVerificarReporte		
 	
 	public void doLoadEstatus(){
-		Entity seleccionado          = null;
-		Map<String, Object>params    = null;
+		Entity seleccionado          = (Entity)this.attrs.get("seleccionado");
+		Map<String, Object>params    = new HashMap<>();
 		List<UISelectItem> allEstatus= null;
 		try {
-			seleccionado= (Entity)this.attrs.get("seleccionado");
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_garantia_estatus in (".concat(seleccionado.toString("estatusAsociados")).concat(")"));
 			allEstatus= UISelect.build("TcManticGrantiasEstatusDto", params, "nombre", EFormatoDinamicos.MAYUSCULAS);			
 			this.attrs.put("allEstatus", allEstatus);
@@ -236,9 +227,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 	public void doActualizarEstatus() {
 		Transaccion transaccion              = null;
 		TcManticGarantiasBitacoraDto bitacora= null;
-		Entity seleccionado                  = null;
+		Entity seleccionado                  = (Entity)this.attrs.get("seleccionado");
 		try {
-			seleccionado= (Entity)this.attrs.get("seleccionado");
 			TcManticGarantiasDto orden= (TcManticGarantiasDto)DaoFactory.getInstance().findById(TcManticGarantiasDto.class, seleccionado.getKey());
 			bitacora= new TcManticGarantiasBitacoraDto(seleccionado.getKey(), orden.getConsecutivo(), (String)this.attrs.get("justificacion"), JsfBase.getIdUsuario(), Long.valueOf(this.attrs.get("estatus").toString()), -1L, orden.getTotal());
 			transaccion= new Transaccion(bitacora);
@@ -254,5 +244,6 @@ public class Filtro extends IBaseFilter implements Serializable {
 		finally {
 			this.attrs.put("justificacion", "");
 		} // finally
-	}	// doActualizaEstatus
+	}	
+  
 }

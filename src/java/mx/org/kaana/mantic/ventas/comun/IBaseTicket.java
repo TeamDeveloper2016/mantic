@@ -10,6 +10,7 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
@@ -23,14 +24,12 @@ public abstract class IBaseTicket extends IBaseFilter implements Serializable {
 	private static final long serialVersionUID = -2088985265691847994L;
 	
 	public void doTicket() {
-		Entity seleccionado      = null;
-		Map<String, Object>params= null;
+		Entity seleccionado      = (Entity) this.attrs.get("seleccionado");
+		Map<String, Object>params= new HashMap<>();
 		CreateTicket ticket      = null;
 		AdminTickets adminTicket = null;
     String       cliente     = "";
 		try {			
-			seleccionado= (Entity) this.attrs.get("seleccionado");
-			params= new HashMap<>();
 			params.put("idVenta", seleccionado.toLong("idVenta"));
       if(seleccionado.containsKey("cliente") && !Objects.equals(Constantes.VENTA_AL_PUBLICO_GENERAL, seleccionado.toString("cliente"))) 
         cliente= seleccionado.toString("cliente");
@@ -40,15 +39,14 @@ public abstract class IBaseTicket extends IBaseFilter implements Serializable {
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
-			mx.org.kaana.libs.formato.Error.mensaje(e);
+			Error.mensaje(e);
 		} // catch		
 	} // doTicket
 	
 	private String toTipoTransaccion(Long idEstatus) {
-		String regresar       = null;
+		String regresar       = "VENTA DE MOSTRADOR";
 		EEstatusVentas estatus= null;		
 		try {
-			regresar= "VENTA DE MOSTRADOR";
 			if(idEstatus<= EEstatusVentas.EN_CAPTURA.getIdEstatusVenta() || idEstatus.equals(EEstatusVentas.TIMBRADA.getIdEstatusVenta())) {
 				estatus= EEstatusVentas.fromIdTipoPago(idEstatus);
 				switch(estatus) {
@@ -92,12 +90,11 @@ public abstract class IBaseTicket extends IBaseFilter implements Serializable {
 	private Pago toPago(AdminTickets adminTicket, Long idVenta) throws Exception {
 		Pago regresar            = null;
 		List<Entity> detallePago = null;
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		ETipoMediosPago medioPago= null;
     EEstatusVentas venta     = EEstatusVentas.ABIERTA;
 		try {
 			regresar= new Pago(adminTicket.getTotales());
-			params  = new HashMap<>();
 			params.put("idVenta", idVenta);
       // SON LOS ABONOS QUE SE HAN REALIZADO POR EL CLIENTE SI ES UN APARTADO
       detallePago= DaoFactory.getInstance().toEntitySet("VistaApartadosDto", "abonos", params, Constantes.SQL_TODOS_REGISTROS);
@@ -148,5 +145,6 @@ public abstract class IBaseTicket extends IBaseFilter implements Serializable {
 			throw e; 
 		} // catch		
 		return regresar;
-	} // toPago
+	} 
+  
 }

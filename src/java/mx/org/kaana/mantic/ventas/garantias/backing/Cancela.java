@@ -140,7 +140,7 @@ public class Cancela extends IBaseAttribute implements Serializable {
       params = new HashMap<>();      
       params.put("idVenta", idVenta);     
       this.ticket   = (TcManticVentasDto)this.venta.clone();
-      this.articulos= (List<ArticuloVenta>)DaoFactory.getInstance().toEntitySet(ArticuloVenta.class, "VistaTcManticGarantiasArticulosDto", "detalle", params);
+      this.articulos= (List<ArticuloVenta>)DaoFactory.getInstance().toEntitySet(ArticuloVenta.class, "VistaGarantiasDto", "detalle", params);
       if(this.articulos!= null && !this.articulos.isEmpty()) {
         int count= 0;
         this.totales.reset();
