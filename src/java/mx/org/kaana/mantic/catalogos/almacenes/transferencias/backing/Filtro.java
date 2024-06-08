@@ -252,7 +252,7 @@ public class Filtro extends Comun implements Serializable {
 			eaccion= EAccion.valueOf(accion.toUpperCase());
 		  JsfBase.setFlashAttribute("retorno", "filtro");		
 		  JsfBase.setFlashAttribute("accion", eaccion);		
-			if(((Entity)this.attrs.get("seleccionado")).toLong("idTransferenciaTipo").equals(2L))
+			if(((Entity)this.attrs.get("seleccionado")).toLong("idTransferenciaTipo").equals(2L) || ((Entity)this.attrs.get("seleccionado")).toLong("idTransferenciaTipo").equals(3L))
 				regresar= "normal";
 			JsfBase.setFlashAttribute("idTransferencia", (eaccion.equals(EAccion.MODIFICAR)||eaccion.equals(EAccion.CONSULTAR)) ? ((Entity)this.attrs.get("seleccionado")).getKey(): -1L);
 		} // try

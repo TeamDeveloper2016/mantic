@@ -94,11 +94,11 @@ public class Accion extends IBaseVenta implements Serializable {
 		Entity entity               = null;
     try {
 			this.attrs.put("xcodigo", JsfBase.getFlashAttribute("xcodigo"));	
-      this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null ? EAccion.AGREGAR: JsfBase.getFlashAttribute("accion"));
-      this.attrs.put("idVenta", JsfBase.getFlashAttribute("idVenta")== null ? -1L: JsfBase.getFlashAttribute("idVenta"));
-      this.attrs.put("idGarantia", JsfBase.getFlashAttribute("idGarantia")== null ? -1L: JsfBase.getFlashAttribute("idGarantia"));
-			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null ? null : JsfBase.getFlashAttribute("retorno"));
-			this.attrs.put("devolucionTicket", JsfBase.getFlashAttribute("devolucionTicket")== null ? null : JsfBase.getFlashAttribute("devolucionTicket"));
+      this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: JsfBase.getFlashAttribute("accion"));
+      this.attrs.put("idVenta", JsfBase.getFlashAttribute("idVenta")== null? -1L: JsfBase.getFlashAttribute("idVenta"));
+      this.attrs.put("idGarantia", JsfBase.getFlashAttribute("idGarantia")== null? -1L: JsfBase.getFlashAttribute("idGarantia"));
+			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
+			this.attrs.put("devolucionTicket", JsfBase.getFlashAttribute("devolucionTicket")== null? null: JsfBase.getFlashAttribute("devolucionTicket"));
       this.attrs.put("isFactura", true);
       this.attrs.put("factura", null);
       this.attrs.put("isPesos", false);
@@ -463,7 +463,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		return pago;
 	} // loadPagoPivote
 	
-	private DetalleGarantia loadDetalleGarantia() throws Exception{
+	private DetalleGarantia loadDetalleGarantia() throws Exception {
 		DetalleGarantia regresar = null;
 		List<Garantia> garantias = null;		
 		Garantia garantia        = null;		
@@ -1015,11 +1015,12 @@ public class Accion extends IBaseVenta implements Serializable {
       Methods.clean(columns);
       Methods.clean(params);
     } // finally
-	}	// doUpdateClientes
+	}	
 	
 	@Override
 	public String doCancelar() {     	
-    return (this.attrs.get("retorno") != null ? (String)this.attrs.get("retorno") : "filtro").concat(Constantes.REDIRECIONAR);
+    JsfBase.setFlashAttribute("idGarantia", this.attrs.get("idGarantia"));
+    return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   } // doCancelar
 	
 	public void doReturnAllItems() {

@@ -214,8 +214,8 @@
             <p:menuitem value="Sin conteo" icon="fa fa-indent" process="@this tabla" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" rendered="#{fn:contains('|8|9|', manticCatalogosAlmacenesTransferenciasFiltro.attrs.seleccionado.estatus)}">
 							<p:fileDownload value="#{manticCatalogosAlmacenesTransferenciasFiltro.archivo}" />
 						</p:menuitem>	
-            <p:separator rendered="#{fn:contains('|8|9|', manticCatalogosAlmacenesTransferenciasFiltro.attrs.seleccionado.estatus)}"/>
-            <p:menuitem value="Min max" icon="fa fa-balance-scale" onstart="return janal.bloquear()" process="@this tabla" action="#{manticCatalogosAlmacenesTransferenciasFiltro.doUmbrales}" rendered="#{fn:contains('|8|9|', manticCatalogosAlmacenesTransferenciasFiltro.attrs.seleccionado.estatus)}"/>
+            <p:separator rendered="#{fn:contains('|5|8|9|', manticCatalogosAlmacenesTransferenciasFiltro.attrs.seleccionado.estatus)}"/>
+            <p:menuitem value="Min max" icon="fa fa-balance-scale" onstart="return janal.bloquear()" process="@this tabla" action="#{manticCatalogosAlmacenesTransferenciasFiltro.doUmbrales}" rendered="#{fn:contains('|5|8|9|', manticCatalogosAlmacenesTransferenciasFiltro.attrs.seleccionado.estatus)}"/>
 					</p:contextMenu>
         </div>
       </div>

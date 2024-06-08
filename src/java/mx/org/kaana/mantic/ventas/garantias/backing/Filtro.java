@@ -55,7 +55,7 @@ public class Filtro extends IBaseTicket implements Serializable {
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.attrs.put("idGarantia", JsfBase.getFlashAttribute("idGarantia"));
 			this.toLoadCatalog();
-      if(this.attrs.get("idGarantia")!= null){
+      if(this.attrs.get("idGarantia")!= null) {
 			  this.doLoad();
 				this.attrs.put("idGarantia", null);
 			} // if

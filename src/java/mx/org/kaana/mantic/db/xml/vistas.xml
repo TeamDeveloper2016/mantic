@@ -197,9 +197,9 @@ select * from
     tc_mantic_almacenes.id_almacen,
     tc_mantic_articulos_codigos.codigo,
     tc_mantic_articulos.nombre,
-    tc_mantic_almacenes_articulos.minimo,
-    tc_mantic_almacenes_articulos.maximo,
-    tc_mantic_almacenes_articulos.maximo- tc_mantic_almacenes_articulos.stock as segerido,
+    tc_mantic_almacenes_articulos.minimo as 'min',
+    tc_mantic_almacenes_articulos.maximo as 'max',
+    tc_mantic_almacenes_articulos.maximo- tc_mantic_almacenes_articulos.stock as sugerido,
     tc_mantic_almacenes_articulos.stock,
     date_format(tc_mantic_articulos.actualizado, '%Y%m%d%h%i%S') as registro
   from
@@ -230,9 +230,9 @@ union
      id_almacen,
      codigo,
      nombre,
-     minimo,
-     maximo,
-     sugerido,
+     min,
+     max,
+     sugerido as sugerido,
      stock,
      id_orden_detalle
   from (
@@ -243,8 +243,8 @@ union
       tc_mantic_almacenes.id_almacen,
       tc_mantic_articulos.nombre,
       tc_mantic_articulos_codigos.codigo,
-      tc_mantic_almacenes_articulos.minimo,
-      tc_mantic_almacenes_articulos.maximo,
+      tc_mantic_almacenes_articulos.minimo as 'min',
+      tc_mantic_almacenes_articulos.maximo as 'max',
       tc_mantic_almacenes_articulos.maximo- tc_mantic_almacenes_articulos.stock as sugerido,
       tc_mantic_almacenes_articulos.stock,
       date_format(tc_mantic_articulos.actualizado, '%Y%m%d%h%i%S') as registro,
@@ -304,8 +304,8 @@ select
   tc_mantic_almacenes.id_almacen,
   tc_mantic_articulos.nombre,
   tc_mantic_articulos_codigos.codigo,
-  tc_mantic_articulos.minimo,
-  tc_mantic_articulos.maximo,
+  tc_mantic_articulos.minimo as 'min',
+  tc_mantic_articulos.maximo as 'max',
   tc_mantic_faltantes.cantidad as sugerido,
   -1 as stock,
   date_format(tc_mantic_faltantes.registro, '%Y%m%d%h%i%S') as registro

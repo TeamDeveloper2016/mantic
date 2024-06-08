@@ -265,7 +265,7 @@ public class Transaccion extends IBaseTnx {
 					if(deuda.getSaldo()> 0D) {
 						item     = (TcManticEmpresasDeudasDto) DaoFactory.getInstance().findById(sesion, TcManticEmpresasDeudasDto.class, notaEntrada.getKey());
 						if(item     .getSaldo()> 0D) {
-							if(deuda.getSaldo()<= item     .getSaldo()) {																																
+							if(deuda.getSaldo()<= item.getSaldo()) {																																
 								totalPago= deuda.getSaldo();
 								deuda.setSaldo(0D);
 								deuda.setIdEmpresaEstatus(EEstatusEmpresas.LIQUIDADA.getIdEstatusEmpresa());								

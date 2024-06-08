@@ -361,8 +361,8 @@ public class Saldos extends IBaseImportar implements Serializable {
 		try {
 		  JsfBase.setFlashAttribute("accion", EAccion.COMPLETO);		
 			JsfBase.setFlashAttribute("idEmpresaDeuda",((Entity)this.attrs.get("seleccionadoDetalle")).getKey());
-			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Entradas/filtro");		
 			JsfBase.setFlashAttribute("idNotaEntrada", -1L);
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Entradas/filtro");		
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
