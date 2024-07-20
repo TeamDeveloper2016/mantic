@@ -14,7 +14,7 @@
 		<h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryTicketJs}"/>
 		<script type="text/javascript">
 			// <![CDATA[
-			Janal.Control.fields={
+			Janal.Control.fields= {
 				'ticket'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},			
 				'descuento': {validaciones: 'libre', mascara: 'libre', formatos: 'descuentos', grupo: 'general'},			
 				'total'    : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'libre', grupo: 'general', mensaje: 'El importe total tiene que ser mayor a 0'}

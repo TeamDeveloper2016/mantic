@@ -8,6 +8,7 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
+import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.almacenes.confrontas.beans.Confronta;
@@ -35,11 +36,11 @@ public final class AdminConfronta extends IAdminArticulos implements Serializabl
 	public AdminConfronta(Confronta orden) throws Exception {
 		this.orden= orden;
 		if(this.orden.isValid()) {
-  	  this.setArticulos((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaConfrontasDto", "detalle", orden.toMap()));
+  	  this.setArticulos((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaConfrontasDto", "detalle", orden.toMap(), Constantes.SQL_TOPE_REGISTROS));
 			this.orden.init();
 		}	// if
 		else {
-  	  this.setArticulos((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaConfrontasDto", "diferencia", orden.toMap()));
+  	  this.setArticulos((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaConfrontasDto", "diferencia", orden.toMap(), Constantes.SQL_TOPE_REGISTROS));
 			// this.orden.setConsecutivo(this.toConsecutivo("0"));
 		} // else	
 		this.toLoadStockArticulos();

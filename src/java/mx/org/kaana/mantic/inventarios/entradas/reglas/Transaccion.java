@@ -2,6 +2,7 @@ package mx.org.kaana.mantic.inventarios.entradas.reglas;
 
 import java.io.File;
 import java.io.Serializable;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -355,7 +356,7 @@ public class Transaccion extends Inventarios implements Serializable {
 			if(this.orden.getDiasPlazo()> 1) 
 				deuda= new TcManticEmpresasDeudasDto(1L, JsfBase.getIdUsuario(), -1L, "", this.orden.getIdEmpresa(), this.orden.getDeuda()- this.orden.getExcedentes(), this.orden.getIdNotaEntrada(), this.orden.getFechaPago(), this.orden.getDeuda(), this.orden.getDeuda()- this.orden.getExcedentes(), 2L, Cadena.isVacio(this.orden.getFactura())? 1L: 2L, null, null, null);
 			else
-				deuda= new TcManticEmpresasDeudasDto(3L, JsfBase.getIdUsuario(), -1L, "ESTE DEUDA FUE LIQUIDADA EN EFECTIVO", this.orden.getIdEmpresa(), 0D, this.orden.getIdNotaEntrada(), this.orden.getFechaPago(), this.orden.getDeuda(), this.orden.getDeuda()- this.orden.getExcedentes(), 2L, Cadena.isVacio(this.orden.getFactura())? 1L: 2L, null, null, null);
+				deuda= new TcManticEmpresasDeudasDto(4L, JsfBase.getIdUsuario(), -1L, "ESTE DEUDA FUE LIQUIDADA EN EFECTIVO", this.orden.getIdEmpresa(), 0D, this.orden.getIdNotaEntrada(), this.orden.getFechaPago(), this.orden.getDeuda(), this.orden.getDeuda()- this.orden.getExcedentes(), 2L, Cadena.isVacio(this.orden.getFactura())? 1L: 2L, new Date(Calendar.getInstance().getTimeInMillis()), JsfBase.getIdUsuario(), null);
 			DaoFactory.getInstance().insert(sesion, deuda);
 			params.put("idNotaEntrada", this.orden.getIdNotaEntrada());
 			params.put("idNotaEstatus", this.orden.getIdNotaEstatus());

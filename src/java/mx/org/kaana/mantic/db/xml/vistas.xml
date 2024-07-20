@@ -189,112 +189,48 @@ order by
     </unit>  
 		<unit id="VistaPlanetasDto">
 			<select id="asteroide">
-select * from
+select
+  tc_mantic_articulos.id_articulo as id_key,
+  tc_mantic_almacenes.id_empresa,
+  tc_mantic_articulos.id_articulo as id_producto,
+  tc_mantic_articulos_codigos.codigo,
+  tc_mantic_articulos.nombre,
+  tc_mantic_almacenes_articulos.minimo as 'min',
+  tc_mantic_almacenes_articulos.maximo as 'max',
+  tc_mantic_almacenes_articulos.maximo- if(tc_mantic_almacenes_articulos.stock&lt; 0, 0, tc_mantic_almacenes_articulos.stock) as sugerido,
+  tc_mantic_inventarios.stock,
+  date_format(tc_mantic_articulos.actualizado, '%Y%m%d%h%i%S') as registro
+from
+  tc_mantic_articulos
+inner join
+  tc_mantic_almacenes_articulos on tc_mantic_articulos.id_articulo= tc_mantic_almacenes_articulos.id_articulo and tc_mantic_almacenes_articulos.id_almacen= {idAlmacen}
+inner join
+  tc_mantic_inventarios on tc_mantic_almacenes_articulos.id_almacen= tc_mantic_inventarios.id_almacen and tc_mantic_almacenes_articulos.id_articulo= tc_mantic_inventarios.id_articulo and tc_mantic_inventarios.id_automatico= 2     
+inner join
   (select
-    tc_mantic_articulos.id_articulo as id_key,
-    tc_mantic_articulos.id_articulo as id_producto,
-    tc_mantic_almacenes.id_empresa,
-    tc_mantic_almacenes.id_almacen,
-    tc_mantic_articulos_codigos.codigo,
-    tc_mantic_articulos.nombre,
-    tc_mantic_almacenes_articulos.minimo as 'min',
-    tc_mantic_almacenes_articulos.maximo as 'max',
-    tc_mantic_almacenes_articulos.maximo- tc_mantic_almacenes_articulos.stock as sugerido,
-    tc_mantic_almacenes_articulos.stock,
-    date_format(tc_mantic_articulos.actualizado, '%Y%m%d%h%i%S') as registro
-  from
-    tc_mantic_articulos
-  inner join
-    tc_mantic_almacenes_articulos on tc_mantic_articulos.id_articulo= tc_mantic_almacenes_articulos.id_articulo
-  inner join
-    tc_mantic_almacenes on tc_mantic_almacenes_articulos.id_almacen= tc_mantic_almacenes.id_almacen
-  inner join 
-    tc_mantic_inventarios on tc_mantic_articulos.id_articulo= tc_mantic_inventarios.id_articulo and tc_mantic_inventarios.id_almacen= {idAlmacen}
-  inner join
-    tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo= tc_mantic_articulos_codigos.id_articulo
-  where 
-    tc_mantic_almacenes.id_empresa in ({sucursales})
-    and tc_mantic_almacenes.id_almacen= {idAlmacen}
-    and tc_mantic_articulos.id_descontinuado= 2
-    and tc_mantic_articulos.id_vigente= 1
-    and tc_mantic_inventarios.id_automatico= 2
-    and tc_mantic_almacenes_articulos.stock &lt;= tc_mantic_almacenes_articulos.minimo
-    and tc_mantic_articulos_codigos.id_principal= 1
-    and tc_mantic_articulos.id_articulo not in 
-    (select tc_mantic_ordenes_detalles.id_articulo from tc_mantic_ordenes_detalles inner join tc_mantic_ordenes_compras on tc_mantic_ordenes_detalles.id_orden_compra= tc_mantic_ordenes_compras.id_orden_compra and tc_mantic_ordenes_compras.id_orden_estatus in (3,4,5,7))
-union						
-  select
-     id_key,
-     id_articulo,
-     id_empresa,
-     id_almacen,
-     codigo,
-     nombre,
-     min,
-     max,
-     sugerido as sugerido,
-     stock,
-     id_orden_detalle
-  from (
-    select
-      tc_mantic_articulos.id_articulo as id_key,
-      tc_mantic_articulos.id_articulo,
-      tc_mantic_articulos.id_empresa,
-      tc_mantic_almacenes.id_almacen,
-      tc_mantic_articulos.nombre,
-      tc_mantic_articulos_codigos.codigo,
-      tc_mantic_almacenes_articulos.minimo as 'min',
-      tc_mantic_almacenes_articulos.maximo as 'max',
-      tc_mantic_almacenes_articulos.maximo- tc_mantic_almacenes_articulos.stock as sugerido,
-      tc_mantic_almacenes_articulos.stock,
-      date_format(tc_mantic_articulos.actualizado, '%Y%m%d%h%i%S') as registro,
-      tc_mantic_ordenes_detalles.id_orden_detalle
+      max(tc_mantic_inventarios.id_inventario) as id_inventario
     from
-      tc_mantic_articulos
-    inner join
-      tc_mantic_almacenes_articulos on tc_mantic_articulos.id_articulo= tc_mantic_almacenes_articulos.id_articulo
-    inner join
-      tc_mantic_almacenes on tc_mantic_almacenes_articulos.id_almacen= tc_mantic_almacenes.id_almacen
-    inner join 
-      tc_mantic_inventarios on tc_mantic_articulos.id_articulo= tc_mantic_inventarios.id_articulo and tc_mantic_inventarios.id_almacen= {idAlmacen}
-    inner join
-      tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo= tc_mantic_articulos_codigos.id_articulo
-    left join	
-      tc_mantic_ordenes_detalles on tc_mantic_articulos.id_articulo= tc_mantic_ordenes_detalles.id_articulo
-    left join 
-      tc_mantic_ordenes_compras on tc_mantic_ordenes_detalles.id_orden_compra= tc_mantic_ordenes_compras.id_orden_compra
-    left join
-      tc_mantic_ordenes_estatus on tc_mantic_ordenes_estatus.id_orden_estatus= tc_mantic_ordenes_compras.id_orden_estatus
-    where 
-      tc_mantic_almacenes.id_empresa in ({sucursales})
-      and tc_mantic_almacenes.id_almacen= {idAlmacen}
-      and tc_mantic_articulos.id_descontinuado= 2
-      and tc_mantic_articulos.id_vigente= 1
-      and tc_mantic_inventarios.id_automatico= 2
-      and tc_mantic_almacenes_articulos.stock &lt;= tc_mantic_almacenes_articulos.minimo
-      and tc_mantic_articulos_codigos.id_principal= 1
-      and (tc_mantic_ordenes_compras.id_orden_estatus in (3,4,5,7) or tc_mantic_ordenes_compras.id_orden_estatus is null)
-    order by
-      tc_mantic_articulos.nombre, tc_mantic_ordenes_detalles.registro desc
-  ) as faltantes
-  inner join (
-    select 
-      max(tc_mantic_ordenes_detalles.id_orden_detalle) as id_maximo_detalle,
-      tc_mantic_ordenes_detalles.id_articulo as id_maximo_articulo
-    from 
-      tc_mantic_ordenes_detalles 
-    inner join
-      tc_mantic_ordenes_compras on tc_mantic_ordenes_detalles.id_orden_compra= tc_mantic_ordenes_compras.id_orden_compra   
-     where
-       (tc_mantic_ordenes_compras.id_orden_estatus in (3,4,5,7) or tc_mantic_ordenes_compras.id_orden_estatus is null)
+      tc_mantic_inventarios         
     group by
-      tc_mantic_ordenes_detalles.id_articulo  
-    order by  
-      tc_mantic_ordenes_detalles.id_articulo      
-  ) as ultimo on faltantes.id_orden_detalle= ultimo.id_maximo_detalle and faltantes.id_articulo= ultimo.id_maximo_articulo
-) as compras
+      id_almacen, id_articulo  
+  ) as tc_mantic_maximos on tc_mantic_inventarios.id_inventario= tc_mantic_maximos.id_inventario        
+inner join
+  tc_mantic_almacenes on tc_mantic_almacenes_articulos.id_almacen= tc_mantic_almacenes.id_almacen
+inner join
+  tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo= tc_mantic_articulos_codigos.id_articulo
+where 
+  tc_mantic_almacenes.id_empresa in ({sucursales})
+  and tc_mantic_almacenes.id_almacen= {idAlmacen}
+  and tc_mantic_inventarios.stock &lt;= tc_mantic_almacenes_articulos.minimo
+  and tc_mantic_articulos_codigos.id_principal= 1
+  and tc_mantic_articulos.id_vigente= 1
+  and tc_mantic_articulos.id_descontinuado= 2
+group by
+  tc_mantic_almacenes.id_empresa,
+  tc_mantic_articulos.id_articulo,
+  tc_mantic_almacenes.id_almacen
 order by
-  codigo        
+  tc_mantic_articulos.nombre
       </select>  
 			<select id="cometa">
 select      
@@ -334,7 +270,7 @@ select
   concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as nombre,
   tc_mantic_personas.cuenta,
   tc_mantic_personas.contrasenia as token,
-  if(tc_janal_usuarios.id_perfil&gt;= 3, 3, tc_janal_usuarios.id_perfil) as id_perfil,
+  if(tc_janal_usuarios.id_perfil&gt;= 3 and tc_janal_usuarios.id_perfil!= 8, 3, tc_janal_usuarios.id_perfil) as id_perfil,
   tc_janal_usuarios.activo as activo,
   date_format(tc_janal_usuarios.registro, '%Y%m%d%h%i%S') as registro
 from
@@ -2553,77 +2489,79 @@ group by
          tt_mantic_general.importe desc
       </select>  
 			<select id="credito">
-				select				
-				  convert(concat(recalculo.id_empresa, recalculo.id_caja, recalculo.id_tipo_medio_pago), signed) as id_key,			
-					recalculo.*,
-					if(id_tipo_medio_pago=1, (total - if(deduccion is null, 0, deduccion)), importe) total_deducciones
-				from(
-				select 
-					deducciones.*,	
-					(select if(importe is null, 0, importe) importe from tr_mantic_venta_medio_pago where id_venta=deducciones.id_venta and id_tipo_medio_pago != 1) deduccion
-				from (
-				select							
-					tc_mantic_ventas.id_venta,
-					tc_mantic_empresas.id_empresa,
-					tc_mantic_empresas.clave as empresa,
-					tc_mantic_empresas.nombre as nombre_empresa,
-					tc_mantic_cajas.id_caja,            
-					tc_mantic_cajas.clave caja,					
-					tr_mantic_venta_medio_pago.importe,
-					tr_mantic_venta_medio_pago.importe as total,	
-				  tc_mantic_ventas.registro as fecha,
-					tc_mantic_tipos_medios_pagos.id_tipo_medio_pago,
-					tc_mantic_tipos_medios_pagos.nombre as tipo_medio_pago,
-					tc_mantic_clientes.razon_social,
-          ifnull(tc_mantic_garantias.consecutivo, '') as garantia,
-          tc_mantic_garantias.total as devuelto,
-          tc_mantic_garantias.registro as cuando
-				from
-					tc_mantic_ventas    
-				inner join (
-          select
-            tc_mantic_ventas.id_venta
-          from
-            tc_mantic_ventas
-          where
-            tc_mantic_ventas.id_empresa in ({idEmpresa})
-            and {condicion}     
-        ) tt_mantic_ventas on tc_mantic_ventas.id_venta= tt_mantic_ventas.id_venta
-				inner join
-					tc_mantic_almacenes on tc_mantic_ventas.id_almacen= tc_mantic_almacenes.id_almacen     
-				inner join
-					tc_mantic_empresas on tc_mantic_ventas.id_empresa= tc_mantic_empresas.id_empresa     
-				inner join
-					tc_mantic_ventas_estatus on tc_mantic_ventas.id_venta_estatus=tc_mantic_ventas_estatus.id_venta_estatus     
-				inner join
-					tc_mantic_tipos_documentos on tc_mantic_tipos_documentos.id_tipo_documento= tc_mantic_ventas_estatus.id_tipo_documento     	       
-				inner join
-					tr_mantic_venta_medio_pago on tc_mantic_ventas.id_venta = tr_mantic_venta_medio_pago.id_venta     
-				inner join
-					tc_mantic_tipos_medios_pagos on tr_mantic_venta_medio_pago.id_tipo_medio_pago = tc_mantic_tipos_medios_pagos.id_tipo_medio_pago     
-        inner join
-          tc_mantic_clientes on tc_mantic_ventas.id_cliente= tc_mantic_clientes.id_cliente
-        inner join
-          tc_mantic_cierres_cajas on tr_mantic_venta_medio_pago.id_cierre = tc_mantic_cierres_cajas.id_cierre and tc_mantic_ventas.id_venta= tr_mantic_venta_medio_pago.id_venta     
-        inner join
-          tc_mantic_cajas on tc_mantic_cierres_cajas.id_caja = tc_mantic_cajas.id_caja     
-				left join
-				  tc_mantic_garantias on tc_mantic_ventas.id_venta= tc_mantic_garantias.id_venta
-				where
-					tc_mantic_ventas.id_empresa in ({idEmpresa})
-				  and {apartado}     
-				group by				
-					tc_mantic_ventas.id_venta,
-					tc_mantic_empresas.id_empresa,
-					tc_mantic_empresas.clave,
-					tc_mantic_empresas.nombre,
-					tc_mantic_cajas.id_caja,					
-					tc_mantic_cajas.clave,					
-					tr_mantic_venta_medio_pago.importe,
-					tc_mantic_ventas.total,
-					tc_mantic_tipos_medios_pagos.id_tipo_medio_pago,
-					tc_mantic_tipos_medios_pagos.nombre) as deducciones
-				) as recalculo
+select				
+  convert(concat(recalculo.id_empresa, recalculo.id_caja, recalculo.id_tipo_medio_pago), signed) as id_key,			
+  recalculo.*,
+  if(id_tipo_medio_pago=1, (total - if(deduccion is null, 0, deduccion)), importe) as total_deducciones
+from (
+  select 
+    deducciones.*,	
+    (select 
+      if(importe is null, 0, importe) as importe 
+    from 
+      tr_mantic_venta_medio_pago 
+    where 
+      id_venta= deducciones.id_venta and id_tipo_medio_pago!= 1
+    group by
+      tr_mantic_venta_medio_pago.id_venta
+) as deduccion
+from (
+  select							
+    tc_mantic_ventas.id_venta,
+    tc_mantic_empresas.id_empresa,
+    tc_mantic_empresas.clave as empresa,
+    tc_mantic_empresas.nombre as nombre_empresa,
+    tc_mantic_cajas.id_caja,            
+    tc_mantic_cajas.clave caja,					
+    tr_mantic_venta_medio_pago.importe,
+    tr_mantic_venta_medio_pago.importe as total,	
+    tc_mantic_ventas.registro as fecha,
+    tc_mantic_tipos_medios_pagos.id_tipo_medio_pago,
+    tc_mantic_tipos_medios_pagos.nombre as tipo_medio_pago,
+    tc_mantic_clientes.razon_social,
+    ifnull(tc_mantic_garantias.consecutivo, '') as garantia,
+    tc_mantic_garantias.total as devuelto,
+    tc_mantic_garantias.registro as cuando
+  from
+    tc_mantic_ventas    
+  inner join (
+    select
+      tc_mantic_ventas.id_venta
+    from
+      tc_mantic_ventas
+    where
+      tc_mantic_ventas.id_empresa in ({idEmpresa})
+      and {condicion}     
+) as tt_mantic_ventas on tc_mantic_ventas.id_venta= tt_mantic_ventas.id_venta
+inner join
+  tc_mantic_almacenes on tc_mantic_ventas.id_almacen= tc_mantic_almacenes.id_almacen     
+inner join
+  tc_mantic_empresas on tc_mantic_ventas.id_empresa= tc_mantic_empresas.id_empresa     
+inner join
+  tc_mantic_ventas_estatus on tc_mantic_ventas.id_venta_estatus=tc_mantic_ventas_estatus.id_venta_estatus     
+inner join
+  tc_mantic_tipos_documentos on tc_mantic_tipos_documentos.id_tipo_documento= tc_mantic_ventas_estatus.id_tipo_documento     	       
+inner join
+  tr_mantic_venta_medio_pago on tc_mantic_ventas.id_venta = tr_mantic_venta_medio_pago.id_venta     
+inner join
+  tc_mantic_tipos_medios_pagos on tr_mantic_venta_medio_pago.id_tipo_medio_pago = tc_mantic_tipos_medios_pagos.id_tipo_medio_pago     
+inner join
+  tc_mantic_clientes on tc_mantic_ventas.id_cliente= tc_mantic_clientes.id_cliente
+inner join
+  tc_mantic_cierres_cajas on tr_mantic_venta_medio_pago.id_cierre = tc_mantic_cierres_cajas.id_cierre and tc_mantic_ventas.id_venta= tr_mantic_venta_medio_pago.id_venta     
+inner join
+  tc_mantic_cajas on tc_mantic_cierres_cajas.id_caja = tc_mantic_cajas.id_caja     
+left join
+  tc_mantic_garantias on tc_mantic_ventas.id_venta= tc_mantic_garantias.id_venta
+where
+  tc_mantic_ventas.id_empresa in ({idEmpresa})
+  and {apartado}     
+group by				
+  tc_mantic_ventas.id_venta,
+  tc_mantic_empresas.id_empresa,
+  tc_mantic_cajas.id_caja,
+  tc_mantic_tipos_medios_pagos.id_tipo_medio_pago) as deducciones
+) as recalculo
 			</select>				
 			<select id="apartado">
 				select				

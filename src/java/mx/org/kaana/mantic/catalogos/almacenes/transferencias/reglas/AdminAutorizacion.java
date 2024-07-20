@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.mantic.catalogos.almacenes.confrontas.beans.Confronta;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.comun.IAdminArticulos;
@@ -27,7 +28,7 @@ public final class AdminAutorizacion extends IAdminArticulos implements Serializ
 
 	public AdminAutorizacion(Confronta orden) throws Exception {
 		this.orden= orden;
- 	  this.setArticulos((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaConfrontasDto", "autorizar", orden.toMap()));
+ 	  this.setArticulos((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaConfrontasDto", "autorizar", orden.toMap(), Constantes.SQL_TOPE_REGISTROS));
 		if(this.getArticulos()!= null)
 		  this.getTotales().setArticulos(this.getArticulos().size());
 	}
