@@ -4882,8 +4882,8 @@ order by
 						tc_mantic_personas.cuenta,
 						concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre,
 						tc_mantic_clientes.id_credito,
-						(select saldo from tc_mantic_clientes_deudas where tc_mantic_clientes_deudas.id_venta= tc_mantic_ventas.id_venta) saldo,
-						(select limite from tc_mantic_clientes_deudas where tc_mantic_clientes_deudas.id_venta= tc_mantic_ventas.id_venta) limite
+						(select saldo from tc_mantic_clientes_deudas where tc_mantic_clientes_deudas.id_venta= tc_mantic_ventas.id_venta group by id_venta) as saldo,
+						(select limite from tc_mantic_clientes_deudas where tc_mantic_clientes_deudas.id_venta= tc_mantic_ventas.id_venta group by id_venta) as limite
 					from 
 						tc_mantic_ventas  				
 					inner join 
@@ -4902,7 +4902,7 @@ order by
 						tc_mantic_ventas_detalles on tc_mantic_ventas.id_venta = tc_mantic_ventas_detalles.id_venta
 					where
 						tc_mantic_ventas.id_empresa in ({idEmpresa})
-						and {condicion}) principal
+						and {condicion}) as principal
 				group by 
 					id_key, id_venta, id_empresa				
 				{sortOrder}

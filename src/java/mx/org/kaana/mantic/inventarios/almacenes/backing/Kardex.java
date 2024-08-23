@@ -474,9 +474,9 @@ public class Kardex extends IBaseAttribute implements Serializable {
       columns.add(new Columna("limiteMayoreo", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
 			Periodo periodo= new Periodo();
-			periodo.addMeses(-6);
+			periodo.addMeses(-36);
 			this.attrs.put("registro", periodo.toString());
-      this.attrs.put("historial", (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "historial", this.attrs, columns));
+      this.attrs.put("historial", (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "historial", this.attrs, columns, new Long(Constantes.REGISTROS_MAX_PAGINA)));
 		} // try
 	  catch (Exception e) {
 			Error.mensaje(e);

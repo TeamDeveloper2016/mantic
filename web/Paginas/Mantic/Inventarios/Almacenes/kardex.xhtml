@@ -406,7 +406,7 @@
 									<p:outputLabel value="#{item.registro}"/>
 								</p:column>   
               </p:dataTable>
-							<p:outputLabel value="Son los movimientos que ha tenido el articulo en los últimos 6 meses."/>
+							<p:outputLabel value="Se muestran los últimos 50 movimientos."/>
 						</p:tab>
 						<p:tab title="Movimientos">
 							<p:dataTable var="item" value="#{manticInventariosAlmacenesKardex.attrs.movimientos}" paginator="#{manticInventariosAlmacenesKardex.attrs.movimientos.size() gt 0}" reflow="true" rowKey="#{row.idKey}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" styleClass="paginated filas" rowIndexVar="index" paginatorPosition="bottom">

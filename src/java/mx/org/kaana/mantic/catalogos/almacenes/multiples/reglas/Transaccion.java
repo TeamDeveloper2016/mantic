@@ -12,6 +12,7 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
+import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
@@ -162,7 +163,7 @@ public class Transaccion extends ComunInventarios implements Serializable {
     List<TcManticTransferenciasMultiplesDetallesDto> detalle= new ArrayList<>();
     try {   
       params.put("idTransferenciaMultiple", this.dto.getIdTransferenciaMultiple());
-      items= (List<TcManticTransferenciasMultiplesDetallesDto>)DaoFactory.getInstance().findViewCriteria(sesion, TcManticTransferenciasMultiplesDetallesDto.class, params);
+      items= (List<TcManticTransferenciasMultiplesDetallesDto>)DaoFactory.getInstance().findViewCriteria(sesion, TcManticTransferenciasMultiplesDetallesDto.class, params, Constantes.SQL_TOPE_REGISTROS);
       Long idAlmacen= -1L;
       for (TcManticTransferenciasMultiplesDetallesDto item: items) {
         if(!Objects.equals(idAlmacen, item.getIdAlmacen())) {

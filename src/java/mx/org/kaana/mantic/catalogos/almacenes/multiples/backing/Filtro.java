@@ -37,7 +37,6 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.almacenes.multiples.reglas.Transaccion;
-import mx.org.kaana.mantic.db.dto.TcManticTransferenciasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticTransferenciasMultiplesBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticTransferenciasMultiplesDto;
 import mx.org.kaana.mantic.enums.ETipoMovimiento;

@@ -610,5 +610,10 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
     } // if  
 		this.doLoadPerdidas(((Multiple)this.getAdminOrden().getOrden()).getIkDestino()== null? -1L: ((Multiple)this.getAdminOrden().getOrden()).getIkDestino().toLong("idEmpresa"));
 	} 
-	
+
+  @Override
+  public String getRecordCount() {
+		return this.attrs.get("perdidos")== null || ((List<UISelectEntity>)this.attrs.get("perdidos")).isEmpty()? String.valueOf(Constantes.REGISTROS_MAX_TABLA): Constantes.REGISTROS_MAX_CADA_PAGINA+ ","+ ((List<UISelectEntity>)this.attrs.get("perdidos")).size();
+	}
+
 }
