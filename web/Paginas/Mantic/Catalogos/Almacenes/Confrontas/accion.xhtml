@@ -168,8 +168,8 @@
 											<p:commandButton process="@this" icon="fa fa-file-excel-o" title="Exportar articulos" style="float:left;" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" styleClass="janal-not-lock">
 												<p:fileDownload value="#{manticCatalogosAlmacenesConfrontasAccion.archivo}" />
 											</p:commandButton>
-										  <p:outputLabel value="Segmentar partidas: " escape="false" styleClass="filas"  style="float: right; display:#{manticCatalogosAlmacenesConfrontasAccion.adminOrden.totales.articulos gt Constantes.REGISTROS_LOTE_TOPE? 'none': ''}"/>
-										  <p:inputSwitch id="paginator" widgetVar="widgetPaginator" value="#{manticCatalogosAlmacenesConfrontasAccion.attrs.paginator}" onLabel="SI" offLabel="NO" style="display:#{manticCatalogosAlmacenesConfrontasAccion.adminOrden.totales.articulos gt Constantes.REGISTROS_LOTE_TOPE? 'none': ''}" styleClass="filas #{manticCatalogosAlmacenesConfrontasAccion.adminOrden.totales.articulos gt Constantes.REGISTROS_LOTE_TOPE? 'disabled': ''}">
+										  <p:outputLabel value="Segmentar partidas: " escape="false" styleClass="filas"  style="float: right; display:#{manticCatalogosAlmacenesConfrontasAccion.adminOrden.totales.articulos gt Constantes.REGISTROS_POR_LOTE? '': 'none'}"/>
+										  <p:inputSwitch id="paginator" widgetVar="widgetPaginator" value="#{manticCatalogosAlmacenesConfrontasAccion.attrs.paginator}" onLabel="SI" offLabel="NO" style="display:#{manticCatalogosAlmacenesConfrontasAccion.adminOrden.totales.articulos gt Constantes.REGISTROS_POR_LOTE? '': 'none'}" styleClass="filas #{manticCatalogosAlmacenesConfrontasAccion.adminOrden.totales.articulos gt Constantes.REGISTROS_POR_LOTE? '': 'disabled'}">
   											<p:ajax event="change" process="@this" listener="#{manticCatalogosAlmacenesConfrontasAccion.doResetDataTable()}" update="contenedorGrupos:tabla" oncomplete="jsArticulos.skip($(PF('widgetPaginator').input.selector+ ':checked').length=== 1);"/>
 	  									</p:inputSwitch>			
 										</p:panelGrid>	

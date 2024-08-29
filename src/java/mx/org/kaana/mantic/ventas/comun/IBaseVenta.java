@@ -911,7 +911,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 			UIBackingUtilities.execute("jsArticulos.callback('"+ articulo.getKey()+ "');");
 			this.getAdminOrden().toAddArticulo(this.getAdminOrden().getArticulos().size()- 1);		
 			if(this.attrs.get("paginator")== null || !(boolean)this.attrs.get("paginator"))
-  			this.attrs.put("paginator", this.getAdminOrden().getArticulos().size()> Constantes.REGISTROS_LOTE_TOPE);
+  			this.attrs.put("paginator", this.getAdminOrden().getArticulos().size()> Constantes.REGISTROS_POR_LOTE);
 		} // try
 		finally {
 			Methods.clean(params);

@@ -61,7 +61,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 
 	public IBaseArticulos() {
 		this("precio");
-		this.attrs.put("paginator", false); 
+		this.attrs.put("paginator", Boolean.FALSE); 
 		this.attrs.put("filterName", "");
 		this.attrs.put("filterCode", "");
     String dns= Configuracion.getInstance().getPropiedadServidor("sistema.dns");
@@ -184,7 +184,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 				UIBackingUtilities.execute("jsArticulos.callback('"+ articulo.getKey()+ "');");
 				this.adminOrden.toCalculate(index);
 				if(this.attrs.get("paginator")== null || !(boolean)this.attrs.get("paginator"))
-				  this.attrs.put("paginator", this.adminOrden.getArticulos().size()> Constantes.REGISTROS_LOTE_TOPE);
+				  this.attrs.put("paginator", this.adminOrden.getArticulos().size()> Constantes.REGISTROS_POR_LOTE);
 				//if(this instanceof IBaseStorage)
  				//	((IBaseStorage)this).toSaveRecord();
 			} // if	
@@ -252,7 +252,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 			UIBackingUtilities.execute("jsArticulos.callback('"+ articulo.getKey()+ "');");
 			this.adminOrden.toAddArticulo(this.adminOrden.getArticulos().size()- 1);		
 			if(this.attrs.get("paginator")== null || !(boolean)this.attrs.get("paginator"))
-  			this.attrs.put("paginator", this.adminOrden.getArticulos().size()> Constantes.REGISTROS_LOTE_TOPE);
+  			this.attrs.put("paginator", this.adminOrden.getArticulos().size()> Constantes.REGISTROS_POR_LOTE);
 		} // try
 		finally {
 			Methods.clean(params);
@@ -330,7 +330,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 			//if(this instanceof IBaseStorage)
 			//	((IBaseStorage)this).toSaveRecord();
       this.doFilterRows();
-      this.attrs.put("paginator", this.getAdminOrden().getArticulos().size()> Constantes.REGISTROS_LOTE_TOPE);
+      this.attrs.put("paginator", this.getAdminOrden().getArticulos().size()> Constantes.REGISTROS_POR_LOTE);
 		} // try
 	  catch (Exception e) {
       Error.mensaje(e);
@@ -681,10 +681,10 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 			} // else
 			else 
 					this.toMoveData(articulo, index);
-      this.attrs.put("paginator", this.getAdminOrden().getArticulos().size()> Constantes.REGISTROS_LOTE_TOPE);
+      this.attrs.put("paginator", this.getAdminOrden().getArticulos().size()> Constantes.REGISTROS_POR_LOTE);
 			DataTable dataTable= (DataTable)JsfUtilities.findComponent("contenedorGrupos:tabla");
 			if (dataTable!= null) 
-				dataTable.setRows((boolean)this.attrs.get("paginator") || this.getAdminOrden().getTotales().getArticulos()>  Constantes.REGISTROS_LOTE_TOPE? Constantes.REGISTROS_POR_LOTE: Constantes.REGISTROS_MAX_TABLA);		
+				dataTable.setRows((boolean)this.attrs.get("paginator") || this.getAdminOrden().getTotales().getArticulos()>  Constantes.REGISTROS_POR_LOTE? Constantes.REGISTROS_POR_LOTE: Constantes.REGISTROS_MAX_TABLA);		
 		} // try
 	  catch (Exception e) {
 			Error.mensaje(e);
@@ -983,12 +983,12 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
     if (dataTable!= null) {
 			dataTable.reset();
       dataTable.setFirst(0);		
-      dataTable.setRows((boolean)this.attrs.get("paginator") || this.getAdminOrden().getTotales().getArticulos()>  Constantes.REGISTROS_LOTE_TOPE? Constantes.REGISTROS_LOTE_TOPE: Constantes.REGISTROS_MAX_TABLA);		
+      dataTable.setRows((boolean)this.attrs.get("paginator") && this.getAdminOrden().getTotales().getArticulos()> Constantes.REGISTROS_POR_LOTE? Constantes.REGISTROS_POR_LOTE: Constantes.REGISTROS_MAX_TABLA);		
 		}	// if
 	}
 	
   public int getRows() {
-	  return this.attrs.get("paginator")== null || this.getAdminOrden()== null || (boolean)this.attrs.get("paginator") || this.getAdminOrden().getTotales().getArticulos()> Constantes.REGISTROS_LOTE_TOPE? Constantes.REGISTROS_MAX_TABLA: Constantes.REGISTROS_LOTE_TOPE;
+	  return this.getAdminOrden()== null || ((boolean)this.attrs.get("paginator") && this.getAdminOrden().getTotales().getArticulos()> Constantes.REGISTROS_POR_LOTE)? Constantes.REGISTROS_MAX_TABLA: Constantes.REGISTROS_POR_LOTE;
   }
 	
 	public String getRecordCount() {

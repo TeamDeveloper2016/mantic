@@ -108,7 +108,7 @@ public class Autorizar extends IBaseArticulos implements Serializable {
     try {
 			this.setAdminOrden(new AdminAutorizacion((Confronta)DaoFactory.getInstance().toEntity(Confronta.class, "TcManticConfrontasDto", "detalle", this.attrs)));
  			this.attrs.put("sinIva", false);
-			this.attrs.put("paginator", this.getAdminOrden().getArticulos().size()> Constantes.REGISTROS_LOTE_TOPE);
+			this.attrs.put("paginator", this.getAdminOrden().getArticulos().size()> Constantes.REGISTROS_POR_LOTE);
 			this.doResetDataTable();
 			this.attrs.put("seleccionado", null);
     } // try

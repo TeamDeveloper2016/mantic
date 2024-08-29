@@ -160,7 +160,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
           break;
       } // switch
  			this.attrs.put("sinIva", false);
-			this.attrs.put("paginator", this.getAdminOrden().getArticulos().size()> Constantes.REGISTROS_LOTE_TOPE);
+			this.attrs.put("paginator", this.getAdminOrden().getArticulos().size()> Constantes.REGISTROS_POR_LOTE);
 			this.doResetDataTable();
 			this.toLoadCatalog();
 			this.doFilterRows();
@@ -211,10 +211,9 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
   } // doCancelar
 
 	private void toLoadCatalog() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())

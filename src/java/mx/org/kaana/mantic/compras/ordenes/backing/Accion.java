@@ -98,7 +98,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
     			this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
           break;
       } // switch
-			this.attrs.put("paginator", this.getAdminOrden().getArticulos().size()> Constantes.REGISTROS_LOTE_TOPE);
+			this.attrs.put("paginator", this.getAdminOrden().getArticulos().size()> Constantes.REGISTROS_POR_LOTE);
 			this.doResetDataTable();
 			this.toLoadCatalog();
 			this.attrs.put("before", this.getAdminOrden().getIdAlmacen());
