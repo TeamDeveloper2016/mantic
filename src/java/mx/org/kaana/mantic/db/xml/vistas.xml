@@ -270,7 +270,7 @@ select
   concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as nombre,
   tc_mantic_personas.cuenta,
   tc_mantic_personas.contrasenia as token,
-  if(tc_janal_usuarios.id_perfil&gt;= 3 and tc_janal_usuarios.id_perfil!= 8, 3, tc_janal_usuarios.id_perfil) as id_perfil,
+  if(tc_janal_usuarios.id_perfil= 8, 2, if(tc_janal_usuarios.id_perfil>= 3, 3, tc_janal_usuarios.id_perfil)) as id_perfil,
   tc_janal_usuarios.activo as activo,
   date_format(tc_janal_usuarios.registro, '%Y%m%d%h%i%S') as registro
 from

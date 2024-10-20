@@ -126,7 +126,7 @@ public class Transaccion extends ComunInventarios implements Serializable {
 	}
 
 	private void toFillArticulos(Session sesion) throws Exception {
-		List<Articulo> todos=(List<Articulo>) DaoFactory.getInstance().toEntitySet(sesion, Articulo.class, "VistaTransferenciasMultiplesDto", "detalle", this.dto.toMap());
+		List<Articulo> todos=(List<Articulo>) DaoFactory.getInstance().toEntitySet(sesion, Articulo.class, "VistaTransferenciasMultiplesDto", "detalle", this.dto.toMap(), Constantes.SQL_TODOS_REGISTROS);
 		for (Articulo item: todos) {
       int index= this.toIndexOf(item);
 			if (index< 0) 

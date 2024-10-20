@@ -10,15 +10,9 @@ package mx.org.kaana.kajool.procesos.mantenimiento.configuracion.backing;
 import java.io.Serializable;
 import javax.annotation.PostConstruct;
 import javax.inject.Named;
-import mx.org.kaana.kajool.control.bean.Portal;
-import mx.org.kaana.kajool.procesos.mantenimiento.contadores.reglas.Ayudas;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
-import mx.org.kaana.libs.pagina.Messages;
-import mx.org.kaana.libs.recurso.Configuracion;
-import mx.org.kaana.libs.recurso.TcConfiguraciones;
-import mx.org.kaana.xml.Dml;
 import org.apache.commons.logging.Log; 
 import org.apache.commons.logging.LogFactory;
 
@@ -43,19 +37,27 @@ public class Reiniciar extends IBaseAttribute implements Serializable {
   public void doAceptar() {
     LOG.error("RE-INICIAR SERVIDOR: ["+ JsfBase.getAutentifica().getPersona().getNombreCompleto()+"]");
     try {      
-  		LOG.error("Deteniendo el servidor ...");
-      Process runtimeProcess = Runtime.getRuntime().exec("jk");
+  		LOG.error("REINICIANDO EL SERVIDOR ...");
+      Process runtimeProcess = Runtime.getRuntime().exec("jr");
       int processComplete = runtimeProcess.waitFor();
-      LOG.error("Resultado del proceso: "+ processComplete);
   		/*NOTE: processComplete=0 if correctly executed, will contain other values if not*/
- 	  	if (processComplete== 0) {
-    		LOG.error("Reinciando el servidor ...");
-        runtimeProcess = Runtime.getRuntime().exec("jr");
-        processComplete = runtimeProcess.waitFor();
-        LOG.error("Resultado del proceso: "+ processComplete);
-        if (processComplete== 0)
-          LOG.error("RE-INICIAR CON EXITO");
-      } // if
+ 	  	if (processComplete== 0)
+        LOG.error("RE-INICIAR CON EXITO");
+      else
+        LOG.error("FRACASO EL RE-INICIAR");
+//  		LOG.error("Deteniendo el servidor ...");
+//      Process runtimeProcess = Runtime.getRuntime().exec("jk");
+//      int processComplete = runtimeProcess.waitFor();
+//      LOG.error("Resultado del proceso: "+ processComplete);
+//  		/*NOTE: processComplete=0 if correctly executed, will contain other values if not*/
+// 	  	if (processComplete== 0) {
+//    		LOG.error("Reinciando el servidor ...");
+//        runtimeProcess = Runtime.getRuntime().exec("jr");
+//        processComplete = runtimeProcess.waitFor();
+//        LOG.error("Resultado del proceso: "+ processComplete);
+//        if (processComplete== 0)
+//          LOG.error("RE-INICIAR CON EXITO");
+//      } // if
     } // try
     catch (Exception e) {
       Error.mensaje(e);

@@ -14,10 +14,14 @@
   </ui:define>
   <ui:define name="contenido">		
     <p:fieldset legend="¿Esta seguro de hacerlo?"> 
-      <p:panelGrid columns="1" layout="grid" columnClasses="janal-wid-col-200 janal-column-center">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{kajoolMantenimientoConfiguracionReiniciar.doAceptar}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
+      <p:panelGrid columns="1" layout="grid" columnClasses="janal-wid-100-txt janal-column-center">
+        <p:outputLabel value="Comprueba tod@s los usuarios no esten dentro del sistema o ejecutando alguna tarea y ciérre todos los procesos que se tienen antes de reiniciar el servidor de lo contrario se perderá la información que esta en proceso."/>
       </p:panelGrid>
     </p:fieldset>  
+    <hr class="ui-widget-content"/>
+    <div class="janal-line-button">
+    	<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{kajoolMantenimientoConfiguracionReiniciar.doAceptar}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
+    </div>  
   </ui:define>
 	<ui:param name="componenteBloqueo" value="aceptar"/>
 </ui:composition>

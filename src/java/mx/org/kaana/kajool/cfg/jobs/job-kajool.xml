@@ -10,6 +10,7 @@
    <tarea id="kajool" load="true">
      <clase expresion="0 0/1 * 1/1 * ? *"   id="pruebas"     description="Job de demostracion"        load="false"  desarrollo="*" pruebas="*" produccion="*">mx.org.kaana.jobs.Demostracion</clase>     				
 		 <clase expresion="0 0 2 1/1 * ? *"     id="respaldos"   description="Realiza respaldo de la BD"  load="true"   desarrollo="*" pruebas="*" produccion="*">mx.org.kaana.jobs.Respaldos</clase>
+     <clase expresion="0 0 5 1/1 * ? *"     id="reiniciar"   description="reinciar servidor"          load="true"   desarrollo="*" pruebas="*" produccion="*">mx.org.kaana.jobs.Reiniciar</clase>
 		 <clase expresion="0 0/59 * 1/1 * ? *"  id="facturas"    description="Sincronización de facturas" load="false"  desarrollo="*" pruebas="*" produccion="*">mx.org.kaana.jobs.Facturas</clase>
 		 <clase expresion="0 0 7,14 ? * * *"    id="descargas"   description="Descargas de respaldos"     load="false"  desarrollo="*" pruebas="*" produccion="*">mx.org.kaana.jobs.Descargas</clase>
 		 <clase expresion="0 0 0/1 1/1 * ? *"   id="facturacion" description="Facturación automatica"     load="true"   desarrollo="*" pruebas="*" produccion="*">mx.org.kaana.jobs.Timbrado</clase>		 
