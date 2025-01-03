@@ -5966,16 +5966,7 @@ order by
 				group by 
 					tc_mantic_articulos.id_articulo,
 					tc_mantic_articulos.id_facturama,
-					tc_mantic_unidades_medidas.nombre,
-					tc_mantic_unidades_medidas.clave,
-					tc_mantic_ventas_detalles.nombre,
-					tc_mantic_articulos.descripcion,
-					tc_mantic_ventas_detalles.sat,
-					tc_mantic_ventas_detalles.costo,    
-				  tc_mantic_ventas_detalles.cantidad,
-				  tc_mantic_ventas_detalles.sub_total,
-				  tc_mantic_ventas_detalles.importe,
-					tc_mantic_ventas_detalles.iva
+          tc_mantic_ventas_detalles.id_venta_detalle
 			</select>
 			<select id="detalleCfdi">
 				select 
@@ -10315,9 +10306,9 @@ order by
 				select
 					tc_mantic_proveedores.id_proveedor as id_key,
 					tc_mantic_proveedores.razon_social,															
-					sum(tc_mantic_empresas_deudas.importe) as importe,
-					sum(tc_mantic_empresas_deudas.saldo) as debe,
-					sum(tc_mantic_empresas_deudas.saldo) as saldo
+					sum(ifnull(tc_mantic_empresas_deudas.importe, 0)) as importe,
+					sum(ifnull(tc_mantic_empresas_deudas.saldo, 0)) as debe,
+					sum(ifnull(tc_mantic_empresas_deudas.saldo, 0)) as saldo
 				from
 					tc_mantic_proveedores
 				inner join

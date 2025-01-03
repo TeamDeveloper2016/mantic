@@ -89,6 +89,8 @@ from
   tc_mantic_versiones
 where 
   nombre= '{nombre}' and version&lt;= '{version}'
+order by
+  version desc  
       </select>
       <select id="identically">
 select      

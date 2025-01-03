@@ -32,7 +32,7 @@ public class Local implements Serializable {
 
     //String name= BouncyEncryption.encrypt("juan.perez");
     //System.out.println(name);
-    //System.out.println(planetas.sistema("/Eb1AjylyNNfQBLodn6Jf6Stb8NM7Hw2", "IPU57KFfBZ/gP8F4k6vOFt2dYATwrzNN", "0.0.1.2"));
+    System.out.println(planetas.sistema("/Eb1AjylyNNfQBLodn6Jf6Stb8NM7Hw2", "IPU57KFfBZ/gP8F4k6vOFt2dYATwrzNN", "0.0.3.0"));
 
 //    TcManticDispositivosDto dipositivo= new TcManticDispositivosDto(
 //      null, // Long idActivo, 

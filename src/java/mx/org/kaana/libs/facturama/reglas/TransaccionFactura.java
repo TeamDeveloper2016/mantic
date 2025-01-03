@@ -92,7 +92,7 @@ public class TransaccionFactura extends IBaseTnx {
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
 		boolean regresar= false;
 		try {
-			switch(accion){
+			switch(accion) {
 				case PROCESAR:
 					regresar= this.procesarClientes(sesion);
 					break;		
@@ -350,7 +350,7 @@ public class TransaccionFactura extends IBaseTnx {
 		boolean regresar= false;
 		Cfdi cfdi       = null;
 		try {
-      //*ERROR* DETENER AQUI PARA EL CALCULO DE LOS CONCEPTOS PARA FACTURAMA
+      //**ERROR** DETENER AQUI PARA EL CALCULO DE LOS CONCEPTOS PARA FACTURAMA
 			cfdi= CFDIFactory.getInstance().createCfdi(this.cliente, this.articulos);
 			if(this.isCorrectId(cfdi.getId())) {
 				this.idFacturamaRegistro= cfdi.getId();
