@@ -77,7 +77,7 @@ public class Ajustes extends IBaseAttribute implements Serializable {
         String nombre= ((String)this.attrs.get("nombre")).replaceAll(Constantes.CLEAN_SQL, "").trim();
         params.put("codigoFaltante", nombre.toUpperCase());
       } // else
-      this.fuentes = (List<Umbral>)DaoFactory.getInstance().toEntitySet(Umbral.class, "VistaOrdenesComprasDto", "faltantes", params, Constantes.SQL_TODOS_REGISTROS);
+      this.fuentes = (List<Umbral>)DaoFactory.getInstance().toEntitySet(Umbral.class, "VistaOrdenesComprasDto", "faltantes", params, new Long(Constantes.REGISTROS_MAX_LOTE));
       if(Objects.equals(this.fuentes, null))      
         this.fuentes= new ArrayList<>();
     } // try

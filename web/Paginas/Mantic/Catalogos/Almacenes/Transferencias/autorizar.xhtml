@@ -35,8 +35,9 @@
           var partida = $('#contenedorGrupos\\:tabla\\:'+ x+ '\\:partida').val();
           if(factor> 0 && observaciones.trim().length<= 0)
             custom.push({summary: 'Desaparecidos:', detail: 'Se requiere una justificación, partida ('+ partida+ ')'});
-          if(parseFloat(cuantos, 10)+ parseFloat(cantidad, 10)!== parseFloat(total, 10))
-            custom.push({summary: 'Cantidad:', detail: 'La suma de almacen origen('+ cuantos+ ')+ destino('+ cantidad+ ') no puede ser diferente a '+ total+ ', partida ('+ partida+ ')'});
+          var importe= parseFloat(parseFloat(cuantos, 10)+ parseFloat(cantidad, 10), 10).toFixed(2);
+          if(parseFloat(importe, 10)!== parseFloat(total, 10))
+            custom.push({summary: 'Cantidad:', detail: 'La suma de almacen origen ('+ cuantos+ ')+ destino ('+ cantidad+ ') no puede ser diferente a '+ total+ ', partida ('+ partida+ ')'});
           // janal.console('total: '+ total);
         } // for  
         return janal.execute(custom);  

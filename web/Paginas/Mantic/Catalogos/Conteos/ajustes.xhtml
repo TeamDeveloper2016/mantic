@@ -68,7 +68,7 @@
                   <p:ajax event="keyup" listener="#{manticCatalogosConteosAjustes.doLoad}" process="@this" update="fuente" onstart="return $('#contenedorGrupos\\:nombre').val().trim().length> 1;"/>                    
                 </p:inputText>  
               </p:panelGrid>
-              <p:dataTable id="fuente" var="row" value="#{manticCatalogosConteosAjustes.fuentes}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_MAX_TABLA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_MAX_TABLA}" paginator="false" reflow="true" rowKey="#{row.idArticulo}" styleClass="fuente janal-wid-100-txt" rowIndexVar="index" rowStyleClass="#{manticCatalogosConteosAjustes.toColor(row)}">
+              <p:dataTable id="fuente" var="row" value="#{manticCatalogosConteosAjustes.fuentes}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="true" reflow="true" rowKey="#{row.idArticulo}" styleClass="fuente janal-wid-100-txt" rowIndexVar="index" rowStyleClass="#{manticCatalogosConteosAjustes.toColor(row)}">
                 <f:facet name="header">
                   <div style="float: left">
                     <p:outputLabel value="#{manticCatalogosConteosAjustes.attrs.idAlmacen.nombre}" styleClass="janal-color-white articulos"/>

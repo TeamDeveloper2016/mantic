@@ -16,7 +16,8 @@
 				'proveedor'   : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
 				'fechaInicio' : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
         'fechaTermino': {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
-				'utilidad'    : {validaciones: 'requerido|flotante-signo', mascara: 'libre', grupo: 'general'}
+				'mayor'       : {validaciones: 'flotante-signo', mascara: 'libre', grupo: 'general'},
+				'menor'       : {validaciones: 'flotante-signo', mascara: 'libre', grupo: 'general'}
       };							
     </script>		
   </ui:define>
@@ -85,11 +86,13 @@
 								</f:facet>
 							</p:autoComplete>			
 							<p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
-							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticInventariosAlmacenesCostos.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario"/>
+							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{manticInventariosAlmacenesCostos.attrs.fechaInicio}" pattern="dd/MM/yyyy" readonlyInput="false" locale="mx" converter="janal.convertidor.Calendario"/>
               <p:outputLabel for="fechaTermino" value="Fecha término:"/>
-							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticInventariosAlmacenesCostos.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario"/>							
-              <p:outputLabel for="utilidad" value="Utilidad mayor a:"/>
-              <p:inputText id="utilidad" styleClass="janal-wid-100-txt" value="#{manticInventariosAlmacenesCostos.attrs.utilidad}" converter="javax.faces.Double"/>
+							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{manticInventariosAlmacenesCostos.attrs.fechaTermino}" pattern="dd/MM/yyyy" readonlyInput="false" locale="mx" converter="janal.convertidor.Calendario"/>							
+              <p:outputLabel for="mayor" value="Utilidad mayor a:"/>
+              <p:inputText id="mayor" styleClass="janal-wid-100-txt" value="#{manticInventariosAlmacenesCostos.attrs.mayor}" converter="javax.faces.Double"/>
+              <p:outputLabel for="menor" value="Utilidad menor a:"/>
+              <p:inputText id="menor" styleClass="janal-wid-100-txt" value="#{manticInventariosAlmacenesCostos.attrs.menor}" converter="javax.faces.Double"/>
 							<p:separator/>
             </p:panelGrid>
 						<div class="janal-align-right">
@@ -176,14 +179,17 @@
                 <p:ajax event="change" listener="#{manticInventariosAlmacenesCostos.doChangeRowPorcentajeMayoreo(row)}" process="@this" update="@(.fila-#{row.idArticulo})"/>
               </p:inputNumber>  
             </p:column>		
-						<p:column styleClass="janal-column-center">
+            <p:column styleClass="janal-column-center" exportable="false">
               <h:outputText value="#{manticInventariosAlmacenesCostos.doFechaEstandar(row['fechaNotaEntrada'])}"/>
+            </p:column>
+						<p:column styleClass="janal-column-center janal-wid-2 janal-display-none">
+              <h:outputText value="#{row['fechaNotaEntrada']}"/>
             </p:column>
 						<p:column>
               <p:commandButton process="@form" icon="fa fa-edit" actionListener="#{manticInventariosAlmacenesCostos.doUpdateChanges(row)}" title="Actualizar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
             </p:column>
             <f:facet name="footer">
-              <p:outputLabel value="Esta opción solo recuperá los primero 100 registros, acorte su criterio" style="float: left !important"/>
+              <p:outputLabel value="Esta opción solo recuperá los primero 300 registros, acorte su criterio" style="float: left !important"/>
               <p:outputLabel value="Total [#{manticInventariosAlmacenesCostos.articulos== null? 0: manticInventariosAlmacenesCostos.articulos.size()}] registros"/>
             </f:facet>
           </p:dataTable>

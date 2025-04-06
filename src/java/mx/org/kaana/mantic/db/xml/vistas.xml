@@ -2405,7 +2405,7 @@ select
   (tc_mantic_articulos.menudeo- (tc_mantic_articulos.precio* 1.16))* 100/ (tc_mantic_articulos.precio* 1.16) as porcentaje_menudeo,
   (tc_mantic_articulos.medio_mayoreo- (tc_mantic_articulos.precio* 1.16))* 100/ (tc_mantic_articulos.precio* 1.16) as porcentaje_medio_mayoreo,
   (tc_mantic_articulos.mayoreo- (tc_mantic_articulos.precio* 1.16))* 100/ (tc_mantic_articulos.precio* 1.16) as porcentaje_mayoreo,
-  tc_mantic_notas_entradas.registro as fecha_nota_entrada
+  max(tc_mantic_notas_entradas.registro) as fecha_nota_entrada
 from 
   tc_mantic_articulos
 inner join

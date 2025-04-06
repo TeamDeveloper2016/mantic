@@ -48,8 +48,7 @@ public class Costos extends IBaseFilter implements Serializable {
     try {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-			this.attrs.put("utilidad", 100D);
-			this.toLoadCatalog();      
+			this.toLoadCatalogos();      
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -61,12 +60,14 @@ public class Costos extends IBaseFilter implements Serializable {
   public void doLoad() {
 		Map<String, Object> params= this.toPrepare();
     try {
-      Double utilidad= Objects.equals((Double)this.attrs.get("utilidad"), null)? 0D: (Double)this.attrs.get("utilidad");
-      if(utilidad<= 0)
+  		if(!Cadena.isVacio(this.attrs.get("menor")))
 			  params.put("sortOrder", "order by (tc_mantic_articulos.menudeo- (tc_mantic_articulos.precio* 1.16))* 100/ (tc_mantic_articulos.precio* 1.16) asc");
       else
-			  params.put("sortOrder", "order by (tc_mantic_articulos.menudeo- (tc_mantic_articulos.precio* 1.16))* 100/ (tc_mantic_articulos.precio* 1.16) desc");
-      this.articulos = (List<Utilidad>)DaoFactory.getInstance().toEntitySet(Utilidad.class, "VistaConsultasDto", "costos", params, new Long(Constantes.REGISTROS_TOPE_PAGINA));
+  		  if(!Cadena.isVacio(this.attrs.get("mayor")))
+			    params.put("sortOrder", "order by (tc_mantic_articulos.menudeo- (tc_mantic_articulos.precio* 1.16))* 100/ (tc_mantic_articulos.precio* 1.16) desc");
+        else
+  			  params.put("sortOrder", "order by (tc_mantic_articulos.menudeo- (tc_mantic_articulos.precio* 1.16))* 100/ (tc_mantic_articulos.precio* 1.16) asc");
+      this.articulos= (List<Utilidad>)DaoFactory.getInstance().toEntitySet(Utilidad.class, "VistaConsultasDto", "costos", params, new Long(Constantes.REGISTROS_MAX_LOTE));
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
@@ -84,7 +85,7 @@ public class Costos extends IBaseFilter implements Serializable {
 	  UISelectEntity codigo         = (UISelectEntity)this.attrs.get("codigo");
 		List<UISelectEntity>codigos   = (List<UISelectEntity>)this.attrs.get("codigos");
 	  UISelectEntity articulo       = (UISelectEntity)this.attrs.get("articulo");
-		List<UISelectEntity>articulos = (List<UISelectEntity>)this.attrs.get("articulos");
+		List<UISelectEntity>items     = (List<UISelectEntity>)this.attrs.get("articulos");
 	  UISelectEntity proveedor      = (UISelectEntity)this.attrs.get("proveedor");
 		List<UISelectEntity>provedores= (List<UISelectEntity>)this.attrs.get("proveedores");
   	if(!Cadena.isVacio(this.attrs.get("consecutivo")))
@@ -96,7 +97,7 @@ public class Costos extends IBaseFilter implements Serializable {
 			if(!Cadena.isVacio(JsfBase.getParametro("codigo_input")))
   			sb.append("(upper(tc_mantic_articulos_codigos.codigo) like upper('%").append(JsfBase.getParametro("codigo_input")).append("%')) and");									
 		
-		if(articulos!= null && articulo!= null && articulos.indexOf(articulo)>= 0) 
+		if(items!= null && articulo!= null && items.indexOf(articulo)>= 0) 
 			sb.append("(tc_mantic_articulos.id_articulo= ").append(articulo.getKey()).append(") and ");			
 		else 
 			if(!Cadena.isVacio(JsfBase.getParametro("articulo_input")))
@@ -113,11 +114,16 @@ public class Costos extends IBaseFilter implements Serializable {
 		if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
 		  sb.append("(date_format(tc_mantic_notas_entradas.registro, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and");
     
-    Double utilidad= Objects.equals((Double)this.attrs.get("utilidad"), null)? 0D: (Double)this.attrs.get("utilidad");
-    if(utilidad<= 0)
-      sb.append("((tc_mantic_articulos.menudeo- (tc_mantic_articulos.precio* 1.16))* 100/ (tc_mantic_articulos.precio* 1.16)<= ").append(utilidad).append(") and");
-    else
-      sb.append("((tc_mantic_articulos.menudeo- (tc_mantic_articulos.precio* 1.16))* 100/ (tc_mantic_articulos.precio* 1.16)>= ").append(utilidad).append(") and");
+//    Double utilidad= Objects.equals((Double)this.attrs.get("utilidad"), null)? 0D: (Double)this.attrs.get("utilidad");
+//    if(utilidad<= 0)
+//      sb.append("((tc_mantic_articulos.menudeo- (tc_mantic_articulos.precio* 1.16))* 100/ (tc_mantic_articulos.precio* 1.16)<= ").append(utilidad).append(") and");
+//    else
+//      sb.append("((tc_mantic_articulos.menudeo- (tc_mantic_articulos.precio* 1.16))* 100/ (tc_mantic_articulos.precio* 1.16)>= ").append(utilidad).append(") and");
+		if(!Cadena.isVacio(this.attrs.get("mayor")))
+      sb.append("((tc_mantic_articulos.menudeo- (tc_mantic_articulos.precio* 1.16))* 100/ (tc_mantic_articulos.precio* 1.16)>= ").append((Double)this.attrs.get("mayor")).append(") and");
+		if(!Cadena.isVacio(this.attrs.get("menor")))
+      sb.append("((tc_mantic_articulos.menudeo- (tc_mantic_articulos.precio* 1.16))* 100/ (tc_mantic_articulos.precio* 1.16)<= ").append((Double)this.attrs.get("menor")).append(") and");
+
 		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
 		  regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
 		else
@@ -129,7 +135,7 @@ public class Costos extends IBaseFilter implements Serializable {
 		return regresar;		
 	} // toPrepare
 	
-	protected void toLoadCatalog() {
+	protected void toLoadCatalogos() {
 		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {

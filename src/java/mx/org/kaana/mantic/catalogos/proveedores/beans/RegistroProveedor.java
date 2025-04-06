@@ -3,11 +3,11 @@ package mx.org.kaana.mantic.catalogos.proveedores.beans;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
-import mx.org.kaana.kajool.reglas.comun.Condicion;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -591,8 +591,8 @@ public class RegistroProveedor implements Serializable{
 	public void doEliminarAgente() {
 		try {
 			if(this.personasTiposContacto.remove(this.personaTipoContacto)) {
-				if(!this.personaTipoContacto.getNuevo())
-					addDeleteList(this.personaTipoContactoSeleccion);
+				if(!this.personaTipoContacto.getNuevo() && !Objects.equals(this.personaTipoContacto, null))
+					addDeleteList(this.personaTipoContacto);
 				JsfBase.addMessage("Se eliminó correctamente el tipo de contacto", ETipoMensaje.INFORMACION);
 			} // if
 			else

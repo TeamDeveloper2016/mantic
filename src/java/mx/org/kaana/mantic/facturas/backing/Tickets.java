@@ -107,10 +107,9 @@ public class Tickets extends IBaseFilter implements Serializable {
 	}
 	
   protected void doLoadComun(String estatusTickets) {
-    List<Columna> columns     = null;
+    List<Columna> columns     = new ArrayList<>();
 		Map<String, Object> params= this.toPrepare();
     try {
-      columns = new ArrayList<>();
       columns.add(new Columna("nombreEmpresa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("total", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
@@ -228,11 +227,9 @@ public class Tickets extends IBaseFilter implements Serializable {
 	}	// doCompleteCliente
 	
 	public void doUpdateClientes() {
-		List<Columna> columns     = null;
-    Map<String, Object> params= null;
+		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
     try {
-			params = new HashMap<>();
-			columns= new ArrayList<>();
       columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
 //			if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
@@ -255,14 +252,12 @@ public class Tickets extends IBaseFilter implements Serializable {
 	}	// doUpdateClientes
 	
 	public void doUpdateClientesAutocomplete() {
-		List<Columna> columns     = null;
-    Map<String, Object> params= null;
+		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
     try {
-			params = new HashMap<>();
-			columns= new ArrayList<>();
       columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
-//			if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
+  //			if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
 //				params.put("idEmpresa", this.attrs.get("idEmpresa"));
 //			else
 			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
@@ -323,12 +318,11 @@ public class Tickets extends IBaseFilter implements Serializable {
 	}	
 	
 	public void doUpdateArticulos() {
-		List<Columna> columns         = null;
+		List<Columna> columns         = new ArrayList<>();
     Map<String, Object> params    = new HashMap<>();
 		List<UISelectEntity> articulos= null;
 		boolean buscaPorCodigo        = false;
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
@@ -472,16 +466,14 @@ public class Tickets extends IBaseFilter implements Serializable {
 	}
 
   public void loadTicket() {
-    List<Columna> columns     = null;
-		Map<String, Object> params= null;
+    List<Columna> columns     = new ArrayList<>();
+		Map<String, Object> params= new HashMap<>();
     try {
-      columns = new ArrayList<>();
       columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_CON_DECIMALES));
       columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));      
-			params=new HashMap<>();
 			params.put("idVenta", ((Entity)this.attrs.get("seleccionado")).getKey());
 			this.lazyTicket= new FormatCustomLazy("TcManticVentasDetallesDto", "detalle", params, columns);
 		} // try
@@ -496,16 +488,14 @@ public class Tickets extends IBaseFilter implements Serializable {
 	}	
 	
   public void loadDevolucion() {
-    List<Columna> columns     = null;
-		Map<String, Object> params= null;
+    List<Columna> columns     = new ArrayList<>();
+		Map<String, Object> params= new HashMap<>();
     try {
-      columns = new ArrayList<>();
       columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_CON_DECIMALES));
       columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));      
-			params=new HashMap<>();
 			params.put("idVenta", ((Entity)this.attrs.get("seleccionado")).getKey());
 			this.lazyTicket= new FormatCustomLazy("VistaVentasDto", "devoluciones", params, columns);
 		} // try
