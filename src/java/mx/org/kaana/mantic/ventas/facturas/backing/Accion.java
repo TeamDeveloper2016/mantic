@@ -1064,9 +1064,8 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 	
 	private void loadTiposPagos() {
 		List<UISelectEntity> tiposPagos= null;
-		Map<String, Object>params      = null;
+		Map<String, Object>params      = new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			tiposPagos= UIEntity.build("TcManticTiposPagosDto", "row", params);
 			this.attrs.put("tiposPagos", tiposPagos);

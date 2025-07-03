@@ -234,11 +234,12 @@
               </f:facet>
               <h:outputText value="#{row['total']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.estatus}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-8 " sortBy="#{row.estatus}">
               <f:facet name="header">
                 <h:outputText value="Estatus"/>
               </f:facet>
-              <h:outputText value="#{row['estatus']}"/>
+              <h:outputText value="#{row['estatus']}"/><br style="display: #{(row['idVentaEstatus'] eq '14' or row['idFacturaEstatus'] eq '3') ? '' : 'none'}"/>
+              <h:outputText value="(observaciones)" title="#{row['observaciones']}" styleClass="janal-color-blue janal-text-small" style="display: #{(row['idVentaEstatus'] eq '14' or row['idFacturaEstatus'] eq '3') ? '' : 'none'}"/>
             </p:column>		
             <p:column class="janal-column-center MarAuto Responsive janal-wid-12" sortBy="#{row.timbrado}">
               <f:facet name="header">

@@ -87,7 +87,7 @@ public class Transaccion extends TransaccionFactura {
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
 		boolean regresar           = false;
-		Map<String, Object> params = null;
+		Map<String, Object> params = new HashMap<>();
 		TcManticFacturasDto factura= null;
 		TcManticVentasDto venta    = null;
 		Long idFactura             = null;		
@@ -110,6 +110,11 @@ public class Transaccion extends TransaccionFactura {
 							venta= (TcManticVentasDto) DaoFactory.getInstance().findById(sesion, TcManticVentasDto.class, this.orden.getIdVenta());
 							venta.setIdCliente(this.orden.getIdCliente());
 							venta.setIdClienteDomicilio(this.orden.getIdClienteDomicilio());
+							venta.setIdTipoMedioPago(this.orden.getIdTipoMedioPago());
+							venta.setIdTipoPago(this.orden.getIdTipoPago());
+							venta.setIdBanco(this.orden.getIdBanco());
+							venta.setReferencia(this.orden.getReferencia());
+							venta.setIdUsoCfdi(this.orden.getIdUsoCfdi());
 							DaoFactory.getInstance().update(sesion, venta);
 						} // if
 						else{							
@@ -128,7 +133,6 @@ public class Transaccion extends TransaccionFactura {
 					else if(this.idEstatusFactura.equals(EEstatusFicticias.CANCELADA.getIdEstatusFicticia())) {
 						idEstatus= EEstatusFacturas.CANCELADA.getIdEstatusFactura();
 						this.messageError= "Ocurrio un error al cancelar la factura";
-						params= new HashMap<>();
 						params.put("idFactura", this.orden.getIdFactura());
 						factura= (TcManticFacturasDto) DaoFactory.getInstance().toEntity(sesion, TcManticFacturasDto.class, "TcManticFacturasDto", "detalle", params);
 						if(factura!= null && factura.getIdFacturama()!= null) {
@@ -233,13 +237,12 @@ public class Transaccion extends TransaccionFactura {
 			throw e;
 		} // catch		
 		return regresar;
-	} // agregarContacto
+	} 
 	
 	public List<ClienteTipoContacto> toClientesTipoContacto() throws Exception {
 		List<ClienteTipoContacto> regresar= null;
-		Map<String, Object>params    = null;
+		Map<String, Object>params         = new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_cliente="+ this.idCliente+ " and id_tipo_contacto>= 6 and id_tipo_contacto<= 11");
 			regresar= DaoFactory.getInstance().toEntitySet(ClienteTipoContacto.class, "TrManticClienteTipoContactoDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
 		} // try
@@ -247,7 +250,7 @@ public class Transaccion extends TransaccionFactura {
 			Methods.clean(params);
 		} // finally
 		return regresar;
-	} // toClientesTipoContacto
+	} 
 	
 	private boolean generarTimbradoFactura(Session sesion, Long idVenta, Long idFactura, String correos) throws Exception {
 		boolean regresar          = false;
@@ -262,32 +265,34 @@ public class Transaccion extends TransaccionFactura {
 			factura.setCliente(gestor.toClienteCfdiVenta(sesion));
 			factura.getCliente().setIdFactura(idFactura);
 			factura.getCliente().setMetodoPago(ETipoPago.fromIdTipoPago(this.orden.getIdTipoPago()).getClave());
+      // SE AJUSTO EL 28/05/2025 AL SELECCIONAR PAGO POR DEFINIR (PPD) SIEMPRE SU MEDIO DE PAGO SERA 99
+      if(Objects.equals(this.orden.getIdTipoPago(), 2L) && !Objects.equals(factura.getCliente().getMedioPago(), "99"))
+        factura.getCliente().setMedioPago("99");
 			regresar= factura.generarCfdi(sesion);				
 		} // try
 		catch (Exception e) {			
-			this.messageError= "Error al realizar el timbrado de la factura.";
+			this.messageError= "Error al realizar el timbrado de la factura";
 			throw e;
 		} // catch	
 		return regresar;
-	} // generarTimbradoFactura
+	} 
 
 	private void actualizarClienteFacturama(Session sesion) throws Exception{		
-		CFDIGestor gestor= new CFDIGestor(this.orden.getIdCliente());
+		CFDIGestor gestor     = new CFDIGestor(this.orden.getIdCliente());
 		ClienteFactura cliente= gestor.toClienteFacturaUpdateVenta(sesion, this.orden.getIdClienteDomicilio());
 		super.setCliente(cliente);
 		if(cliente.getIdFacturama()!= null)
 			super.updateCliente(sesion);
 		else
 			super.procesarCliente(sesion);		
-	} // actualizarArticuloFacturama
+	} 
 	
 	private boolean checkTotal(Session sesion) throws Exception {
 		boolean regresar = false;
 		Double sumTotal  = 0D;
 		Double sumDetalle= 0D;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("idVenta", this.orden.getIdVenta());
 			Value detalle= DaoFactory.getInstance().toField(sesion, "TcManticVentasDetallesDto", "total", params, "total");
 			if(detalle!= null && detalle.getData()!= null)
@@ -306,4 +311,5 @@ public class Transaccion extends TransaccionFactura {
 		} // if	
 		return regresar;
 	}	// checkTotal
+  
 } 
