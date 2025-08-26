@@ -8,11 +8,10 @@
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 template="/WEB-INF/plantillas/filtro.xhtml">
-	<ui:param name="titulo" value="Catálogo de conteos realizados" />
+	<ui:param name="titulo" value="Catálogo de conteos dirigidos" />
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {
-				idEmpresa      : {validaciones: 'libre', mascara: 'libre'},
 				idAlmacen      : {validaciones: 'libre', mascara: 'libre'},
 				codigo         : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
 				nombre         : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
@@ -57,11 +56,11 @@
           <p:panel id="panelBusqueda" header="Búsqueda:" styleClass="lg-pantalla" toggleable="true" toggleOrientation="horizontal">
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
 						<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
-              <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticCatalogosConteosFiltro.attrs.isMatriz}"/>
-              <p:selectOneMenu id="idEmpresa" value="#{manticCatalogosConteosFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-								<p:ajax event="change" process="@this" update="idAlmacen" listener="#{manticCatalogosConteosFiltro.doAlmacenes}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+              <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticContadoresFiltro.attrs.isMatriz}"/>
+              <p:selectOneMenu id="idEmpresa" value="#{manticContadoresFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+								<p:ajax event="change" process="@this" update="idAlmacen" listener="#{manticContadoresFiltro.doAlmacenes}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
-                <f:selectItems value="#{manticCatalogosConteosFiltro.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
+                <f:selectItems value="#{manticContadoresFiltro.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>   
@@ -70,9 +69,9 @@
                 </p:column>   
               </p:selectOneMenu>
               <p:outputLabel for="idAlmacen" value="Almacen:"/>
-              <p:selectOneMenu id="idAlmacen" value="#{manticCatalogosConteosFiltro.attrs.idAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+              <p:selectOneMenu id="idAlmacen" value="#{manticContadoresFiltro.attrs.idAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
-                <f:selectItems value="#{manticCatalogosConteosFiltro.attrs.almacenes}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
+                <f:selectItems value="#{manticContadoresFiltro.attrs.almacenes}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>   
@@ -81,8 +80,8 @@
                 </p:column>   
               </p:selectOneMenu>
               <p:outputLabel for="codigo" value="Código:"/>
-              <p:autoComplete id="codigo" placeholder="ej. CT123" var="item" itemLabel="#{item.propio}" inputStyleClass="janal-wid-100-txt key-down-codigos filas" itemValue="#{item}" value="#{manticCatalogosConteosFiltro.attrs.codigo}" completeMethod="#{manticCatalogosConteosFiltro.doCompleteCodigo}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">
-								<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this idEmpresa" listener="#{manticCatalogosConteosFiltro.doAsignaCodigo}" oncomplete="janal.desbloquear();"/>
+              <p:autoComplete id="codigo" placeholder="ej. CT123" var="item" itemLabel="#{item.propio}" inputStyleClass="janal-wid-100-txt key-down-codigos filas" itemValue="#{item}" value="#{manticContadoresFiltro.attrs.codigo}" completeMethod="#{manticContadoresFiltro.doCompleteCodigo}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">
+								<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this idEmpresa" listener="#{manticContadoresFiltro.doAsignaCodigo}" oncomplete="janal.desbloquear();"/>
 								<f:facet name="itemtip">
 									<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-col-400" columnClasses="janal-wid-col-110, janal-wid-100">
 										<f:facet name="header" class="TexAlCenter">
@@ -96,8 +95,8 @@
 								</f:facet>
 							</p:autoComplete>	
 							<p:outputLabel for="nombre" value="Nombre:"/>							
-							<p:autoComplete id="nombre" var="item" placeholder="ej. CLAVO CONCRETO" itemLabel="#{item.nombre}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{item}" value="#{manticCatalogosConteosFiltro.attrs.articulo}" completeMethod="#{manticCatalogosConteosFiltro.doCompleteArticulo}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">									
-								<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this idEmpresa" listener="#{manticCatalogosConteosFiltro.doAsignaArticulo}" oncomplete="janal.desbloquear();"/>
+							<p:autoComplete id="nombre" var="item" placeholder="ej. CLAVO CONCRETO" itemLabel="#{item.nombre}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{item}" value="#{manticContadoresFiltro.attrs.articulo}" completeMethod="#{manticContadoresFiltro.doCompleteArticulo}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">									
+								<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this idEmpresa" listener="#{manticContadoresFiltro.doAsignaArticulo}" oncomplete="janal.desbloquear();"/>
 								<f:facet name="itemtip">
 									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
 										<f:facet name="header" class="TexAlCenter">
@@ -115,11 +114,11 @@
 								</f:facet>
 							</p:autoComplete>	
               <p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
-							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{manticCatalogosConteosFiltro.attrs.fechaInicio}" pattern="dd/MM/yyyy" locale="mx" converter="janal.convertidor.Calendario"/>
+							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{manticContadoresFiltro.attrs.fechaInicio}" pattern="dd/MM/yyyy" locale="mx" converter="janal.convertidor.Calendario"/>
               <p:outputLabel for="fechaTermino" value="Fecha término:"/>
-							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{manticCatalogosConteosFiltro.attrs.fechaTermino}" pattern="dd/MM/yyyy" locale="mx" converter="janal.convertidor.Calendario"/>
+							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{manticContadoresFiltro.attrs.fechaTermino}" pattern="dd/MM/yyyy" locale="mx" converter="janal.convertidor.Calendario"/>
               <p:outputLabel for="usuario" value="Nombre o cuenta:"/>
-                <p:autoComplete id="usuario" var="item" placeholder="ej. JUAN.PEREZ" itemLabel="#{item.cuenta}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{item}" value="#{manticCatalogosConteosFiltro.attrs.usuario}" completeMethod="#{manticCatalogosConteosFiltro.doCompleteUsuario}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">									
+                <p:autoComplete id="usuario" var="item" placeholder="ej. JUAN.PEREZ" itemLabel="#{item.cuenta}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{item}" value="#{manticContadoresFiltro.attrs.usuario}" completeMethod="#{manticContadoresFiltro.doCompleteUsuario}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">									
 								<f:facet name="itemtip">
 									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
 										<f:facet name="header" class="TexAlCenter">
@@ -137,9 +136,9 @@
 								</f:facet>
 							</p:autoComplete>	
               <p:outputLabel for="idConteoEstatus" value="Estatus:"/>
-              <p:selectOneMenu id="idConteoEstatus" value="#{manticCatalogosConteosFiltro.attrs.idConteoEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+              <p:selectOneMenu id="idConteoEstatus" value="#{manticContadoresFiltro.attrs.idConteoEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
-                <f:selectItems value="#{manticCatalogosConteosFiltro.attrs.estatus}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+                <f:selectItems value="#{manticContadoresFiltro.attrs.estatus}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
                 <p:column headerText="Nombre">
                   <h:outputText value="#{item.nombre}"/>
                 </p:column>   
@@ -147,20 +146,22 @@
 							<p:separator/>
 						</p:panelGrid>
 						<div class="janal-align-right">
-							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute(true);" process="@form" actionListener="#{manticCatalogosConteosFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla tablaDetalle"/>
-							<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b" icon="fa fa-filter" onstart="return janal.execute(true);" process="@form" actionListener="#{manticCatalogosConteosFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla tablaDetalle"/>
+							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute(true);" process="@form" actionListener="#{manticContadoresFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla tablaDetalle"/>
+							<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b" icon="fa fa-filter" onstart="return janal.execute(true);" process="@form" actionListener="#{manticContadoresFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla tablaDetalle"/>
 						</div>
 					</p:panel>
 				</div>
 				<p:spacer width="5px"/>
 				<div id="collapse-content" class="ui-grid-col-9">
 					<div class="ui-grid-row janal-grid-row">
-            <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticCatalogosConteosFiltro.lazyModel}" styleClass="janal-wid-100" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosConteosFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosConteosFiltro.lazyModel.rowCount gt manticCatalogosConteosFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+            <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticContadoresFiltro.lazyModel}" styleClass="janal-wid-100-txt" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticContadoresFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticContadoresFiltro.lazyModel.rowCount gt manticContadoresFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
 							<p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
 							<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
 							<f:facet name="header">
 								<div class="lg-pantalla">
 									<p:menuButton value="Opciones">
+  									<p:menuitem icon="fa fa-plus" value="Agregar" title="Agregar articulo" action="#{manticContadoresFiltro.doAccion('AGREGAR')}" onstart="return janal.bloquear()"/>																								
+  									<p:separator/>
 										<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 										<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 									</p:menuButton>
@@ -170,78 +171,86 @@
 									<p:commandButton icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 								</div>	
 							</f:facet>												
-							<p:column styleClass="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.empresa}">
+							<p:column styleClass="MarAuto Responsive janal-column-left janal-wid-10" sortBy="#{row.empresa}">
 								<f:facet name="header">
 									<h:outputText value="Empresa"/>
 								</f:facet>
 								<h:outputText value="#{row['empresa']}"/>
 							</p:column>														
-							<p:column styleClass="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.almacen}">
+							<p:column styleClass="MarAuto Responsive janal-wid-10 janal-column-left" sortBy="#{row.almacen}">
 								<f:facet name="header">
 									<h:outputText value="Almacen"/>
 								</f:facet>
 								<h:outputText value="#{row['almacen']}"/>
 							</p:column>														
-							<p:column styleClass="janal-column-left MarAuto Responsive" sortBy="#{row.nombre}">
+							<p:column styleClass="MarAuto Responsive janal-column-left" sortBy="#{row.nombre}">
 								<f:facet name="header">
 									<h:outputText value="Nombre"/>
 								</f:facet>
 								<h:outputText value="#{row['nombre']}"/>
 							</p:column>														
-							<p:column styleClass="janal-column-left MarAuto Responsive janal-wid-25" sortBy="#{row.usuario}">
+							<p:column styleClass="MarAuto Responsive janal-column-left janal-wid-25" sortBy="#{row.trabajo}">
 								<f:facet name="header">
 									<h:outputText value="Envio"/>
 								</f:facet>
-								<h:outputText value="#{row['usuario']}"/>
+								<h:outputText value="#{row['trabajo']}"/>
 							</p:column>														
-							<p:column styleClass="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.articulos}">
+							<p:column styleClass="MarAuto Responsive janal-column-right janal-wid-8" sortBy="#{row.articulos}">
 								<f:facet name="header">
 									<h:outputText value="Partidas"/>
 								</f:facet>
 								<h:outputText value="#{row['articulos']}"/>
 							</p:column>											
-							<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-6" sortBy="#{row.version}">
+							<p:column styleClass="MarAuto Responsive janal-column-center janal-wid-6" sortBy="#{row.version}">
 								<f:facet name="header">
 									<h:outputText value="Version"/>
 								</f:facet>
 								<h:outputText value="#{row['version']}"/>
 							</p:column>			
-							<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-12" sortBy="#{row.fecha}">
+							<p:column styleClass="MarAuto Responsive janal-column-center janal-wid-12" sortBy="#{row.fecha}">
 								<f:facet name="header">
 									<h:outputText value="Fecha"/>
 								</f:facet>
 								<h:outputText value="#{row['fecha']}"/>
 							</p:column>			
-							<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-3" sortBy="#{row.idConteoEstatus}">
+              <p:column styleClass="MarAuto Responsive janal-wid-10" sortBy="#{row.estatus}">
+                <f:facet name="header">
+                  <h:outputText value="Estatus"/>
+                </f:facet>
+                <h:outputText value="#{row['estatus']}"/>
+              </p:column>			
+							<p:column styleClass="MarAuto Responsive janal-column-center janal-wid-3" sortBy="#{row.idConteoEstatus}">
 								<f:facet name="header">
 									<h:outputText value=""/>
 								</f:facet>
 								<h:graphicImage library="janal" name="icon/semaforos/#{row.idConteoEstatus eq '4'? 'circulo-rojo.png': row.idConteoEstatus eq '1'? 'circulo-azul.png': row.idConteoEstatus eq '5'? 'circulo-amarillo.png': 'circulo-verde.png'}" title="Conteo #{row.idConteoEstatus eq '4'? 'cancelado': row.idConteoEstatus eq '1'? 'registrado': row.idConteoEstatus eq '5'? 'suspendido': 'integrado'}"/>
 							</p:column>
               <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-col-40">
-  							<p:commandButton icon="fa fa-search" title="Partida(s)" actionListener="#{manticCatalogosConteosFiltro.doDetalle(row)}" process="@this" update="tablaDetalle @(.detalle)" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
+  							<p:commandButton icon="fa fa-search" title="Partida(s)" actionListener="#{manticContadoresFiltro.doDetalle(row)}" process="@this" update="tablaDetalle @(.detalle)" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
               </p:column>
 							<f:facet name="footer">
-								Total [#{manticCatalogosConteosFiltro.lazyModel== null? 0: manticCatalogosConteosFiltro.lazyModel.rowCount}] registros
+								Total [#{manticContadoresFiltro.lazyModel== null? 0: manticContadoresFiltro.lazyModel.rowCount}] registros
 							</f:facet>
 						</p:dataTable>
 						<p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-              <p:menuitem icon="fa fa-gear" value="Procesar" actionListener="#{manticCatalogosConteosFiltro.doProcesar()}" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" disabled="#{fn:contains('|2|3|4|5|', manticCatalogosConteosFiltro.attrs.seleccionado.idConteoEstatus)}"/>
+	  					<p:menuitem value="Modificar" icon="fa fa-edit" action="#{manticContadoresFiltro.doAccion('MODIFICAR')}" process="@this tabla" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />
+  						<p:menuitem value="Consultar" icon="fa fa-search" action="#{manticContadoresFiltro.doAccion('CONSULTAR')}" process="@this tabla" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />
+              <p:menuitem value="Eliminar" icon="fa fa-trash" actionListener="#{manticContadoresFiltro.doEliminar()}" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{manticContadoresFiltro.admin}"/>
+              <p:menuitem value="Consultar" icon="fa fa-search" action="#{manticContadoresFiltro.doConsultar()}" process="@this tabla" update="tablaDetalle @(.detalle)" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
 							<p:separator/>
-              <p:menuitem action="#{manticCatalogosConteosFiltro.doConsultar()}" process="@this tabla" update="tablaDetalle @(.detalle)" icon="fa fa-search" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
-              <p:menuitem icon="fa fa-trash" value="Eliminar" actionListener="#{manticCatalogosConteosFiltro.doEliminar()}" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{manticCatalogosConteosFiltro.admin}"/>
-              <p:separator rendered="#{fn:contains('|1|4|5|', manticCatalogosConteosFiltro.attrs.seleccionado.idConteoEstatus)}"/>
-              <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosConteosFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|4|5|', manticCatalogosConteosFiltro.attrs.seleccionado.idConteoEstatus)}"/>
+              <p:menuitem value="Procesar" icon="fa fa-gear" actionListener="#{manticContadoresFiltro.doProcesar()}" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" disabled="#{fn:contains('|1|2|4|5|6|7|', manticContadoresFiltro.attrs.seleccionado.idConteoEstatus)}"/>
+              <p:separator rendered="#{fn:contains('|1|2|6|7|', manticContadoresFiltro.attrs.seleccionado.idConteoEstatus)}"/>
+              <p:menuitem value="Estatus" icon="fa fa-exchange" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticContadoresFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|6|7|', manticContadoresFiltro.attrs.seleccionado.idConteoEstatus)}"/>
               <p:separator/>
-              <p:menuitem value="Min max" icon="fa fa-balance-scale" onstart="return janal.bloquear()" process="@this tabla" action="#{manticCatalogosConteosFiltro.doUmbrales}"/>
-						</p:contextMenu>		
+              <p:menuitem value="Min max" icon="fa fa-balance-scale" onstart="return janal.bloquear()" process="@this tabla" action="#{manticContadoresFiltro.doUmbrales}"/>
+            </p:contextMenu>		
           </div>  
           <p:spacer height="5px"/>
 					<div class="ui-grid-row janal-grid-row">
-            <p:dataTable lazy="true" id="tablaDetalle" widgetVar="kajoolTableDetalle" var="row" value="#{manticCatalogosConteosFiltro.lazyDetalle}" styleClass="detalle janal-wid-100 #{manticCatalogosConteosFiltro.lazyDetalle eq null ? 'janal-display-none': ''}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosConteosFiltro.attrs.detalle}" selectionMode="single" paginator="#{manticCatalogosConteosFiltro.lazyDetalle.rowCount gt manticCatalogosConteosFiltro.lazyDetalle.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+            <p:dataTable lazy="true" id="tablaDetalle" widgetVar="kajoolTableDetalle" var="row" value="#{manticContadoresFiltro.lazyDetalle}" styleClass="detalle janal-wid-100-txt #{manticContadoresFiltro.lazyDetalle eq null ? 'janal-display-none': ''}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticContadoresFiltro.attrs.detalle}" selectionMode="single" paginator="#{manticContadoresFiltro.lazyDetalle.rowCount gt manticContadoresFiltro.lazyDetalle.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
               <f:facet name="header">
                 <div style="float: left">
-                  <p:outputLabel value="Detalle de partida(s) del conteo seleccionado: #{manticCatalogosConteosFiltro.attrs.seleccionado.nombre}" styleClass="detalle janal-text-white"/>
+                  <p:outputLabel value="Detalle de partida(s) del conteo seleccionado: #{manticContadoresFiltro.attrs.seleccionado.nombre}" styleClass="detalle janal-text-white"/>
                 </div>  
                 <div class="lg-pantalla">
                   <p:menuButton value="Opciones">
@@ -254,44 +263,44 @@
                   <p:commandButton icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXlsDetalle', 'tablaDetalle')" oncomplete="janal.desbloquear()"/>
                 </div>	
               </f:facet>												
-              <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-3">
+              <p:column styleClass="MarAuto Responsive janal-column-center janal-wid-3">
                 <f:facet name="header">
                   <h:outputText value="No."/>
                 </f:facet>
                 <h:outputText value="#{index+ 1}.-"/>
               </p:column>														
-              <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-12" sortBy="#{row.codigo}">
+              <p:column styleClass="MarAuto Responsive janal-column-center janal-wid-12" sortBy="#{row.codigo}">
                 <f:facet name="header">
                   <h:outputText value="Código"/>
                 </f:facet>
                 <h:outputText value="#{row['codigo']}"/>
               </p:column>														
-              <p:column styleClass="janal-column-left MarAuto Responsive janal-wid-30" sortBy="#{row.nombre}">
+              <p:column styleClass="MarAuto Responsive janal-column-left janal-wid-30" sortBy="#{row.nombre}">
                 <f:facet name="header">
                   <h:outputText value="Nombre"/>
                 </f:facet>
                 <h:outputText value="#{row['nombre']}"/>
               </p:column>									
-              <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.cantidad}">
+              <p:column styleClass="MarAuto Responsive janal-column-right janal-wid-8" sortBy="#{row.cantidad}">
                 <f:facet name="header">
                   <h:outputText value="Cantidad"/>
                 </f:facet>
                 <h:outputText value="#{row['cantidad']}"/>
               </p:column>								
-              <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-12" sortBy="#{row.fecha}">
+              <p:column styleClass="MarAuto Responsive janal-column-center janal-wid-12" sortBy="#{row.fecha}">
                 <f:facet name="header">
                   <h:outputText value="Fecha"/>
                 </f:facet>
                 <h:outputText value="#{row['fecha']}"/>
               </p:column>			
-              <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-3" sortBy="#{row.idProcesado}">
+              <p:column styleClass="MarAuto Responsive janal-column-center janal-wid-3" sortBy="#{row.idProcesado}">
                 <f:facet name="header">
                   <h:outputText value=""/>
                 </f:facet>
                 <h:graphicImage library="janal" name="icon/semaforos/#{row.idProcesado eq '1' ? 'circulo-verde.png': 'circulo-rojo.png'}" title="Conteo #{row.idProcesado eq '1'? '': 'NO'} procesado #{row.idProcesado eq '1'? row.procesado: ''}"/>
               </p:column>
               <f:facet name="footer">
-                <p:outputLabel value="Total [#{manticCatalogosConteosFiltro.lazyDetalle== null? 0: manticCatalogosConteosFiltro.lazyDetalle.rowCount}] registros"/>
+                <p:outputLabel value="Total [#{manticContadoresFiltro.lazyDetalle== null? 0: manticContadoresFiltro.lazyDetalle.rowCount}] registros"/>
               </f:facet>
             </p:dataTable>
             <h:commandLink id="dataPdfDetalle">                    
@@ -300,7 +309,7 @@
             <h:commandLink id="dataXlsDetalle">
               <pe:exporter type="xlsx" skipComponents="org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="tablaDetalle" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/>                
             </h:commandLink>	             
-				  </div>	
+          </div>  
 				</div>
 			</div>
 		</div>		           				
@@ -310,33 +319,33 @@
 			<h:form id="formDialogoEstatus" prependId="false">
 				<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
 					<p:outputLabel for="estatusDlg" value="Estatus:"/>												
-          <p:selectOneMenu id="estatusDlg" value="#{manticCatalogosConteosFiltro.attrs.idEstatus}" styleClass="janal-wid-100-txt">									
-						<f:selectItems value="#{manticCatalogosConteosFiltro.attrs.allEstatus}"/>					
+          <p:selectOneMenu id="estatusDlg" value="#{manticContadoresFiltro.attrs.idEstatus}" styleClass="janal-wid-100-txt">									
+						<f:selectItems value="#{manticContadoresFiltro.attrs.allEstatus}"/>					
 					</p:selectOneMenu>
 				</h:panelGrid>
 				<p:outputLabel for="justificacion" value="Justificación:"/><br/>
-				<p:inputTextarea id="justificacion" value="#{manticCatalogosConteosFiltro.attrs.justificacion}" styleClass="janal-wid-100-txt"/>
+				<p:inputTextarea id="justificacion" value="#{manticContadoresFiltro.attrs.justificacion}" styleClass="janal-wid-100-txt"/>
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">
-					<p:commandButton icon="fa fa-check" process="@this dialogoEstatus" update="tabla" value="Aceptar" action="#{manticCatalogosConteosFiltro.doActualizarEstatus}" onstart="return validaJustificacion()" oncomplete="janal.desbloquear();"/>
+					<p:commandButton icon="fa fa-check" process="@this dialogoEstatus" update="tabla" value="Aceptar" action="#{manticContadoresFiltro.doActualizarEstatus}" onstart="return validaJustificacion()" oncomplete="janal.desbloquear();"/>
 					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="return PF('dlgEstatus').hide();" oncomplete="janal.desbloquear();"/>
 				</div>
 			</h:form>
 		</p:dialog>  
   </ui:define>
-	<ui:param name="textoConfirmacion" value="#{manticCatalogosConteosFiltro.attrs.titulo}" />
-	<ui:param name="accionConfirmacion" value="#{manticCatalogosConteosFiltro}"/>
+	<ui:param name="textoConfirmacion" value="#{manticContadoresFiltro.attrs.titulo}" />
+	<ui:param name="accionConfirmacion" value="#{manticContadoresFiltro}"/>
 	<ui:param name="updateComponent" value="tabla"/>
 	<ui:param name="eventoConfirmacion" value="doEjecutar"	/>	
 	<ui:param name="renderedConfirmacion" value="true"/>	
 	<ui:define name="detalleConfirmacion">
 		<h:panelGrid columns="2">
 			<p:outputLabel value="Nombre: "/>
-			<p:outputLabel value="#{manticCatalogosConteosFiltro.attrs.seleccionado.nombre}"/>
+			<p:outputLabel value="#{manticContadoresFiltro.attrs.seleccionado.nombre}"/>
 			<p:outputLabel value="Partida(s): "/>
-			<p:outputLabel value="#{manticCatalogosConteosFiltro.attrs.seleccionado.articulos}"/>
+			<p:outputLabel value="#{manticContadoresFiltro.attrs.seleccionado.articulos}"/>
 			<p:outputLabel value="Envío: "/>
-			<p:outputLabel value="#{manticCatalogosConteosFiltro.attrs.seleccionado.usuario}"/>
+			<p:outputLabel value="#{manticContadoresFiltro.attrs.seleccionado.usuario}"/>
 		</h:panelGrid>			
 	</ui:define>
 </ui:composition>

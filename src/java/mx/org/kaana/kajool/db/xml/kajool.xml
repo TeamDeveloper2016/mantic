@@ -116,36 +116,109 @@
     </unit>
     <unit id="TcJanalUsuariosDto">
       <select id="row">
-        select
-					*
-        from
-					tc_janal_usuarios
-        where
-					{condicion}
+select
+  *
+from
+  tc_janal_usuarios
+where
+  {condicion}
       </select>
       <select id="identically">
-        select
-					*
-        from
-					tc_janal_usuarios
-        where
-					id_perfil = {idPerfil} and id_persona = {idPersona}
+select
+  *
+from
+  tc_janal_usuarios
+where
+  id_perfil = {idPerfil} and id_persona = {idPersona}
       </select>			
 			<select id="findIds">
-        select
-          id_usuario
-        from
-          tc_janal_usuarios
-        where
-          id_perfil = {idPerfil}
+select
+  id_usuario
+from
+  tc_janal_usuarios
+where
+  id_perfil = {idPerfil}
       </select>
+			<select id="porCodigo">			
+select      
+  tc_janal_usuarios.id_usuario as id_key,
+  tr_mantic_empresa_personal.id_empresa_persona,
+  tc_mantic_personas.id_persona,
+  tc_mantic_personas.cuenta,
+  tc_mantic_personas.cuenta,
+  tc_mantic_personas.rfc,
+  tc_mantic_personas.curp,
+  concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as nombre
+from
+  tc_janal_usuarios
+inner join
+  tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+inner join
+  tr_mantic_empresa_personal on tc_mantic_personas.id_persona= tr_mantic_empresa_personal.id_persona
+where 
+  tr_mantic_empresa_personal.id_empresa in ({sucursales})
+  and upper(tr_mantic_empresa_personal.clave) regexp '.*{codigo}.*'
+  and tr_mantic_empresa_personal.id_empresa_persona&gt; 2
+group by
+  tc_mantic_personas.id_persona
+order by
+  tr_mantic_empresa_personal.clave
+			</select>
+			<select id="porNombre">			
+select      
+  tc_janal_usuarios.id_usuario as id_key,
+  tr_mantic_empresa_personal.id_empresa_persona,
+  tc_mantic_personas.id_persona,
+  tc_mantic_personas.cuenta,
+  tc_mantic_personas.rfc,
+  tc_mantic_personas.curp,
+  concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as nombre
+from
+  tc_janal_usuarios
+inner join
+  tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+inner join
+  tr_mantic_empresa_personal on tc_mantic_personas.id_persona= tr_mantic_empresa_personal.id_persona
+where 
+  tr_mantic_empresa_personal.id_empresa in ({sucursales})
+  and upper(concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, ''))) regexp '.*{codigo}.*'
+  and tr_mantic_empresa_personal.id_empresa_persona&gt; 2
+group by
+  tc_mantic_personas.id_persona
+order by
+  concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, ''))
+			</select>
+			<select id="empleados">			
+select      
+  tc_janal_usuarios.id_usuario as id_key,
+  tr_mantic_empresa_personal.id_empresa_persona,
+  tc_mantic_personas.id_persona,
+  tc_mantic_personas.cuenta,
+  tc_mantic_personas.rfc,
+  tc_mantic_personas.curp,
+  concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as nombre
+from
+  tc_janal_usuarios
+inner join
+  tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+inner join
+  tr_mantic_empresa_personal on tc_mantic_personas.id_persona= tr_mantic_empresa_personal.id_persona
+where 
+  tr_mantic_empresa_personal.id_empresa in ({sucursales})
+  and tr_mantic_empresa_personal.id_empresa_persona&gt; 2
+  and {condicion}
+group by
+  tc_mantic_personas.id_persona
+order by
+  concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, ''))
+			</select>
       <update id="rows">
-        update
-          tc_janal_usuarios
-        set 
-          activo= 0
-        where
-          id_persona= {idPersona}
+update
+  tc_janal_usuarios
+set 
+  activo= 0
+where
+  id_persona= {idPersona}
       </update>
     </unit>
     <unit id="TcJanalTiposDatosDto">

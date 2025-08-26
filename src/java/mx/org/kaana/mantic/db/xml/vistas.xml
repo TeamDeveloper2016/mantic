@@ -4,6 +4,81 @@
 -->
 <process>
 	<dml> 
+		<unit id="VistaContadoresDto">
+      <select id="lazy">
+select
+  tc_mantic_contadores.id_contador as id_key,
+  tc_mantic_contadores.id_contador,
+  tc_mantic_contadores.id_almacen,
+  tc_mantic_empresas.nombre as empresa,  
+  tc_mantic_almacenes.nombre as almacen,
+  upper(tc_mantic_contadores.nombre) as nombre,
+  tc_mantic_contadores.id_contador_estatus,
+  tc_mantic_contadores.version,
+  tc_mantic_contadores.id_usuario,
+  ifnull(tc_mantic_contadores.procesado, now()) as procesado,
+  if(tc_mantic_contadores.procesado is null, 2, 1) as id_procesado,  
+  tc_mantic_contadores_estatus.nombre as estatus,
+  tc_mantic_contadores_estatus.estatus_asociados, 
+  concat(tt_mantic_personas.nombres, ' ', tt_mantic_personas.paterno, ' ', tt_mantic_personas.materno) as trabajo,
+  concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as usuario,
+  concat(substr(tc_mantic_contadores.fecha, 7, 2), '/', substr(tc_mantic_contadores.fecha, 5, 2), '/', substr(tc_mantic_contadores.fecha, 1, 4), ' ', substr(tc_mantic_contadores.fecha, 9, 2), ':', substr(tc_mantic_contadores.fecha, 11, 2), ':', substr(tc_mantic_contadores.fecha, 13, 2)) as fecha,
+  count(tc_mantic_contadores_detalles.id_contador_detalle) as articulos
+from
+  tc_mantic_contadores
+inner join
+  tc_mantic_contadores_detalles on tc_mantic_contadores.id_contador= tc_mantic_contadores_detalles.id_contador
+inner join
+  tc_mantic_articulos on tc_mantic_contadores_detalles.id_articulo= tc_mantic_articulos.id_articulo
+inner join
+  tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo= tc_mantic_articulos_codigos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1
+inner join 
+	tc_mantic_contadores_estatus on tc_mantic_contadores.id_contador_estatus=tc_mantic_contadores_estatus.id_contador_estatus
+inner join
+	tc_janal_usuarios on tc_mantic_contadores.id_usuario= tc_janal_usuarios.id_usuario
+inner join
+	tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+inner join
+	tc_janal_usuarios as tt_janal_usuarios on tc_mantic_contadores.id_trabaja= tt_janal_usuarios.id_usuario
+inner join
+	tc_mantic_personas as tt_mantic_personas on tc_janal_usuarios.id_persona= tt_mantic_personas.id_persona
+inner join 
+  tc_mantic_empresas on tc_mantic_contadores.id_empresa= tc_mantic_empresas.id_empresa
+inner join 
+  tc_mantic_almacenes on tc_mantic_contadores.id_almacen= tc_mantic_almacenes.id_almacen
+where
+  tc_mantic_contadores.id_empresa in ({idEmpresa})
+  and tc_mantic_articulos.id_articulo_tipo= 1 
+  and {condicion}
+group by
+  tc_mantic_contadores.id_contador
+{sortOrder}
+      </select>
+      <select id="row">
+select 
+  tc_mantic_contadores_detalles.id_contador_detalle as id_key,
+  tc_mantic_contadores_detalles.id_contador_detalle,
+  tc_mantic_articulos.id_articulo,
+  tc_mantic_contadores_detalles.codigo,
+  tc_mantic_articulos.nombre,
+  tc_mantic_contadores_detalles.cantidad,
+  concat(substr(tc_mantic_contadores_detalles.fecha, 7, 2), '/', substr(tc_mantic_contadores_detalles.fecha, 5, 2), '/', substr(tc_mantic_contadores_detalles.fecha, 1, 4), ' ', substr(tc_mantic_contadores_detalles.fecha, 9, 2), ':', substr(tc_mantic_contadores_detalles.fecha, 11, 2), ':', substr(tc_mantic_contadores_detalles.fecha, 13, 2)) as fecha,
+  ifnull(tc_mantic_contadores_detalles.procesado, now()) as procesado,
+  if(tc_mantic_contadores_detalles.procesado is null, 2, 1) as id_procesado,  
+  tc_mantic_contadores_detalles.registro
+from
+  tc_mantic_contadores_detalles
+inner join
+  tc_mantic_articulos on tc_mantic_contadores_detalles.id_articulo= tc_mantic_articulos.id_articulo
+where
+  tc_mantic_contadores_detalles.id_contador= {idContador}
+group by
+  tc_mantic_contadores_detalles.id_contador,
+  tc_mantic_articulos.id_articulo
+order by
+  tc_mantic_articulos.nombre        
+      </select>
+    </unit>  
 		<unit id="VistaConteosDto">
 			<select id="umbrales">
 select
@@ -292,7 +367,7 @@ select
   tc_mantic_almacenes_articulos.id_almacen_ubicacion as id_ubicacion,
   group_concat(tc_mantic_articulos_codigos.codigo separator '|') as codigos,
   if(tc_mantic_articulos.id_descontinuado= 2, 1, 2) as id_activo,
-  date_format(tc_mantic_articulos.registro, '%Y%m%d%h%i%S') as registro,
+  date_format(tc_mantic_articulos.actualizado, '%Y%m%d%h%i%S') as registro,
   tc_mantic_articulos.precio
 from
   tc_mantic_articulos

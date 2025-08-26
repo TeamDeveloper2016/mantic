@@ -93,9 +93,8 @@ public final class Producto implements Serializable {
   }
   
   private void init(Long idProducto, String cliente) throws Exception {
-    Map<String, Object> params = null;
+    Map<String, Object> params = new HashMap<>();
     try {      
-      params = new HashMap<>();      
       params.put("idProducto", idProducto);      
       if(Objects.equals(-1L, idProducto)) {
         this.producto= new General();

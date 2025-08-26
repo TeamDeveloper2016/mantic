@@ -234,7 +234,7 @@ public class Conteos extends IBaseFilter implements Serializable {
 		finally{
 			Methods.clean(params);
 		} // finally
-	} // loadAlmacenes
+	} 
 
   public void toLoadUbicaciones() {
 		List<Columna> columns= new ArrayList<>();

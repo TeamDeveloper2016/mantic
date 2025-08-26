@@ -129,11 +129,11 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 				else
 					this.getAdminOrden().toStartCalculate();
  				if(!this.accion.equals(EAccion.CONSULTAR)) 
-    			JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la orden de compra."), ETipoMensaje.INFORMACION);
+    			JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la orden de compra"), ETipoMensaje.INFORMACION);
   			JsfBase.setFlashAttribute("idOrdenCompra", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdOrdenCompra());
 			} // if
 			else 
-				JsfBase.addMessage("Ocurrió un error al registrar la orden de compra.", ETipoMensaje.ALERTA);      			
+				JsfBase.addMessage("Ocurrió un error al registrar la orden de compra", ETipoMensaje.ALERTA);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);

@@ -26,6 +26,7 @@ import javax.mail.internet.MimeMultipart;
 import mx.org.kaana.libs.correo.SMTPAuthenticator;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.recurso.Configuracion;
+import mx.org.kaana.libs.recurso.TcConfiguraciones;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.correos.beans.Attachment;
 import org.apache.commons.logging.Log;
@@ -147,18 +148,21 @@ public class IBaseMail implements Serializable {
     MimeBodyPart body    = null;
     DataSource ds        = null;
     Multipart multipart  = null;    
-		List<BodyPart> files = new ArrayList<>();
+		List<BodyPart> items = new ArrayList<>();
     try {
       properties= new Properties();
-      properties.put("mail.smtp.host", Configuracion.getInstance().getPropiedadServidor("mail.smtp.server"));
-      properties.put("mail.smtp.ssl.enable", "true");
-      properties.put("mail.smtp.ssl.trust", "*");
-      properties.put("mail.smtp.starttls.enable", "true");
+      properties.put("mail.host", Configuracion.getInstance().getPropiedadServidor("mail.smtp.server"));
       properties.put("mail.transport.protocol", "smtp");
       properties.put("mail.smtp.auth", "true");
+      properties.put("mail.smtp.ssl.enable", "true");
       properties.put("mail.smtp.port", Configuracion.getInstance().getPropiedadServidor("mail.smtp.port"));			
-			session    = Session.getInstance(properties, this.authenticator);            
+      properties.put("mail.smtp.ssl.trust", Configuracion.getInstance().getPropiedadServidor("mail.smtp.server"));
+      properties.setProperty("mail.smtp.ssl.protocols", "TLSv1.1 TLSv1.2");
+      LOG.info("AUTENTICACION EN EL SERVIDOR DE CORREOS");
+			session= Session.getDefaultInstance(properties, null);
+      session.setDebug(false);
       message= new MimeMessage(session);
+      LOG.error("alias: ".concat(this.alias).concat("> from: ").concat(this.from).concat("> to: ").concat(this.to).concat(" subject ").concat(this.subject));
 			if(Cadena.isVacio(this.alias))
         message.setFrom(new InternetAddress(this.from));
 			else
@@ -168,9 +172,8 @@ public class IBaseMail implements Serializable {
 			if(this.copies!= null)
         message.addRecipients(javax.mail.Message.RecipientType.BCC, this.toPrepare(this.copies));
       message.setSubject(this.subject);
-      LOG.info("Correo from:".concat(this.from).concat(" to ").concat(this.to).concat(" subject ").concat(this.subject));
       // ESTO ES PARA SOLICITA LA CONFIRMACIÓN DE LECTURA DEL CORREO
-      // message.addHeader("Disposition-Notification-To", "info@deckerix.com");
+      message.addHeader("Disposition-Notification-To", this.from);
 			if(this.files!= null && !this.files.isEmpty()) {
 				multipart = new MimeMultipart(); // Multipart
 				for(Attachment item: this.files) {                   
@@ -188,20 +191,28 @@ public class IBaseMail implements Serializable {
             LOG.info("Add file to attachment to email :" + item.getAbsolute());
             body.setDataHandler(new DataHandler(new FileDataSource(item.getAbsolute())));
             body.setFileName(item.getName());
-            files.add(body);          
-          }
-				} // for item
+            items.add(body);          
+          } // else
+				} // for 
 				body = new MimeBodyPart(); // MimeBodyPart
 				body.setContent(Cadena.toCharSet(content), "text/html");
 				multipart.addBodyPart(body);
 				// add files to attachment for email
-        for(BodyPart bp: files)
+        for(BodyPart bp: items)
           multipart.addBodyPart(bp);
 				message.setContent(multipart);   
       } // if
 			else
   			message.setContent(Cadena.toCharSet(content), "text/html");
-      Transport.send(message);
+      Transport transport= session.getTransport("smtp");
+      transport.connect(
+        Configuracion.getInstance().getPropiedadServidor("mail.smtp.server"), 
+        TcConfiguraciones.getInstance().getPropiedadServidor("correo.admin.user"), 
+        TcConfiguraciones.getInstance().getPropiedadServidor("correo.admin.pass")
+      );
+      transport.sendMessage(message, message.getAllRecipients());
+      transport.close();      
+      // Transport.send(message);
 			LOG.info("Correo enviado al buzon de: "+ this.to);
 		} // try
     finally {
@@ -217,7 +228,7 @@ public class IBaseMail implements Serializable {
         ds = null;
       if(multipart!=null)
         multipart = null;      
-			Methods.clean(files);
+			Methods.clean(items);
     } // finally
   } 
 

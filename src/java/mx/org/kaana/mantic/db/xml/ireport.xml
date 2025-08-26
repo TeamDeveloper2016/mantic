@@ -963,17 +963,17 @@
 				from 
 					tc_mantic_ventas
 				inner join
-					tc_mantic_tipos_pagos on tc_mantic_tipos_pagos.id_tipo_pago = tc_mantic_ventas.id_tipo_pago
-				inner join
-					tc_mantic_facturas on tc_mantic_ventas.id_factura = tc_mantic_facturas.id_factura
+					tc_mantic_facturas on tc_mantic_ventas.id_factura= tc_mantic_facturas.id_factura
 				left join
-					tc_mantic_ventas_detalles on tc_mantic_ventas.id_venta = tc_mantic_ventas_detalles.id_venta
+					tc_mantic_ventas_detalles on tc_mantic_ventas.id_venta= tc_mantic_ventas_detalles.id_venta
 				inner join 
-					tc_mantic_tipos_medios_pagos on tc_mantic_ventas.id_tipo_medio_pago = tc_mantic_tipos_medios_pagos.id_tipo_medio_pago
-				inner join 
-					tc_mantic_usos_cfdi on tc_mantic_ventas.id_uso_cfdi = tc_mantic_usos_cfdi.id_uso_cfdi
+					tc_mantic_usos_cfdi on tc_mantic_ventas.id_uso_cfdi= tc_mantic_usos_cfdi.id_uso_cfdi
 				left join
-					tc_mantic_articulos on tc_mantic_ventas_detalles.id_articulo = tc_mantic_articulos.id_articulo
+					tc_mantic_tipos_pagos on tc_mantic_ventas.id_tipo_pago= tc_mantic_tipos_pagos.id_tipo_pago
+				left join 
+					tc_mantic_tipos_medios_pagos on tc_mantic_ventas.id_tipo_medio_pago= tc_mantic_tipos_medios_pagos.id_tipo_medio_pago
+				left join
+					tc_mantic_articulos on tc_mantic_ventas_detalles.id_articulo= tc_mantic_articulos.id_articulo
 				left join
 					tc_mantic_articulos_impuestos on tc_mantic_articulos.id_articulo_impuesto= tc_mantic_articulos_impuestos.id_articulo_impuesto
 				left join

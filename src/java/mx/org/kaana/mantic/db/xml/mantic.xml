@@ -7,6 +7,139 @@
   </model>
 
   <dml>
+    <unit id="TcManticContadoresDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_mantic_contadores
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_mantic_contadores
+where      
+  consecutivo = '{consecutivo}'
+      </select>
+      <select id="igual">
+select      
+  tc_mantic_contadores.id_contador as id_key,
+  tc_mantic_contadores.*
+from      
+  tc_mantic_contadores
+where 
+  {condicion} 
+      </select>
+      <select id="siguiente">
+select
+  max(orden)+ 1 as siguiente
+from 
+  tc_mantic_contadores
+where
+  ejercicio= {ejercicio} 
+  and id_empresa= {idEmpresa}			
+  and orden{operador} 900000	
+			</select>		
+    </unit>    
+    <unit id="TcManticContadoresDetallesDto">
+      <select id="row">
+select      
+  tc_mantic_contadores_detalles.id_contador_detalle as id_key,
+  tc_mantic_contadores_detalles.*
+from      
+  tc_mantic_contadores_detalles
+where 
+  {condicion} 
+order by
+  registro        
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_mantic_contadores_detalles
+where      
+  id_contador = {idContador} and id_articulo = {idArticulo}
+      </select>
+      <select id="detalle">
+select      
+  tc_mantic_contadores_detalles.id_contador_detalle as id_key,
+  tc_mantic_contadores_detalles.id_contador_detalle,
+  tc_mantic_contadores_detalles.id_contador,
+  tc_mantic_contadores_detalles.id_articulo,
+  tc_mantic_articulos_codigos.codigo,
+  tc_mantic_articulos.nombre as nombre,
+  tc_mantic_contadores_detalles.cantidad,
+  tc_mantic_contadores_detalles.fecha,
+  tc_mantic_contadores_detalles.procesado,
+  tc_mantic_contadores_detalles.registro
+from      
+  tc_mantic_contadores_detalles
+inner join
+  tc_mantic_articulos on tc_mantic_contadores_detalles.id_articulo= tc_mantic_articulos.id_articulo
+inner join
+  tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo= tc_mantic_articulos_codigos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1        
+where 
+  tc_mantic_contadores_detalles.id_contador= {idContador} 
+group by
+  tc_mantic_articulos_codigos.id_articulo
+order by
+  tc_mantic_articulos_codigos.registro        
+      </select>
+      <delete id="rows">
+delete from      
+  tc_mantic_contadores_detalles
+where      
+  id_contador= {idContador}
+      </delete>
+    </unit>    
+    <unit id="TcManticContadoresBitacoraDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_mantic_contadores_bitacora
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_mantic_contadores_bitacora
+where      
+  id_contador_bitacora = {idContadorBitacora}
+      </select>
+      <delete id="rows">
+delete
+from      
+  tc_mantic_contadores_bitacora
+where      
+  id_contador= {idContador}
+      </delete>
+    </unit>    
+    <unit id="TcManticContadoresEstatusDto">
+      <select id="row">
+select      
+  tc_mantic_contadores_estatus.id_contador_estatus as id_key,
+  tc_mantic_contadores_estatus.*
+from      
+  tc_mantic_contadores_estatus
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_mantic_contadores_estatus
+where      
+  nombre = '{nombre}'
+      </select>
+    </unit>    
     <unit id="TcManticTransferenciasTiposDto">
       <select id="row">
 select      
@@ -4134,23 +4267,79 @@ where
     </unit>
     <unit id="TrManticEmpresaPersonalDto">
       <select id="row">
-        select      
-          *
-        from      
-          tr_mantic_empresa_personal
-        where 
-          {condicion} 
+select      
+  *
+from      
+  tr_mantic_empresa_personal
+where 
+  {condicion} 
       </select>
       <select id="identically">
-        select      
-          *
-        from      
-          tr_mantic_empresa_personal
-        where      
-          id_persona = {idPersona} and id_puesto = {idPuesto} and id_empresa_persona = {idEmpresaPersona} and id_empresa = {idEmpresa}
+select      
+  *
+from      
+  tr_mantic_empresa_personal
+where      
+  id_persona = {idPersona} and id_puesto = {idPuesto} and id_empresa_persona = {idEmpresaPersona} and id_empresa = {idEmpresa}
       </select>
+			<select id="porCodigo">			
+select      
+  tr_mantic_empresa_personal.id_empresa_persona as id_key,
+  tc_mantic_personas.id_persona,
+  tr_mantic_empresa_personal.clave,
+  tc_mantic_personas.rfc,
+  tc_mantic_personas.curp,
+  concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as nombre
+from      
+  tr_mantic_empresa_personal
+inner join
+  tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
+where 
+  tr_mantic_empresa_personal.id_empresa in ({sucursales})
+  and upper(tr_mantic_empresa_personal.clave) regexp '.*{codigo}.*'
+  and tr_mantic_empresa_personal.id_empresa_persona&gt; 2
+order by
+  tr_mantic_empresa_personal.clave
+			</select>
+			<select id="porNombre">			
+select      
+  tr_mantic_empresa_personal.id_empresa_persona as id_key,
+  tc_mantic_personas.id_persona,
+  tr_mantic_empresa_personal.clave,
+  tc_mantic_personas.rfc,
+  tc_mantic_personas.curp,
+  concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as nombre
+from      
+  tr_mantic_empresa_personal
+inner join
+  tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
+where 
+  tr_mantic_empresa_personal.id_empresa in ({sucursales})
+  and upper(concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, ''))) regexp '.*{codigo}.*'
+  and tr_mantic_empresa_personal.id_empresa_persona&gt; 2
+order by
+  concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, ''))
+			</select>
+			<select id="empleados">			
+select      
+  tr_mantic_empresa_personal.id_empresa_persona as id_key,
+  tr_mantic_empresa_personal.clave,
+  tc_mantic_personas.rfc,
+  tc_mantic_personas.curp,
+  concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as nombre
+from      
+  tr_mantic_empresa_personal
+inner join
+  tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
+where 
+  tr_mantic_empresa_personal.id_empresa in ({sucursales})
+  and tr_mantic_empresa_personal.id_empresa_persona&gt; 2
+  and {condicion}
+order by
+  concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, ''))
+			</select>
 			<delete id="rows">
-				delete from tr_mantic_empresa_personal where id_persona = {idPersona}
+delete from tr_mantic_empresa_personal where id_persona = {idPersona}
 			</delete>
     </unit>    
     <unit id="TrManticEmpresaTipoContactoDto">

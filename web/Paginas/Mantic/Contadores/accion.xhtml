@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+  <ui:param name="titulo" value="#{manticContadoresAccion.attrs.nombreAccion} el conteo" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      Janal.Control.fields= {
+        'contenedorGrupos\\:idEmpresa' : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+        'contenedorGrupos\\:idAlmacen' : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+        'contenedorGrupos\\:idTrabaja' : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:nombre'    : {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'contenedorGrupos\\:total'     : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:idArticulo': {validaciones: 'requerido', mascara: 'libre', grupo: 'producto'},
+        'cantidad'                     : {multiple: '$', validaciones: 'requerido|mayor-igual({"cuanto": 0})', mascara: 'libre', grupo: 'general'}
+      };      
+			
+			$(document).ready(function(){janal.readingMode('#{manticContadoresAccion.attrs.nombreAccion}');});
+    </script>
+  </ui:define>
+  <ui:define name="contenido">
+     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+      <div class="ui-grid-row janal-grid-row">
+        <div class="ui-grid-col-12">
+          <p:tabView id="contenedorGrupos">
+            <p:ajax event="tabChange" process="@this" oncomplete="janal.refresh()"/>
+            <p:tab title="General [#{manticContadoresAccion.contador.consecutivo}]">
+              <p:panelGrid columns="1" styleClass="janal-wid-100">
+                <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100-txt">
+                  <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
+                    <p:outputLabel for="idEmpresa" value="Sucursal:"/>
+                    <p:selectOneMenu id="idEmpresa" value="#{manticContadoresAccion.contador.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                      <p:ajax event="change" listener="#{manticContadoresAccion.doLoadAlmacenes}" process="@this" update="idAlmacen"/>
+                      <f:selectItems value="#{manticContadoresAccion.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+                      <p:column headerText="Siglas" styleClass="janal-wid-30">
+                        <h:outputText value="#{item.nombre}"/>
+                      </p:column>   
+                      <p:column headerText="Nombre">
+                        <h:outputText value="#{item.titulo}"/>
+                      </p:column>   
+                    </p:selectOneMenu>
+                  </p:panelGrid>  
+                  <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
+                    <p:outputLabel for="idAlmacen" value="Almacen(es):"/>
+                    <p:selectOneMenu id="idAlmacen" value="#{manticContadoresAccion.contador.ikAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                      <f:selectItems value="#{manticContadoresAccion.attrs.almacenes}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+                      <p:column headerText="Clave" styleClass="janal-wid-30">
+                        <h:outputText value="#{item.clave}"/>
+                      </p:column>   
+                      <p:column headerText="Nombre">
+                        <h:outputText value="#{item.nombre}"/>
+                      </p:column>   
+                    </p:selectOneMenu>
+                  </p:panelGrid>
+                </p:panelGrid>
+                <p:outputLabel for="nombre" value="Nombre:"/>
+                <p:inputText id="nombre" placeholder="Ej. CONTEO PVC" value="#{manticContadoresAccion.contador.nombre}" styleClass="janal-wid-100-txt"/>
+                <p:outputLabel for="idTrabaja" value="Trabajará:"/>
+                <p:autoComplete id="idTrabaja" var="custom" placeholder="Ej. JUAN PEREZ LOPEZ" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticContadoresAccion.contador.ikTrabaja}" completeMethod="#{manticContadoresAccion.doCompleteEmpleado}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+                  <f:facet name="itemtip">
+                    <h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
+                      <h:outputText value="Cuenta:" />
+                      <h:outputText value="#{custom.cuenta}" />
+                      <h:outputText value="RFC:" />
+                      <h:outputText value="#{custom.rfc}" />
+                      <h:outputText value="CURP:" />
+                      <h:outputText value="#{custom.curp}" />
+                      <h:outputText value="Nombre:" />
+                      <h:outputText value="#{custom.nombre}" />
+                    </h:panelGrid>
+                  </f:facet>
+                </p:autoComplete>			
+                <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-95, janal-wid-5 janal-column-right">
+                  <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
+                    <p:outputLabel for="idArticulo" value="Articulo:"/>
+                    <p:autoComplete id="idArticulo" placeholder="Ej. MARTILLO" var="custom" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticContadoresAccion.producto.ikArticulo}" completeMethod="#{manticContadoresAccion.doCompleteArticulo}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10">
+                      <p:ajax event="itemSelect" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+                      <f:facet name="itemtip">
+                        <h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">
+                          <f:facet name="header" class="TexAlCenter">
+                            <p:graphicImage library="janal" name="img/sistema/#{kajoolUtilAplicacion.logoIcon}" styleClass="janal-logo-mini" width="30" style="#{kajoolUtilAplicacion.logoWidth}"/>                                      
+                          </f:facet>
+                          <h:outputText value="Código:" />
+                          <h:outputText value="#{custom.propio}" />
+                          <h:outputText value="Proveedor:" />
+                          <h:outputText value="#{custom.codigo}" />
+                          <h:outputText value="Nombre:" />
+                          <h:outputText value="#{custom.nombre}" />
+                          <h:outputText value="Costo:" />
+                          <h:outputText value="$ #{custom.precio}" />
+                        </h:panelGrid>
+                      </f:facet>
+                    </p:autoComplete>			
+                  </p:panelGrid>
+                  <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
+                    <p:spacer/>
+                    <p:commandButton value="Agregar" icon="fa fa-plus" process="@this idArticulo" update="idArticulo tabla total" actionListener="#{manticContadoresAccion.doAdd()}" onstart="return janal.partial('producto')" oncomplete="janal.desbloquear(); janal.refresh()" title="Agregar"/>
+                  </p:panelGrid>
+                </p:panelGrid>
+              </p:panelGrid>
+              <p:dataTable id="tabla" rowIndexVar="index" var="row" value="#{manticContadoresAccion.contador.productos}" rows="#{Constantes.REGISTROS_LOTE_TOPE}" paginator="false" rowKey="#{row.idArticulo}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="paginated">	
+                <p:column class="MarAuto Responsive janal-wid-col-30">
+                  <f:facet name="header">
+                    <h:outputText value="No."/>
+                  </f:facet>
+                  <h:outputText value="#{index+1}.-"/>
+                </p:column>				
+								<p:column styleClass="MarAuto Responsive janal-fix-12">
+                  <f:facet name="header">
+                    <h:outputText value="Código"/>
+                  </f:facet>
+                  <p:outputLabel value="#{row.codigo}"/>
+                </p:column>	
+								<p:column styleClass="MarAuto Responsive productos">
+                  <f:facet name="header">
+                    <h:outputText value="Nombre"/>
+                  </f:facet>
+                  <p:outputLabel value="#{row.nombre}"/>
+                </p:column>	
+                <p:column styleClass="MarAuto Responsive janal-column-right janal-fix-10" rendered="#{manticContadoresAccion.edit}">
+                  <f:facet name="header">
+                    <h:outputText value="Cantidad"/>
+                  </f:facet>
+                  <p:outputLabel value=""/>
+                  <p:inputNumber id="cantidad" value="#{row.cantidad}" inputStyleClass="janal-wid-100-txt janal-column-right janal-color-blue" converter="javax.faces.Double" decimalPlaces="2" minValue="0"/>
+                </p:column>	
+								<p:column styleClass="MarAuto Responsive janal-wid-col-38 janal-column-center">
+                  <f:facet name="header">
+                    <h:outputText value="..."/>
+                  </f:facet>
+                  <p:commandButton actionListener="#{manticContadoresAccion.doRemove(row)}" process="@this" update="tabla contenedorGrupos:total" icon="fa fa-trash" title="Eliminar" oncomplete="janal.refresh()" rendered="#{row.sql ne 'DELETE'}"/>
+                  <p:commandButton actionListener="#{manticContadoresAccion.doRecover(row)}" process="@this" update="tabla contenedorGrupos:total" icon="fa fa-recycle" title="Recuperar" oncomplete="janal.refresh()" rendered="#{row.sql eq 'DELETE'}"/>
+                </p:column>	
+							</p:dataTable>
+              <p:outputLabel for="total" value="Productos:" styleClass="janal-display-none"/>
+              <p:inputText id="total" styleClass="janal-wid-100-txt janal-display-none" value="#{manticContadoresAccion.contador.articulos}" converter="javax.faces.Long"/>
+            </p:tab>						
+          </p:tabView>
+        </div>
+      </div>
+    </div>	
+  </ui:define>    	
+  <ui:define name="acciones">
+    <div class="lg-pantalla">
+      <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{manticContadoresAccion.doAceptar}" onstart="return janal.partial('general')" oncomplete="janal.desbloquear()"/>
+      <p:commandButton id="aplicar" value="Aplicar" icon="fa fa-lock" accesskey="p"  process="@form" action="#{manticContadoresAccion.doAplicar}" onstart="return janal.partial('general')" oncomplete="janal.desbloquear()" rendered="#{manticContadoresAccion.aplicar}"/>
+      <p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticContadoresAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+    </div>		
+    <div class="xs-pantalla">
+      <p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticContadoresAccion.doAceptar}" onstart="return janal.partial('general');" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aplicarIcon" title="Aplicar" icon="fa fa-lock"  process="@form" action="#{manticContadoresAccion.doAplicar}" onstart="return execute()" oncomplete="janal.desbloquear()" rendered="#{manticContadoresAccion.aplicar}"/>
+      <p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticContadoresAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+    </div>		
+  </ui:define>
+</ui:composition> 

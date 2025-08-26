@@ -95,18 +95,16 @@ public class Filtro extends IBaseFilter implements Serializable {
    * Recarga los datos segun la acicón que se ejecutó.
    */
   private void recargarTablaDatos(ETipoBusqueda tipoBusqueda) {
-    Map<String, Object> params = null;
-    List<Columna> campos = null;
-    CargaInformacionUsuarios carga = null;
+    Map<String, Object> params    = new HashMap<>();
+    List<Columna> columns         = new ArrayList<>();
+    CargaInformacionUsuarios carga= null;
     try {
       carga = new CargaInformacionUsuarios(getCriteriosBusqueda());
-      params = new HashMap<>();
-      campos = new ArrayList<>();
-      campos.add(new Columna("primerApellido", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("segundoApellido", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("cuenta", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("descPerfil", EFormatoDinamicos.MAYUSCULAS));      
+      columns.add(new Columna("primerApellido", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("segundoApellido", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("cuenta", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("descPerfil", EFormatoDinamicos.MAYUSCULAS));      
 			StringBuilder sb= new StringBuilder();
       switch (tipoBusqueda) {
         case NOMBRE:
@@ -129,7 +127,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			  sb.delete(sb.length()- 4, sb.length());
 			params.put(Constantes.SQL_CONDICION, sb.toString());
       params.put("sortOrder", "order by tc_janal_perfiles.id_perfil, tc_mantic_personas.paterno, tc_mantic_personas.materno, tc_mantic_personas.nombres");
-      this.lazyModel = new FormatCustomLazy("VistaUsuariosDto", "row", params, campos);
+      this.lazyModel = new FormatCustomLazy("VistaUsuariosDto", "row", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
@@ -137,7 +135,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     } // catch
     finally {
       Methods.clean(params);
-      Methods.clean(campos);
+      Methods.clean(columns);
     } // finally
   }
 
@@ -229,9 +227,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 
   @Override
   public void doLoad() {
-    Entity seleccionado = (Entity)this.attrs.get("seleccionado");
     try {
-      //this.attrs.put("validaDelega", JsfBase.isAdmin() || JsfBase.getAutentifica().getPersona().getIdUsuario().equals(seleccionado.getKey()));      
       this.doBuscar();
     } // try
     catch (Exception e) {
