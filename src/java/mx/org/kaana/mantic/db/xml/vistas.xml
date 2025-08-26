@@ -263,6 +263,39 @@ order by
       </select>
     </unit>  
 		<unit id="VistaPlanetasDto">
+			<select id="polaris">
+select
+  tc_mantic_contadores.id_contador as id_conteo,
+  tc_mantic_contadores.id_empresa,
+  tc_mantic_contadores.id_almacen,
+  tc_mantic_contadores.id_trabaja,
+  tc_mantic_contadores.id_usuario,
+  tc_mantic_contadores.consecutivo,
+  tc_mantic_contadores.nombre,
+  tc_mantic_contadores.id_contador_estatus as id_estatus,
+  tc_mantic_contadores.semilla,
+  tc_mantic_contadores.version,
+  date_format(tc_mantic_contadores.actualizado, '%Y%m%d%h%i%S') as registro
+from
+  tc_mantic_contadores
+where
+  tc_mantic_contadores.id_contador_estatus> 1
+  and date_format(tc_mantic_contadores.actualizado, '%Y%m%d%h%i%S')&gt;= '{fecha}' 
+      </select>  
+			<select id="rigel">
+select
+  tc_mantic_contadores_detalles.id_articulo as id_producto,
+  tc_mantic_contadores_detalles.cantidad,
+  '' as codigo,
+  '' as descripcion,
+  date_format(tc_mantic_contadores_detalles.registro, '%Y%m%d%h%i%S') as registro
+from
+  tc_mantic_contadores_detalles
+where
+  tc_mantic_contadores_detalles.id_contador= {idContador}
+order by
+  tc_mantic_contadores_detalles.registro
+      </select>
 			<select id="asteroide">
 select
   tc_mantic_articulos.id_articulo as id_key,

@@ -10,13 +10,15 @@ public enum ERespuesta {
 	SIN_UBICACIONES("06", "No se tienen ubicaciones registrados y/o nuevos"),
 	SIN_INVENTARIOS("07", "No se tienen inventarios registrados y/o nuevos"),
 	SIN_RESPALDO   ("08", "No se encontro ningun respaldo"),
-	USUARIO_ERROR  ("09", "El usuario no esta activo"),
+	USUARIO_ERROR      ("09", "El usuario no esta activo"),
 	ENROLAMIENTO_ERROR ("10", "No se puedo enrolar el dispositivo"),
-	APLICACION_ERROR ("11", "Esta aplicación no existe"),
-	DISPOSITIVO_ERROR ("12", "Este dispositivo no existe"),
-	NO_ACTIVO ("13", "Este dispositivo no esta activo"),
-	TOKEN          ("98", "Token invalido"),
-	ERROR          ("99", "Error");	
+	APLICACION_ERROR   ("11", "Esta aplicación no existe"),
+	DISPOSITIVO_ERROR  ("12", "Este dispositivo no existe"),
+	NO_ACTIVO          ("13", "Este dispositivo no esta activo"),
+  SIN_CONTEOS        ("14", "No se tienen conteos registrados y/o nuevos"),
+  SIN_TRANSFERENCIAS ("15", "No se tienen transferencias registradas y/o nuevas"),
+	TOKEN              ("98", "Token invalido"),
+	ERROR              ("99", "Error");	
 	
 	private String codigo;
 	private String descripcion;

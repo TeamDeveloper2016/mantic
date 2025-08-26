@@ -1,9 +1,6 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -13,9 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -36,8 +30,8 @@ public class TcManticContadoresDto implements IBaseDto, Serializable {
   private static final long serialVersionUID=1L;
   @Column (name="semilla")
   private String semilla;
-  @Column (name="contadores")
-  private String contadores;
+  @Column (name="conteos")
+  private String conteos;
   @Column (name="articulos")
   private Long articulos;
   @Id
@@ -74,6 +68,8 @@ public class TcManticContadoresDto implements IBaseDto, Serializable {
   private Long ejercicio;
   @Column (name="orden")
   private Long orden;
+  @Column (name="actualizado")
+  private Timestamp actualizado;
 
   public TcManticContadoresDto() {
     this(new Long(-1L));
@@ -84,9 +80,9 @@ public class TcManticContadoresDto implements IBaseDto, Serializable {
     setKey(key);
   }
 
-  public TcManticContadoresDto(String semilla, String contadores, Long articulos, Long idContador, String nombre, String version, String token, String fecha, Long idUsuario, Long idAlmacen, Timestamp procesado, Long idEmpresa, Long idReferencia, Long idContadorEstatus, Long idTrabaja, String consecutivo, Long ejercicio, Long orden) {
+  public TcManticContadoresDto(String semilla, String conteos, Long articulos, Long idContador, String nombre, String version, String token, String fecha, Long idUsuario, Long idAlmacen, Timestamp procesado, Long idEmpresa, Long idReferencia, Long idContadorEstatus, Long idTrabaja, String consecutivo, Long ejercicio, Long orden) {
     setSemilla(semilla);
-    setContadores(contadores);
+    setConteos(conteos);
     setArticulos(articulos);
     setIdContador(idContador);
     setNombre(nombre);
@@ -104,6 +100,7 @@ public class TcManticContadoresDto implements IBaseDto, Serializable {
     setConsecutivo(consecutivo);
     setEjercicio(ejercicio);
     setOrden(orden);
+    setActualizado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
 	
   public void setSemilla(String semilla) {
@@ -114,12 +111,12 @@ public class TcManticContadoresDto implements IBaseDto, Serializable {
     return semilla;
   }
 
-  public void setContadores(String contadores) {
-    this.contadores = contadores;
+  public void setConteos(String conteos) {
+    this.conteos = conteos;
   }
 
-  public String getContadores() {
-    return contadores;
+  public String getConteos() {
+    return conteos;
   }
 
   public void setArticulos(Long articulos) {
@@ -258,6 +255,14 @@ public class TcManticContadoresDto implements IBaseDto, Serializable {
     this.orden = orden;
   }
 
+  public Timestamp getActualizado() {
+    return actualizado;
+  }
+
+  public void setActualizado(Timestamp actualizado) {
+    this.actualizado = actualizado;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -275,7 +280,7 @@ public class TcManticContadoresDto implements IBaseDto, Serializable {
     regresar.append("[");
 		regresar.append(getSemilla());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getContadores());
+		regresar.append(getConteos());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getArticulos());
 		regresar.append(Constantes.SEPARADOR);
@@ -310,6 +315,8 @@ public class TcManticContadoresDto implements IBaseDto, Serializable {
 		regresar.append(getEjercicio());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getOrden());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getActualizado());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -318,7 +325,7 @@ public class TcManticContadoresDto implements IBaseDto, Serializable {
   public Map toMap() {
     Map regresar = new HashMap();
 		regresar.put("semilla", getSemilla());
-		regresar.put("contadores", getContadores());
+		regresar.put("conteos", getConteos());
 		regresar.put("articulos", getArticulos());
 		regresar.put("idContador", getIdContador());
 		regresar.put("nombre", getNombre());
@@ -336,13 +343,14 @@ public class TcManticContadoresDto implements IBaseDto, Serializable {
 		regresar.put("consecutivo", getConsecutivo());
 		regresar.put("ejercicio", getEjercicio());
 		regresar.put("orden", getOrden());
+		regresar.put("actualizado", getActualizado());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[] {
-      getSemilla(), getContadores(), getArticulos(), getIdContador(), getNombre(), getVersion(), getToken(), getRegistro(), getFecha(), getIdUsuario(), getIdAlmacen(), getProcesado(), getIdEmpresa(), getIdReferencia(), getIdContadorEstatus(), getIdTrabaja(), getConsecutivo(), getEjercicio(), getOrden()
+      getSemilla(), getConteos(), getArticulos(), getIdContador(), getNombre(), getVersion(), getToken(), getRegistro(), getFecha(), getIdUsuario(), getIdAlmacen(), getProcesado(), getIdEmpresa(), getIdReferencia(), getIdContadorEstatus(), getIdTrabaja(), getConsecutivo(), getEjercicio(), getOrden(), getActualizado()
     };
     return regresar;
   }

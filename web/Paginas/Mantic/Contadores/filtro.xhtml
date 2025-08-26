@@ -18,7 +18,7 @@
         fechaInicio    : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
         fechaTermino   : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
 				usuario        : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
-        idConteoEstatus: {validaciones: 'libre', mascara: 'libre', grupo: 'general'}        
+        idContadorEstatus: {validaciones: 'libre', mascara: 'libre', grupo: 'general'}        
 			};
 			
 			function reload() {
@@ -135,8 +135,8 @@
 									</h:panelGrid>
 								</f:facet>
 							</p:autoComplete>	
-              <p:outputLabel for="idConteoEstatus" value="Estatus:"/>
-              <p:selectOneMenu id="idConteoEstatus" value="#{manticContadoresFiltro.attrs.idConteoEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+              <p:outputLabel for="idContadorEstatus" value="Estatus:"/>
+              <p:selectOneMenu id="idContadorEstatus" value="#{manticContadoresFiltro.attrs.idContadorEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
                 <f:selectItems value="#{manticContadoresFiltro.attrs.estatus}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
                 <p:column headerText="Nombre">
@@ -191,7 +191,7 @@
 							</p:column>														
 							<p:column styleClass="MarAuto Responsive janal-column-left janal-wid-25" sortBy="#{row.trabajo}">
 								<f:facet name="header">
-									<h:outputText value="Envio"/>
+									<h:outputText value="Trabajará"/>
 								</f:facet>
 								<h:outputText value="#{row['trabajo']}"/>
 							</p:column>														
@@ -219,13 +219,16 @@
                 </f:facet>
                 <h:outputText value="#{row['estatus']}"/>
               </p:column>			
-							<p:column styleClass="MarAuto Responsive janal-column-center janal-wid-3" sortBy="#{row.idConteoEstatus}">
+							<p:column styleClass="MarAuto Responsive janal-column-center janal-wid-3">
 								<f:facet name="header">
 									<h:outputText value=""/>
 								</f:facet>
-								<h:graphicImage library="janal" name="icon/semaforos/#{row.idConteoEstatus eq '4'? 'circulo-rojo.png': row.idConteoEstatus eq '1'? 'circulo-azul.png': row.idConteoEstatus eq '5'? 'circulo-amarillo.png': 'circulo-verde.png'}" title="Conteo #{row.idConteoEstatus eq '4'? 'cancelado': row.idConteoEstatus eq '1'? 'registrado': row.idConteoEstatus eq '5'? 'suspendido': 'integrado'}"/>
+								<h:graphicImage library="janal" name="icon/semaforos/#{row.idContadorEstatus eq '4'? 'circulo-rojo.png': row.idContadorEstatus eq '1'? 'circulo-azul.png': row.idContadorEstatus eq '5'? 'circulo-amarillo.png': 'circulo-verde.png'}" title="Conteo #{row.idContadorEstatus eq '4'? 'cancelado': row.idContadorEstatus eq '1'? 'registrado': row.idContadorEstatus eq '5'? 'suspendido': 'integrado'}"/>
 							</p:column>
               <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-col-40">
+								<f:facet name="header">
+									<h:outputText value="..."/>
+								</f:facet>
   							<p:commandButton icon="fa fa-search" title="Partida(s)" actionListener="#{manticContadoresFiltro.doDetalle(row)}" process="@this" update="tablaDetalle @(.detalle)" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
               </p:column>
 							<f:facet name="footer">
@@ -233,14 +236,14 @@
 							</f:facet>
 						</p:dataTable>
 						<p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-	  					<p:menuitem value="Modificar" icon="fa fa-edit" action="#{manticContadoresFiltro.doAccion('MODIFICAR')}" process="@this tabla" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />
+	  					<p:menuitem value="Modificar" icon="fa fa-edit" action="#{manticContadoresFiltro.doAccion('MODIFICAR')}" process="@this tabla" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" disabled="#{fn:contains('|2|4|5|6|7|', manticContadoresFiltro.attrs.seleccionado.idContadorEstatus)}"/>
   						<p:menuitem value="Consultar" icon="fa fa-search" action="#{manticContadoresFiltro.doAccion('CONSULTAR')}" process="@this tabla" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />
-              <p:menuitem value="Eliminar" icon="fa fa-trash" actionListener="#{manticContadoresFiltro.doEliminar()}" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{manticContadoresFiltro.admin}"/>
-              <p:menuitem value="Consultar" icon="fa fa-search" action="#{manticContadoresFiltro.doConsultar()}" process="@this tabla" update="tablaDetalle @(.detalle)" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+              <p:menuitem value="Eliminar" icon="fa fa-trash" actionListener="#{manticContadoresFiltro.doEliminar()}" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" disabled="#{fn:contains('|2|3|4|5|6|7|', manticContadoresFiltro.attrs.seleccionado.idContadorEstatus)}" rendered="#{manticContadoresFiltro.admin}"/>
 							<p:separator/>
-              <p:menuitem value="Procesar" icon="fa fa-gear" actionListener="#{manticContadoresFiltro.doProcesar()}" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" disabled="#{fn:contains('|1|2|4|5|6|7|', manticContadoresFiltro.attrs.seleccionado.idConteoEstatus)}"/>
-              <p:separator rendered="#{fn:contains('|1|2|6|7|', manticContadoresFiltro.attrs.seleccionado.idConteoEstatus)}"/>
-              <p:menuitem value="Estatus" icon="fa fa-exchange" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticContadoresFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|6|7|', manticContadoresFiltro.attrs.seleccionado.idConteoEstatus)}"/>
+              <p:menuitem value="Detalle" icon="fa fa-search" action="#{manticContadoresFiltro.doConsultar()}" process="@this tabla" update="tablaDetalle @(.detalle)" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+              <p:menuitem value="Procesar" icon="fa fa-gear" actionListener="#{manticContadoresFiltro.doProcesar()}" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" disabled="#{fn:contains('|1|2|4|5|6|7|', manticContadoresFiltro.attrs.seleccionado.idContadorEstatus)}"/>
+              <p:separator rendered="#{fn:contains('|1|2|6|7|', manticContadoresFiltro.attrs.seleccionado.idContadorEstatus)}"/>
+              <p:menuitem value="Estatus" icon="fa fa-exchange" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticContadoresFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|6|7|', manticContadoresFiltro.attrs.seleccionado.idContadorEstatus)}"/>
               <p:separator/>
               <p:menuitem value="Min max" icon="fa fa-balance-scale" onstart="return janal.bloquear()" process="@this tabla" action="#{manticContadoresFiltro.doUmbrales}"/>
             </p:contextMenu>		

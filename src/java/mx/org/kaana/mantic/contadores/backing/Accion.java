@@ -30,6 +30,7 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.contadores.beans.Producto;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.primefaces.event.SelectEvent;
 
 /**
  *@company KAANA
@@ -66,25 +67,24 @@ public class Accion extends IBaseAttribute implements Serializable {
   public void setProducto(Producto producto) {
     this.producto = producto;
   }
-  
+
   public Boolean getAplicar() {
     return Objects.equals(this.accion, EAccion.AGREGAR) || Objects.equals(this.accion, EAccion.MODIFICAR);
   }
   
   public Boolean getEdit() {
-    return Objects.equals(this.contador.getIdContadorEstatus(), 3L);
+    return Objects.equals(this.contador.getIdContadorEstatus(), 3L); // INTEGRANDO
   }
   
   @PostConstruct
   @Override
   public void init() {
     try {
-//  		if(Objects.equals(JsfBase.getFlashAttribute("accion"), null))
-//				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
-//      this.accion    = Objects.equals(JsfBase.getFlashAttribute("accion"), null)? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
-//      this.idContador= Objects.equals(JsfBase.getFlashAttribute("idContador"), null)? -1L: (Long)JsfBase.getFlashAttribute("idContador");
-      this.accion    = EAccion.MODIFICAR;
-      this.idContador= 1L;
+  		if(Objects.equals(JsfBase.getFlashAttribute("accion"), null))
+				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
+      this.accion    = Objects.equals(JsfBase.getFlashAttribute("accion"), null)? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
+      this.idContador= Objects.equals(JsfBase.getFlashAttribute("idContador"), null)? -1L: (Long)JsfBase.getFlashAttribute("idContador");
+      this.attrs.put("automatico", Boolean.TRUE);
       this.attrs.put("retorno", Objects.equals(JsfBase.getFlashAttribute("retorno"), null)? "/Paginas/Mantic/Contadores/filtro": JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("buscaPorCodigo", Boolean.FALSE);
       this.doLoad(); 
@@ -364,6 +364,17 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // finally
 		return (List<UISelectEntity>)this.attrs.get("articulos");
 	}	
-  
+
+  public void doAddItem(SelectEvent event) {
+    try {      
+      this.producto.setIkArticulo((UISelectEntity)event.getObject());
+      if((Boolean)this.attrs.get("automatico"))
+        this.doAdd();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+  }  
   
 }

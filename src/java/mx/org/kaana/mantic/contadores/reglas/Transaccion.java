@@ -82,13 +82,14 @@ public class Transaccion extends IBaseTnx implements Serializable {
           regresar= this.toDesactivar(sesion);
 					break;
 				case ELIMINAR:
-					this.conteo.setIdContadorEstatus(4L);
+          this.conteo.setIdContadorEstatus(5L); // CANCELADO
 					regresar= DaoFactory.getInstance().update(sesion, this.conteo)>= 1L;
 					break;
 				case JUSTIFICAR:
 					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {
 						this.conteo.setIdContadorEstatus(this.bitacora.getIdContadorEstatus());
-						regresar= DaoFactory.getInstance().update(sesion, this.conteo)>= 1L;
+            regresar= this.toModificar(sesion);
+            this.toBitacora(sesion, this.bitacora.getJustificacion());
 					} // if
 					break;
 				case DEPURAR:
@@ -112,7 +113,8 @@ public class Transaccion extends IBaseTnx implements Serializable {
   private boolean toDesactivar(Session sesion) throws Exception {
     Boolean regresar= Boolean.FALSE;
     try {   
-      this.conteo.setIdContadorEstatus(6L);
+      this.conteo.setActualizado(new Timestamp(Calendar.getInstance().getTimeInMillis()));      
+      this.conteo.setIdContadorEstatus(7L); // ERRORES
       DaoFactory.getInstance().update(sesion, this.conteo);
       this.bitacora= new TcManticContadoresBitacoraDto(
         this.messageError, // String justificacion, 
@@ -133,8 +135,9 @@ public class Transaccion extends IBaseTnx implements Serializable {
     Boolean regresar          = Boolean.FALSE;
     Map<String, Object> params= new HashMap<>();
     try {      
+      this.conteo.setActualizado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
       params.put("idContador", this.conteo.getIdContador());      
-      this.conteo.setIdContadorEstatus(2L);
+      this.conteo.setIdContadorEstatus(3L); // INTEGRADO
       DaoFactory.getInstance().update(sesion, this.conteo);
       this.bitacora= new TcManticContadoresBitacoraDto(
         null, // String justificacion, 
@@ -156,7 +159,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
           regresar= Boolean.TRUE;
       } // for
       this.conteo.setProcesado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
-      this.conteo.setIdContadorEstatus(3L);
+      this.conteo.setIdContadorEstatus(4L); // TERMINADO
       DaoFactory.getInstance().update(sesion, this.conteo);
       this.bitacora= new TcManticContadoresBitacoraDto(
         null, // String justificacion, 
@@ -334,6 +337,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
   private Boolean toModificar(Session sesion) throws Exception {
     Boolean regresar= Boolean.FALSE;
     try {      
+      this.conteo.setActualizado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
       DaoFactory.getInstance().update(sesion, this.conteo);
       regresar= this.toProductos(sesion);      
       this.toBitacora(sesion);

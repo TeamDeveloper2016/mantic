@@ -60,6 +60,9 @@ public class Local implements Serializable {
 
 //    System.out.println(planetas.asteroide(1L, "1", "/Eb1AjylyNNfQBLodn6Jf6Stb8NM7Hw2", 2L));
 //    System.out.println(planetas.cometa(1L, "1", "/Eb1AjylyNNfQBLodn6Jf6Stb8NM7Hw2"));
+
+    System.out.println(planetas.polaris(1L, "19000101", "/Eb1AjylyNNfQBLodn6Jf6Stb8NM7Hw2"));
+    System.out.println(planetas.canopus(1L, "JSON", "/Eb1AjylyNNfQBLodn6Jf6Stb8NM7Hw2"));
   }
 
 }

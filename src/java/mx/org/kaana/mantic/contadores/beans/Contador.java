@@ -9,12 +9,10 @@ import java.util.Map;
 import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.ESql;
-import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.db.dto.TcManticContadoresDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticContadoresDto;
 
 /**
@@ -116,7 +114,10 @@ public class Contador extends TcManticContadoresDto implements Serializable {
       this.productos= (List<Producto>)DaoFactory.getInstance().toEntitySet(Producto.class, "TcManticContadoresDetallesDto", "detalle", params);
       for (Producto item: this.productos) {
         item.setIkArticulo(new UISelectEntity(item.getIdArticulo()));
-        item.setSql(ESql.SELECT);
+        if(Objects.equals(this.getIdContadorEstatus(), 3L)) // INTEGRANDO
+          item.setSql(ESql.UPDATE);
+        else
+          item.setSql(ESql.SELECT);
       } // for  
     } // try
     catch (Exception e) {
