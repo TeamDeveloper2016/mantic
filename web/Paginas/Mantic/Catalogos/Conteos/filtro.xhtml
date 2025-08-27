@@ -36,11 +36,8 @@
       
 			function validaJustificacion() {
 				var ok= janal.partial('dialogo');
-				if(ok){
+				if(ok)
 					PF('dlgEstatus').hide();
-					janal.restore();
-					janal.refresh();
-				} // if
 				return ok;
 			} // validaJustificacion
       
@@ -306,7 +303,7 @@
 		</div>		           				
 	</ui:define>    
 	<ui:define name="dialogos">		
-		<p:dialog id="dialogoEstatus" widgetVar="dlgEstatus" header="Cambio de estatus" dynamic="true" resizable="false" closable="true" minimizable="false" maximizable="false" responsive="true" width="60%" onShow="janal.change('formDialogoEstatus', fieldsDialog); janal.refresh();" appendTo="@(body)">
+    <p:dialog id="dialogoEstatus" widgetVar="dlgEstatus" header="Cambio de estatus" dynamic="true" resizable="false" closable="true" minimizable="false" maximizable="false" responsive="true" width="60%" onShow="janal.change('formDialogoEstatus', fieldsDialog); janal.refresh()" onHide="janal.restore(); janal.refresh(); janal.desbloquear()" appendTo="@(body)">
 			<h:form id="formDialogoEstatus" prependId="false">
 				<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
 					<p:outputLabel for="estatusDlg" value="Estatus:"/>												

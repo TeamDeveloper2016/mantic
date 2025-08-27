@@ -158,6 +158,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 		try {
       if(!Cadena.isVacio(this.attrs.get("idContadorProcess")) && !Objects.equals((Long)this.attrs.get("idContadorProcess"), -1L)) 
         sb.append("tc_mantic_contadores.id_contador=").append(this.attrs.get("idContadorProcess")).append(" and ");
+			if(!Cadena.isVacio(this.attrs.get("consecutivo")))
+				sb.append("(tc_mantic_contadores.consecutivo= '").append(this.attrs.get("consecutivo")).append("') and ");	
 			if(!Cadena.isVacio(JsfBase.getParametro("codigo_input")))
 				sb.append("upper(tc_mantic_articulos_codigos.codigo) like upper('%").append(JsfBase.getParametro("codigo_input")).append("%') and ");						
 			if(this.attrs.get("nombre")!= null && ((UISelectEntity)this.attrs.get("nombre")).getKey()> 0L) 
@@ -510,10 +512,5 @@ public class Filtro extends IBaseFilter implements Serializable {
 			Methods.clean(params);
 		} // finally
 	} 
- 
-  public String doUmbrales() {
-		JsfBase.setFlashAttribute("idContador", ((Entity)this.attrs.get("seleccionado")).getKey());
-		return "umbrales".concat(Constantes.REDIRECIONAR);
-	}	
   
 }

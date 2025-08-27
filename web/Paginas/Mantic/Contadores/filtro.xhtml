@@ -12,7 +12,9 @@
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {
+				idEmpresa      : {validaciones: 'libre', mascara: 'libre'},
 				idAlmacen      : {validaciones: 'libre', mascara: 'libre'},
+				consecutivo    : {validaciones: 'libre', mascara: 'libre', formatos: 'consecutivo'},
 				codigo         : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
 				nombre         : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
         fechaInicio    : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
@@ -35,13 +37,10 @@
       
 			function validaJustificacion() {
 				var ok= janal.partial('dialogo');
-				if(ok){
+				if(ok)
 					PF('dlgEstatus').hide();
-					janal.restore();
-					janal.refresh();
-				} // if
 				return ok;
-			} // validaJustificacion
+			} 
       
 			$(document).ready(function() { });
 		</script>		
@@ -79,6 +78,8 @@
                   <h:outputText value="#{item.nombre}"/>
                 </p:column>   
               </p:selectOneMenu>
+              <p:outputLabel for="consecutivo" value="Consecutivo:"/>
+              <p:inputText id="consecutivo" value="#{manticContadoresFiltro.attrs.consecutivo}" styleClass="janal-wid-100-txt"/>
               <p:outputLabel for="codigo" value="Código:"/>
               <p:autoComplete id="codigo" placeholder="ej. CT123" var="item" itemLabel="#{item.propio}" inputStyleClass="janal-wid-100-txt key-down-codigos filas" itemValue="#{item}" value="#{manticContadoresFiltro.attrs.codigo}" completeMethod="#{manticContadoresFiltro.doCompleteCodigo}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">
 								<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this idEmpresa" listener="#{manticContadoresFiltro.doAsignaCodigo}" oncomplete="janal.desbloquear();"/>
@@ -238,14 +239,12 @@
 						<p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
 	  					<p:menuitem value="Modificar" icon="fa fa-edit" action="#{manticContadoresFiltro.doAccion('MODIFICAR')}" process="@this tabla" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" disabled="#{fn:contains('|2|4|5|6|7|', manticContadoresFiltro.attrs.seleccionado.idContadorEstatus)}"/>
   						<p:menuitem value="Consultar" icon="fa fa-search" action="#{manticContadoresFiltro.doAccion('CONSULTAR')}" process="@this tabla" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />
-              <p:menuitem value="Eliminar" icon="fa fa-trash" actionListener="#{manticContadoresFiltro.doEliminar()}" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" disabled="#{fn:contains('|4|5|6|7|', manticContadoresFiltro.attrs.seleccionado.idContadorEstatus)}" rendered="#{manticContadoresFiltro.admin}" title="Agregar |2|3|"/>
+              <p:menuitem value="Eliminar" icon="fa fa-trash" actionListener="#{manticContadoresFiltro.doEliminar()}" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" disabled="#{fn:contains('|2|3|4|5|6|7|', manticContadoresFiltro.attrs.seleccionado.idContadorEstatus)}" rendered="#{manticContadoresFiltro.admin}"/>
 							<p:separator/>
               <p:menuitem value="Detalle" icon="fa fa-search" action="#{manticContadoresFiltro.doConsultar()}" process="@this tabla" update="tablaDetalle @(.detalle)" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
               <p:menuitem value="Procesar" icon="fa fa-gear" actionListener="#{manticContadoresFiltro.doProcesar()}" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" disabled="#{fn:contains('|1|2|4|5|6|7|', manticContadoresFiltro.attrs.seleccionado.idContadorEstatus)}"/>
               <p:separator rendered="#{fn:contains('|1|2|6|7|', manticContadoresFiltro.attrs.seleccionado.idContadorEstatus)}"/>
               <p:menuitem value="Estatus" icon="fa fa-exchange" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticContadoresFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|6|7|', manticContadoresFiltro.attrs.seleccionado.idContadorEstatus)}"/>
-              <p:separator/>
-              <p:menuitem value="Min max" icon="fa fa-balance-scale" onstart="return janal.bloquear()" process="@this tabla" action="#{manticContadoresFiltro.doUmbrales}"/>
             </p:contextMenu>		
           </div>  
           <p:spacer height="5px"/>
@@ -318,7 +317,7 @@
 		</div>		           				
 	</ui:define>    
 	<ui:define name="dialogos">		
-		<p:dialog id="dialogoEstatus" widgetVar="dlgEstatus" header="Cambio de estatus" dynamic="true" resizable="false" closable="true" minimizable="false" maximizable="false" responsive="true" width="60%" onShow="janal.change('formDialogoEstatus', fieldsDialog); janal.refresh();" appendTo="@(body)">
+    <p:dialog id="dialogoEstatus" widgetVar="dlgEstatus" header="Cambio de estatus" dynamic="true" resizable="false" closable="true" minimizable="false" maximizable="false" responsive="true" width="60%" onShow="janal.change('formDialogoEstatus', fieldsDialog); janal.refresh()" onHide="janal.restore(); janal.refresh(); janal.desbloquear()" appendTo="@(body)">
 			<h:form id="formDialogoEstatus" prependId="false">
 				<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
 					<p:outputLabel for="estatusDlg" value="Estatus:"/>												

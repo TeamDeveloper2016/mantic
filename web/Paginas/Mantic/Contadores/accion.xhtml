@@ -7,20 +7,20 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
-  <ui:param name="titulo" value="#{manticContadoresAccion.attrs.nombreAccion} el conteo dirigido" />
+  <ui:param name="titulo" value="#{manticContadoresAccion.attrs.nombreAccion} articulos al conteo dirigido" />
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields= {
         'contenedorGrupos\\:idEmpresa' : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:idAlmacen' : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:idTrabaja' : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
-				'contenedorGrupos\\:nombre'    : {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'contenedorGrupos\\:nombre'    : {validaciones: 'requerido|texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
 				'contenedorGrupos\\:total'     : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:idArticulo': {validaciones: 'requerido', mascara: 'libre', grupo: 'producto'},
         'cantidad'                     : {multiple: '$', validaciones: 'requerido|mayor-igual({"cuanto": 0})', mascara: 'libre', grupo: 'general'}
       };      
 			
-			$(document).ready(function(){
+			$(document).ready(function() {
         janal.readingMode('#{manticContadoresAccion.attrs.nombreAccion}');
         reload();
       });
@@ -60,25 +60,29 @@
                       </p:column>   
                     </p:selectOneMenu>
                   </p:panelGrid>
+                  <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
+                    <p:outputLabel for="nombre" value="Nombre:"/>
+                    <p:inputText id="nombre" placeholder="Ej. CONTEO PVC" value="#{manticContadoresAccion.contador.nombre}" styleClass="janal-wid-100-txt" disabled="#{manticContadoresAccion.edit}"/>
+                  </p:panelGrid>
+                  <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
+                    <p:outputLabel for="idTrabaja" value="Trabajará:"/>
+                    <p:autoComplete id="idTrabaja" var="custom" placeholder="Ej. JUAN PEREZ LOPEZ" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticContadoresAccion.contador.ikTrabaja}" completeMethod="#{manticContadoresAccion.doCompleteEmpleado}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500" disabled="#{manticContadoresAccion.edit}">
+                      <f:facet name="itemtip">
+                        <h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
+                          <h:outputText value="Cuenta:" />
+                          <h:outputText value="#{custom.cuenta}" />
+                          <h:outputText value="RFC:" />
+                          <h:outputText value="#{custom.rfc}" />
+                          <h:outputText value="CURP:" />
+                          <h:outputText value="#{custom.curp}" />
+                          <h:outputText value="Nombre:" />
+                          <h:outputText value="#{custom.nombre}" />
+                        </h:panelGrid>
+                      </f:facet>
+                    </p:autoComplete>			
+                  </p:panelGrid>
                 </p:panelGrid>
-                <p:outputLabel for="nombre" value="Nombre:"/>
-                <p:inputText id="nombre" placeholder="Ej. CONTEO PVC" value="#{manticContadoresAccion.contador.nombre}" styleClass="janal-wid-100-txt" disabled="#{manticContadoresAccion.edit}"/>
-                <p:outputLabel for="idTrabaja" value="Trabajará:"/>
-                <p:autoComplete id="idTrabaja" var="custom" placeholder="Ej. JUAN PEREZ LOPEZ" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticContadoresAccion.contador.ikTrabaja}" completeMethod="#{manticContadoresAccion.doCompleteEmpleado}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500" disabled="#{manticContadoresAccion.edit}">
-                  <f:facet name="itemtip">
-                    <h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
-                      <h:outputText value="Cuenta:" />
-                      <h:outputText value="#{custom.cuenta}" />
-                      <h:outputText value="RFC:" />
-                      <h:outputText value="#{custom.rfc}" />
-                      <h:outputText value="CURP:" />
-                      <h:outputText value="#{custom.curp}" />
-                      <h:outputText value="Nombre:" />
-                      <h:outputText value="#{custom.nombre}" />
-                    </h:panelGrid>
-                  </f:facet>
-                </p:autoComplete>			
-                <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-95, janal-wid-5 janal-column-right">
+                <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-90, janal-wid-10 janal-column-right">
                   <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                     <p:outputLabel for="idArticulo" value="Articulo:"/>
                     <p:autoComplete id="idArticulo" placeholder="Ej. MARTILLO" var="custom" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticContadoresAccion.producto.ikArticulo}" completeMethod="#{manticContadoresAccion.doCompleteArticulo}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" disabled="#{manticContadoresAccion.edit}">
