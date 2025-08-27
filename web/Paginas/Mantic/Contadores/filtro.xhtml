@@ -183,13 +183,13 @@
 								</f:facet>
 								<h:outputText value="#{row['almacen']}"/>
 							</p:column>														
-							<p:column styleClass="MarAuto Responsive janal-column-left" sortBy="#{row.nombre}">
+							<p:column styleClass="MarAuto Responsive janal-wid-10 janal-column-center" sortBy="#{row.consecutivo}">
 								<f:facet name="header">
-									<h:outputText value="Nombre"/>
+									<h:outputText value="Consecutivo"/>
 								</f:facet>
-								<h:outputText value="#{row['nombre']}"/>
+								<h:outputText value="#{row['consecutivo']}"/>
 							</p:column>														
-							<p:column styleClass="MarAuto Responsive janal-column-left janal-wid-25" sortBy="#{row.trabajo}">
+							<p:column styleClass="MarAuto Responsive janal-column-left" sortBy="#{row.trabajo}">
 								<f:facet name="header">
 									<h:outputText value="Trabajará"/>
 								</f:facet>
@@ -201,7 +201,7 @@
 								</f:facet>
 								<h:outputText value="#{row['articulos']}"/>
 							</p:column>											
-							<p:column styleClass="MarAuto Responsive janal-column-center janal-wid-6" sortBy="#{row.version}">
+							<p:column styleClass="MarAuto Responsive janal-column-center janal-wid-8" sortBy="#{row.version}">
 								<f:facet name="header">
 									<h:outputText value="Version"/>
 								</f:facet>
@@ -219,11 +219,11 @@
                 </f:facet>
                 <h:outputText value="#{row['estatus']}"/>
               </p:column>			
-							<p:column styleClass="MarAuto Responsive janal-column-center janal-wid-3">
+              <p:column styleClass="MarAuto Responsive janal-column-center janal-wid-3 janal-display-none" exportable="false">
 								<f:facet name="header">
 									<h:outputText value=""/>
 								</f:facet>
-								<h:graphicImage library="janal" name="icon/semaforos/#{row.idContadorEstatus eq '4'? 'circulo-rojo.png': row.idContadorEstatus eq '1'? 'circulo-azul.png': row.idContadorEstatus eq '5'? 'circulo-amarillo.png': 'circulo-verde.png'}" title="Conteo #{row.idContadorEstatus eq '4'? 'cancelado': row.idContadorEstatus eq '1'? 'registrado': row.idContadorEstatus eq '5'? 'suspendido': 'integrado'}"/>
+								<h:graphicImage library="janal" name="icon/semaforos/#{row.idContadorEstatus eq '5'? 'circulo-rojo.png': row.idContadorEstatus eq '1'? 'circulo-azul.png': row.idContadorEstatus eq '6'? 'circulo-amarillo.png': 'circulo-verde.png'}" title="Conteo #{row.idContadorEstatus eq '5'? 'cancelado': row.idContadorEstatus eq '1'? 'registrado': row.idContadorEstatus eq '6'? 'suspendido': 'integrado'}"/>
 							</p:column>
               <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-col-40">
 								<f:facet name="header">
@@ -296,9 +296,9 @@
                 </f:facet>
                 <h:outputText value="#{row['fecha']}"/>
               </p:column>			
-              <p:column styleClass="MarAuto Responsive janal-column-center janal-wid-3" sortBy="#{row.idProcesado}">
+              <p:column styleClass="MarAuto Responsive janal-column-center janal-wid-3">
                 <f:facet name="header">
-                  <h:outputText value=""/>
+                  <h:outputText value="..."/>
                 </f:facet>
                 <h:graphicImage library="janal" name="icon/semaforos/#{row.idProcesado eq '1' ? 'circulo-verde.png': 'circulo-rojo.png'}" title="Conteo #{row.idProcesado eq '1'? '': 'NO'} procesado #{row.idProcesado eq '1'? row.procesado: ''}"/>
               </p:column>

@@ -136,7 +136,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     finally {
       Methods.clean(params);
     } // finally
-	} // loadPuestos
+	} 
 	
 	private void loadEstadosCiviles() {
 		List<UISelectItem> civiles= null;

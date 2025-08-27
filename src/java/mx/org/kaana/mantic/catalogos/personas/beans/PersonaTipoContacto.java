@@ -3,7 +3,7 @@ package mx.org.kaana.mantic.catalogos.personas.beans;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.mantic.db.dto.TrManticPersonaTipoContactoDto;
 
-public class PersonaTipoContacto extends TrManticPersonaTipoContactoDto{
+public class PersonaTipoContacto extends TrManticPersonaTipoContactoDto {
 	
 	private static final long serialVersionUID = 4804251646663919847L;
 	private ESql sqlAccion;

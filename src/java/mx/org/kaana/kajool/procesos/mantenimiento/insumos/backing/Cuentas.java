@@ -37,7 +37,6 @@ public class Cuentas extends Comun implements Serializable {
   @Override
 	protected void init() {
     try {			
-      loadEntidades();
       doLoad();
     } // try
     catch(Exception e) {

@@ -42,7 +42,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.attrs.put("sortOrder", "order by tc_mantic_personas.nombres");
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
-      loadTiposPersonas();
+      this.loadTiposPersonas();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -55,22 +55,21 @@ public class Filtro extends IBaseFilter implements Serializable {
     gestor.loadTiposPersonas();
     this.attrs.put("tiposPersonas", gestor.getTiposPersonas());
     this.attrs.put("tipoPersona", UIBackingUtilities.toFirstKeySelectEntity(gestor.getTiposPersonas()));
-  } // loadTiposPersonas  
+  } 
   
   @Override
   public void doLoad() {
-    List<Columna> campos = null;
+    List<Columna> columns= new ArrayList<>();
     try {
-      campos = new ArrayList<>();
-      campos.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("materno", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("paterno", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("curp", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("sexo", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("tipoPersona", EFormatoDinamicos.MAYUSCULAS));     
+      columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("materno", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("paterno", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("curp", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("sexo", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("tipoPersona", EFormatoDinamicos.MAYUSCULAS));     
       this.attrs.put("idTipoPersona",((UISelectEntity)this.attrs.get("tipoPersona")).getKey().equals(-1L)?toAllTiposPersonas():((UISelectEntity)this.attrs.get("tipoPersona")).getKey());
-      this.lazyModel = new FormatCustomLazy("VistaPersonasDto", "row", this.attrs, campos);
+      this.lazyModel = new FormatCustomLazy("VistaPersonasDto", "row", this.attrs, columns);
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
@@ -78,7 +77,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       JsfBase.addMessageError(e);
     } // catch
     finally {
-      Methods.clean(campos);
+      Methods.clean(columns);
     } // finally		
   } // doLoad
 
@@ -88,7 +87,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     for (UISelectEntity tipoPersona: tiposPersonas)
       regresar.append(tipoPersona.getKey()).append(",");
     return regresar.substring(0,regresar.length()-1);
-  } // toAllTiposPersonas
+  } 
 	
   public String doAccion(String accion) {
     EAccion eaccion= null;
@@ -104,8 +103,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 			JsfBase.addMessageError(e);			
 		} // catch
 		return "accion".concat(Constantes.REDIRECIONAR);
-  } // doAccion
-
+  } 
+  
   public void doEliminar() {
 		Transaccion transaccion= null;
 		Entity seleccionado    = null;
@@ -116,13 +115,14 @@ public class Filtro extends IBaseFilter implements Serializable {
 			persona.setIdPersona(seleccionado.getKey());
 			transaccion= new Transaccion(persona);
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
-				JsfBase.addMessage("Eliminar persona", "La persona se ha eliminado correctamente.", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Eliminar persona", "La persona se ha eliminado correctamente", ETipoMensaje.INFORMACION);
 			else
-				JsfBase.addMessage("Eliminar persona", "Ocurrió un error al eliminar la persona seleccionada.", ETipoMensaje.ERROR);								
+				JsfBase.addMessage("Eliminar persona", "Ocurrió un error al eliminar la persona", ETipoMensaje.ERROR);								
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch		
-  } // doEliminar
+  } 
+  
 }

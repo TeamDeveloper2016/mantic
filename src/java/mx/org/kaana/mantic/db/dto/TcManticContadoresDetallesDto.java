@@ -60,7 +60,7 @@ public class TcManticContadoresDetallesDto implements IBaseDto, Serializable {
   }
 
   public TcManticContadoresDetallesDto(Long key) {
-    this(null, null, new Timestamp(Calendar.getInstance().getTimeInMillis()), new Long(-1L), 0D, null, null, null);
+    this(null, null, null, new Long(-1L), 0D, null, null, null);
     setKey(key);
   }
 

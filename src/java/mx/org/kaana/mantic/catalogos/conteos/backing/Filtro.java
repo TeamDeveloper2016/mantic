@@ -24,6 +24,7 @@ import mx.org.kaana.mantic.catalogos.conteos.reglas.Transaccion;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
@@ -39,7 +40,7 @@ import org.primefaces.model.StreamedContent;
 
 @Named(value = "manticCatalogosConteosFiltro")
 @ViewScoped
-public class Filtro extends Comun implements Serializable {
+public class Filtro extends IBaseFilter implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428879L;
   
@@ -167,10 +168,7 @@ public class Filtro extends Comun implements Serializable {
   		  regresar.put("almacen", " ");
       if(!Cadena.isVacio(this.attrs.get("idAlmacen")) && !this.attrs.get("idAlmacen").toString().equals("-1"))
   		  sb.append("(tc_mantic_conteos.id_almacen= ").append(this.attrs.get("idAlmacen")).append(") and ");
-			if(Cadena.isVacio(sb.toString()))
-				regresar.put("condicion", Constantes.SQL_VERDADERO);
-			else
-			  regresar.put("condicion", sb.substring(0, sb.length()- 4));			
+  		regresar.put(Constantes.SQL_CONDICION, Cadena.isVacio(sb.toString())? Constantes.SQL_VERDADERO: sb.substring(0, sb.length()- 4));
 		  if(Cadena.isVacio(this.attrs.get("idEmpresa")) || this.attrs.get("idEmpresa").toString().equals("-1"))
 			  regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getDependencias());
 			else

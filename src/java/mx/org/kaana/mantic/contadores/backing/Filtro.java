@@ -24,6 +24,7 @@ import mx.org.kaana.mantic.contadores.reglas.Transaccion;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
@@ -34,13 +35,12 @@ import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.contadores.beans.Contador;
 import mx.org.kaana.mantic.db.dto.TcManticContadoresBitacoraDto;
-import mx.org.kaana.mantic.db.dto.TcManticContadoresDto;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.StreamedContent;
 
 @Named(value = "manticContadoresFiltro")
 @ViewScoped
-public class Filtro extends Comun implements Serializable {
+public class Filtro extends IBaseFilter implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428879L;
   
@@ -96,7 +96,7 @@ public class Filtro extends Comun implements Serializable {
       columns.add(new Columna("usuario", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("procesado", EFormatoDinamicos.FECHA_HORA_CORTA));
       params.put("sortOrder", "order by tc_mantic_contadores.registro desc");
-      this.lazyModel = new FormatCustomLazy("VistaContadoresDto", "lazy", params, columns);
+      this.lazyModel = new FormatCustomLazy("VistaContadoresDto", params, columns);
       UIBackingUtilities.resetDataTable();
       this.lazyDetalle= null;
     } // try
@@ -184,10 +184,7 @@ public class Filtro extends Comun implements Serializable {
   		  regresar.put("almacen", " ");
       if(!Cadena.isVacio(this.attrs.get("idAlmacen")) && !this.attrs.get("idAlmacen").toString().equals("-1"))
   		  sb.append("(tc_mantic_contadores.id_almacen= ").append(this.attrs.get("idAlmacen")).append(") and ");
-			if(Cadena.isVacio(sb.toString()))
-				regresar.put("condicion", Constantes.SQL_VERDADERO);
-			else
-			  regresar.put("condicion", sb.substring(0, sb.length()- 4));			
+  		regresar.put(Constantes.SQL_CONDICION, Cadena.isVacio(sb.toString())? Constantes.SQL_VERDADERO: sb.substring(0, sb.length()- 4));
 		  if(Cadena.isVacio(this.attrs.get("idEmpresa")) || this.attrs.get("idEmpresa").toString().equals("-1"))
 			  regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getDependencias());
 			else

@@ -117,15 +117,8 @@ public class Transaccion extends IBaseTnx implements Serializable {
     try {   
       this.conteo.setActualizado(new Timestamp(Calendar.getInstance().getTimeInMillis()));      
       this.conteo.setIdContadorEstatus(7L); // ERRORES
-      DaoFactory.getInstance().update(sesion, this.conteo);
-      this.bitacora= new TcManticContadoresBitacoraDto(
-        this.messageError, // String justificacion, 
-        this.conteo.getIdUsuario(), // Long idUsuario, 
-        this.conteo.getIdContador(), // Long idContador, 
-        -1L, // Long idContadorBitacora, 
-        this.conteo.getIdContadorEstatus()// Long idContadorEstatus
-      );          
-      regresar= DaoFactory.getInstance().insert(sesion, bitacora)> 0L;
+      regresar= DaoFactory.getInstance().update(sesion, this.conteo)> 0L;
+      this.toBitacora(sesion);
     } // try
     catch (Exception e) {
       throw e;
@@ -141,14 +134,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
       params.put("idContador", this.conteo.getIdContador());      
       this.conteo.setIdContadorEstatus(3L); // INTEGRADO
       DaoFactory.getInstance().update(sesion, this.conteo);
-      this.bitacora= new TcManticContadoresBitacoraDto(
-        null, // String justificacion, 
-        this.conteo.getIdUsuario(), // Long idUsuario, 
-        this.conteo.getIdContador(), // Long idContador, 
-        -1L, // Long idContadorBitacora, 
-        this.conteo.getIdContadorEstatus()// Long idContadorEstatus
-      );          
-      DaoFactory.getInstance().insert(sesion, bitacora);
+      this.toBitacora(sesion);
       List<TcManticContadoresDetallesDto> items= (List<TcManticContadoresDetallesDto>)DaoFactory.getInstance().toEntitySet(sesion, TcManticContadoresDetallesDto.class, "TcManticContadoresDetallesDto", "detalle", params);
       for (TcManticContadoresDetallesDto item: items) {
         LOG.error("Articulo: "+ item.getIdArticulo()+ " - "+ item.getCantidad()+ " ["+ item.getProcesado()+ "]");  
@@ -162,15 +148,8 @@ public class Transaccion extends IBaseTnx implements Serializable {
       } // for
       this.conteo.setProcesado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
       this.conteo.setIdContadorEstatus(4L); // TERMINADO
-      DaoFactory.getInstance().update(sesion, this.conteo);
-      this.bitacora= new TcManticContadoresBitacoraDto(
-        null, // String justificacion, 
-        this.conteo.getIdUsuario(), // Long idUsuario, 
-        this.conteo.getIdContador(), // Long idContador, 
-        -1L, // Long idContadorBitacora, 
-        this.conteo.getIdContadorEstatus() // Long idContadorEstatus
-      );          
-      regresar= DaoFactory.getInstance().insert(sesion, this.bitacora)> 0L;
+      regresar= DaoFactory.getInstance().update(sesion, this.conteo)> 0L;
+      this.toBitacora(sesion);
     } // try
     catch (Exception e) {
       throw e;

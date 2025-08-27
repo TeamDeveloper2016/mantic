@@ -23,7 +23,7 @@
 				'contenedorGrupos\\:sueldo'      : {validaciones: 'flotante', mascara: 'flotante', grupo: 'general'},
 				'contenedorGrupos\\:tipoPersona' : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},				
 				'contenedorGrupos\\:sexo'        : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
-				'contenedorGrupos\\:puesto'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:idPuesto'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:idActivo'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:entidad'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
         'contenedorGrupos\\:municipio'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
@@ -87,8 +87,8 @@
 									<f:selectItem itemValue="3" itemLabel="No especificado"/>
 								</p:selectOneRadio>	
 								<p:separator/>
-								<p:outputLabel for="puesto" value="Puesto:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
-								<p:selectOneMenu id="puesto" value="#{manticCatalogosPersonasAccion.registroPersona.idPuesto}" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
+								<p:outputLabel for="idPuesto" value="Puesto:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
+								<p:selectOneMenu id="idPuesto" value="#{manticCatalogosPersonasAccion.registroPersona.idPuesto}" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
 									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.puestos}"/>
 								</p:selectOneMenu>
 								<p:outputLabel for="idEstadoCivil" value="Estado civil:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
@@ -248,6 +248,13 @@
                   </p:column>	
                   <p:column headerText="Valor" styleClass="janal-wid-50 valor">		
                     <p:inputText id="valor#{contacto.key}" styleClass="janal-wid-100-txt" value="#{contacto.valor}" disabled="#{!contacto.nuevo}" onblur="simpleProcess();"/>
+                  </p:column>
+                  <p:column headerText="Preferido" styleClass="janal-wid-10">		
+                    <p:selectOneMenu id="idPreferido" styleClass="janal-wid-100-txt contacto" value="#{contacto.idPreferido}" disabled="#{!contacto.nuevo}" converter="javax.faces.Long">
+                      <p:ajax event="change" process="@this" update="contenedorGrupos:tablaContactos"/>
+       								<f:selectItem itemLabel="SI" itemValue="1"/>
+                      <f:selectItem itemLabel="NO" itemValue="2"/>								
+                    </p:selectOneMenu>
                   </p:column>
                   <p:column style="width:32px;text-align: center">
                     <p:commandButton update="tablaContactos" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosPersonasAccion.registroPersona.doEliminarClienteTipoContacto}">

@@ -60,7 +60,6 @@ public class Filtro extends Comun implements Serializable {
     try {					
       this.attrs.put("upm", "");
       loadFields();
-      loadEntidades();
       loadResultados();
       this.attrs.put("idEntidad", -1L);
 			this.attrs.put("idResultado", -1L);

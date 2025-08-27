@@ -696,7 +696,8 @@ public class Planetas implements Serializable {
 			session.clear();
       Contador items= this.toContador(densidad);
       TcManticContadoresDto existe= (TcManticContadoresDto)DaoFactory.getInstance().findById(session, TcManticContadoresDto.class, items.getIdConteo());
-      if(!Objects.equals(existe, null)) {
+      // SOLO SE ACTUALIZA SI EL ESTATUS ES DE CERRADO PARA CAMBIAR A INTEGRANDO
+      if(!Objects.equals(existe, null) && Objects.equals(existe.getIdContadorEstatus(), 2L)) { // CERRADO
         existe.setConteos(densidad);
         existe.setSemilla(items.getSemilla());
         existe.setFecha(items.getRegistro());
