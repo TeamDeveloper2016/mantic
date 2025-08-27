@@ -4398,7 +4398,6 @@ delete from tr_mantic_empresa_personal where id_persona = {idPersona}
          delete from tr_mantic_persona_domicilio where id_persona = {idPersona}
       </delete>  
     </unit>
-    
     <unit id="TrManticPersonaTipoContactoDto">
       <select id="row">
         select      
@@ -4416,11 +4415,20 @@ delete from tr_mantic_empresa_personal where id_persona = {idPersona}
         where      
           id_persona = {idPersona} and id_persona_tipo_contacto = {idPersonaTipoContacto} and id_tipo_contacto = {idTipoContacto}
       </select>
+      <select id="celular">
+select      
+  *
+from      
+  tr_mantic_persona_tipo_contacto
+where      
+  id_persona = {idPersona} 
+  and id_tipo_contacto in (1, 6, 7, 8)
+      </select>
 			<select id="maximo">
-        select      
-          max(id_persona_tipo_contacto) maximo
-        from      
-          tr_mantic_persona_tipo_contacto
+select      
+  max(id_persona_tipo_contacto) maximo
+from      
+  tr_mantic_persona_tipo_contacto
       </select>
 			<delete id="rows">
          delete from tr_mantic_persona_tipo_contacto where id_persona = {idPersona}

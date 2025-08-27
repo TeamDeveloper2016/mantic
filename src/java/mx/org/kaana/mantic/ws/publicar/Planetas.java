@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
@@ -21,6 +22,7 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.json.Decoder;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.libs.wassenger.Bonanza;
 import mx.org.kaana.mantic.db.dto.TcManticContadoresBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticContadoresDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticContadoresDto;
@@ -722,6 +724,7 @@ public class Planetas implements Serializable {
             DaoFactory.getInstance().update(session, copia);
           } // if  
         } // for
+        this.notificar(session, existe);
       } // if
 			transaction.commit();
 		} // try
@@ -1069,6 +1072,34 @@ public class Planetas implements Serializable {
       Methods.clean(params);
     } // finally
     return regresar;
+  }
+
+  private void notificar(Session session, TcManticContadoresDto conteo) {
+    Bonanza bonanza           = null;
+    List<Entity> celulares    = null;
+    Map<String, Object> params= new HashMap<>();
+    try {      
+      if(Objects.equals(conteo.getIdContadorEstatus(), 2L)) {
+        params.put("idUsuario", conteo.getIdUsuario());
+        Entity fuente= (Entity)DaoFactory.getInstance().toEntity(session, "TcJanalUsuariosDto", "usuario", params);
+        params.put("idUsuario", conteo.getIdTrabaja());
+        Entity destino= (Entity)DaoFactory.getInstance().toEntity(session, "TcJanalUsuariosDto", "usuario", params);
+        if(!Objects.equals(fuente, null) && !fuente.isEmpty() && !Objects.equals(destino, null) && !destino.isEmpty()) {
+          params.put("idPersona", fuente.toLong("idPersona"));
+          celulares= (List<Entity>)DaoFactory.getInstance().toEntitySet("TrManticPersonaTipoContactoDto", "celular", params);
+          if(!Objects.equals(celulares, null) && !celulares.isEmpty()) {
+            bonanza  = new Bonanza(Cadena.letraCapital(fuente.toString("nombre")), "celular", String.valueOf(conteo.getArticulos()), conteo.getConsecutivo(), conteo.getNombre());
+            // bonanza.doSendConteo(session, Cadena.letraCapital(destino.toString("nombre")));
+          } // if  
+        } // if  
+      } // if
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
   }
   
 }

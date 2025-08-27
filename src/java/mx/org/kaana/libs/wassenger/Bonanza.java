@@ -69,6 +69,10 @@ public final class Bonanza implements Serializable {
   private static final String BODY_CAJA_CHICA  = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, te hacemos llegar el reporte de caja chica de los *residentes* de la semana *{nomina}* del {periodo}, hacer clic en el siguiente enlace: https://{host}/Temporal/Pdf/{reporte}\\nSe tienen *24 hrs* para descargar el reporte de gastos de caja chica.\\n\\n*_{empresa}_*\"";
   private static final String BODY_OPEN_NOMINA = "\"group\":\"{celular}\",\"message\":\"Estimad@s _{nombre}_,\\n\\n{saludo}, en este momento se ha hecho corte de la nómina *{nomina}* del {periodo}, con un total de *{reporte}* favor de verificar el registro de los destajos; se les hace saber tambien que a las *14:00 hrs* se hará el *corte de caja chica* para que de favor verifiquen el registro de sus gastos. Si se hace algún *ajuste* en los *destajos* a partir de este momento de algun *contratista* o *subcontratista* favor de *indicarlo* en este *chat* para reprocesar su nómina.\\n\\n*_{empresa}_*\"";
   private static final String BODY_CLOSE_NOMINA= "\"group\":\"{celular}\",\"message\":\"Estimad@s _{nombre}_,\\n\\n{saludo}, en este momento se ha hecho *cierre* de la nómina *{nomina}*; cualquier registro de destajos y de gasto de caja chica se vera reflejado para la siguiente nómina ó _semana_.\\n\\n_{empresa}_\"";
+
+  private static final String BODY_CONTEOS        = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, te notificamos que C.*{usuario}* ya envió el requerimiento para contabilizar *{reporte}* producto(s) o articulo(s) con numero de folio [*{ticket}*] y nombre [*{fecha}*], para tu conocimiento y revisión en la aplicación web.\\n\\n*_{empresa}_*\"";
+  private static final String BODY_CONTEOS_DESTINO= "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, te notificamos que has recibido un requerimiento por parte de C.*{usuario}* para contabilizar *{reporte}* producto(s) o articulo(s) con numero de folio [*{ticket}*] y nombre [*{fecha}*], favor de ingresar a la aplicación móvil para atender este requerimiento.\\n\\n*_{empresa}_*\"";
+  private static final String BODY_CONTEOS_FUENTE = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, te notificamos que C.*{usuario}* fue notificado para atender el requerimiento para contabilizar *{reporte}* producto(s) o articulo(s) con numero de folio [*{ticket}*] y nombre [*{fecha}*], para tu conocimiento y seguimiento.\\n\\n*_{empresa}_*\"";
   
   private static final String PATH_REPORT      = "{numero}.- {documento}; https://{host}/Temporal/Pdf/{reporte}\\n";
   private static final int LENGTH_CELL_PHONE   = 10;
@@ -219,7 +223,7 @@ public final class Bonanza implements Serializable {
                 message= new Message();
             } // if  
             else {
-              LOG.error("[doSendMessage] No se envio el mensaje por whatsapp  ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+              LOG.error("[doSendMessage] No se envio el mensaje ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
               message= new Message();
               message.setMessage(" {"+ Cadena.replaceParams(mensaje, params, true)+ "}");
             } // else  
@@ -245,7 +249,7 @@ public final class Bonanza implements Serializable {
       } // finally
     } // if
     else 
-      LOG.error("[doSendMessage] No se envio el mensaje por whatsapp  ["+ this.celular+ "]");
+      LOG.error("[doSendMessage] No se envio el mensaje ["+ this.celular+ "]");
   }
   public void doSendMasivo(Session sesion, String contenido) {
     if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE) || this.celular.contains("@")) {
@@ -291,7 +295,7 @@ public final class Bonanza implements Serializable {
               message= new Message();
           } // if  
           else {
-            LOG.error("[doSendMessage] No se envio el mensaje por whatsapp  ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            LOG.error("[doSendMessage] No se envio el mensaje ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
             message= new Message();
             message.setMessage(" {"+ Cadena.replaceParams(mensaje, params, true)+ "}");
           } // else  
@@ -314,7 +318,7 @@ public final class Bonanza implements Serializable {
       } // finally
     } // if
     else 
-      LOG.error("[doSendMessage] No se envio el mensaje por whatsapp  ["+ this.celular+ "]");
+      LOG.error("[doSendMessage] No se envio el mensaje ["+ this.celular+ "]");
   }
 
   public void doSendProveedor(Session sesion) {
@@ -353,7 +357,7 @@ public final class Bonanza implements Serializable {
                 message= new Message();
             } // if  
             else {
-              LOG.error("[doSendProveedor] No se envio el mensaje por whatsapp  ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+              LOG.error("[doSendProveedor] No se envio el mensaje ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
               message= new Message();
               message.setMessage(" {"+ Cadena.replaceParams(BODY_PROVEEDOR, params, true)+ "}");
             } // else  
@@ -379,7 +383,7 @@ public final class Bonanza implements Serializable {
       } // finally
     } // if
     else 
-      LOG.error("[doSendProveedor] No se envio el mensaje por whatsapp  ["+ this.celular+ "]");
+      LOG.error("[doSendProveedor] No se envio el mensaje ["+ this.celular+ "]");
   }
 
   public void doSendCorteNomina(Session sesion) {
@@ -548,7 +552,7 @@ public final class Bonanza implements Serializable {
             } // else  
           } // if  
           else {
-            LOG.error("[doSendFactura] No se envio el mensaje por whatsapp  ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            LOG.error("[doSendFactura] No se envio el mensaje ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
             message= new Message();
             message.setMessage(" {"+ Cadena.replaceParams(mensaje, params, true)+ "}");
           } // if  
@@ -571,7 +575,7 @@ public final class Bonanza implements Serializable {
       } // finally
     } // if
     else 
-      LOG.error("[doSendFactura]No se envio el mensaje por whatsapp  ["+ this.celular+ "]");
+      LOG.error("[doSendFactura]No se envio el mensaje ["+ this.celular+ "]");
   } // doSendFactura
   
   public void doSendTicket() {
@@ -624,7 +628,7 @@ public final class Bonanza implements Serializable {
             } // else  
           } // if  
           else {
-            LOG.error("[doSendFactura] No se envio el mensaje por whatsapp  ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            LOG.error("[doSendFactura] No se envio el mensaje ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
             message= new Message();
             message.setMessage(" {"+ Cadena.replaceParams(mensaje, params, true)+ "}");
           } // if  
@@ -647,7 +651,7 @@ public final class Bonanza implements Serializable {
       } // finally
     } // if
     else 
-      LOG.error("[doSendFactura]No se envio el mensaje por whatsapp  ["+ this.celular+ "]");
+      LOG.error("[doSendFactura]No se envio el mensaje ["+ this.celular+ "]");
   } // doSendTicket
   
   public void doSendDevolucion(Session sesion) {
@@ -684,7 +688,7 @@ public final class Bonanza implements Serializable {
             } // else  
           } // if  
           else {
-            LOG.error("[doSendDevolucion] No se envio el mensaje por whatsapp  ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            LOG.error("[doSendDevolucion] No se envio el mensaje ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
             message= new Message();
             message.setMessage(" {"+ Cadena.replaceParams(BODY_DEVOLUCION, params, true)+ "}");
           } // if  
@@ -707,7 +711,7 @@ public final class Bonanza implements Serializable {
       } // finally
     } // if
     else 
-      LOG.error("[doSendDevolucion]No se envio el mensaje por whatsapp  ["+ this.celular+ "]");
+      LOG.error("[doSendDevolucion]No se envio el mensaje ["+ this.celular+ "]");
   } // doSendDevolucion
   
   public void doSendPagoCuenta(Session sesion) {
@@ -744,7 +748,7 @@ public final class Bonanza implements Serializable {
             } // else  
           } // if  
           else {
-            LOG.error("[doSendPagoCuenta] No se envio el mensaje por whatsapp  ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            LOG.error("[doSendPagoCuenta] No se envio el mensaje ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
             message= new Message();
             message.setMessage(" {"+ Cadena.replaceParams(BODY_PAGO_CUENTA, params, true)+ "}");
           } // if  
@@ -767,7 +771,7 @@ public final class Bonanza implements Serializable {
       } // finally
     } // if
     else 
-      LOG.error("[doSendPagoCuenta]No se envio el mensaje por whatsapp  ["+ this.celular+ "]");
+      LOG.error("[doSendPagoCuenta]No se envio el mensaje ["+ this.celular+ "]");
   } // doSendPagoCuenta
   
   public void doSendOrdenCompra() {
@@ -808,7 +812,7 @@ public final class Bonanza implements Serializable {
             } // else  
           } // if  
           else {
-            LOG.error("[doSendOrdenCompra] No se envio el mensaje por whatsapp  ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            LOG.error("[doSendOrdenCompra] No se envio el mensaje ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
             message= new Message();
             message.setMessage(" {"+ Cadena.replaceParams(BODY_ORDEN_COMPRA, params, true)+ "}");
           } // if  
@@ -831,7 +835,7 @@ public final class Bonanza implements Serializable {
       } // finally
     } // if
     else 
-      LOG.error("[doSendOrdenCompra]No se envio el mensaje por whatsapp  ["+ this.celular+ "]");
+      LOG.error("[doSendOrdenCompra]No se envio el mensaje ["+ this.celular+ "]");
   } // doSendOrdenCompra
 
   public void doSendGasto(Session sesion) {
@@ -868,7 +872,7 @@ public final class Bonanza implements Serializable {
             } // else  
           } // if  
           else {
-            LOG.error("[doSendGasto] No se envio el mensaje por whatsapp  ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            LOG.error("[doSendGasto] No se envio el mensaje ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
             message= new Message();
             message.setMessage(" {"+ Cadena.replaceParams(BODY_GASTO_CHICA, params, true)+ "}");
           } // if  
@@ -891,7 +895,7 @@ public final class Bonanza implements Serializable {
       } // finally
     } // if
     else 
-      LOG.error("[doSendGasto] No se envio el mensaje por whatsapp  ["+ this.celular+ "]");
+      LOG.error("[doSendGasto] No se envio el mensaje ["+ this.celular+ "]");
   }
   
   public void doSendCajaChica(Session sesion) {
@@ -928,7 +932,7 @@ public final class Bonanza implements Serializable {
             } // else  
           } // if  
           else {
-            LOG.error("[doSendCajaChica] No se envio el mensaje por whatsapp  ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            LOG.error("[doSendCajaChica] No se envio el mensaje ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
             message= new Message();
             message.setMessage(" {"+ Cadena.replaceParams(BODY_CAJA_CHICA, params, true)+ "}");
           } // if  
@@ -951,7 +955,7 @@ public final class Bonanza implements Serializable {
       } // finally
     } // if
     else 
-      LOG.error("[doSendCajaChica] No se envio el mensaje por whatsapp  ["+ this.celular+ "]");
+      LOG.error("[doSendCajaChica] No se envio el mensaje ["+ this.celular+ "]");
   }
   
   public void doSendCorreo() {
@@ -992,7 +996,7 @@ public final class Bonanza implements Serializable {
             } // else  
           } // if  
           else {
-            LOG.error("[doSendCorreo] No se envio el mensaje por whatsapp  ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            LOG.error("[doSendCorreo] No se envio el mensaje ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
             message= new Message();
             message.setMessage(" {"+ Cadena.replaceParams(BODY_CHECK_CORREO, params, true)+ "}");
           } // if  
@@ -1015,7 +1019,7 @@ public final class Bonanza implements Serializable {
       } // finally
     } // if
     else 
-      LOG.error("[doSendCorreo]No se envio el mensaje por whatsapp  ["+ this.celular+ "]");
+      LOG.error("[doSendCorreo]No se envio el mensaje ["+ this.celular+ "]");
   } // doSendCorreo
   
   public void doSendRfc() {
@@ -1056,7 +1060,7 @@ public final class Bonanza implements Serializable {
             } // else  
           } // if  
           else {
-            LOG.error("[doSendRfc] No se envio el mensaje por whatsapp  ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            LOG.error("[doSendRfc] No se envio el mensaje ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
             message= new Message();
             message.setMessage(" {"+ Cadena.replaceParams(BODY_CHECK_RFC, params, true)+ "}");
           } // if  
@@ -1079,15 +1083,14 @@ public final class Bonanza implements Serializable {
       } // finally
     } // if
     else 
-      LOG.error("[doSendRfc]No se envio el mensaje por whatsapp  ["+ this.celular+ "]");
+      LOG.error("[doSendRfc]No se envio el mensaje ["+ this.celular+ "]");
   } // doSendRfc
   
   private void prepare() {
     StringBuilder archivos= new StringBuilder();
     if(this.contratistas!= null && !this.contratistas.isEmpty()) {
-      Map<String, Object> params = null;
+      Map<String, Object> params = new HashMap<>();
       try {        
-        params= new HashMap<>();        
         int count= 1;
         for (String key: this.contratistas.keySet()) {
           params.put("numero", count++);
@@ -1164,6 +1167,189 @@ public final class Bonanza implements Serializable {
     return regresar;
   }
 
+  public void doSendConteo(Session sesion, String usuario) {
+    if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE) || this.celular.contains("@")) {
+      Message message           = null;
+      Map<String, Object> params= new HashMap<>();        
+      try {
+        params.put("nombre", this.nombre);
+        params.put("celular", this.celular);
+        params.put("reporte", this.reporte);
+        params.put("ticket", this.ticket);
+        params.put("fecha", this.fecha);
+        params.put("usuario", usuario);
+        params.put("empresa", Cadena.letraCapital(Configuracion.getInstance().getEmpresa("titulo")));        
+        params.put("host", Configuracion.getInstance().getEmpresa("host"));
+        params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
+        params.put("saludo", this.toSaludo());
+        if(!Configuracion.getInstance().isEtapaProduccion())
+          LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_CONTEOS, params, true)+ "}");
+        else {  
+          HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
+          .header("Content-Type", "application/json")
+          .header("Token", this.token)
+          .body("{"+ Cadena.replaceParams(BODY_CONTEOS, params, true)+ "}")
+          .asString();
+          LOG.error("Enviado: "+ response.getBody());
+          if(Objects.equals(response.getStatus(), 201)) {
+            Gson gson= new Gson();
+            message= gson.fromJson(response.getBody(), Message.class);
+            if(message!= null) 
+              message.init();
+            else {
+              message= new Message();
+              message.setMessage(" {"+ Cadena.replaceParams(BODY_CONTEOS, params, true)+ "}");
+            } // else  
+          } // if  
+          else {
+            LOG.error("[doSendConteo] No se envio el mensaje ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            message= new Message();
+            message.setMessage(" {"+ Cadena.replaceParams(BODY_CONTEOS, params, true)+ "}");
+          } // if  
+          message.setTelefono(this.celular);
+          message.setIdSendStatus(new Long(response.getStatus()));
+          message.setSendStatus(response.getStatusText());
+          message.setIdTipoMensaje(ETypeMessage.ADMINISTRADOR.getId());
+          message.setIdUsuario(JsfBase.getIdUsuario());
+          if(sesion!= null)
+            DaoFactory.getInstance().insert(sesion, message);
+          else
+            DaoFactory.getInstance().insert(message);
+        } // else
+      } // try
+      catch(Exception e) {
+        Error.mensaje(e);
+      } // catch
+      finally {
+        Methods.clean(params);
+      } // finally
+    } // if
+    else 
+      LOG.error("[doSendConteo] No se envio el mensaje ["+ this.celular+ "]");
+  }
+  
+  public void doSendConteoDestino(Session sesion, String usuario) {
+    if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE) || this.celular.contains("@")) {
+      Message message           = null;
+      Map<String, Object> params= new HashMap<>();        
+      try {
+        params.put("nombre", this.nombre);
+        params.put("celular", this.celular);
+        params.put("reporte", this.reporte);
+        params.put("ticket", this.ticket);
+        params.put("fecha", this.fecha);
+        params.put("usuario", usuario);
+        params.put("empresa", Cadena.letraCapital(Configuracion.getInstance().getEmpresa("titulo")));        
+        params.put("host", Configuracion.getInstance().getEmpresa("host"));
+        params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
+        params.put("saludo", this.toSaludo());
+        if(!Configuracion.getInstance().isEtapaProduccion())
+          LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_CONTEOS_DESTINO, params, true)+ "}");
+        else {  
+          HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
+          .header("Content-Type", "application/json")
+          .header("Token", this.token)
+          .body("{"+ Cadena.replaceParams(BODY_CONTEOS_DESTINO, params, true)+ "}")
+          .asString();
+          LOG.error("Enviado: "+ response.getBody());
+          if(Objects.equals(response.getStatus(), 201)) {
+            Gson gson= new Gson();
+            message= gson.fromJson(response.getBody(), Message.class);
+            if(message!= null) 
+              message.init();
+            else {
+              message= new Message();
+              message.setMessage(" {"+ Cadena.replaceParams(BODY_CONTEOS_DESTINO, params, true)+ "}");
+            } // else  
+          } // if  
+          else {
+            LOG.error("[doSendConteoDestino] No se envio el mensaje ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            message= new Message();
+            message.setMessage(" {"+ Cadena.replaceParams(BODY_CONTEOS_DESTINO, params, true)+ "}");
+          } // if  
+          message.setTelefono(this.celular);
+          message.setIdSendStatus(new Long(response.getStatus()));
+          message.setSendStatus(response.getStatusText());
+          message.setIdTipoMensaje(ETypeMessage.ADMINISTRADOR.getId());
+          message.setIdUsuario(JsfBase.getIdUsuario());
+          if(sesion!= null)
+            DaoFactory.getInstance().insert(sesion, message);
+          else
+            DaoFactory.getInstance().insert(message);
+        } // else
+      } // try
+      catch(Exception e) {
+        Error.mensaje(e);
+      } // catch
+      finally {
+        Methods.clean(params);
+      } // finally
+    } // if
+    else 
+      LOG.error("[doSendConteoDestino] No se envio el mensaje ["+ this.celular+ "]");
+  }
+  
+  public void doSendConteoFuente(Session sesion, String usuario) {
+    if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE) || this.celular.contains("@")) {
+      Message message           = null;
+      Map<String, Object> params= new HashMap<>();        
+      try {
+        params.put("nombre", this.nombre);
+        params.put("celular", this.celular);
+        params.put("reporte", this.reporte);
+        params.put("ticket", this.ticket);
+        params.put("fecha", this.fecha);
+        params.put("usuario", usuario);
+        params.put("empresa", Cadena.letraCapital(Configuracion.getInstance().getEmpresa("titulo")));        
+        params.put("host", Configuracion.getInstance().getEmpresa("host"));
+        params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
+        params.put("saludo", this.toSaludo());
+        if(!Configuracion.getInstance().isEtapaProduccion())
+          LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_CONTEOS_FUENTE, params, true)+ "}");
+        else {  
+          HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
+          .header("Content-Type", "application/json")
+          .header("Token", this.token)
+          .body("{"+ Cadena.replaceParams(BODY_CONTEOS_FUENTE, params, true)+ "}")
+          .asString();
+          LOG.error("Enviado: "+ response.getBody());
+          if(Objects.equals(response.getStatus(), 201)) {
+            Gson gson= new Gson();
+            message= gson.fromJson(response.getBody(), Message.class);
+            if(message!= null) 
+              message.init();
+            else {
+              message= new Message();
+              message.setMessage(" {"+ Cadena.replaceParams(BODY_CONTEOS_FUENTE, params, true)+ "}");
+            } // else  
+          } // if  
+          else {
+            LOG.error("[doSendConteoFuente] No se envio el mensaje ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            message= new Message();
+            message.setMessage(" {"+ Cadena.replaceParams(BODY_CONTEOS_FUENTE, params, true)+ "}");
+          } // if  
+          message.setTelefono(this.celular);
+          message.setIdSendStatus(new Long(response.getStatus()));
+          message.setSendStatus(response.getStatusText());
+          message.setIdTipoMensaje(ETypeMessage.ADMINISTRADOR.getId());
+          message.setIdUsuario(JsfBase.getIdUsuario());
+          if(sesion!= null)
+            DaoFactory.getInstance().insert(sesion, message);
+          else
+            DaoFactory.getInstance().insert(message);
+        } // else
+      } // try
+      catch(Exception e) {
+        Error.mensaje(e);
+      } // catch
+      finally {
+        Methods.clean(params);
+      } // finally
+    } // if
+    else 
+      LOG.error("[doSendConteoFuente] No se envio el mensaje ["+ this.celular+ "]");
+  }
+  
   public void doSendSaludo() {
     String mensaje= BODY_MESSAGE_MANTIC;
     if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE) || this.celular.contains("@")) {
@@ -1206,7 +1392,7 @@ public final class Bonanza implements Serializable {
               message= new Message();
           } // if  
           else {
-            LOG.error("[doSendSaludo] No se envio el mensaje por whatsapp  ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            LOG.error("[doSendSaludo] No se envio el mensaje ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
             message= new Message();
             message.setMessage(" {"+ Cadena.replaceParams(mensaje, params, true)+ "}");
           } // else  
@@ -1224,7 +1410,7 @@ public final class Bonanza implements Serializable {
       } // finally
     } // if
     else 
-      LOG.error("[doSendSaludo] No se envio el mensaje por whatsapp  ["+ this.celular+ "]");
+      LOG.error("[doSendSaludo] No se envio el mensaje ["+ this.celular+ "]");
   }
   
   public static void main(String ... args) {

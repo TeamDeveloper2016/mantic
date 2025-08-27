@@ -212,6 +212,24 @@ group by
 order by
   concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, ''))
 			</select>
+			<select id="usuario">			
+select      
+  tc_janal_usuarios.id_usuario as id_key,
+  tr_mantic_empresa_personal.id_empresa_persona,
+  tc_mantic_personas.id_persona,
+  tc_mantic_personas.cuenta,
+  concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as nombre
+from
+  tc_janal_usuarios
+inner join
+  tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+inner join
+  tr_mantic_empresa_personal on tc_mantic_personas.id_persona= tr_mantic_empresa_personal.id_persona
+where 
+  tc_janal_usuarios.id_usuario= {idUsuario}      
+group by
+  tc_janal_usuarios.id_usuario
+			</select>
       <update id="rows">
 update
   tc_janal_usuarios

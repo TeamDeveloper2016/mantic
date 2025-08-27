@@ -14,11 +14,13 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.libs.wassenger.Bonanza;
 import mx.org.kaana.mantic.catalogos.inventarios.beans.ArticuloAlmacen;
 import mx.org.kaana.mantic.contadores.beans.Contador;
 import mx.org.kaana.mantic.contadores.beans.Producto;
@@ -327,6 +329,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
       DaoFactory.getInstance().insert(sesion, this.conteo);
       regresar= this.toProductos(sesion);      
       this.toBitacora(sesion);
+      this.notificar(sesion);
     } // try
     catch (Exception e) {
       throw e;
@@ -341,6 +344,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
       DaoFactory.getInstance().update(sesion, this.conteo);
       regresar= this.toProductos(sesion);      
       this.toBitacora(sesion);
+      this.notificar(sesion);
     } // try
     catch (Exception e) {
       throw e;
@@ -417,5 +421,39 @@ public class Transaccion extends IBaseTnx implements Serializable {
 		} // finally
 		return regresar;
 	}  
+
+  private void notificar(Session sesion) {
+    Bonanza bonanza           = null;
+    List<Entity> celulares    = null;
+    Map<String, Object> params= new HashMap<>();
+    try {      
+      if(Objects.equals(this.conteo.getIdContadorEstatus(), 2L)) {
+        params.put("idUsuario", this.conteo.getIdUsuario());
+        Entity fuente= (Entity)DaoFactory.getInstance().toEntity(sesion, "TcJanalUsuariosDto", "usuario", params);
+        params.put("idUsuario", this.conteo.getIdTrabaja());
+        Entity destino= (Entity)DaoFactory.getInstance().toEntity(sesion, "TcJanalUsuariosDto", "usuario", params);
+        if(!Objects.equals(fuente, null) && !fuente.isEmpty() && !Objects.equals(destino, null) && !destino.isEmpty()) {
+          params.put("idPersona", destino.toLong("idPersona"));
+          celulares= (List<Entity>)DaoFactory.getInstance().toEntitySet("TrManticPersonaTipoContactoDto", "celular", params);
+          if(!Objects.equals(celulares, null) && !celulares.isEmpty()) {
+            bonanza  = new Bonanza(Cadena.letraCapital(destino.toString("nombre")), "celular", String.valueOf(this.conteo.getArticulos()), this.conteo.getConsecutivo(), this.conteo.getNombre());
+            // bonanza.doSendConteoDestino(sesion, Cadena.letraCapital(fuente.toString("nombre")));
+          } // if
+          params.put("idPersona", fuente.toLong("idPersona"));
+          celulares= (List<Entity>)DaoFactory.getInstance().toEntitySet("TrManticPersonaTipoContactoDto", "celular", params);
+          if(!Objects.equals(celulares, null) && !celulares.isEmpty()) {
+            bonanza  = new Bonanza(Cadena.letraCapital(fuente.toString("nombre")), "celular", String.valueOf(this.conteo.getArticulos()), this.conteo.getConsecutivo(), this.conteo.getNombre());
+            // bonanza.doSendConteoFuente(sesion, Cadena.letraCapital(destino.toString("nombre")));
+          } // if  
+        } // if  
+      } // if
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+  }
   
 } 
