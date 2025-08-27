@@ -142,7 +142,7 @@
 							</p:dataTable>
               <p:outputLabel for="total" value="Productos:" styleClass="janal-display-none"/>
               <p:inputText id="total" styleClass="janal-wid-100-txt janal-display-none" value="#{manticContadoresAccion.contador.articulos}" converter="javax.faces.Long"/>
-              <pe:remoteCommand name="reload" process="@this" update="idEmpresa idAlmacen nombre idTrabaja idArticulo agregar"/>
+              <pe:remoteCommand name="reload" process="@this" update="idEmpresa idAlmacen nombre idTrabaja idArticulo agregar" oncomplete="janal.refresh()"/>
             </p:tab>						
           </p:tabView>
         </div>

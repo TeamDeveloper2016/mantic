@@ -81,7 +81,7 @@
                 <div class="janal-line-button">
                   <ui:insert name="acciones"/>
                 </div>
-                <p:dialog id="confirmacion" widgetVar="dialogoConfirmacion" header="#{empty tituloConfirmacion? 'Confirmación': tituloConfirmacion}" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="false"  onHide="#{empty onHideDlg? 'janal.desbloquear();': onHideDlg}">
+                <p:dialog id="confirmacion" widgetVar="dialogoConfirmacion" header="#{empty tituloConfirmacion? 'Confirmación': tituloConfirmacion}" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="false" onHide="#{empty onHideDlg? 'janal.desbloquear();': onHideDlg}" width="40%">
                   <h:outputText value="#{textoConfirmacion}" escape="false"/>
                   <ui:insert name="detalleConfirmacion" />
                   <hr class="ui-widget-content"/>

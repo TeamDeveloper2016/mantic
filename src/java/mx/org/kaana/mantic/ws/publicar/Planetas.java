@@ -1088,8 +1088,11 @@ public class Planetas implements Serializable {
           params.put("idPersona", fuente.toLong("idPersona"));
           celulares= (List<Entity>)DaoFactory.getInstance().toEntitySet("TrManticPersonaTipoContactoDto", "celular", params);
           if(!Objects.equals(celulares, null) && !celulares.isEmpty()) {
-            bonanza  = new Bonanza(Cadena.letraCapital(fuente.toString("nombre")), "celular", String.valueOf(conteo.getArticulos()), conteo.getConsecutivo(), conteo.getNombre());
-            // bonanza.doSendConteo(session, Cadena.letraCapital(destino.toString("nombre")));
+            bonanza= new Bonanza(Cadena.letraCapital(fuente.toString("nombre")), "celular", String.valueOf(conteo.getArticulos()), conteo.getConsecutivo(), conteo.getNombre());
+            for(Entity item: celulares) {
+              bonanza.setCelular(item.toString("valor"));
+              bonanza.doSendConteo(session, Cadena.letraCapital(destino.toString("nombre")));
+            } // for
           } // if  
         } // if  
       } // if

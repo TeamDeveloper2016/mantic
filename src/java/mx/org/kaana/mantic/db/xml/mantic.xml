@@ -42,7 +42,13 @@ where
   ejercicio= {ejercicio} 
   and id_empresa= {idEmpresa}			
   and orden{operador} 900000	
-			</select>		
+			</select>
+      <delete id="rows">
+delete from        
+  tc_mantic_contadores        
+where
+  id_contador= {idContador}        
+      </delete>		
     </unit>    
     <unit id="TcManticContadoresDetallesDto">
       <select id="row">
@@ -4423,6 +4429,7 @@ from
 where      
   id_persona = {idPersona} 
   and id_tipo_contacto in (1, 6, 7, 8)
+  and id_preferido= 1
       </select>
 			<select id="maximo">
 select      

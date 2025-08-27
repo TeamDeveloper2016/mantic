@@ -96,9 +96,9 @@ public class Transaccion extends IBaseTnx implements Serializable {
 					break;
 				case DEPURAR:
           params.put("idContador", this.conteo.getIdContador());
-          DaoFactory.getInstance().deleteAll(TcManticContadoresBitacoraDto.class, params);
-          DaoFactory.getInstance().deleteAll(TcManticContadoresDetallesDto.class, params);
-          regresar= DaoFactory.getInstance().deleteAll(TcManticContadoresDto.class, params)>= 1L;
+          DaoFactory.getInstance().deleteAll(sesion, TcManticContadoresBitacoraDto.class, params);
+          DaoFactory.getInstance().deleteAll(sesion, TcManticContadoresDetallesDto.class, params);
+          regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticContadoresDto.class, params)>= 1L;
 					break;
 			} // switch
 			if(!regresar)
@@ -437,13 +437,19 @@ public class Transaccion extends IBaseTnx implements Serializable {
           celulares= (List<Entity>)DaoFactory.getInstance().toEntitySet("TrManticPersonaTipoContactoDto", "celular", params);
           if(!Objects.equals(celulares, null) && !celulares.isEmpty()) {
             bonanza  = new Bonanza(Cadena.letraCapital(destino.toString("nombre")), "celular", String.valueOf(this.conteo.getArticulos()), this.conteo.getConsecutivo(), this.conteo.getNombre());
-            // bonanza.doSendConteoDestino(sesion, Cadena.letraCapital(fuente.toString("nombre")));
+            for (Entity item: celulares) {
+              bonanza.setCelular(item.toString("valor"));
+              bonanza.doSendConteoDestino(sesion, Cadena.letraCapital(fuente.toString("nombre")));
+            } // for  
           } // if
           params.put("idPersona", fuente.toLong("idPersona"));
           celulares= (List<Entity>)DaoFactory.getInstance().toEntitySet("TrManticPersonaTipoContactoDto", "celular", params);
           if(!Objects.equals(celulares, null) && !celulares.isEmpty()) {
             bonanza  = new Bonanza(Cadena.letraCapital(fuente.toString("nombre")), "celular", String.valueOf(this.conteo.getArticulos()), this.conteo.getConsecutivo(), this.conteo.getNombre());
-            // bonanza.doSendConteoFuente(sesion, Cadena.letraCapital(destino.toString("nombre")));
+            for (Entity item: celulares) {
+              bonanza.setCelular(item.toString("valor"));
+              bonanza.doSendConteoFuente(sesion, Cadena.letraCapital(destino.toString("nombre")));
+            } // for
           } // if  
         } // if  
       } // if

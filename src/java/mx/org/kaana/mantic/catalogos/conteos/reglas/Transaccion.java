@@ -83,9 +83,9 @@ public class Transaccion extends IBaseTnx implements Serializable {
 					break;
 				case DEPURAR:
           params.put("idConteo", this.conteo.getIdConteo());
-          DaoFactory.getInstance().deleteAll(TcManticConteosBitacoraDto.class, params);
-          DaoFactory.getInstance().deleteAll(TcManticConteosDetallesDto.class, params);
-          regresar= DaoFactory.getInstance().deleteAll(TcManticConteosDto.class, params)>= 1L;
+          DaoFactory.getInstance().deleteAll(sesion, TcManticConteosBitacoraDto.class, params);
+          DaoFactory.getInstance().deleteAll(sesion, TcManticConteosDetallesDto.class, params);
+          regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticConteosDto.class, params)>= 1L;
 					break;
 			} // switch
 			if(!regresar)

@@ -421,10 +421,12 @@ public class Filtro extends Comun implements Serializable {
   }
   
   private void toProcesar() {
-    Transaccion transaccion= null;
-    Entity seleccionado    = (Entity) this.attrs.get("seleccionado");
+    Transaccion transaccion  = null;
+    Entity seleccionado      = (Entity) this.attrs.get("seleccionado");
+		Map<String, Object>params= new HashMap<>();
     try {
-      Contador conteo= (Contador)DaoFactory.getInstance().toEntity(Contador.class, "TcManticContadoresDto", "igual", seleccionado.toMap());
+      params.put(Constantes.SQL_CONDICION, "id_contador= "+ seleccionado.getKey());
+      Contador conteo= (Contador)DaoFactory.getInstance().toEntity(Contador.class, "TcManticContadoresDto", "igual", params);
       transaccion = new Transaccion(conteo);
       if (transaccion.ejecutar(this.accion)) 
         JsfBase.addMessage("Procesar conteo", "El conteo fue procesado correctamente", ETipoMensaje.ERROR);
@@ -435,13 +437,18 @@ public class Filtro extends Comun implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
+    finally {
+      Methods.clean(params);
+    } // finally
   } 
  
   private void toEliminar() {
-    Transaccion transaccion= null;
-		Entity seleccionado    = (Entity)this.attrs.get("seleccionado");
+    Transaccion transaccion  = null;
+		Entity seleccionado      = (Entity)this.attrs.get("seleccionado");
+		Map<String, Object>params= new HashMap<>();
     try {
-      Contador conteo= (Contador)DaoFactory.getInstance().toEntity(Contador.class, "TcManticContadoresDto", "igual", seleccionado.toMap());
+      params.put(Constantes.SQL_CONDICION, "id_contador= "+ seleccionado.getKey());
+      Contador conteo= (Contador)DaoFactory.getInstance().toEntity(Contador.class, "TcManticContadoresDto", "igual", params);
       transaccion = new Transaccion(conteo);
       if (transaccion.ejecutar(this.accion)) 
         JsfBase.addMessage("Eliminar conteo", "El conteo fue eliminado correctamente", ETipoMensaje.ERROR);
@@ -452,14 +459,19 @@ public class Filtro extends Comun implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
+    finally {
+      Methods.clean(params);
+    } // finally
   }
  
 	public void doActualizarEstatus() {
 		Transaccion transaccion               = null;
 		TcManticContadoresBitacoraDto bitacora= null;
 		Entity seleccionado                   = (Entity)this.attrs.get("seleccionado");
-		try {
-      Contador conteo= (Contador)DaoFactory.getInstance().toEntity(Contador.class, "TcManticContadoresDto", "igual", seleccionado.toMap());
+		Map<String, Object>params             = new HashMap<>();
+    try {
+      params.put(Constantes.SQL_CONDICION, "id_contador= "+ seleccionado.getKey());
+      Contador conteo= (Contador)DaoFactory.getInstance().toEntity(Contador.class, "TcManticContadoresDto", "igual", params);
 			bitacora    = new TcManticContadoresBitacoraDto(
         (String)this.attrs.get("justificacion"), // String justificacion, 
         JsfBase.getIdUsuario(), // Long idUsuario, 
@@ -479,6 +491,7 @@ public class Filtro extends Comun implements Serializable {
 		} // catch		
 		finally{
 			this.attrs.put("justificacion", "");
+      Methods.clean(params);
 		} // finally
 	}	
  
