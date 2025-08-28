@@ -1,10 +1,21 @@
 package mx.org.kaana.mantic.catalogos.almacenes.transferencias.beans;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.enums.ESql;
+import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.formato.Error;
+import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticTransferenciasDto;
+import mx.org.kaana.mantic.solicitudes.beans.Persona;
 
 /**
  *@company KAANA
@@ -22,6 +33,7 @@ public class Transferencia extends TcManticTransferenciasDto implements Serializ
 	private UISelectEntity ikAlmacen;
 	private UISelectEntity ikSolicito;
 	private UISelectEntity ikDestino;
+  private List<Persona> personas;
 
 	public Transferencia() {
 		this(-1L);
@@ -41,6 +53,7 @@ public class Transferencia extends TcManticTransferenciasDto implements Serializ
 		this.ikAlmacen = new UISelectEntity(idAlmacen);
 		this.ikDestino = new UISelectEntity(idDestino);
 		this.ikSolicito= new UISelectEntity(idSolicito== null? -1L: idSolicito);
+    this.personas= new ArrayList<>();
 	}
 	
 	public UISelectEntity getIkEmpresa() {
@@ -83,6 +96,58 @@ public class Transferencia extends TcManticTransferenciasDto implements Serializ
 		  this.setIdDestino(this.ikDestino.getKey());
 	}
 
+  public List<Persona> getPersonas() {
+    return personas;
+  }
+
+  public void setPersonas(List<Persona> personas) {
+    this.personas = personas;
+  }
+
+  public Boolean add(Persona persona) {  
+    Boolean regresar= Boolean.FALSE;
+    int index= this.personas.indexOf(persona);
+    if(index< 0) 
+      this.personas.add(persona);
+    else
+      if(Objects.equals(persona.getSql(), ESql.DELETE))
+        persona.setSql(ESql.UPDATE);
+      else
+        regresar= Boolean.TRUE;
+    return regresar;
+  }
+  
+  public void remove(Persona persona) {  
+    if(Objects.equals(persona.getSql(), ESql.INSERT))
+      this.personas.remove(persona);
+    else  
+      persona.setSql(ESql.DELETE);
+  }
+  
+  public void recover(Persona persona) {  
+    if(Objects.equals(persona.getSql(), ESql.DELETE))
+      persona.setSql(ESql.UPDATE);
+  }
+
+  public void toLoadPersonas() {
+    Map<String, Object> params = new HashMap<>();
+    try {      
+      params.put(Constantes.SQL_CONDICION, "id_transferencia="+ this.getIdTransferencia());      
+      this.personas= (List<Persona>)DaoFactory.getInstance().toEntitySet(Persona.class, "TcManticTransferenciasPersonasDto", "row", params);
+      for (Persona item: this.personas) {
+        item.setIkPersona(new UISelectEntity(item.getIdPersona()));
+        item.setSql(ESql.SELECT);
+      } // for  
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+  } 
+    
 	@Override
 	public Class toHbmClass() {
 		return TcManticTransferenciasDto.class;

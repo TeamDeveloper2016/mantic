@@ -95,7 +95,7 @@
 									</p:panelGrid>
 								</f:facet>
 							</p:autoComplete>	
-							<p:outputLabel for="nombre" value="Nombre:"/>							
+							<p:outputLabel for="nombre" value="Articulo:"/>							
 							<p:autoComplete id="nombre" var="item" placeholder="ej. CLAVO CONCRETO" itemLabel="#{item.nombre}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{item}" value="#{manticContadoresFiltro.attrs.articulo}" completeMethod="#{manticContadoresFiltro.doCompleteArticulo}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">									
 								<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this idEmpresa" listener="#{manticContadoresFiltro.doAsignaArticulo}" oncomplete="janal.desbloquear();"/>
 								<f:facet name="itemtip">
@@ -118,7 +118,7 @@
 							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{manticContadoresFiltro.attrs.fechaInicio}" pattern="dd/MM/yyyy" locale="mx" converter="janal.convertidor.Calendario"/>
               <p:outputLabel for="fechaTermino" value="Fecha término:"/>
 							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{manticContadoresFiltro.attrs.fechaTermino}" pattern="dd/MM/yyyy" locale="mx" converter="janal.convertidor.Calendario"/>
-              <p:outputLabel for="usuario" value="Nombre o cuenta:"/>
+              <p:outputLabel for="usuario" value="Trabajará:"/>
                 <p:autoComplete id="usuario" var="item" placeholder="ej. JUAN.PEREZ" itemLabel="#{item.cuenta}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{item}" value="#{manticContadoresFiltro.attrs.usuario}" completeMethod="#{manticContadoresFiltro.doCompleteUsuario}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">									
 								<f:facet name="itemtip">
 									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">

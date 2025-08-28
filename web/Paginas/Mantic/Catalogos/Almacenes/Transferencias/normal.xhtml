@@ -89,7 +89,7 @@
 						<p:outputLabel value="LA TRANSFERENCIA DE ARTICULOS [#{manticCatalogosAlmacenesTransferenciasNormal.adminOrden.orden.consecutivo}] SE AUTOGUARDO A LAS #{manticCatalogosAlmacenesTransferenciasNormal.attrs.autoSave} HRS." style="display: #{empty(manticCatalogosAlmacenesTransferenciasNormal.attrs.autoSave)? 'none': ''}" styleClass="recalculo janal-color-blue"/>
 					</div>
 					<p:tabView id="contenedorGrupos" dynamic="">
-            <p:ajax event="tabChange" listener="#{manticCatalogosAlmacenesTransferenciasNormal.doTabChange}" process="@this idAlmacen idDestino" update="faltantes perdidos paginator" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.move(); janal.readingMode('#{manticCatalogosAlmacenesTransferenciasAccion.attrs.nombreAccion}');"/>
+            <p:ajax event="tabChange" listener="#{manticCatalogosAlmacenesTransferenciasNormal.doTabChange}" process="@this idAlmacen idDestino" update="faltantes perdidos paginator" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.move(); janal.readingMode('#{manticCatalogosAlmacenesTransferenciasNormal.attrs.nombreAccion}');"/>
             <p:tab title="General">
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-120, janal-wid-100">		
 								<p:outputLabel for="idSucursal" value="Sucursal:" rendered="false"/>

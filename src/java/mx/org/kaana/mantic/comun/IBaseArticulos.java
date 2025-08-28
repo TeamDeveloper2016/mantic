@@ -509,7 +509,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
     finally {
       Methods.clean(columns);
       Methods.clean(params);
-    }// finally
+    } // finally
 	}	
 	
 	public void doUpdateArticulosPrecioCliente() {
@@ -1056,4 +1056,38 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 		} // finally
   }	
 
+	public List<UISelectEntity> doCompleteEmpleado(String query) {
+ 		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
+		boolean buscaPorCodigo    = Boolean.FALSE;
+    try {
+      columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("curp", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("celular", EFormatoDinamicos.MAYUSCULAS));
+  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			if(!Cadena.isVacio(query)) {
+        buscaPorCodigo= query.startsWith(".");
+  			query= query.replaceAll(Constantes.CLEAN_SQL, "").trim();
+				query= query.toUpperCase().replaceAll("(,| |\\t)+", ".*");
+			} // if	
+			else
+				query= "WXYZ";
+  		params.put("codigo", query);
+			if(buscaPorCodigo)
+        this.attrs.put("empleados", UIEntity.build("TrManticEmpresaPersonalDto", "porCodigo", params, columns, 40L));
+			else
+        this.attrs.put("empleados", UIEntity.build("TrManticEmpresaPersonalDto", "porNombre", params, columns, 40L));
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
+		return (List<UISelectEntity>)this.attrs.get("empleados");
+	}	
+  
 }

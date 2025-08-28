@@ -364,7 +364,7 @@ public class Filtro extends IBaseFilter implements Serializable {
         this.attrs.put("seleccionado", row);
 				params.put("idConteo", row.toLong("idConteo"));
 				columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-				columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+				columns.add(new Columna("cantidad", EFormatoDinamicos.MILES_CON_DECIMALES));
 				columns.add(new Columna("procesado", EFormatoDinamicos.FECHA_HORA_CORTA));
 				this.lazyDetalle= new FormatLazyModel("VistaConteosDto", "row", params, columns);
 				UIBackingUtilities.resetDataTable("tablaDetalle");

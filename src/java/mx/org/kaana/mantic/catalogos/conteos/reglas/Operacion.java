@@ -83,7 +83,7 @@ public class Operacion extends ComunInventarios implements Serializable {
 					break;
 			} // switch
 			if(!regresar)
-        throw new Exception("Error al procesar el conteo");
+        throw new Exception("Error al procesar la transferencia");
 		} // try
 		catch (Exception e) {		
 			Error.mensaje(e);

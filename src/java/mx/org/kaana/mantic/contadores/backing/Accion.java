@@ -176,6 +176,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			if(!Cadena.isVacio(query)) {
+        buscaPorCodigo= query.startsWith(".");
   			query= query.replaceAll(Constantes.CLEAN_SQL, "").trim();
 				query= query.toUpperCase().replaceAll("(,| |\\t)+", ".*");
 			} // if	

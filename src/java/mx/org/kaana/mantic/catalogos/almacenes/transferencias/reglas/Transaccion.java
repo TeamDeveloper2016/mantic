@@ -23,6 +23,7 @@ import mx.org.kaana.mantic.db.dto.TcManticFaltantesDto;
 import mx.org.kaana.mantic.db.dto.TcManticTransferenciasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticTransferenciasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticTransferenciasDto;
+import mx.org.kaana.mantic.solicitudes.beans.Persona;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
@@ -37,6 +38,7 @@ public class Transaccion extends ComunInventarios implements Serializable {
 	private Long idFaltante;
   private List<Umbral> fuentes;
   private List<Umbral> destinos;
+  private List<Persona> personas;
 
 	public Transaccion(Long idFaltante) {
 		this(new TcManticTransferenciasDto(-1L));
@@ -212,6 +214,34 @@ public class Transaccion extends ComunInventarios implements Serializable {
     finally {
       Methods.clean(params);
     } // finally
+    return regresar;
+  }
+
+  private Boolean toPersonas(Session sesion) throws Exception {
+    Boolean regresar= Boolean.FALSE;
+    try {      
+      for (Persona item: this.personas) {
+        switch(item.getSql()) {
+          case SELECT:
+            break;
+          case INSERT:
+            item.setIdTransferencia(this.dto.getIdTransferencia());
+            DaoFactory.getInstance().insert(sesion, item);
+            break;
+          case UPDATE:
+            item.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+            DaoFactory.getInstance().update(sesion, item);
+            break;
+          case DELETE:
+            DaoFactory.getInstance().delete(sesion, item);
+            break;
+        } // switch
+      } // for
+      regresar= Boolean.TRUE;
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
     return regresar;
   }
   

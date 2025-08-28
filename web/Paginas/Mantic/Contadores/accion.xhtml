@@ -66,7 +66,7 @@
                   </p:panelGrid>
                   <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                     <p:outputLabel for="idTrabaja" value="Trabajará:"/>
-                    <p:autoComplete id="idTrabaja" var="custom" placeholder="Ej. JUAN PEREZ LOPEZ" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticContadoresAccion.contador.ikTrabaja}" completeMethod="#{manticContadoresAccion.doCompleteEmpleado}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500" disabled="#{manticContadoresAccion.edit}">
+                    <p:autoComplete id="idTrabaja" var="custom" placeholder="Ej. JUAN PEREZ LOPEZ" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticContadoresAccion.contador.ikTrabaja}" completeMethod="#{manticContadoresAccion.doCompleteEmpleado}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500" forceSelection="true" disabled="#{manticContadoresAccion.edit}">
                       <f:facet name="itemtip">
                         <h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
                           <h:outputText value="Cuenta:" />
@@ -111,6 +111,11 @@
                 </p:panelGrid>
               </p:panelGrid>
               <p:dataTable id="tabla" rowIndexVar="index" var="row" value="#{manticContadoresAccion.contador.productos}" rows="#{Constantes.REGISTROS_LOTE_TOPE}" paginator="false" rowKey="#{row.idArticulo}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="paginated">	
+                <f:facet name="header">        
+                  <div class="janal-wid-100-txt janal-column-left">
+                    <h:outputText value="Articulos por contabilizar"/>
+                  </div>  
+                </f:facet>  
                 <p:column class="MarAuto Responsive janal-wid-col-30">
                   <f:facet name="header">
                     <h:outputText value="No."/>
@@ -143,6 +148,9 @@
                   <p:commandButton actionListener="#{manticContadoresAccion.doRemove(row)}" process="@this" update="tabla contenedorGrupos:total" icon="fa fa-trash" title="Eliminar" oncomplete="janal.refresh()" rendered="#{row.sql ne 'DELETE'}"/>
                   <p:commandButton actionListener="#{manticContadoresAccion.doRecover(row)}" process="@this" update="tabla contenedorGrupos:total" icon="fa fa-recycle" title="Recuperar" oncomplete="janal.refresh()" rendered="#{row.sql eq 'DELETE'}"/>
                 </p:column>	
+                <f:facet name="footer">
+                   Total [#{manticContadoresAccion.contador.articulos}] registros
+                </f:facet>
 							</p:dataTable>
               <p:outputLabel for="total" value="Productos:" styleClass="janal-display-none"/>
               <p:inputText id="total" styleClass="janal-wid-100-txt janal-display-none" value="#{manticContadoresAccion.contador.articulos}" converter="javax.faces.Long"/>

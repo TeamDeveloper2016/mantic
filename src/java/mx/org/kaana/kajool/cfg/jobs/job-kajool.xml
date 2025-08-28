@@ -17,6 +17,7 @@
      <clase expresion="0 0 2 1/1 * ? *"     id="galeria"     description="Galería del portal"         load="true"   desarrollo="*" pruebas="*" produccion="*">mx.org.kaana.jobs.Galeria</clase>     				
 		 <clase expresion="0 15 8 1/1 * ? *"    id="correos"     description="Verifica los correos"       load="true"   desarrollo="*" pruebas="*" produccion="*">mx.org.kaana.jobs.Correos</clase>
 		 <clase expresion="0 0 9 1/1 * ? *"     id="rfc"         description="Validar los rfc SAT"        load="false"  desarrollo="*" pruebas="*" produccion="*">mx.org.kaana.jobs.Rfcs</clase>
-		 <clase expresion="0 0/7 5-20 * * ? *"  id="conteos"     description="Procesar conteos remotos"   load="true"   desarrollo="*" pruebas="*" produccion="*">mx.org.kaana.jobs.Conteos</clase>
+		 <clase expresion="0 0/7 5-20 * * ? *"  id="conteos"     description="Conteos remotos"            load="true"   desarrollo="*" pruebas="*" produccion="*">mx.org.kaana.jobs.Conteos</clase>
+		 <clase expresion="0 0/7 7-20 * * ? *"  id="dirigidos"   description="Conteos dirigidos"          load="false"  desarrollo="*" pruebas="*" produccion="*">mx.org.kaana.jobs.Contadores</clase>
    </tarea>      	         
 </tareas>

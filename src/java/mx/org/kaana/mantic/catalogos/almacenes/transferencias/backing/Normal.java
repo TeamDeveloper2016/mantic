@@ -44,7 +44,7 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 
 	private static final Log LOG              = LogFactory.getLog(Normal.class);
   private static final long serialVersionUID= 327393488565639367L;
-	private EAccion accion;
+	protected EAccion accion;
 	
 	public String getAgregar() {
 		return this.accion.equals(EAccion.AGREGAR)? "none": "";

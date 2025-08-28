@@ -382,7 +382,7 @@ public class Filtro extends IBaseFilter implements Serializable {
         this.attrs.put("seleccionado", row);
 				params.put("idContador", row.toLong("idContador"));
 				columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-				columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+				columns.add(new Columna("cantidad", EFormatoDinamicos.MILES_CON_DECIMALES));
 				columns.add(new Columna("procesado", EFormatoDinamicos.FECHA_HORA_CORTA));
 				this.lazyDetalle= new FormatLazyModel("VistaContadoresDto", "row", params, columns);
 				UIBackingUtilities.resetDataTable("tablaDetalle");

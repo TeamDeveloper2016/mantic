@@ -46,13 +46,14 @@ import mx.org.kaana.mantic.db.dto.TcManticTransferenciasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticTransferenciasDto;
 import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.enums.ETipoMovimiento;
+import mx.org.kaana.mantic.inventarios.comun.IBaseImportar;
 import org.primefaces.context.RequestContext;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
 @Named(value = "manticCatalogosAlmacenesTransferenciasFiltro")
 @ViewScoped
-public class Filtro extends Comun implements Serializable {
+public class Filtro extends IBaseImportar implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428879L;
   
@@ -246,14 +247,18 @@ public class Filtro extends Comun implements Serializable {
   }
 	
   public String doAccion(String accion) {
-		String regresar= "accion";
-    EAccion eaccion= null;
+		String regresar    = "accion";
+    EAccion eaccion    = null;
+    Entity seleccionado= (Entity)this.attrs.get("seleccionado");
 		try {
 			eaccion= EAccion.valueOf(accion.toUpperCase());
 		  JsfBase.setFlashAttribute("retorno", "filtro");		
 		  JsfBase.setFlashAttribute("accion", eaccion);		
-			if(((Entity)this.attrs.get("seleccionado")).toLong("idTransferenciaTipo").equals(2L) || ((Entity)this.attrs.get("seleccionado")).toLong("idTransferenciaTipo").equals(3L))
+			if(Objects.equals(seleccionado.toLong("idTransferenciaTipo"), 2L) || Objects.equals(seleccionado.toLong("idTransferenciaTipo"), 3L))
 				regresar= "normal";
+      else
+  			if(Objects.equals(seleccionado.toLong("idTransferenciaTipo"), 4L))
+  				regresar= "/Paginas/Mantic/Solicitudes/solicitud";
 			JsfBase.setFlashAttribute("idTransferencia", (eaccion.equals(EAccion.MODIFICAR)||eaccion.equals(EAccion.CONSULTAR)) ? ((Entity)this.attrs.get("seleccionado")).getKey(): -1L);
 		} // try
 		catch (Exception e) {
@@ -601,6 +606,20 @@ public class Filtro extends Comun implements Serializable {
   public String doUmbrales() {
 		JsfBase.setFlashAttribute("idTransferencia", ((Entity)this.attrs.get("seleccionado")).getKey());
 		return "umbrales".concat(Constantes.REDIRECIONAR);
+	}	
+  
+  public String doSolicitudes(String accion) {
+    EAccion eaccion= null;
+		try {
+			eaccion= EAccion.valueOf(accion.toUpperCase());
+			JsfBase.setFlashAttribute("accion", eaccion);		
+			JsfBase.setFlashAttribute("idTransferencia", (eaccion.equals(EAccion.MODIFICAR)||eaccion.equals(EAccion.CONSULTAR)) ? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch
+		return "/Paginas/Mantic/Solicitudes/solicitud".concat(Constantes.REDIRECIONAR);
 	}	
   
 }

@@ -79,6 +79,30 @@ group by
 order by
   tc_mantic_articulos.nombre        
       </select>
+      <select id="remoto">
+select
+  tc_mantic_contadores.id_contador as id_key,
+  tc_mantic_contadores.id_contador,
+  tc_mantic_contadores.nombre,
+  concat(substr(tc_mantic_contadores.fecha, 7, 2), '/', substr(tc_mantic_contadores.fecha, 5, 2), '/', substr(tc_mantic_contadores.fecha, 1, 4), ' ', substr(tc_mantic_contadores.fecha, 9, 2), ':', substr(tc_mantic_contadores.fecha, 11, 2), ':', substr(tc_mantic_contadores.fecha, 13, 2)) as fecha,
+  concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as usuario
+from
+  tc_mantic_contadores
+inner join
+  tc_mantic_contadores_detalles on tc_mantic_contadores.id_contador= tc_mantic_contadores_detalles.id_contador
+inner join
+	tc_janal_usuarios on tc_mantic_contadores.id_usuario= tc_janal_usuarios.id_usuario
+inner join
+	tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+where
+  tc_mantic_contadores.id_empresa in ({sucursales})
+  and tc_mantic_contadores.id_contador_estatus in (3)
+  and tc_mantic_contadores_detalles.fecha&lt;= '{fecha}'
+group by
+  tc_mantic_contadores.id_contador
+order by
+  tc_mantic_contadores.registro           
+      </select>
     </unit>  
 		<unit id="VistaConteosDto">
 			<select id="umbrales">

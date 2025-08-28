@@ -7,6 +7,25 @@
   </model>
 
   <dml>
+    <unit id="TcManticTransferenciasPersonasDto">
+      <select id="row">
+select      
+  tc_mantic_transferencias_personas.id_transferencia_persona as id_key,
+  tc_mantic_transferencias_personas.*
+from      
+  tc_mantic_transferencias_personas
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_mantic_transferencias_personas
+where      
+  id_persona = {idPersona} and id_transferencia = {idTransferencia}
+      </select>
+    </unit>    
     <unit id="TcManticContadoresDto">
       <select id="row">
 select      
@@ -4292,39 +4311,51 @@ where
 select      
   tr_mantic_empresa_personal.id_empresa_persona as id_key,
   tc_mantic_personas.id_persona,
-  tr_mantic_empresa_personal.clave,
   tc_mantic_personas.rfc,
   tc_mantic_personas.curp,
-  concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as nombre
+  concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as nombre¨,
+  ifnull(tr_mantic_persona_tipo_contacto.valor, ' - ') as celular        
 from      
   tr_mantic_empresa_personal
 inner join
   tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
+left join    
+  tr_mantic_persona_tipo_contacto on tc_mantic_personas.id_persona= tr_mantic_persona_tipo_contacto.id_persona and tr_mantic_persona_tipo_contacto.id_tipo_contacto in (1, 6, 7, 8) and tr_mantic_persona_tipo_contacto.id_preferido= 1
 where 
   tr_mantic_empresa_personal.id_empresa in ({sucursales})
-  and upper(tr_mantic_empresa_personal.clave) regexp '.*{codigo}.*'
+  and upper(tr_mantic_empresa_personal.rfc) regexp '.*{codigo}.*'
   and tr_mantic_empresa_personal.id_empresa_persona&gt; 2
+group by
+  tc_mantic_personas.id_persona
 order by
-  tr_mantic_empresa_personal.clave
+  tc_mantic_personas.nombres, 
+  tc_mantic_personas.paterno, 
+  tc_mantic_personas.materno
 			</select>
 			<select id="porNombre">			
 select      
   tr_mantic_empresa_personal.id_empresa_persona as id_key,
   tc_mantic_personas.id_persona,
-  tr_mantic_empresa_personal.clave,
   tc_mantic_personas.rfc,
   tc_mantic_personas.curp,
-  concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as nombre
+  concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as nombre,
+  ifnull(tr_mantic_persona_tipo_contacto.valor, ' - ') as celular        
 from      
   tr_mantic_empresa_personal
 inner join
   tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
+left join    
+  tr_mantic_persona_tipo_contacto on tc_mantic_personas.id_persona= tr_mantic_persona_tipo_contacto.id_persona and tr_mantic_persona_tipo_contacto.id_tipo_contacto in (1, 6, 7, 8) and tr_mantic_persona_tipo_contacto.id_preferido= 1
 where 
   tr_mantic_empresa_personal.id_empresa in ({sucursales})
   and upper(concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, ''))) regexp '.*{codigo}.*'
   and tr_mantic_empresa_personal.id_empresa_persona&gt; 2
+group by
+  tc_mantic_personas.id_persona
 order by
-  concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, ''))
+  tc_mantic_personas.nombres, 
+  tc_mantic_personas.paterno, 
+  tc_mantic_personas.materno
 			</select>
 			<select id="empleados">			
 select      
