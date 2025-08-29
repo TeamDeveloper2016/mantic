@@ -14,9 +14,9 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
+import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.JsfBase;
-import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.libs.wassenger.Bonanza;
@@ -55,9 +55,11 @@ public class Transaccion extends ComunInventarios implements Serializable {
     this.personas= new ArrayList<>();
 	}
 	
-	public Transaccion(TcManticTransferenciasDto dto, TcManticTransferenciasBitacoraDto bitacora) {
+	public Transaccion(TcManticTransferenciasDto dto, TcManticTransferenciasBitacoraDto bitacora) throws Exception {
 		this(dto, bitacora.getIdTransferenciaEstatus());
 		this.bitacora = bitacora;
+    this.toLoadArticulos(dto.getIdTransferencia());
+    this.toLoadPersonas(dto.getIdTransferencia());
 	}
 	
 	public Transaccion(TcManticTransferenciasDto dto, List<Articulo> articulos) {
@@ -129,6 +131,9 @@ public class Transaccion extends ComunInventarios implements Serializable {
 					  this.toFillArticulos(sesion, accion);
 					regresar= DaoFactory.getInstance().update(sesion, this.dto).intValue()> 0;
           this.toBitacora(sesion, this.bitacora);
+          // SOLICITUDES Y SE PASAN A TRANSITO
+					if(Objects.equals(this.dto.getIdTransferenciaTipo(), 4L) && Objects.equals(this.idTransferenciaEstatus, 3L)) 
+            this.notificar(sesion);
           break;
         case PROCESAR:
           regresar= this.toProcesar(sesion, this.fuentes) && this.toProcesar(sesion, this.destinos);
@@ -281,36 +286,34 @@ public class Transaccion extends ComunInventarios implements Serializable {
     List<Entity> celulares    = null;
     Map<String, Object> params= new HashMap<>();
     try {      
-      if(Objects.equals(this.dto.getIdTransferenciaEstatus(), 3L)) { // REMOTO
-        params.put("idUsuario", this.dto.getIdUsuario());
-        Entity fuente= (Entity)DaoFactory.getInstance().toEntity(sesion, "TcJanalUsuariosDto", "usuario", params);
-        if(!Objects.equals(fuente, null) && !fuente.isEmpty()) {
-          params.put("idPersona", fuente.toLong("idPersona"));
-          celulares= (List<Entity>)DaoFactory.getInstance().toEntitySet("TrManticPersonaTipoContactoDto", "celular", params);
-          if(!Objects.equals(celulares, null) && !celulares.isEmpty()) {
-            bonanza= new Bonanza(Cadena.letraCapital(fuente.toString("nombre")), "celular", String.valueOf(this.articulos.size()), this.dto.getConsecutivo(), this.dto.getConsecutivo());
-            for (Entity item: celulares) {
-              bonanza.setCelular(item.toString("valor"));
-              bonanza.doSendSolicitudFuente(sesion);
-            } // for
-          } // if  
-        } // if
-        params.put("idTransferencia", this.dto.getIdTransferencia());      
-        this.personas= (List<Persona>)DaoFactory.getInstance().toEntitySet(Persona.class, "TcManticTransferenciasPersonasDto", "igual", params);
-        if(!Objects.equals(personas, null) && !personas.isEmpty()) {
-          for (Persona item: this.personas) {
-            params.put("idPersona", item.getIdPersona());
-            celulares= (List<Entity>)DaoFactory.getInstance().toEntitySet("TrManticPersonaTipoContactoDto", "celular", params);
-            if(!Objects.equals(celulares, null) && !celulares.isEmpty()) {
-              bonanza  = new Bonanza(Cadena.letraCapital(item.getNombre()), "celular", String.valueOf(this.articulos.size()), this.dto.getConsecutivo(), this.dto.getConsecutivo());
-              for (Entity celular: celulares) {
-                bonanza.setCelular(celular.toString("valor"));
-                bonanza.doSendSolicitudDestino(sesion, Cadena.letraCapital(fuente.toString("nombre")));
-              } // for  
-            } // if
-          } // for  
+      params.put("idUsuario", this.dto.getIdUsuario());
+      Entity fuente= (Entity)DaoFactory.getInstance().toEntity(sesion, "TcJanalUsuariosDto", "usuario", params);
+      if(!Objects.equals(fuente, null) && !fuente.isEmpty()) {
+        params.put("idPersona", fuente.toLong("idPersona"));
+        celulares= (List<Entity>)DaoFactory.getInstance().toEntitySet("TrManticPersonaTipoContactoDto", "celular", params);
+        if(!Objects.equals(celulares, null) && !celulares.isEmpty()) {
+          bonanza= new Bonanza(Cadena.letraCapital(fuente.toString("nombre")), "celular", String.valueOf(this.articulos.size()), this.dto.getConsecutivo(), this.dto.getConsecutivo());
+          for (Entity item: celulares) {
+            bonanza.setCelular(item.toString("valor"));
+            bonanza.doSendSolicitudFuente(sesion);
+          } // for
         } // if  
       } // if
+      params.put("idTransferencia", this.dto.getIdTransferencia());      
+      this.personas= (List<Persona>)DaoFactory.getInstance().toEntitySet(Persona.class, "TcManticTransferenciasPersonasDto", "igual", params);
+      if(!Objects.equals(personas, null) && !personas.isEmpty()) {
+        for (Persona item: this.personas) {
+          params.put("idPersona", item.getIdPersona());
+          celulares= (List<Entity>)DaoFactory.getInstance().toEntitySet("TrManticPersonaTipoContactoDto", "celular", params);
+          if(!Objects.equals(celulares, null) && !celulares.isEmpty()) {
+            bonanza  = new Bonanza(Cadena.letraCapital(item.getNombre()), "celular", String.valueOf(this.articulos.size()), this.dto.getConsecutivo(), this.dto.getConsecutivo());
+            for (Entity celular: celulares) {
+              bonanza.setCelular(celular.toString("valor"));
+              bonanza.doSendSolicitudDestino(sesion, Cadena.letraCapital(fuente.toString("nombre")));
+            } // for  
+          } // if
+        } // for  
+      } // if  
     } // try
     catch (Exception e) {
       throw e;
@@ -319,5 +322,33 @@ public class Transaccion extends ComunInventarios implements Serializable {
       Methods.clean(params);
     } // finally
   }
-  
+
+  private void toLoadPersonas(Long idTransferencia) throws Exception {
+    Map<String, Object> params= new HashMap<>();
+    try {      
+      params.put("idTransferencia", idTransferencia);      
+      this.personas= (List<Persona>)DaoFactory.getInstance().toEntitySet(Persona.class, "TcManticTransferenciasPersonasDto", "igual", params);
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+  } 
+
+  private void toLoadArticulos(Long idTransferencia) throws Exception {
+    Map<String, Object> params= new HashMap<>();
+    try {      
+      params.put("idTransferencia", idTransferencia);      
+      this.articulos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaAlmacenesTransferenciasDto", "detalle", params, Constantes.SQL_TOPE_REGISTROS);
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+  } 
+
 }

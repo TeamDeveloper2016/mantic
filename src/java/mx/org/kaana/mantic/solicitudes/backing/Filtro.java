@@ -23,6 +23,26 @@ public class Filtro extends mx.org.kaana.mantic.catalogos.almacenes.transferenci
   private static final long serialVersionUID = 8793661741599428879L;
   
   @Override
+	protected void toLoadTransferenciasEstatus() {
+		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
+    try {
+			params.put(Constantes.SQL_CONDICION, "id_transferencia_estatus in (1,2,3,4,5,8,10)");
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      this.attrs.put("catalogo", (List<UISelectEntity>) UIEntity.build("TcManticTransferenciasEstatusDto", "row", params, columns));
+			this.attrs.put("idTransferenciasEstatus", new UISelectEntity("-1"));
+    } // try
+    catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
+	}
+  
+  @Override
 	protected void toLoadTransferenciasTipos() {
 		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();

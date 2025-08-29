@@ -210,12 +210,30 @@ public class Filtro extends IBaseImportar implements Serializable {
       this.attrs.put("almacenes", (List<UISelectEntity>) UIEntity.build("TcManticAlmacenesDto", "almacenes", params, columns));
 			this.attrs.put("idAlmacen", new UISelectEntity("-1"));
 			columns.remove(0);
-      this.attrs.put("catalogo", (List<UISelectEntity>) UIEntity.build("TcManticTransferenciasEstatusDto", "row", params, columns));
-			this.attrs.put("idTransferenciasEstatus", new UISelectEntity("-1"));
       this.attrs.put("tipos", (List<UISelectEntity>) UIEntity.build("TcManticTransferenciasTiposDto", "row", params, columns));
 			this.attrs.put("idTransferenciaTipo", new UISelectEntity("-1"));
+      this.toLoadTransferenciasEstatus();
       this.toLoadTransferenciasTipos();
 			this.toLoadPersonas();
+    } // try
+    catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
+	}
+
+	protected void toLoadTransferenciasEstatus() {
+		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
+    try {
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      this.attrs.put("catalogo", (List<UISelectEntity>) UIEntity.build("TcManticTransferenciasEstatusDto", "row", params, columns));
+			this.attrs.put("idTransferenciasEstatus", new UISelectEntity("-1"));
     } // try
     catch (Exception e) {
 			Error.mensaje(e);

@@ -81,7 +81,6 @@
               </p:selectOneMenu>
               <p:outputLabel for="idTransferenciaTipo" value="Tipo:"/>
               <p:selectOneMenu id="idTransferenciaTipo" value="#{manticSolicitudesFiltro.attrs.idTransferenciaTipo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
                 <f:selectItems value="#{manticSolicitudesFiltro.attrs.tipos}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
                 <p:column headerText="Nombre">
                   <h:outputText value="#{item.nombre}"/>
@@ -222,7 +221,7 @@
 						<p:ajax event="change" process="@this" update="@(.refrescar)" listener="#{manticSolicitudesFiltro.doTransporta}" oncomplete="#{manticSolicitudesFiltro.attrs.transito? 'janal.refresh();': ''}"/>
 						<f:selectItems value="#{manticSolicitudesFiltro.attrs.allEstatusAsigna}"/>					
 					</p:selectOneMenu>
-					<p:outputLabel for="idTransporto" value="Transporta:" style="display: #{manticSolicitudesFiltro.attrs.transito? '': 'none'}" styleClass="refrescar"/>
+					<p:outputLabel for="idTransporto" value="Quien atiede:" style="display: #{manticSolicitudesFiltro.attrs.transito? '': 'none'}" styleClass="refrescar"/>
 					<p:selectOneMenu id="idTransporto" value="#{manticSolicitudesFiltro.attrs.idTransporto}" styleClass="janal-wid-100-txt refrescar" converter="janal.convertidor.Entity" style="display: #{manticSolicitudesFiltro.attrs.transito? '': 'none'}">
 						<f:selectItems value="#{manticSolicitudesFiltro.attrs.personas}" var="element" itemValue="#{element}" itemLabel="#{element.nombres} #{element.paterno} #{element.materno}"/>					
 						<p:column>
