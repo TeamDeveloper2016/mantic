@@ -20,10 +20,10 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
-import mx.org.kaana.kajool.procesos.comun.Comun;
 import mx.org.kaana.kajool.procesos.reportes.beans.Modelo;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.archivo.Archivo;
@@ -59,6 +59,7 @@ public class Filtro extends IBaseImportar implements Serializable {
   
   protected EAccion accion;
   protected Reporte reporte;
+  private FormatLazyModel lazyDetalle;
 
 	public Boolean getIsAutorizar() {
 		Boolean regresar= true;
@@ -115,6 +116,10 @@ public class Filtro extends IBaseImportar implements Serializable {
     return regresar;
   }
   
+	public FormatLazyModel getLazyDetalle() {
+		return lazyDetalle;
+	}		
+  
   @PostConstruct
   @Override
   protected void init() {
@@ -135,26 +140,28 @@ public class Filtro extends IBaseImportar implements Serializable {
 
   @Override
   public void doLoad() {
-    List<Columna> campos      = new ArrayList<>();
+    List<Columna> columns     = new ArrayList<>();
 		Map<String, Object> params= this.toPrepare();
     try {
       params.put("sortOrder", "order by tc_mantic_transferencias.registro desc");
-      campos.add(new Columna("nombreOrigen", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("nombreDestino", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("observaciones", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
-      campos.add(new Columna("solicito", EFormatoDinamicos.MAYUSCULAS));
-      this.lazyModel = new FormatCustomLazy("VistaAlmacenesTransferenciasDto", params, campos);
+      columns.add(new Columna("nombreOrigen", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombreDestino", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("observaciones", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
+      columns.add(new Columna("solicito", EFormatoDinamicos.MAYUSCULAS));
+  		columns.add(new Columna("articulos", EFormatoDinamicos.MILES_SIN_DECIMALES));
+      this.lazyModel = new FormatCustomLazy("VistaAlmacenesTransferenciasDto", params, columns);
       UIBackingUtilities.resetDataTable();
 			this.attrs.put("idTransferencia", null);
+      this.lazyDetalle= null;
     } // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch
     finally {
-      Methods.clean(campos);
+      Methods.clean(columns);
     } // finally		
   } // doLoad
 
@@ -663,5 +670,34 @@ public class Filtro extends IBaseImportar implements Serializable {
 		} // catch
 		return "/Paginas/Mantic/Solicitudes/solicitud".concat(Constantes.REDIRECIONAR);
 	}	
+
+  public void doConsultar() {
+    this.doDetalle((Entity)this.attrs.get("seleccionado"));
+  }
+  
+  public void doDetalle(Entity row) {
+		Map<String, Object>params= new HashMap<>();
+		List<Columna>columns     = new ArrayList<>();
+		try {
+			if(row!= null && !row.isEmpty()) {
+        this.attrs.put("seleccionado", row);
+				params.put("idTransferencia", row.toLong("idTransferencia"));
+				columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+				columns.add(new Columna("cantidad", EFormatoDinamicos.MILES_CON_DECIMALES));
+				columns.add(new Columna("procesado", EFormatoDinamicos.FECHA_HORA_CORTA));
+				columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
+				this.lazyDetalle= new FormatLazyModel("VistaAlmacenesTransferenciasDto", "igual", params, columns);
+				UIBackingUtilities.resetDataTable("tablaDetalle");
+			} // if
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+		finally{
+			Methods.clean(params);
+			Methods.clean(columns);
+		} // finally
+  }
   
 }

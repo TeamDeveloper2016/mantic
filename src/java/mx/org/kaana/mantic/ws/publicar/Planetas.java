@@ -993,7 +993,7 @@ public class Planetas implements Serializable {
 			transaction= session.beginTransaction();
 			session.clear();
       Solicitud items= this.toSolicitud(densidad);
-      String idRemoto    = items.getSemilla().concat(Constantes.SEPARADOR)+ items.getIdConteo()+ Constantes.SEPARADOR+ items.getIdUsuario()+ Constantes.SEPARADOR+ items.getVersion();
+      String idRemoto= items.getSemilla().concat(Constantes.SEPARADOR)+ items.getIdConteo()+ Constantes.SEPARADOR+ items.getIdUsuario()+ Constantes.SEPARADOR+ items.getVersion();
       params.put("idTransferencia", items.getIdConteo());
       solicitud= (TcManticTransferenciasDto)DaoFactory.getInstance().toEntity(TcManticTransferenciasDto.class, "TcManticTransferenciasDto", "detalle", params);
       if(!Objects.equals(solicitud, null)) {
@@ -1011,9 +1011,7 @@ public class Planetas implements Serializable {
         for (Item item: items.getProductos()) {
           LOG.error("DETALLE: ["+ item+ "]");
           params.put("idArticulo", item.getA());
-          Entity articulo= (Entity)DaoFactory.getInstance().toEntity("TcManticArticulosDto", "remoto", params);
           params.put("idTransferencia", solicitud.getIdTransferencia());
-          params.put("idArticulo", item.getA());
           TcManticTransferenciasDetallesDto copia= (TcManticTransferenciasDetallesDto)DaoFactory.getInstance().toEntity(TcManticTransferenciasDetallesDto.class, "TcManticTransferenciasDetallesDto", "remoto", params);
           if(!Objects.equals(copia, null)) 
             if(Objects.equals(copia.getProcesado(), null)) {

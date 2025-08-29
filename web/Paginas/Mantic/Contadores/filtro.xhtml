@@ -224,13 +224,13 @@
 								<f:facet name="header">
 									<h:outputText value=""/>
 								</f:facet>
-								<h:graphicImage library="janal" name="icon/semaforos/#{row.idContadorEstatus eq '5'? 'circulo-rojo.png': row.idContadorEstatus eq '1'? 'circulo-azul.png': row.idContadorEstatus eq '6'? 'circulo-amarillo.png': 'circulo-verde.png'}" title="Conteo #{row.idContadorEstatus eq '5'? 'cancelado': row.idContadorEstatus eq '1'? 'registrado': row.idContadorEstatus eq '6'? 'suspendido': 'integrado'}"/>
+								<h:graphicImage library="janal" name="icon/semaforos/#{row.idContadorEstatus eq '5'? 'circulo-rojo.png': row.idContadorEstatus eq '1'? 'circulo-azul.png': row.idContadorEstatus eq '6'? 'circulo-amarillo.png': 'circulo-verde.png'}" title="Transferencia #{row.idContadorEstatus eq '5'? 'cancelado': row.idContadorEstatus eq '1'? 'registrado': row.idContadorEstatus eq '6'? 'suspendido': 'integrado'}"/>
 							</p:column>
               <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-col-40">
 								<f:facet name="header">
 									<h:outputText value="..."/>
 								</f:facet>
-  							<p:commandButton icon="fa fa-search" title="Partida(s)" actionListener="#{manticContadoresFiltro.doDetalle(row)}" process="@this" update="tablaDetalle @(.detalle)" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
+  							<p:commandButton icon="fa fa-search" title="Partida(s)" actionListener="#{manticContadoresFiltro.doDetalle(row)}" process="@this" update="tablaDetalle @(.detalle)" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
               </p:column>
 							<f:facet name="footer">
 								Total [#{manticContadoresFiltro.lazyModel== null? 0: manticContadoresFiltro.lazyModel.rowCount}] registros
@@ -299,7 +299,7 @@
                 <f:facet name="header">
                   <h:outputText value="..."/>
                 </f:facet>
-                <h:graphicImage library="janal" name="icon/semaforos/#{row.idProcesado eq '1' ? 'circulo-verde.png': 'circulo-rojo.png'}" title="Conteo #{row.idProcesado eq '1'? '': 'NO'} procesado #{row.idProcesado eq '1'? row.procesado: ''}"/>
+                <h:graphicImage library="janal" name="icon/semaforos/#{row.idProcesado eq '1' ? 'circulo-verde.png': 'circulo-rojo.png'}" title="Transferencia #{row.idProcesado eq '1'? '': 'NO'} procesada #{row.idProcesado eq '1'? row.procesado: ''}"/>
               </p:column>
               <f:facet name="footer">
                 <p:outputLabel value="Total [#{manticContadoresFiltro.lazyDetalle== null? 0: manticContadoresFiltro.lazyDetalle.rowCount}] registros"/>

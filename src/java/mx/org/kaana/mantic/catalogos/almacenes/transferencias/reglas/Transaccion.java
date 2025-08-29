@@ -125,7 +125,7 @@ public class Transaccion extends ComunInventarios implements Serializable {
 					regresar= DaoFactory.getInstance().delete(sesion, TcManticFaltantesDto.class, this.idFaltante)>= 1L;
 					break;
         case REGISTRAR:
-      		this.articulos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaAlmacenesTransferenciasDto", "detalle", dto.toMap());
+          this.toLoadArticulos(this.dto.getIdTransferencia());
 					this.dto.setIdTransferenciaEstatus(this.idTransferenciaEstatus);
 					if(!Objects.equals(this.idTransferenciaEstatus, 1L))
 					  this.toFillArticulos(sesion, accion);
