@@ -12,20 +12,30 @@ import java.util.Objects;
  * @author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public class Transferencia extends Items implements Serializable {
+public class Solicitud extends Items implements Serializable {
 
   private static final long serialVersionUID = -8330660760447754833L;
 
+  private String consecutivo;
   private Long idFuente;
+  private Long idEstatus;
 
-  public Transferencia() {
+  public Solicitud() {
     super();
   }
 
-  public Transferencia(Long idConteo, Long idUsuario, String nombre, String registro, Long idEmpresa, Long idAlmacen, String semilla, String version, Long idFuente) {
+  public Solicitud(Long idConteo, Long idUsuario, String nombre, String registro, Long idEmpresa, Long idAlmacen, String semilla, String version, Long idFuente) {
     super(idConteo, idUsuario, nombre, registro, idEmpresa, idAlmacen, semilla, version);
     this.setProductos(new ArrayList<>());
     this.setIdFuente(idFuente);
+  }
+
+  public String getConsecutivo() {
+    return consecutivo;
+  }
+
+  public void setConsecutivo(String consecutivo) {
+    this.consecutivo = consecutivo;
   }
 
   public Long getIdFuente() {
@@ -34,6 +44,14 @@ public class Transferencia extends Items implements Serializable {
 
   public void setIdFuente(Long idFuente) {
     this.idFuente = idFuente;
+  }
+
+  public Long getIdEstatus() {
+    return idEstatus;
+  }
+
+  public void setIdEstatus(Long idEstatus) {
+    this.idEstatus = idEstatus;
   }
   
   @Override
@@ -52,7 +70,7 @@ public class Transferencia extends Items implements Serializable {
       return false;
     if (getClass() != obj.getClass()) 
       return false;
-    final Transferencia other = (Transferencia) obj;
+    final Solicitud other = (Solicitud) obj;
     if (!Objects.equals(this.getIdConteo(), other.getIdConteo())) 
       return false;
     if (!Objects.equals(this.getIdUsuario(), other.getIdUsuario())) 
@@ -62,7 +80,7 @@ public class Transferencia extends Items implements Serializable {
 
   @Override
   public String toString() {
-    return "Transferencia{" + "idFuente=" + idFuente + ','+ super.toString()+ '}';
+    return "Solicitud{" + "consecutivo=" + consecutivo + ", idFuente=" + idFuente + ", idEstatus=" + idEstatus + '}';
   }
-  
+
 }

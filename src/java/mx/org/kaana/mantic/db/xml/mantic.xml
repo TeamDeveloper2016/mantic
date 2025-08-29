@@ -25,6 +25,25 @@ from
 where      
   id_persona = {idPersona} and id_transferencia = {idTransferencia}
       </select>
+      <select id="igual">
+select      
+  tc_mantic_transferencias_personas.id_transferencia_persona as id_key,
+  concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as nombre,
+  ifnull(tr_mantic_persona_tipo_contacto.valor, ' - ') as celular,        
+  tc_mantic_transferencias_personas.*
+from      
+  tc_mantic_transferencias_personas
+inner join
+  tc_mantic_personas on tc_mantic_transferencias_personas.id_persona= tc_mantic_personas.id_persona
+left join    
+  tr_mantic_persona_tipo_contacto on tc_mantic_personas.id_persona= tr_mantic_persona_tipo_contacto.id_persona and tr_mantic_persona_tipo_contacto.id_tipo_contacto in (1, 6, 7, 8) and tr_mantic_persona_tipo_contacto.id_preferido= 1
+where 
+  tc_mantic_transferencias_personas.id_transferencia= {idTransferencia}
+group by
+  tc_mantic_transferencias_personas.id_persona              
+order by
+  tc_mantic_transferencias_personas.registro              
+      </select>
     </unit>    
     <unit id="TcManticContadoresDto">
       <select id="row">
@@ -4313,7 +4332,7 @@ select
   tc_mantic_personas.id_persona,
   tc_mantic_personas.rfc,
   tc_mantic_personas.curp,
-  concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as nombre¨,
+  concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as nombre,
   ifnull(tr_mantic_persona_tipo_contacto.valor, ' - ') as celular        
 from      
   tr_mantic_empresa_personal
@@ -7295,21 +7314,21 @@ where
     </unit>
     <unit id="TcManticTransferenciasDto">
       <select id="row">
-        select      
-          *
-        from      
-          tc_mantic_transferencias
-        where 
-          {condicion} 
+select      
+  *
+from      
+  tc_mantic_transferencias
+where 
+  {condicion} 
       </select>
       <select id="identically">
-        select      
-          *
-        from      
-          tc_mantic_transferencias
-        where      
-          id_empresa= {idEmpresa}
-          and consecutivo= '{consecutivo}'
+select      
+  *
+from      
+  tc_mantic_transferencias
+where      
+  id_empresa= {idEmpresa}
+  and consecutivo= '{consecutivo}'
       </select>
       <select id="remoto">
 select      
@@ -7321,52 +7340,52 @@ where
   id_remoto= '{idRemoto}'
       </select>
       <select id="siguiente">
-        select
-					max(orden)+ 1 as siguiente
-				from 
-					tc_mantic_transferencias
-				where
-				  ejercicio= {ejercicio} 
-				  and id_empresa= {idEmpresa}			
-				  and orden{operador} 900000	
+select
+  max(orden)+ 1 as siguiente
+from 
+  tc_mantic_transferencias
+where
+  ejercicio= {ejercicio} 
+  and id_empresa= {idEmpresa}			
+  and orden{operador} 900000	
 			</select>		
       <select id="detalle">
-        select      
-          *
-        from      
-          tc_mantic_transferencias
-        where 
-          id_transferencia= {idTransferencia}
+select      
+  *
+from      
+  tc_mantic_transferencias
+where 
+  id_transferencia= {idTransferencia}
       </select>
       <select id="todos">
-        select      
-          tc_mantic_transferencias.id_transferencia as id_key,
-          tc_mantic_transferencias.*
-        from      
-          tc_mantic_transferencias
-        order by
-          tc_mantic_transferencias.registro
+select      
+  tc_mantic_transferencias.id_transferencia as id_key,
+  tc_mantic_transferencias.*
+from      
+  tc_mantic_transferencias
+order by
+  tc_mantic_transferencias.registro
       </select>
       <select id="consecutivo">
-        select      
-				  tc_mantic_transferencias.id_transferencia as id_key
-        from      
-          tc_mantic_transferencias
-        where      
-				  id_empresa= {idEmpresa}
-          and consecutivo = '{consecutivo}'
+select      
+  tc_mantic_transferencias.id_transferencia as id_key
+from      
+  tc_mantic_transferencias
+where      
+  id_empresa= {idEmpresa}
+  and consecutivo = '{consecutivo}'
       </select>
       <select id="almacen">
-        select      
-				  tc_mantic_transferencias.id_transferencia as id_key,
-				  tc_mantic_almacenes.nombre as almacen
-        from      
-          tc_mantic_transferencias
-        inner join
-          tc_mantic_almacenes on tc_mantic_transferencias.id_destino= tc_mantic_almacenes.id_almacen     
-        where      
-				  tc_mantic_transferencias.id_empresa= {idEmpresa}
-          and tc_mantic_transferencias.consecutivo = '{consecutivo}'
+select      
+  tc_mantic_transferencias.id_transferencia as id_key,
+  tc_mantic_almacenes.nombre as almacen
+from      
+  tc_mantic_transferencias
+inner join
+  tc_mantic_almacenes on tc_mantic_transferencias.id_destino= tc_mantic_almacenes.id_almacen     
+where      
+  tc_mantic_transferencias.id_empresa= {idEmpresa}
+  and tc_mantic_transferencias.consecutivo = '{consecutivo}'
       </select>
 			<delete id="rows">
 delete from tc_mantic_transferencias where id_transferencia= {idTransferencia}

@@ -2,8 +2,13 @@ package mx.org.kaana.mantic.ws.imox.beans;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * @company KAANA
@@ -16,29 +21,31 @@ import java.util.Objects;
 public class Items implements Serializable {
 
   private static final long serialVersionUID = -8330660760447754833L;
+  private static final Log LOG = LogFactory.getLog(Items.class);
 
   private Long idConteo;
   private Long idEmpresa;
   private Long idAlmacen;
   private Long idUsuario;
   private String nombre;
-  private List<Item> productos;
+  protected List<Item> productos;
   private String semilla;
   private String version;
   private String registro;
 
   public Items() {
+    this.productos= new ArrayList<>();
   }
 
   public Items(Long idConteo, Long idUsuario, String nombre, String registro, Long idEmpresa, Long idAlmacen, String semilla, String version) {
     this.idConteo = idConteo;
     this.idConteo = idEmpresa;
     this.idConteo = idAlmacen;
-    this.idUsuario = idUsuario;
-    this.nombre = nombre;
-    this.productos = new ArrayList<>();
-    this.semilla = semilla;
-    this.version = version;
+    this.idUsuario= idUsuario;
+    this.nombre   = nombre;
+    this.productos= new ArrayList<>();
+    this.semilla  = semilla;
+    this.version  = version;
     this.registro = registro;
   }
 
@@ -48,6 +55,8 @@ public class Items implements Serializable {
 
   public void setIdConteo(Long idConteo) {
     this.idConteo = idConteo;
+    if(!Objects.equals(idConteo, null))
+      this.load();
   }
 
   public Long getIdUsuario() {
@@ -124,25 +133,33 @@ public class Items implements Serializable {
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj) {
+    if (this == obj) 
       return true;
-    }
-    if (obj == null) {
+    if (obj == null) 
       return false;
-    }
-    if (getClass() != obj.getClass()) {
+    if (getClass() != obj.getClass()) 
       return false;
-    }
     final Items other = (Items) obj;
-    if (!Objects.equals(this.idConteo, other.idConteo)) {
+    if (!Objects.equals(this.idConteo, other.idConteo)) 
       return false;
-    }
-    if (!Objects.equals(this.idUsuario, other.idUsuario)) {
+    if (!Objects.equals(this.idUsuario, other.idUsuario)) 
       return false;
-    }
     return true;
   }
 
+  public void load() {
+    Map<String, Object> params= new HashMap<>();
+    try {      
+      params.put("idTransferencia", this.getIdConteo());  
+      this.productos= (List<Item>)DaoFactory.getInstance().toEntitySet(Item.class, "VistaPlanetasDto", "sirio", params, -1L);
+      if(Objects.equals(this.productos, null))
+        this.productos= new ArrayList<>();
+    } // try
+    catch (Exception e) {
+      LOG.error(e);
+    } // catch	
+  }  
+  
   @Override
   public String toString() {
     return "Conteo{" + "idConteo=" + idConteo + ", idEmpresa=" + idEmpresa + ", idAlmacen=" + idAlmacen + ", idUsuario=" + idUsuario + ", nombre=" + nombre + ", productos=" + productos + ", semilla=" + semilla + ", version=" + version + ", registro=" + registro + '}';

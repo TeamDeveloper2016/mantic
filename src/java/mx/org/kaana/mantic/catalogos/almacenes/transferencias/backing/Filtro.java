@@ -57,8 +57,8 @@ public class Filtro extends IBaseImportar implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428879L;
   
-  private EAccion accion;
-  private Reporte reporte;
+  protected EAccion accion;
+  protected Reporte reporte;
 
 	public Boolean getIsAutorizar() {
 		Boolean regresar= true;
@@ -193,7 +193,7 @@ public class Filtro extends IBaseImportar implements Serializable {
 		return regresar;
 	}
 
-	private void toLoadCatalog() {
+	protected void toLoadCatalog() {
 		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
@@ -214,10 +214,12 @@ public class Filtro extends IBaseImportar implements Serializable {
 			this.attrs.put("idTransferenciasEstatus", new UISelectEntity("-1"));
       this.attrs.put("tipos", (List<UISelectEntity>) UIEntity.build("TcManticTransferenciasTiposDto", "row", params, columns));
 			this.attrs.put("idTransferenciaTipo", new UISelectEntity("-1"));
+      this.toLoadTransferenciasTipos();
 			this.toLoadPersonas();
     } // try
     catch (Exception e) {
-      throw e;
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
     } // catch   
     finally {
       Methods.clean(columns);
@@ -225,7 +227,26 @@ public class Filtro extends IBaseImportar implements Serializable {
     }// finally
 	}
 
-  private void toLoadPersonas() {
+	protected void toLoadTransferenciasTipos() {
+		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
+    try {
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      this.attrs.put("tipos", (List<UISelectEntity>) UIEntity.build("TcManticTransferenciasTiposDto", "row", params, columns));
+			this.attrs.put("idTransferenciaTipo", new UISelectEntity("-1"));
+    } // try
+    catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
+	}
+
+  protected void toLoadPersonas() {
     List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
@@ -238,7 +259,8 @@ public class Filtro extends IBaseImportar implements Serializable {
       this.attrs.put("idTransporto", UIBackingUtilities.toFirstKeySelectEntity(personas));
     } // try
     catch (Exception e) {
-      throw e;
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
     } // catch    
     finally {
       Methods.clean(params);
@@ -322,16 +344,18 @@ public class Filtro extends IBaseImportar implements Serializable {
   
 	private void toTransaccion(Long idEstatus) {
 		Transaccion transaccion= null;
-		Entity seleccionado    = null;
+		Entity seleccionado    = (Entity)this.attrs.get("seleccionado");
 		Long idTransporto      = null;
 		try {
-			seleccionado= (Entity)this.attrs.get("seleccionado");
 			idTransporto= this.attrs.get("idTransporto")!= null && ((Entity)this.attrs.get("idTransporto")).getKey()> 0L? ((Entity)this.attrs.get("idTransporto")).getKey(): JsfBase.getIdUsuario();
-			TcManticTransferenciasBitacoraDto bitacora= null;
-			if(Objects.equals((String)this.attrs.get("estatus"), "3"))
-			  bitacora= new TcManticTransferenciasBitacoraDto(-1L, (String)this.attrs.get("justificacion"), JsfBase.getIdUsuario(), idTransporto, idEstatus, seleccionado.getKey());
-			else
-			  bitacora= new TcManticTransferenciasBitacoraDto(-1L, (String)this.attrs.get("justificacion"), JsfBase.getIdUsuario(), null, idEstatus, seleccionado.getKey());
+			TcManticTransferenciasBitacoraDto bitacora= new TcManticTransferenciasBitacoraDto(
+        -1L, // Long idTransferenciaBitacora, 
+        (String)this.attrs.get("justificacion"), // String justificacion, 
+        JsfBase.getIdUsuario(), // Long idUsuario, 
+        Objects.equals((String)this.attrs.get("estatus"), "3")? idTransporto: null, // Long idTransporto, 
+        idEstatus, // Long idTransferenciaEstatus, 
+        seleccionado.getKey() // Long idTransferencia
+      );
 			transaccion= new Transaccion((TcManticTransferenciasDto)DaoFactory.getInstance().findById(TcManticTransferenciasDto.class, seleccionado.getKey()), bitacora);
 			if(transaccion.ejecutar(EAccion.REGISTRAR)) 
 				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);

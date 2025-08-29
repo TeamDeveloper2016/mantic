@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+								xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                template="/WEB-INF/plantillas/reporte.xhtml">
+  <ui:param name="titulo" value="Transferencias de articulos entre almacenes"/>
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      Janal.Control.fields = {
+        'idEmpresa'    : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'consecutivo'  : {validaciones: 'libre', mascara: 'libre', formatos: 'consecutivo', grupo: 'general'},
+				'codigos_input': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'fechaInicio'  : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
+        'fechaTermino' : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
+        'idTransferenciaTipo'   : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'idTransferenciaEstatus': {validaciones: 'libre', mascara: 'libre', grupo: 'general'}
+      };
+			
+			fieldsDialog= {
+				'estatusDlg'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogoDos'},
+				'idTransporto' : {validaciones: 'libre', mascara: 'libre', grupo: 'dialogoDos'},
+				'justificacion': {validaciones: 'libre', mascara: 'libre', grupo: 'dialogoDos', formatos: 'cambiar-mayusculas'}
+			};
+			
+			function validaJustificacion() {
+				var ok= janal.partial('dialogoDos');
+				if(ok) {
+					PF('dlgEstatus').hide();
+					janal.restore();
+					janal.refresh();
+				} // if
+				return ok;
+			} // validaJustificacion
+			
+      //<![CDATA[
+				function start() {
+					janal.bloquear();
+				}
+
+				function stop() {
+					janal.desbloquear();
+				}
+      //]]>
+    </script>		
+  </ui:define>
+  <ui:define name="contenido">
+    <div class="janal-align-right xs-pantalla janal-wid-100">
+      <p:commandButton icon="fa fa-search" value="Filtrar" iconPos="right" onstart="janal.togglePanel('panelBusqueda');" styleClass="janal-text-white janal-wid-100"/>
+    </div>			
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+      <div class="ui-grid-row janal-grid-row">
+        <div id="collapse-find" class="ui-grid-col-3">
+          <p:panel id="panelBusqueda" header="Búsqueda:" styleClass="lg-pantalla" toggleable="true" toggleOrientation="horizontal">
+						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
+            <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+              <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticSolicitudesFiltro.attrs.isMatriz}"/>
+              <p:selectOneMenu id="idEmpresa" value="#{manticSolicitudesFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+								<p:ajax event="change" process="@this" update="idAlmacen" listener="#{manticSolicitudesFiltro.doAlmacenes}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
+                <f:selectItems value="#{manticSolicitudesFiltro.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
+                <p:column headerText="Clave">
+                  <h:outputText value="#{item.clave}"/>
+                </p:column>   
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombre}"/>
+                </p:column>   
+              </p:selectOneMenu>
+              <p:outputLabel for="idAlmacen" value="Almacen:"/>
+              <p:selectOneMenu id="idAlmacen" value="#{manticSolicitudesFiltro.attrs.idAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
+                <f:selectItems value="#{manticSolicitudesFiltro.attrs.almacenes}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
+                <p:column headerText="Clave">
+                  <h:outputText value="#{item.clave}"/>
+                </p:column>   
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombre}"/>
+                </p:column>   
+              </p:selectOneMenu>
+              <p:outputLabel for="idTransferenciaTipo" value="Tipo:"/>
+              <p:selectOneMenu id="idTransferenciaTipo" value="#{manticSolicitudesFiltro.attrs.idTransferenciaTipo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
+                <f:selectItems value="#{manticSolicitudesFiltro.attrs.tipos}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombre}"/>
+                </p:column>   
+              </p:selectOneMenu>
+              <p:outputLabel for="consecutivo" value="No. transferencia:"/>
+              <p:inputText id="consecutivo" value="#{manticSolicitudesFiltro.attrs.consecutivo}" styleClass="janal-wid-100-txt"/>              
+              <p:outputLabel for="codigos" value="Código ó nombre:"/>
+							<p:autoComplete id="codigos" var="custom" placeholder="ejemplo: AU125" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticSolicitudesFiltro.attrs.custom}" completeMethod="#{manticSolicitudesFiltro.doCompleteArticulo}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+								<p:ajax event="itemSelect" process="panelBusqueda" update="tabla" listener="#{manticSolicitudesFiltro.doLoad}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+								<f:facet name="itemtip">
+									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
+										<f:facet name="header" class="TexAlCenter">
+                      <p:graphicImage library="janal" name="img/sistema/#{kajoolUtilAplicacion.logoIcon}" styleClass="janal-logo-mini" width="50" height="30" style="#{kajoolUtilAplicacion.logoWidth}"/>                                      
+										</f:facet>
+										<h:outputText value="Propio:" />
+										<h:outputText value="#{custom.propio}" />
+										<h:outputText value="Nombre:" />
+										<h:outputText value="#{custom.nombre}" />
+										<h:outputText value="IVA:" />
+										<h:outputText value="#{custom.iva}" />
+										<h:outputText value="Costo:" />
+										<h:outputText value="$ #{custom.precio}" />
+									</h:panelGrid>
+								</f:facet>
+							</p:autoComplete>	
+              <p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
+							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{manticSolicitudesFiltro.attrs.fechaInicio}" pattern="dd/MM/yyyy" locale="mx" converter="janal.convertidor.Calendario"/>
+              <p:outputLabel for="fechaTermino" value="Fecha término:"/>
+							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{manticSolicitudesFiltro.attrs.fechaTermino}" pattern="dd/MM/yyyy" locale="mx" converter="janal.convertidor.Calendario"/>
+              <p:outputLabel for="idEstatus" value="Estatus:"/>
+              <p:selectOneMenu id="idEstatus" value="#{manticSolicitudesFiltro.attrs.idTransferenciaEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
+                <f:selectItems value="#{manticSolicitudesFiltro.attrs.catalogo}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombre}"/>
+                </p:column>   
+              </p:selectOneMenu>
+							<p:separator/>
+            </p:panelGrid>
+						<div class="janal-align-right">
+							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.partial('general');" oncomplete="janal.desbloquear();" process="panelBusqueda" actionListener="#{manticSolicitudesFiltro.doLoad}" update="tabla"/>
+							<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.partial('general');" process="panelBusqueda" oncomplete="janal.desbloquear();" actionListener="#{manticSolicitudesFiltro.doLoad}" update="tabla"/>
+						</div>
+          </p:panel>
+        </div>
+        <div id="collapse-content" class="ui-grid-col-9">
+          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticSolicitudesFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticSolicitudesFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticSolicitudesFiltro.lazyModel.rowCount gt manticSolicitudesFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" rowStyleClass="#{manticSolicitudesFiltro.toColor(row)}">
+            <p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
+						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
+            <f:facet name="header">
+              <div class="lg-pantalla">
+                <p:menuButton value="Opciones">
+                  <p:menuitem value="Agregar" action="#{manticSolicitudesFiltro.doSolicitudes('AGREGAR')}" icon="fa fa-cart-plus" onstart="return janal.bloquear()"/>						
+                  <p:separator/>
+                  <p:menuitem value="Exportar PDF" icon="fa fa-file-pdf-o" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                  <p:menuitem value="Exportar XLS" icon="fa fa-file-excel-o" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                  <p:separator/>
+                  <p:menuitem value="Reporte" icon="fa fa-file-word-o" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticSolicitudesFiltro.doReporte('TRANSFERENCIAS')}" oncomplete="janal.desbloquear();" update="descargar"/>
+                </p:menuButton>
+              </div>  
+              <div class="xs-pantalla">              
+                <p:commandButton title="Agregar" action="#{manticSolicitudesFiltro.doSolicitudes('AGREGAR')}" icon="fa fa-cart-plus" onstart="return janal.bloquear()"/>						
+                <p:commandButton title="Exportar PDF" icon="fa fa-file-pdf-o" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                <p:commandButton title="Exportar XLS" icon="fa fa-file-excel-o" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                <p:commandButton title="Reporte" icon="fa fa-file-word-o" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticSolicitudesFiltro.doReporte('TRANSFERENCIAS')}" oncomplete="janal.desbloquear();" update="descargar"/>
+              </div>  
+            </f:facet>												
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{row.consecutivo}">
+              <f:facet name="header">
+                <h:outputText value="No. transferencia"/>
+              </f:facet>
+              <h:outputText value="#{row['consecutivo']}"/>
+            </p:column>		
+						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.nombreOrigen}">
+							<f:facet name="header">
+								<h:outputText value="Almacen origen"/>
+							</f:facet>
+							<h:outputText value="#{row['nombreOrigen']}"/>
+						</p:column>														
+						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.nombreDestino}">
+							<f:facet name="header">
+								<h:outputText value="Almacen destino"/>
+							</f:facet>
+							<h:outputText value="#{row['nombreDestino']}"/>
+						</p:column>					
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{row.nombreEstatus}">
+							<f:facet name="header">
+								<h:outputText value="Estatus"/>
+							</f:facet>
+							<h:outputText value="#{row['nombreEstatus']}" title="Observaciones: #{row['observaciones']}"/>
+						</p:column>	
+            <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.tipo}">
+							<f:facet name="header">
+								<h:outputText value="Tipo"/>
+							</f:facet>
+							<h:outputText value="#{row['tipo']}"/>
+						</p:column>	
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{row.registro}">
+							<f:facet name="header">
+								<h:outputText value="Fecha"/>
+							</f:facet>
+							<h:outputText value="#{row['registro']}"/>
+						</p:column>					
+						<f:facet name="footer">
+							Total [#{manticSolicitudesFiltro.lazyModel== null? 0: manticSolicitudesFiltro.lazyModel.rowCount}] registros
+						</f:facet>
+					</p:dataTable>
+          <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
+            <p:menuitem icon="fa fa-gear" value="Procesar" actionListener="#{manticSolicitudesFiltro.doProcesar()}" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" disabled="#{fn:contains('|1|2|3|4|6|7|8|9|10|', manticSolicitudesFiltro.attrs.seleccionado.estatus) and not empty(manticSolicitudesFiltro.attrs.seleccionado.idRemoto.toString())}" rendered="#{not empty(manticSolicitudesFiltro.attrs.seleccionado.idRemoto.toString())}"/>
+            <p:separator rendered="#{not empty(manticSolicitudesFiltro.attrs.seleccionado.idRemoto.toString())}" />
+						<p:menuitem icon="fa fa-edit" value="Modificar" action="#{manticSolicitudesFiltro.doAccion('MODIFICAR')}" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{(manticSolicitudesFiltro.attrs.seleccionado.estatus eq '1' or manticSolicitudesFiltro.isAutorizar) and empty(manticSolicitudesFiltro.attrs.seleccionado.idRemoto.toString())}"/>
+            <p:menuitem icon="fa fa-search" value="Consultar" action="#{manticSolicitudesFiltro.doAccion('CONSULTAR')}" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />
+            <p:menuitem icon="fa fa-trash" value="Eliminar" actionListener="#{manticSolicitudesFiltro.doEliminar()}" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{manticSolicitudesFiltro.admin and fn:contains('|3|5|10|', manticSolicitudesFiltro.attrs.seleccionado.estatus) and not empty(manticSolicitudesFiltro.attrs.seleccionado.idRemoto.toString())}"/>
+            <p:separator/>					
+            <p:menuitem value="Bitacora" icon="fa fa-user" onstart="return janal.bloquear()" process="@this tabla" action="#{manticSolicitudesFiltro.doMovimientos}"/>
+            <p:separator rendered="#{fn:contains('|1|2|4|', manticSolicitudesFiltro.attrs.seleccionado.estatus)}"/>					
+            <p:menuitem value="Estatus" icon="fa fa-exchange" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticSolicitudesFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|4|', manticSolicitudesFiltro.attrs.seleccionado.estatus) or (fn:contains('|5|10|', manticSolicitudesFiltro.attrs.seleccionado.estatus) and not empty(manticSolicitudesFiltro.attrs.seleccionado.idRemoto.toString()))}"/>
+            <p:separator/>			
+            <p:menuitem value="Reporte" icon="fa fa-file-word-o" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticSolicitudesFiltro.doReporte('TRANSFERENCIAS_DETALLE')}" oncomplete="janal.desbloquear();" update="descargar"/>
+            <p:separator rendered="#{fn:contains('|8|9|', manticSolicitudesFiltro.attrs.seleccionado.estatus)}"/>			
+            <p:menuitem value="Sin conteo" icon="fa fa-indent" process="@this tabla" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" rendered="#{fn:contains('|8|9|', manticSolicitudesFiltro.attrs.seleccionado.estatus)}">
+							<p:fileDownload value="#{manticSolicitudesFiltro.archivo}" />
+						</p:menuitem>	
+            <p:separator rendered="#{fn:contains('|5|8|9|', manticSolicitudesFiltro.attrs.seleccionado.estatus)}"/>
+            <p:menuitem value="Min max" icon="fa fa-balance-scale" onstart="return janal.bloquear()" process="@this tabla" action="#{manticSolicitudesFiltro.doUmbrales}" rendered="#{fn:contains('|5|8|9|', manticSolicitudesFiltro.attrs.seleccionado.estatus)}"/>
+					</p:contextMenu>
+        </div>
+      </div>
+    </div>	    		
+  </ui:define>
+	<ui:define name="dialogos">
+		<p:dialog id="dialogoEstatus" widgetVar="dlgEstatus" header="Cambio de estatus" resizable="false" closable="true" minimizable="false" maximizable="false" responsive="true" width="60%" onShow="janal.change('formDialogoEstatus', fieldsDialog); janal.refresh();" dynamic="true">
+			<h:form id="formDialogoEstatus" prependId="false">
+				<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
+					<p:outputLabel for="estatusDlg" value="Estatus:"/>												
+					<p:selectOneMenu id="estatusDlg" value="#{manticSolicitudesFiltro.attrs.estatus}" styleClass="janal-wid-100-txt">
+						<p:ajax event="change" process="@this" update="@(.refrescar)" listener="#{manticSolicitudesFiltro.doTransporta}" oncomplete="#{manticSolicitudesFiltro.attrs.transito? 'janal.refresh();': ''}"/>
+						<f:selectItems value="#{manticSolicitudesFiltro.attrs.allEstatusAsigna}"/>					
+					</p:selectOneMenu>
+					<p:outputLabel for="idTransporto" value="Transporta:" style="display: #{manticSolicitudesFiltro.attrs.transito? '': 'none'}" styleClass="refrescar"/>
+					<p:selectOneMenu id="idTransporto" value="#{manticSolicitudesFiltro.attrs.idTransporto}" styleClass="janal-wid-100-txt refrescar" converter="janal.convertidor.Entity" style="display: #{manticSolicitudesFiltro.attrs.transito? '': 'none'}">
+						<f:selectItems value="#{manticSolicitudesFiltro.attrs.personas}" var="element" itemValue="#{element}" itemLabel="#{element.nombres} #{element.paterno} #{element.materno}"/>					
+						<p:column>
+							<h:outputText value="#{item.nombres}"/>
+						</p:column>                
+						<p:column>
+							<h:outputText value="#{item.paterno}"/>
+						</p:column>                
+						<p:column>
+							<h:outputText value="#{item.materno}"/>
+						</p:column>                
+					</p:selectOneMenu>
+				</h:panelGrid>
+				<p:outputLabel for="justificacion" value="Justificación:"/><br/>
+				<p:inputTextarea id="justificacion" value="#{manticSolicitudesFiltro.attrs.justificacion}" styleClass="janal-wid-100-txt"/>
+				<hr class="ui-widget-content"/>
+				<div class="janal-line-button">
+					<p:commandButton icon="fa fa-check" process="@this dialogoEstatus" update="tabla" value="Aceptar" action="#{manticSolicitudesFiltro.doActualizarEstatus}" onstart="return validaJustificacion()" oncomplete="janal.desbloquear();"/>
+					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="return PF('dlgEstatus').hide();" oncomplete="janal.desbloquear();"/>
+				</div>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+  <ui:param name="componenteBloqueo" value="buscar buscarIcon tabla"/>
+	<ui:param name="textoConfirmacion" value="#{manticSolicitudesFiltro.attrs.titulo}" />
+	<ui:param name="accionConfirmacion" value="#{manticSolicitudesFiltro}"/>
+	<ui:param name="updateComponent" value="tabla"/>
+	<ui:param name="eventoConfirmacion" value="doEjecutar"	/>	
+	<ui:param name="renderedConfirmacion" value="true"/>	
+	<ui:define name="detalleConfirmacion">
+		<h:panelGrid columns="2">
+			<p:outputLabel value="Nombre: "/>
+			<p:outputLabel value="#{manticSolicitudesFiltro.attrs.seleccionado.observaciones}"/>
+			<p:outputLabel value="Almácen origen: "/>
+			<p:outputLabel value="#{manticSolicitudesFiltro.attrs.seleccionado.nombreOrigen}"/>
+			<p:outputLabel value="Almácen destino: "/>
+			<p:outputLabel value="#{manticSolicitudesFiltro.attrs.seleccionado.nombreDestino}"/>
+			<p:outputLabel value="Fecha: "/>
+			<p:outputLabel value="#{manticSolicitudesFiltro.attrs.seleccionado.registro}"/>
+		</h:panelGrid>			
+	</ui:define>
+</ui:composition>

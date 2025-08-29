@@ -45,6 +45,7 @@ import mx.org.kaana.mantic.ws.imox.beans.Item;
 import mx.org.kaana.mantic.ws.imox.beans.Items;
 import mx.org.kaana.mantic.ws.imox.beans.Partida;
 import mx.org.kaana.mantic.ws.imox.beans.Producto;
+import mx.org.kaana.mantic.ws.imox.beans.Solicitud;
 import mx.org.kaana.mantic.ws.imox.beans.Transferencia;
 import mx.org.kaana.mantic.ws.imox.beans.Ubicacion;
 import mx.org.kaana.mantic.ws.imox.beans.Usuario;
@@ -221,7 +222,7 @@ public class Planetas implements Serializable {
     return regresar;
   }
   
-  // SERVICIO WEB PARA EL CATALOGO DE CONTEOS DIRIGIDOS
+  // SERVICIO WEB PARA DESCARGA EL CATALOGO DE CONTEOS DIRIGIDOS
   public String polaris(Long radio, String densidad, String atmosfera) throws Exception {
     String regresar           = Decoder.toJson(new Respuesta(ERespuesta.CORRECTO.getCodigo(), "Proceso correcto")); 
     Map<String, Object> params= new HashMap<>();
@@ -271,7 +272,7 @@ public class Planetas implements Serializable {
     return regresar;
   }
   
-  // SERVICIO WEB PARA EL CATALOGO DE TRANSFERENCIAS / SOLICITUDES DIRIGIDAS
+  // SERVICIO WEB PARA DESCARGA EL CATALOGO DE SOLICITUDES DIRIGIDAS
   public String antares(Long radio, String densidad, String atmosfera) throws Exception {
     String regresar           = Decoder.toJson(new Respuesta(ERespuesta.CORRECTO.getCodigo(), "Proceso correcto")); 
     Map<String, Object> params= new HashMap<>();
@@ -280,9 +281,9 @@ public class Planetas implements Serializable {
       respuesta= this.toRespueta(this.neptuno(atmosfera, radio));
       if(Objects.equals(respuesta.getCodigo(), ERespuesta.CORRECTO.getCodigo())) {
         params.put("fecha", densidad);
-        ArrayList<Producto> productos =(ArrayList<Producto>)DaoFactory.getInstance().toEntitySet(Producto.class, "VistaPlanetasDto", "venus", params, Constantes.SQL_TODOS_REGISTROS);
-        if(productos!= null && !productos.isEmpty()) 
-          regresar= Decoder.toJson(new Respuesta(ERespuesta.CORRECTO.getCodigo(), Decoder.cleanJson(productos)));
+        ArrayList<Solicitud> solicitudes=(ArrayList<Solicitud>)DaoFactory.getInstance().toEntitySet(Solicitud.class, "VistaPlanetasDto", "antares", params, Constantes.SQL_TODOS_REGISTROS);
+        if(solicitudes!= null && !solicitudes.isEmpty()) 
+          regresar= Decoder.toJson(new Respuesta(ERespuesta.CORRECTO.getCodigo(), Decoder.cleanJson(solicitudes)));
         else
           regresar= Decoder.toJson(new Respuesta(ERespuesta.SIN_TRANSFERENCIAS.getCodigo(), ERespuesta.SIN_TRANSFERENCIAS.getDescripcion()));
       } // if
@@ -299,7 +300,7 @@ public class Planetas implements Serializable {
     return regresar;
   }
   
-  // SERVICIO WEB PARA REGISTRAR UN CONTEO INDIVIDUAL
+  // SERVICIO WEB PARA REGISTRAR UN CONTEO INDIVIDUAL QUE NO EXISTE
   public String urano(Long radio, String densidad, String atmosfera) throws Exception {
     String regresar           = Decoder.toJson(new Respuesta(ERespuesta.CORRECTO.getCodigo(), "Proceso correcto")); 
     Map<String, Object> params= new HashMap<>();
@@ -321,7 +322,7 @@ public class Planetas implements Serializable {
     return regresar;
   }
   
-  // SERVICIO WEB PARA REGISTRAR UN CONTEO INDIVIDUAL
+  // SERVICIO WEB PARA REGISTRAR UN CONTEO INDIVIDUAL QUE YA EXISTE EN EL WEB
   public String solar(Long radio, String densidad, String atmosfera) throws Exception {
     String regresar           = Decoder.toJson(new Respuesta(ERespuesta.CORRECTO.getCodigo(), "Proceso correcto")); 
     Map<String, Object> params= new HashMap<>();
@@ -482,7 +483,7 @@ public class Planetas implements Serializable {
     return regresar;
   }
 
-  // SERVICIO WEB PARA VERIFICAR SI UN DISPOSITOVO ESTA ACTIVO
+  // SERVICIO WEB PARA VERIFICAR SI UN DISPOSITIVO ESTA ACTIVO
   public String galaxia(String atmosfera, String radio, String densidad) throws Exception {
     String regresar           = Decoder.toJson(new Respuesta(ERespuesta.CORRECTO.getCodigo(), "Proceso correcto")); 
     Map<String, Object> params= new HashMap<>();
@@ -521,6 +522,28 @@ public class Planetas implements Serializable {
       respuesta= this.toRespueta(this.neptuno(atmosfera, radio));
       if(Objects.equals(respuesta.getCodigo(), ERespuesta.CORRECTO.getCodigo())) 
         regresar= Decoder.toJson(new Respuesta(ERespuesta.CORRECTO.getCodigo(), this.toAplicarTransferencia(radio, densidad)));
+      else
+        regresar= Decoder.toJson(respuesta);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      regresar= Decoder.toJson(new Respuesta(ERespuesta.ERROR.getCodigo(), e.getMessage()));
+    } // catch
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  }
+  
+  // SERVICIO WEB PARA REGISTRAR UNA SOLICITUD ENTRE ALMACENES
+  public String capella(Long radio, String densidad, String atmosfera) throws Exception {
+    String regresar           = Decoder.toJson(new Respuesta(ERespuesta.CORRECTO.getCodigo(), "Proceso correcto")); 
+    Map<String, Object> params= new HashMap<>();
+    Respuesta respuesta       = null;
+    try {
+      respuesta= this.toRespueta(this.neptuno(atmosfera, radio));
+      if(Objects.equals(respuesta.getCodigo(), ERespuesta.CORRECTO.getCodigo())) 
+        regresar= Decoder.toJson(new Respuesta(ERespuesta.CORRECTO.getCodigo(), this.toAplicarSolicitud(radio, densidad)));
       else
         regresar= Decoder.toJson(respuesta);
     } // try
@@ -873,7 +896,7 @@ public class Planetas implements Serializable {
         // INSERTAR EL REGISTRO DE LAS TRANSFERENCIAS PARA DESPUES VERFICAR SI SE INTEGRARON
         transferencia= new TcManticTransferenciasDto(
           null, // Long idSolicito, 
-          5L, // Long idTransferenciaEstatus, 
+          5L, // Long idTransferenciaEstatus, RECEPCION
           3L, // Long idTransferenciaTipo, 
           siguiente.getEjercicio(), //  Long ejercicio, 
           siguiente.getConsecutivo(), // String consecutivo, 
@@ -887,7 +910,6 @@ public class Planetas implements Serializable {
           idRemoto, // String idRemoto
           null // Timestamp procesado
         );
-        
         DaoFactory.getInstance().insert(session, transferencia);
         TcManticTransferenciasBitacoraDto bitacora= new TcManticTransferenciasBitacoraDto(
           -1L, // Long idTransferenciaBitacora, 
@@ -958,6 +980,80 @@ public class Planetas implements Serializable {
     return regresar;
   }
   
+  private String toAplicarSolicitud(Long idUsuario, String densidad) throws Exception {
+    String id                 = Cadena.rellenar(String.valueOf(idUsuario), 3, '0', true);
+    String regresar           = id.concat(Fecha.toRegistro());
+    Map<String, Object> params         = new HashMap<>();
+    Transaction transaction            = null;
+    Session session                    = null;
+    TcManticTransferenciasDto solicitud= null;
+		try {
+      LOG.error("TRANSFERENCIA: ["+ densidad+ "]");
+			session    = SessionFactoryFacade.getInstance().getSession(-1L);
+			transaction= session.beginTransaction();
+			session.clear();
+      Solicitud items= this.toSolicitud(densidad);
+      String idRemoto    = items.getSemilla().concat(Constantes.SEPARADOR)+ items.getIdConteo()+ Constantes.SEPARADOR+ items.getIdUsuario()+ Constantes.SEPARADOR+ items.getVersion();
+      params.put("idTransferencia", items.getIdConteo());
+      solicitud= (TcManticTransferenciasDto)DaoFactory.getInstance().toEntity(TcManticTransferenciasDto.class, "TcManticTransferenciasDto", "detalle", params);
+      if(!Objects.equals(solicitud, null)) {
+        solicitud.setIdRemoto(idRemoto);
+        solicitud.setIdTransferenciaEstatus(5L); // RECEPCION
+        TcManticTransferenciasBitacoraDto bitacora= new TcManticTransferenciasBitacoraDto(
+          -1L, // Long idTransferenciaBitacora, 
+          "SE ENVIO UNA ACTUALIZACIÓN", // String justificacion, 
+          items.getIdUsuario(), // Long idUsuario, 
+          null, // Long idTransporto, 
+          solicitud.getIdTransferenciaEstatus(), // Long idTransferenciaEstatus, 
+          solicitud.getIdTransferencia() // Long idTransferencia
+        );
+        DaoFactory.getInstance().insert(session, bitacora);
+        for (Item item: items.getProductos()) {
+          LOG.error("DETALLE: ["+ item+ "]");
+          params.put("idArticulo", item.getA());
+          Entity articulo= (Entity)DaoFactory.getInstance().toEntity("TcManticArticulosDto", "remoto", params);
+          params.put("idTransferencia", solicitud.getIdTransferencia());
+          params.put("idArticulo", item.getA());
+          TcManticTransferenciasDetallesDto copia= (TcManticTransferenciasDetallesDto)DaoFactory.getInstance().toEntity(TcManticTransferenciasDetallesDto.class, "TcManticTransferenciasDetallesDto", "remoto", params);
+          if(!Objects.equals(copia, null)) 
+            if(Objects.equals(copia.getProcesado(), null)) {
+              copia.setCantidad(item.getB());
+              copia.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+              DaoFactory.getInstance().update(session, copia);
+            } // if  
+        } // for
+      } // if
+      else {
+        TcManticTransferenciasBitacoraDto bitacora= new TcManticTransferenciasBitacoraDto(
+          -1L, // Long idTransferenciaBitacora, 
+          "NO EXISTE LA SOLICITUD ", // String justificacion, 
+          items.getIdUsuario(), // Long idUsuario, 
+          null, // Long idTransporto, 
+          10L, // Long idTransferenciaEstatus, ERRORES
+          items.getIdConteo()// Long idTransferencia
+        );
+        DaoFactory.getInstance().insert(session, bitacora);
+      } // else
+			transaction.commit();
+		} // try
+		catch (Exception e) {
+      LOG.error("TRANSFERENCIA: "+ densidad);
+      Error.mensaje(e);
+			if (transaction!= null) {
+				transaction.rollback();
+			} // if
+			throw e;
+		} // catch
+		finally {
+      Methods.clean(params);
+			if (session!= null) 
+				session.close();
+			transaction= null;
+			session    = null;
+		} // finally    
+    return regresar;
+  }
+  
   private Respuesta toRespueta(String msg) {
     Gson gson = new Gson();
     return gson.fromJson(msg, Respuesta.class);
@@ -976,6 +1072,11 @@ public class Planetas implements Serializable {
   private Transferencia toTransferencia(String msg) {
     Gson gson = new Gson();
     return gson.fromJson(msg, Transferencia.class);
+  }
+  
+  private Solicitud toSolicitud(String msg) {
+    Gson gson = new Gson();
+    return gson.fromJson(msg, Solicitud.class);
   }
   
   private Items toItems(String msg) {

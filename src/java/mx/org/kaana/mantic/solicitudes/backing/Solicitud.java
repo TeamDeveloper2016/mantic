@@ -1,26 +1,18 @@
 package mx.org.kaana.mantic.solicitudes.backing;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.enums.EAccion;
-import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
-import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
-import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
-import mx.org.kaana.libs.pagina.UIEntity;
-import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.almacenes.transferencias.backing.Normal;
 import mx.org.kaana.mantic.catalogos.almacenes.transferencias.beans.Transferencia;
 import mx.org.kaana.mantic.catalogos.almacenes.transferencias.reglas.Transaccion;
@@ -60,10 +52,29 @@ public class Solicitud extends Normal implements IBaseStorage, Serializable {
   protected void init() {		
     super.init();
     this.attrs.put("automatico", Boolean.TRUE);
-    this.attrs.put("retorno", "/Paginas/Mantic/Catalogos/Almacenes/Transferencias/filtro"); 
-    this.persona= new Persona();
+    this.attrs.put("retorno", "filtro"); 
     this.attrs.put("notificar", 0);
+    this.persona= new Persona();
   }  
+  
+	@Override
+  public void doLoad() {
+    try {
+      super.doLoad();
+      switch (this.accion) {
+        case AGREGAR:											
+          break;
+        case MODIFICAR:			
+        case CONSULTAR:											
+          ((Transferencia)this.getAdminOrden().getOrden()).toLoadPersonas();
+          break;
+      } // switch
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch		
+  } 
   
   public void doAdd() {  
     List<UISelectEntity> empleados= (List<UISelectEntity>)this.attrs.get("empleados");
@@ -72,6 +83,7 @@ public class Solicitud extends Normal implements IBaseStorage, Serializable {
       if(index>= 0)
         this.persona.setIkPersona(empleados.get(index));
       this.persona.setIdTransferencia(((Transferencia)this.getAdminOrden().getOrden()).getIdTransferencia());
+      this.persona.setIdPersona(this.persona.getIkPersona().toLong("idPersona"));
       this.persona.setNombre(this.persona.getIkPersona().toString("nombre"));
       this.persona.setCelular(this.persona.getIkPersona().toString("celular"));
       this.persona.setIdUsuario(JsfBase.getIdUsuario());
@@ -125,7 +137,7 @@ public class Solicitud extends Normal implements IBaseStorage, Serializable {
     String regresar        = null;
     try {			
       ((TcManticTransferenciasDto)this.getAdminOrden().getOrden()).setIdTransferenciaTipo(4L); // SOLICITUDES
-			transaccion = new Transaccion((TcManticTransferenciasDto)this.getAdminOrden().getOrden(), this.getAdminOrden().getArticulos());
+			transaccion = new Transaccion((TcManticTransferenciasDto)this.getAdminOrden().getOrden(), ((Transferencia)this.getAdminOrden().getOrden()).getPersonas(), this.getAdminOrden().getArticulos());
 			this.getAdminOrden().toAdjustArticulos();
 			if (transaccion.ejecutar(this.accion)) {
 				if(this.accion.equals(EAccion.AGREGAR)) {

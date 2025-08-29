@@ -34,7 +34,7 @@ public class TcManticTransferenciasPersonasDto implements IBaseDto, Serializable
   private Long idUsuario;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
-  @Column (name="id_trasnferencia_persona")
+  @Column (name="id_transferencia_persona")
   private Long idTransferenciaPersona;
   @Column (name="id_transferencia")
   private Long idTransferencia;

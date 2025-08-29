@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -44,6 +45,7 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 
 	private static final Log LOG              = LogFactory.getLog(Normal.class);
   private static final long serialVersionUID= 327393488565639367L;
+  
 	protected EAccion accion;
 	
 	public String getAgregar() {
@@ -55,6 +57,8 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
   protected void init() {		
     try {
 			this.attrs.put("xcodigo", JsfBase.getFlashAttribute("xcodigo"));	
+  		if(Objects.equals(JsfBase.getFlashAttribute("accion"), null))
+				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.attrs.put("idTransferencia", JsfBase.getFlashAttribute("idTransferencia")== null? -1L: JsfBase.getFlashAttribute("idTransferencia"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
@@ -97,7 +101,7 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
-  } // doLoad
+  } 
 
   public String doAceptar() {  
     Transaccion transaccion= null;
@@ -109,11 +113,11 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 				if(this.accion.equals(EAccion.AGREGAR)) {
    			  UIBackingUtilities.execute("janal.back(' gener\\u00F3 la transferencia ', '"+ ((Transferencia)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
 		  		JsfBase.addMessage("Se registró la transferencia de correcta", ETipoMensaje.INFORMACION);
- 				  regresar = ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
 				} // if	
- 				if(!this.accion.equals(EAccion.CONSULTAR)) 
-    			JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la transferencia de articulos."), ETipoMensaje.INFORMACION);
-  			JsfBase.setFlashAttribute("idTransferencia", ((Transferencia)this.getAdminOrden().getOrden()).getIdTransferencia());
+        else
+          if(!this.accion.equals(EAccion.CONSULTAR)) 
+            JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la transferencia de articulos."), ETipoMensaje.INFORMACION);
+			  regresar= this.doCancelar();
 			} // if
 			else 
 				JsfBase.addMessage("Ocurrió un error al registrar la transferencia de articulos.", ETipoMensaje.ALERTA);      			

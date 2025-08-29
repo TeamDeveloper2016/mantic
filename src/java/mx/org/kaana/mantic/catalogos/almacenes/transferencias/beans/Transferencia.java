@@ -130,10 +130,10 @@ public class Transferencia extends TcManticTransferenciasDto implements Serializ
   }
 
   public void toLoadPersonas() {
-    Map<String, Object> params = new HashMap<>();
+    Map<String, Object> params= new HashMap<>();
     try {      
-      params.put(Constantes.SQL_CONDICION, "id_transferencia="+ this.getIdTransferencia());      
-      this.personas= (List<Persona>)DaoFactory.getInstance().toEntitySet(Persona.class, "TcManticTransferenciasPersonasDto", "row", params);
+      params.put("idTransferencia", this.getIdTransferencia());      
+      this.personas= (List<Persona>)DaoFactory.getInstance().toEntitySet(Persona.class, "TcManticTransferenciasPersonasDto", "igual", params);
       for (Persona item: this.personas) {
         item.setIkPersona(new UISelectEntity(item.getIdPersona()));
         item.setSql(ESql.SELECT);

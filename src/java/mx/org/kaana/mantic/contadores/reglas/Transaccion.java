@@ -401,7 +401,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 		return regresar;
 	}  
 
-  private void notificar(Session sesion) {
+  private void notificar(Session sesion) throws Exception {
     Bonanza bonanza           = null;
     List<Entity> celulares    = null;
     Map<String, Object> params= new HashMap<>();
@@ -434,7 +434,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
       } // if
     } // try
     catch (Exception e) {
-      Error.mensaje(e);
+      throw e;
     } // catch	
     finally {
       Methods.clean(params);

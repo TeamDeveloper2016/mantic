@@ -36,7 +36,7 @@
 				jsArticulos.cursor.index= jsArticulos.cursor.top;
 				$(jsArticulos.amount()).addClass('ignore');
 				$(jsArticulos.price()).addClass('ignore');
-				var ok= janal.execute(lock);
+				var ok= janal.partial('general', lock);
 				if(!ok) {
 					jsArticulos.cursor.index= index;
   				$(jsArticulos.amount()).removeClass('ignore');
@@ -132,7 +132,7 @@
 								</p:selectOneMenu>
                 <p:outputLabel for="idSolicito" value="Solicitó:"/>
                 <p:autoComplete id="idSolicito" var="option" itemLabel="#{option.nombre}" itemValue="#{option}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" value="#{manticSolicitudesSolicitud.adminOrden.orden.ikSolicito}" completeMethod="#{manticSolicitudesSolicitud.doCompleteEmpleado}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" forceSelection="true">
-                  <p:ajax event="itemSelect" process="@this" update="idPersona personas total" listener="#{manticSolicitudesSolicitud.doAddItem}" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+                  <p:ajax event="itemSelect" process="@this" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
                   <f:facet name="itemtip">
                     <h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">
                       <h:outputText value="Rfc:" styleClass="janal-wid-15"/>
@@ -179,13 +179,13 @@
                   </f:facet>
                   <h:outputText value="#{index+1}.-"/>
                 </p:column>				
-								<p:column styleClass="MarAuto Responsive productos">
+								<p:column styleClass="MarAuto Responsive personas">
                   <f:facet name="header">
                     <h:outputText value="Nombre"/>
                   </f:facet>
                   <p:outputLabel value="#{row.nombre}"/>
                 </p:column>	
-								<p:column styleClass="MarAuto Responsive janal-fix-12">
+								<p:column styleClass="MarAuto Responsive janal-column-center janal-fix-12 personas">
                   <f:facet name="header">
                     <h:outputText value="Celular"/>
                   </f:facet>
@@ -204,8 +204,8 @@
 							</p:dataTable>
 							<p:outputLabel for="observaciones" value="Observaciones:"/><br/>
 							<p:inputTextarea id="observaciones" rows="3" cols="33" styleClass="janal-wid-100-txt" value="#{manticSolicitudesSolicitud.adminOrden.orden.observaciones}"/>
-              <p:outputLabel for="total" value="Productos:" styleClass="janal-display-none"/>
-              <p:inputText id="total" styleClass="janal-wid-100-txt janal-display-none" value="#{manticSolicitudesSolicitud.attrs.notificar}" converter="javax.faces.Long"/>
+              <p:outputLabel for="total" value="Personas:" styleClass="janal-display-none"/>
+              <p:inputText id="total" styleClass="janal-wid-100-txt janal-display-none" value="#{manticSolicitudesSolicitud.attrs.notificar}" converter="javax.faces.Integer"/>
 						</p:tab>						            						            																																																
 						<p:tab title="Articulos">
 							<div class="ui-grid ui-grid-responsive" style="rfovelow-y:hidden;">

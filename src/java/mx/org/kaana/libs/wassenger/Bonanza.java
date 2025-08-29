@@ -73,6 +73,10 @@ public final class Bonanza implements Serializable {
   private static final String BODY_CONTEOS        = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, te notificamos que C. *{usuario}* ya envió el requerimiento para contabilizar *{reporte}* producto(s) o articulo(s) con numero de folio [*{ticket}*] y nombre [*{fecha}*], para tu conocimiento y revisión en la aplicación web.\\n\\n*_{empresa}_*\"";
   private static final String BODY_CONTEOS_DESTINO= "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, te notificamos que has recibido un requerimiento por parte de C. *{usuario}* para contabilizar *{reporte}* producto(s) o articulo(s) con numero de folio [*{ticket}*] y nombre [*{fecha}*], favor de ingresar a la aplicación móvil para atender este requerimiento.\\n\\n*_{empresa}_*\"";
   private static final String BODY_CONTEOS_FUENTE = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, te notificamos que C. *{usuario}* fue notificado para atender el requerimiento para contabilizar *{reporte}* producto(s) o articulo(s) con numero de folio [*{ticket}*] y nombre [*{fecha}*], para tu conocimiento y seguimiento.\\n\\n*_{empresa}_*\"";
+
+  private static final String BODY_SOLICITUD        = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, te notificamos que C. *{usuario}* ya envió la solicitud de *{reporte}* producto(s) o articulo(s) con numero de folio [*{ticket}*], para tu conocimiento y revisión en la aplicación web.\\n\\n*_{empresa}_*\"";
+  private static final String BODY_SOLICITUD_FUENTE = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, te notificamos que fueron notificados para atender la solicitud de *{reporte}* producto(s) o articulo(s) con numero de folio [*{ticket}*], para tu conocimiento y seguimiento.\\n\\n*_{empresa}_*\"";
+  private static final String BODY_SOLICITUD_DESTINO= "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, te notificamos que has recibido *una solictud* por parte de C. *{usuario}* para transferir *{reporte}* producto(s) o articulo(s) con numero de folio [*{ticket}*], favor de ingresar a la aplicación móvil para atender este requerimiento.\\n\\n*_{empresa}_*\"";
   
   private static final String PATH_REPORT      = "{numero}.- {documento}; https://{host}/Temporal/Pdf/{reporte}\\n";
   private static final int LENGTH_CELL_PHONE   = 10;
@@ -1349,7 +1353,189 @@ public final class Bonanza implements Serializable {
     else 
       LOG.error("[doSendConteoFuente] No se envio el mensaje ["+ this.celular+ "]");
   }
+
+  public void doSendSolicitud(Session sesion, String usuario) {
+    if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE) || this.celular.contains("@")) {
+      Message message           = null;
+      Map<String, Object> params= new HashMap<>();        
+      try {
+        params.put("nombre", this.nombre);
+        params.put("celular", this.celular);
+        params.put("reporte", this.reporte);
+        params.put("ticket", this.ticket);
+        params.put("fecha", this.fecha);
+        params.put("usuario", usuario);
+        params.put("empresa", Cadena.letraCapital(Configuracion.getInstance().getEmpresa("titulo")));        
+        params.put("host", Configuracion.getInstance().getEmpresa("host"));
+        params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
+        params.put("saludo", this.toSaludo());
+        if(!Configuracion.getInstance().isEtapaProduccion())
+          LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_SOLICITUD, params, true)+ "}");
+        else {  
+          HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
+          .header("Content-Type", "application/json")
+          .header("Token", this.token)
+          .body("{"+ Cadena.replaceParams(BODY_CONTEOS, params, true)+ "}")
+          .asString();
+          LOG.error("Enviado: "+ response.getBody());
+          if(Objects.equals(response.getStatus(), 201)) {
+            Gson gson= new Gson();
+            message= gson.fromJson(response.getBody(), Message.class);
+            if(message!= null) 
+              message.init();
+            else {
+              message= new Message();
+              message.setMessage(" {"+ Cadena.replaceParams(BODY_SOLICITUD, params, true)+ "}");
+            } // else  
+          } // if  
+          else {
+            LOG.error("[doSendSolicitud] No se envio el mensaje ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            message= new Message();
+            message.setMessage(" {"+ Cadena.replaceParams(BODY_SOLICITUD, params, true)+ "}");
+          } // if  
+          message.setTelefono(this.celular);
+          message.setIdSendStatus(new Long(response.getStatus()));
+          message.setSendStatus(response.getStatusText());
+          message.setIdTipoMensaje(ETypeMessage.ADMINISTRADOR.getId());
+          message.setIdUsuario(JsfBase.getIdUsuario());
+          if(sesion!= null)
+            DaoFactory.getInstance().insert(sesion, message);
+          else
+            DaoFactory.getInstance().insert(message);
+        } // else
+      } // try
+      catch(Exception e) {
+        Error.mensaje(e);
+      } // catch
+      finally {
+        Methods.clean(params);
+      } // finally
+    } // if
+    else 
+      LOG.error("[doSendSolicitud] No se envio el mensaje ["+ this.celular+ "]");
+  }
   
+  public void doSendSolicitudFuente(Session sesion) {
+    if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE) || this.celular.contains("@")) {
+      Message message           = null;
+      Map<String, Object> params= new HashMap<>();        
+      try {
+        params.put("nombre", this.nombre);
+        params.put("celular", this.celular);
+        params.put("reporte", this.reporte);
+        params.put("ticket", this.ticket);
+        params.put("fecha", this.fecha);
+        params.put("empresa", Cadena.letraCapital(Configuracion.getInstance().getEmpresa("titulo")));        
+        params.put("host", Configuracion.getInstance().getEmpresa("host"));
+        params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
+        params.put("saludo", this.toSaludo());
+        if(!Configuracion.getInstance().isEtapaProduccion())
+          LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_SOLICITUD_FUENTE, params, true)+ "}");
+        else {  
+          HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
+          .header("Content-Type", "application/json")
+          .header("Token", this.token)
+          .body("{"+ Cadena.replaceParams(BODY_SOLICITUD_FUENTE, params, true)+ "}")
+          .asString();
+          LOG.error("Enviado: "+ response.getBody());
+          if(Objects.equals(response.getStatus(), 201)) {
+            Gson gson= new Gson();
+            message= gson.fromJson(response.getBody(), Message.class);
+            if(message!= null) 
+              message.init();
+            else {
+              message= new Message();
+              message.setMessage(" {"+ Cadena.replaceParams(BODY_SOLICITUD_FUENTE, params, true)+ "}");
+            } // else  
+          } // if  
+          else {
+            LOG.error("[doSendSolicitudFuente] No se envio el mensaje ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            message= new Message();
+            message.setMessage(" {"+ Cadena.replaceParams(BODY_CONTEOS_FUENTE, params, true)+ "}");
+          } // if  
+          message.setTelefono(this.celular);
+          message.setIdSendStatus(new Long(response.getStatus()));
+          message.setSendStatus(response.getStatusText());
+          message.setIdTipoMensaje(ETypeMessage.ADMINISTRADOR.getId());
+          message.setIdUsuario(JsfBase.getIdUsuario());
+          if(sesion!= null)
+            DaoFactory.getInstance().insert(sesion, message);
+          else
+            DaoFactory.getInstance().insert(message);
+        } // else
+      } // try
+      catch(Exception e) {
+        Error.mensaje(e);
+      } // catch
+      finally {
+        Methods.clean(params);
+      } // finally
+    } // if
+    else 
+      LOG.error("[doSendSolicitudFuente] No se envio el mensaje ["+ this.celular+ "]");
+  }
+
+  public void doSendSolicitudDestino(Session sesion, String usuario) {
+    if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE) || this.celular.contains("@")) {
+      Message message           = null;
+      Map<String, Object> params= new HashMap<>();        
+      try {
+        params.put("nombre", this.nombre);
+        params.put("celular", this.celular);
+        params.put("reporte", this.reporte);
+        params.put("ticket", this.ticket);
+        params.put("fecha", this.fecha);
+        params.put("usuario", usuario);
+        params.put("empresa", Cadena.letraCapital(Configuracion.getInstance().getEmpresa("titulo")));        
+        params.put("host", Configuracion.getInstance().getEmpresa("host"));
+        params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
+        params.put("saludo", this.toSaludo());
+        if(!Configuracion.getInstance().isEtapaProduccion())
+          LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_SOLICITUD_DESTINO, params, true)+ "}");
+        else {  
+          HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
+          .header("Content-Type", "application/json")
+          .header("Token", this.token)
+          .body("{"+ Cadena.replaceParams(BODY_SOLICITUD_FUENTE, params, true)+ "}")
+          .asString();
+          LOG.error("Enviado: "+ response.getBody());
+          if(Objects.equals(response.getStatus(), 201)) {
+            Gson gson= new Gson();
+            message= gson.fromJson(response.getBody(), Message.class);
+            if(message!= null) 
+              message.init();
+            else {
+              message= new Message();
+              message.setMessage(" {"+ Cadena.replaceParams(BODY_SOLICITUD_DESTINO, params, true)+ "}");
+            } // else  
+          } // if  
+          else {
+            LOG.error("[doSendSolicitudDestino] No se envio el mensaje ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            message= new Message();
+            message.setMessage(" {"+ Cadena.replaceParams(BODY_SOLICITUD_DESTINO, params, true)+ "}");
+          } // if  
+          message.setTelefono(this.celular);
+          message.setIdSendStatus(new Long(response.getStatus()));
+          message.setSendStatus(response.getStatusText());
+          message.setIdTipoMensaje(ETypeMessage.ADMINISTRADOR.getId());
+          message.setIdUsuario(JsfBase.getIdUsuario());
+          if(sesion!= null)
+            DaoFactory.getInstance().insert(sesion, message);
+          else
+            DaoFactory.getInstance().insert(message);
+        } // else
+      } // try
+      catch(Exception e) {
+        Error.mensaje(e);
+      } // catch
+      finally {
+        Methods.clean(params);
+      } // finally
+    } // if
+    else 
+      LOG.error("[doSendSolicitudDestino] No se envio el mensaje ["+ this.celular+ "]");
+  }
+
   public void doSendSaludo() {
     String mensaje= BODY_MESSAGE_MANTIC;
     if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE) || this.celular.contains("@")) {

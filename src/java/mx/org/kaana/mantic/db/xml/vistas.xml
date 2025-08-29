@@ -288,6 +288,41 @@ order by
       </select>
     </unit>  
 		<unit id="VistaPlanetasDto">
+			<select id="antares">
+select
+  tc_mantic_transferencias.id_transferencia as id_conteo,
+  tc_mantic_transferencias.consecutivo,
+  tc_mantic_transferencias.id_empresa,
+  tc_mantic_transferencias.id_almacen as id_fuente,
+  tc_mantic_transferencias.id_destino as id_almacen,
+	tc_mantic_transferencias.id_transferencia_estatus as id_estatus,
+  tc_mantic_transferencias.id_usuario,
+  date_format(tc_mantic_transferencias.registro, '%Y%m%d%h%i%S') as registro  
+from                
+  tc_mantic_transferencias
+where
+  tc_mantic_transferencias.id_transferencia_tipo= 4
+  and tc_mantic_transferencias.id_transferencia_estatus= 3
+  and date_format(tc_mantic_transferencias.registro, '%Y%m%d%h%i%S')&gt;= '{fecha}' 
+group by
+  tc_mantic_transferencias.id_transferencia
+order by
+  tc_mantic_transferencias.registro
+      </select>  
+      <select id="sirio">  
+select
+  tc_mantic_transferencias_detalles.id_articulo as a,
+  tc_mantic_transferencias_detalles.cantidad as b,
+  '' as c,
+  '' as d,
+  date_format(tc_mantic_transferencias_detalles.registro, '%Y%m%d%h%i%S') as e
+from
+  tc_mantic_transferencias_detalles
+where
+  tc_mantic_transferencias_detalles.id_transferencia= {idTransferencia}
+order by
+  tc_mantic_transferencias_detalles.registro        
+      </select>  
 			<select id="polaris">
 select
   tc_mantic_contadores.id_contador as id_conteo,
