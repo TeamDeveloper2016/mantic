@@ -983,9 +983,9 @@ public class Planetas implements Serializable {
   private String toAplicarSolicitud(Long idUsuario, String densidad) throws Exception {
     String id                 = Cadena.rellenar(String.valueOf(idUsuario), 3, '0', true);
     String regresar           = id.concat(Fecha.toRegistro());
-    Map<String, Object> params         = new HashMap<>();
-    Transaction transaction            = null;
-    Session session                    = null;
+    Map<String, Object> params= new HashMap<>();
+    Transaction transaction   = null;
+    Session session           = null;
     TcManticTransferenciasDto solicitud= null;
 		try {
       LOG.error("TRANSFERENCIA: ["+ densidad+ "]");

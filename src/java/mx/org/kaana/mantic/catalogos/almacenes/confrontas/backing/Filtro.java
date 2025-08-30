@@ -66,11 +66,10 @@ public class Filtro extends Comun implements Serializable {
 		StreamedContent regresar= null;
 		Xls xls                 = null;
 		String template         = "CONTEOS";
-		Map<String, Object> params=null;
+		Map<String, Object> params=new HashMap<>();
 		try {
 			String salida  = EFormatos.XLS.toPath().concat(Archivo.toFormatNameFile(template).concat(".")).concat(EFormatos.XLS.name().toLowerCase());
   		String fileName= JsfBase.getRealPath("").concat(salida);
-			params         = new HashMap<>();
 			params.put("idConfronta", this.attrs.get("seleccionado")!= null? ((Entity)this.attrs.get("seleccionado")).toLong("idConfronta"): -1L);
       xls= new Xls(fileName, new Modelo(params, "VistaConfrontasDto", "destino", template), "CODIGO,NOMBRE,FECHA,STOCK");	
 			if(xls.procesar()) {
@@ -114,11 +113,10 @@ public class Filtro extends Comun implements Serializable {
 
   @Override
   public void doLoad() {
-    List<Columna> campos      = null;
+    List<Columna> campos      = new ArrayList<>();
 		Map<String, Object> params= this.toPrepare();
     try {
       params.put("sortOrder", "order by tc_mantic_transferencias.consecutivo desc");
-      campos = new ArrayList<>();
       campos.add(new Columna("nombreOrigen", EFormatoDinamicos.MAYUSCULAS));
       campos.add(new Columna("nombreDestino", EFormatoDinamicos.MAYUSCULAS));
       campos.add(new Columna("observaciones", EFormatoDinamicos.MAYUSCULAS));

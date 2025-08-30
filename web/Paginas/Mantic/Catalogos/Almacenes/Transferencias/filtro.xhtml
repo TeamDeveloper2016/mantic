@@ -277,13 +277,13 @@
                 </f:facet>
                 <h:outputText value="#{row['cantidad']}"/>
               </p:column>								
-              <p:column styleClass="MarAuto Responsive janal-column-center janal-wid-12" sortBy="#{row.fecha}">
+              <p:column styleClass="MarAuto Responsive janal-column-center janal-wid-12" sortBy="#{row.registro}">
                 <f:facet name="header">
                   <h:outputText value="Fecha"/>
                 </f:facet>
-                <h:outputText value="#{row['fecha']}"/>
+                <h:outputText value="#{row['registro']}"/>
               </p:column>			
-              <p:column styleClass="MarAuto Responsive janal-column-center janal-wid-3">
+              <p:column styleClass="MarAuto Responsive janal-column-center janal-wid-3" rendered="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.seleccionado.idTransferenciaTipo.toLong eq 3}">
                 <f:facet name="header">
                   <h:outputText value="..."/>
                 </f:facet>

@@ -256,7 +256,7 @@ public class Filtro extends IBaseImportar implements Serializable {
 		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      params.put(Constantes.SQL_CONDICION, "id_transferencia_tipo!= 4");
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       this.attrs.put("tipos", (List<UISelectEntity>) UIEntity.build("TcManticTransferenciasTiposDto", "row", params, columns));
 			this.attrs.put("idTransferenciaTipo", new UISelectEntity("-1"));

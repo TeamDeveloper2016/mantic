@@ -1985,51 +1985,52 @@ group by
           tc_mantic_confrontas_detalles.perdidos desc
       </select>  
       <select id="lazy">
-				select
-					tc_mantic_transferencias.id_transferencia as id_key,
-					ifnull(tc_mantic_confrontas.id_confronta, -1) as id_confronta,
-					tc_mantic_transferencias.id_transferencia,
-					ifnull(tc_mantic_confrontas.consecutivo, '') as consecutivo,
-					tc_mantic_transferencias.consecutivo as transferencia,
-					tc_mantic_transferencias.id_almacen,
-					tc_mantic_transferencias.id_destino,
-					origen.nombre  nombre_origen,
-					origen.clave clave_origen,
-					destino.nombre nombre_destino,
-					destino.clave clave_destino,
-					tc_mantic_transferencias.id_solicito,
-					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as solicito,
-					ifnull(tc_mantic_confrontas.id_usuario, tc_mantic_transferencias.id_usuario) as id_usuario,
-					ifnull(tc_mantic_confrontas.registro, tc_mantic_transferencias.registro) as registro,
-					ifnull(tc_mantic_confrontas.observaciones, '') as observaciones,
-					tc_mantic_transferencias.id_transferencia_estatus estatus,
-					tc_mantic_transferencias_estatus.nombre nombre_estatus,
-					tc_mantic_transferencias_tipos.id_transferencia_tipo,
-					tc_mantic_transferencias_tipos.nombre as tipo,
-					sum(ifnull(tc_mantic_confrontas_detalles.perdidos, 0)) as perdidos       
-				from
-					tc_mantic_transferencias         
-				left join
-					tc_mantic_confrontas on tc_mantic_confrontas.id_transferencia= tc_mantic_transferencias.id_transferencia         
-				left join
-					tc_mantic_confrontas_detalles on tc_mantic_confrontas.id_confronta= tc_mantic_confrontas_detalles.id_confronta         
-				inner join
-					tc_mantic_transferencias_estatus on tc_mantic_transferencias.id_transferencia_estatus = tc_mantic_transferencias_estatus.id_transferencia_estatus         
-				inner join
-					tc_mantic_empresas on tc_mantic_transferencias.id_empresa = tc_mantic_empresas.id_empresa         
-				left join
-					tc_mantic_personas on tc_mantic_transferencias.id_solicito = tc_mantic_personas.id_persona         
-				inner join
-					tc_mantic_almacenes origen on tc_mantic_transferencias.id_almacen = origen.id_almacen         
-				inner join
-					tc_mantic_almacenes destino on tc_mantic_transferencias.id_destino = destino.id_almacen         
-				inner join
-					tc_mantic_transferencias_tipos on tc_mantic_transferencias.id_transferencia_tipo = tc_mantic_transferencias_tipos.id_transferencia_tipo     
-				where
-					({condicion})
-			  group by
-			    tc_mantic_transferencias.id_transferencia 		
-				{sortOrder}				
+select
+  tc_mantic_transferencias.id_transferencia as id_key,
+  ifnull(tc_mantic_confrontas.id_confronta, -1) as id_confronta,
+  tc_mantic_transferencias.id_transferencia,
+  ifnull(tc_mantic_confrontas.consecutivo, '') as consecutivo,
+  tc_mantic_transferencias.consecutivo as transferencia,
+  tc_mantic_transferencias.id_almacen,
+  tc_mantic_transferencias.id_destino,
+  origen.nombre  nombre_origen,
+  origen.clave clave_origen,
+  destino.nombre nombre_destino,
+  destino.clave clave_destino,
+  tc_mantic_transferencias.id_solicito,
+  concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as solicito,
+  ifnull(tc_mantic_confrontas.id_usuario, tc_mantic_transferencias.id_usuario) as id_usuario,
+  ifnull(tc_mantic_confrontas.registro, tc_mantic_transferencias.registro) as registro,
+  ifnull(tc_mantic_confrontas.observaciones, '') as observaciones,
+  tc_mantic_transferencias.id_transferencia_estatus estatus,
+  tc_mantic_transferencias_estatus.nombre nombre_estatus,
+  tc_mantic_transferencias_tipos.id_transferencia_tipo,
+  tc_mantic_transferencias_tipos.nombre as tipo,
+  sum(ifnull(tc_mantic_confrontas_detalles.perdidos, 0)) as perdidos       
+from
+  tc_mantic_transferencias         
+left join
+  tc_mantic_confrontas on tc_mantic_confrontas.id_transferencia= tc_mantic_transferencias.id_transferencia         
+left join
+  tc_mantic_confrontas_detalles on tc_mantic_confrontas.id_confronta= tc_mantic_confrontas_detalles.id_confronta         
+inner join
+  tc_mantic_transferencias_estatus on tc_mantic_transferencias.id_transferencia_estatus = tc_mantic_transferencias_estatus.id_transferencia_estatus         
+inner join
+  tc_mantic_empresas on tc_mantic_transferencias.id_empresa = tc_mantic_empresas.id_empresa         
+left join
+  tc_mantic_personas on tc_mantic_transferencias.id_solicito = tc_mantic_personas.id_persona         
+inner join
+  tc_mantic_almacenes origen on tc_mantic_transferencias.id_almacen = origen.id_almacen         
+inner join
+  tc_mantic_almacenes destino on tc_mantic_transferencias.id_destino = destino.id_almacen         
+inner join
+  tc_mantic_transferencias_tipos on tc_mantic_transferencias.id_transferencia_tipo = tc_mantic_transferencias_tipos.id_transferencia_tipo     
+where
+  (tc_mantic_transferencias.id_transferencia_tipo!= 4)
+  and ({condicion})
+group by
+  tc_mantic_transferencias.id_transferencia 		
+{sortOrder}				
       </select>   
       <select id="detalle">
         select      
@@ -11518,6 +11519,7 @@ inner join
   tc_mantic_transferencias_tipos on tc_mantic_transferencias.id_transferencia_tipo = tc_mantic_transferencias_tipos.id_transferencia_tipo
 where 
   tc_mantic_empresas.id_empresa in ({idEmpresa}) 
+  and (tc_mantic_transferencias.id_transferencia_tipo!= 4)   
   and {condicion}	
 group by
   tc_mantic_transferencias.id_transferencia                
