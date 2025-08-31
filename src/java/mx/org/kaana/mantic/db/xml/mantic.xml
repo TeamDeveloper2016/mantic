@@ -4328,8 +4328,8 @@ where
       </select>
 			<select id="porCodigo">			
 select      
-  tr_mantic_empresa_personal.id_empresa_persona as id_key,
-  tc_mantic_personas.id_persona,
+  tc_mantic_personas.id_persona as id_key,
+  tr_mantic_empresa_personal.id_empresa_persona,
   tc_mantic_personas.rfc,
   tc_mantic_personas.curp,
   concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as nombre,
@@ -4353,8 +4353,8 @@ order by
 			</select>
 			<select id="porNombre">			
 select      
-  tr_mantic_empresa_personal.id_empresa_persona as id_key,
-  tc_mantic_personas.id_persona,
+  tc_mantic_personas.id_persona as id_key,
+  tr_mantic_empresa_personal.id_empresa_persona,
   tc_mantic_personas.rfc,
   tc_mantic_personas.curp,
   concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as nombre,
@@ -4378,8 +4378,9 @@ order by
 			</select>
 			<select id="empleados">			
 select      
-  tr_mantic_empresa_personal.id_empresa_persona as id_key,
-  tr_mantic_empresa_personal.clave,
+  tc_mantic_personas.id_persona as id_key,
+  tr_mantic_empresa_personal.id_empresa_persona,
+  tc_mantic_personas.id_persona,
   tc_mantic_personas.rfc,
   tc_mantic_personas.curp,
   concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as nombre
@@ -4392,7 +4393,9 @@ where
   and tr_mantic_empresa_personal.id_empresa_persona&gt; 2
   and {condicion}
 order by
-  concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, ''))
+  tc_mantic_personas.nombres, 
+  tc_mantic_personas.paterno, 
+  tc_mantic_personas.materno
 			</select>
 			<delete id="rows">
 delete from tr_mantic_empresa_personal where id_persona = {idPersona}

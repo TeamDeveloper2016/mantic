@@ -2,13 +2,20 @@ package mx.org.kaana.mantic.catalogos.almacenes.transferencias.reglas;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.formato.Error;
+import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.almacenes.transferencias.beans.Transferencia;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.comun.IAdminArticulos;
@@ -37,7 +44,7 @@ public final class AdminTransferencias extends IAdminArticulos implements Serial
       this.orden.setIkEmpresa(new UISelectEntity(new Entity(this.orden.getIdEmpresa())));
       this.orden.setIkAlmacen(new UISelectEntity(new Entity(this.orden.getIdAlmacen())));
       this.orden.setIkDestino(new UISelectEntity(new Entity(this.orden.getIdDestino())));
-      this.orden.setIkSolicito(new UISelectEntity(new Entity(this.orden.getIdSolicito())));
+      this.orden.setIkSolicito(new UISelectEntity(this.toLoadPersona(this.orden.getIdSolicito())));
 		}	// if
 		else {
 		  this.setArticulos(new ArrayList<>());
@@ -50,6 +57,26 @@ public final class AdminTransferencias extends IAdminArticulos implements Serial
 		this.toCalculate();
 	}
 
+  private Entity toLoadPersona(Long idPersona) {
+    Map<String, Object> params= new HashMap<>();
+    Entity regresar           = null;
+    try {      
+      params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());      
+      params.put(Constantes.SQL_CONDICION, "tc_mantic_personas.id_persona="+ idPersona);      
+      regresar= (Entity)DaoFactory.getInstance().toEntity("TrManticEmpresaPersonalDto", "empleados", params);
+      if(Objects.equals(regresar, null) || regresar.isEmpty())
+        regresar= new Entity(idPersona);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  } 
+  
 	@Override
 	public Long getIdAlmacen() {
 		return this.orden.getIdAlmacen();

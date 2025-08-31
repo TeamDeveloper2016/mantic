@@ -143,11 +143,10 @@ public class Solicitud extends Normal implements IBaseStorage, Serializable {
 				if(this.accion.equals(EAccion.AGREGAR)) {
    			  UIBackingUtilities.execute("janal.back(' gener\\u00F3 la solicitud ', '"+ ((Transferencia)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
 		  		JsfBase.addMessage("Se registró la solicitud de correcta", ETipoMensaje.INFORMACION);
- 				  regresar = ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
 				} // if	
  				if(!this.accion.equals(EAccion.CONSULTAR)) 
     			JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la solicitud de articulos"), ETipoMensaje.INFORMACION);
-  			JsfBase.setFlashAttribute("idTransferencia", ((Transferencia)this.getAdminOrden().getOrden()).getIdTransferencia());
+			  regresar= this.doCancelar();
 			} // if
 			else 
 				JsfBase.addMessage("Ocurrió un error al registrar la solicitud de articulos", ETipoMensaje.ALERTA);

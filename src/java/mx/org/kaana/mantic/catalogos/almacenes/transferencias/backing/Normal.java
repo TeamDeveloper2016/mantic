@@ -132,14 +132,13 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
   public String doCancelar() {   
   	JsfBase.setFlashAttribute("idTransferencia", ((Transferencia)this.getAdminOrden().getOrden()).getIdTransferencia());
 		JsfBase.setFlashAttribute("xcodigo", this.attrs.get("xcodigo"));	
-    return (String)this.attrs.get("retorno");
+    return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   } // doCancelar
 
 	private void toLoadCatalog() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
@@ -173,14 +172,6 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 				else 
 				  ((Transferencia)this.getAdminOrden().getOrden()).setIkDestino(destinos.get(destinos.indexOf(((Transferencia)this.getAdminOrden().getOrden()).getIkDestino())));
 			} // if
-			columns.clear();
-      columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("materno", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("paterno", EFormatoDinamicos.MAYUSCULAS));
-      List<UISelectEntity> personas= UIEntity.build("VistaAlmacenesTransferenciasDto", "solicito", params, columns);
-      this.attrs.put("personas", personas);
-			if(personas!= null && !this.accion.equals(EAccion.AGREGAR) && ((Transferencia)this.getAdminOrden().getOrden()).getIdSolicito()!= null && ((Transferencia)this.getAdminOrden().getOrden()).getIdSolicito()> 0L) 
-				((Transferencia)this.getAdminOrden().getOrden()).setIkSolicito(personas.get(personas.indexOf(new UISelectEntity(((Transferencia)this.getAdminOrden().getOrden()).getIdSolicito()))));
 			this.doUpdateAlmacenDestino(true);
     } // try
     catch (Exception e) {

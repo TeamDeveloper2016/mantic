@@ -129,19 +129,19 @@
 									</p:column>   
 								</p:selectOneMenu>
                 <p:outputLabel for="idSolicito" value="Solicitó:"/>
-								<p:selectOneMenu id="idSolicito" value="#{manticCatalogosAlmacenesTransferenciasNormal.adminOrden.orden.ikSolicito}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-									<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
-									<f:selectItems value="#{manticCatalogosAlmacenesTransferenciasNormal.attrs.personas}"  var="element" itemValue="#{element}" itemLabel="#{element.nombres} #{element.paterno} #{element.materno}"/>
-									<p:column headerText="Nombre(s)">
-										<h:outputText value="#{item.nombres}"/>
-									</p:column>   
-									<p:column headerText="Paterno">
-										<h:outputText value="#{item.paterno}"/>
-									</p:column>   
-									<p:column headerText="Materno">
-										<h:outputText value="#{item.materno}"/>
-									</p:column>   
-								</p:selectOneMenu>
+                <p:autoComplete id="idSolicito" var="option" itemLabel="#{option.nombre}" itemValue="#{option}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" value="#{manticCatalogosAlmacenesTransferenciasNormal.adminOrden.orden.ikSolicito}" completeMethod="#{manticCatalogosAlmacenesTransferenciasNormal.doCompleteEmpleado}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" forceSelection="true">
+                  <p:ajax event="itemSelect" process="@this" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+                  <f:facet name="itemtip">
+                    <h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">
+                      <h:outputText value="Rfc:" styleClass="janal-wid-15"/>
+                      <h:outputText value="#{option.rfc}" />
+                      <h:outputText value="Nombre:" />
+                      <h:outputText value="#{option.nombre}" />
+                      <h:outputText value="Rfc:" styleClass="janal-column-center janal-wid-10"/>
+                      <h:outputText value="#{option.celular}" />
+                    </h:panelGrid>
+                  </f:facet>
+                </p:autoComplete>			
               </p:panelGrid>
 							<p:outputLabel for="observaciones" value="Observaciones:"/><br/>
 							<p:inputTextarea id="observaciones" rows="3" cols="33" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlmacenesTransferenciasNormal.adminOrden.orden.observaciones}"/>

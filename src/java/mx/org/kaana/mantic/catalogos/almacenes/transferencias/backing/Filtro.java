@@ -128,7 +128,7 @@ public class Filtro extends IBaseImportar implements Serializable {
       this.attrs.put("idTransferencia", JsfBase.getFlashAttribute("idTransferencia"));
       this.attrs.put("transito", false);
 			this.toLoadCatalog();
-      if(this.attrs.get("idTransferencia")!= null) 
+      if(!Objects.equals(this.attrs.get("idTransferencia"), null) && !Objects.equals((Long)this.attrs.get("idTransferencia"), -1L)) 
 			  this.doLoad();
       this.accion= EAccion.PROCESAR;
     } // try
