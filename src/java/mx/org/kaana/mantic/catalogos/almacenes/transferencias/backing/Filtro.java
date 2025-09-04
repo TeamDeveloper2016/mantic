@@ -126,7 +126,8 @@ public class Filtro extends IBaseImportar implements Serializable {
     try {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
       this.attrs.put("idTransferencia", JsfBase.getFlashAttribute("idTransferencia"));
-      this.attrs.put("transito", false);
+      this.attrs.put("transito", Boolean.FALSE);
+      this.attrs.put("idTransferenciaParche", Boolean.TRUE);
 			this.toLoadCatalog();
       if(!Objects.equals(this.attrs.get("idTransferencia"), null) && !Objects.equals((Long)this.attrs.get("idTransferencia"), -1L)) 
 			  this.doLoad();
@@ -136,7 +137,7 @@ public class Filtro extends IBaseImportar implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
-  } // init
+  }
 
   @Override
   public void doLoad() {
@@ -165,7 +166,7 @@ public class Filtro extends IBaseImportar implements Serializable {
     } // finally		
   } // doLoad
 
-	private Map<String, Object> toPrepare() {
+	protected Map<String, Object> toPrepare() {
 	  Map<String, Object> regresar= new HashMap<>();	
 		StringBuilder sb= new StringBuilder();
 		if(!Cadena.isVacio(this.attrs.get("idTransferencia")) && !this.attrs.get("idTransferencia").toString().equals("-1"))
@@ -189,6 +190,8 @@ public class Filtro extends IBaseImportar implements Serializable {
   		sb.append("(tc_mantic_transferencias.id_transferencia_estatus= ").append(this.attrs.get("idTransferenciaEstatus")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idTransferenciaTipo")) && !this.attrs.get("idTransferenciaTipo").toString().equals("-1"))
   		sb.append("(tc_mantic_transferencias.id_transferencia_tipo= ").append(this.attrs.get("idTransferenciaTipo")).append(") and ");
+    if((Boolean)this.attrs.get("idTransferenciaParche"))
+		  sb.append("(tc_mantic_transferencias.id_transferencia_tipo!= 4").append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
 		  regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
 		else

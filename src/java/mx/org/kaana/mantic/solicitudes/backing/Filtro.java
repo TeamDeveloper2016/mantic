@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -21,6 +22,19 @@ import mx.org.kaana.libs.reflection.Methods;
 public class Filtro extends mx.org.kaana.mantic.catalogos.almacenes.transferencias.backing.Filtro implements Serializable {
 
   private static final long serialVersionUID = 8793661741599428879L;
+  
+  @PostConstruct
+  @Override
+  protected void init() {
+    try {
+      super.init();
+      this.attrs.put("idTransferenciaParche", Boolean.FALSE);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch		
+  } // init
   
   @Override
 	protected void toLoadTransferenciasEstatus() {

@@ -4330,6 +4330,7 @@ where
 select      
   tc_mantic_personas.id_persona as id_key,
   tr_mantic_empresa_personal.id_empresa_persona,
+  tc_mantic_personas.id_persona,
   tc_mantic_personas.rfc,
   tc_mantic_personas.curp,
   concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as nombre,
@@ -4355,6 +4356,7 @@ order by
 select      
   tc_mantic_personas.id_persona as id_key,
   tr_mantic_empresa_personal.id_empresa_persona,
+  tc_mantic_personas.id_persona,
   tc_mantic_personas.rfc,
   tc_mantic_personas.curp,
   concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as nombre,

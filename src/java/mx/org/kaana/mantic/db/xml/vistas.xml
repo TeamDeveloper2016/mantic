@@ -302,7 +302,7 @@ from
   tc_mantic_transferencias
 where
   tc_mantic_transferencias.id_transferencia_tipo= 4
-  and tc_mantic_transferencias.id_transferencia_estatus= 3
+  and tc_mantic_transferencias.id_transferencia_estatus&gt;= 3
   and date_format(tc_mantic_transferencias.registro, '%Y%m%d%h%i%S')&gt;= '{fecha}' 
 group by
   tc_mantic_transferencias.id_transferencia

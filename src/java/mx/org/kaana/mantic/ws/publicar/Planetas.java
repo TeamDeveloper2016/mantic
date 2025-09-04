@@ -535,7 +535,7 @@ public class Planetas implements Serializable {
     return regresar;
   }
   
-  // SERVICIO WEB PARA REGISTRAR UNA SOLICITUD ENTRE ALMACENES
+  // SERVICIO WEB PARA REGISTRAR UNA SOLICITUDES ENTRE ALMACENES
   public String capella(Long radio, String densidad, String atmosfera) throws Exception {
     String regresar           = Decoder.toJson(new Respuesta(ERespuesta.CORRECTO.getCodigo(), "Proceso correcto")); 
     Map<String, Object> params= new HashMap<>();
@@ -750,6 +750,16 @@ public class Planetas implements Serializable {
         } // for
         this.notificar(session, existe);
       } // if
+      else {
+        TcManticContadoresBitacoraDto bitacora= new TcManticContadoresBitacoraDto(
+          "NO EXISTE EL CONTEO O YA FUE INTEGRADO", // String justificacion, 
+          existe.getIdUsuario(), // Long idUsuario, 
+          existe.getIdContador(), // Long idContador, 
+          -1L, // Long idContadorBitacora, 
+          existe.getIdContadorEstatus() // Long idConteoEstatus
+        );
+        DaoFactory.getInstance().insert(session, bitacora);
+      } // else
 			transaction.commit();
 		} // try
 		catch (Exception e) {
@@ -996,9 +1006,11 @@ public class Planetas implements Serializable {
       String idRemoto= items.getSemilla().concat(Constantes.SEPARADOR)+ items.getIdConteo()+ Constantes.SEPARADOR+ items.getIdUsuario()+ Constantes.SEPARADOR+ items.getVersion();
       params.put("idTransferencia", items.getIdConteo());
       solicitud= (TcManticTransferenciasDto)DaoFactory.getInstance().toEntity(TcManticTransferenciasDto.class, "TcManticTransferenciasDto", "detalle", params);
-      if(!Objects.equals(solicitud, null)) {
+      if(!Objects.equals(solicitud, null) && Objects.equals(solicitud.getIdTransferenciaEstatus(), 3L)) {
         solicitud.setIdRemoto(idRemoto);
         solicitud.setIdTransferenciaEstatus(5L); // RECEPCION
+        solicitud.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+        DaoFactory.getInstance().update(session, solicitud);
         TcManticTransferenciasBitacoraDto bitacora= new TcManticTransferenciasBitacoraDto(
           -1L, // Long idTransferenciaBitacora, 
           "SE ENVIO UNA ACTUALIZACIÓN", // String justificacion, 
@@ -1024,7 +1036,7 @@ public class Planetas implements Serializable {
       else {
         TcManticTransferenciasBitacoraDto bitacora= new TcManticTransferenciasBitacoraDto(
           -1L, // Long idTransferenciaBitacora, 
-          "NO EXISTE LA SOLICITUD ", // String justificacion, 
+          "NO EXISTE LA SOLICITUD O YA FUE INTEGRADA", // String justificacion, 
           items.getIdUsuario(), // Long idUsuario, 
           null, // Long idTransporto, 
           10L, // Long idTransferenciaEstatus, ERRORES
