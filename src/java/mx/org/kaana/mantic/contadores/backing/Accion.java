@@ -17,6 +17,7 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
+import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.mantic.contadores.beans.Contador;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
@@ -80,8 +81,8 @@ public class Accion extends IBaseAttribute implements Serializable {
   @Override
   public void init() {
     try {
-  		if(Objects.equals(JsfBase.getFlashAttribute("accion"), null))
-				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
+//  		if(Objects.equals(JsfBase.getFlashAttribute("accion"), null))
+//				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       this.accion    = Objects.equals(JsfBase.getFlashAttribute("accion"), null)? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.idContador= Objects.equals(JsfBase.getFlashAttribute("idContador"), null)? -1L: (Long)JsfBase.getFlashAttribute("idContador");
       this.attrs.put("automatico", Boolean.TRUE);
@@ -278,22 +279,32 @@ public class Accion extends IBaseAttribute implements Serializable {
   public void doAdd() {  
     List<UISelectEntity> articulos= (List<UISelectEntity>)this.attrs.get("articulos");
     try {
-      int index= articulos.indexOf(this.producto.getIkArticulo());
-      if(index>= 0)
-        this.producto.setIkArticulo(articulos.get(index));
-      this.producto.setIdContador(this.contador.getIdContador());
-      this.producto.setCodigo(this.producto.getIkArticulo().toString("propio"));
-      this.producto.setNombre(this.producto.getIkArticulo().toString("nombre"));
-      if(this.contador.add(producto))
-        JsfBase.addMessage("Alerta", "El articulo se encuentra en la lista !");
-      this.producto= new Producto();
-      this.contador.setArticulos(new Long(this.contador.getProductos().size()));
+      if(!Objects.equals(articulos, null) && !articulos.isEmpty()) {
+        int index= articulos.indexOf(this.producto.getIkArticulo());
+        if(index>= 0)
+          this.producto.setIkArticulo(articulos.get(index));
+      } // if
+      if(!Objects.equals(this.producto.getIkArticulo(), null) && !this.producto.getIkArticulo().isEmpty()) {
+        this.producto.setIdContador(this.contador.getIdContador());
+        this.producto.setCodigo(this.producto.getIkArticulo().toString("propio"));
+        this.producto.setNombre(this.producto.getIkArticulo().toString("nombre"));
+        if(this.contador.add(producto)) 
+          JsfBase.addMessage("Alerta", "El articulo se encuentra en la lista !");          
+        // UIBackingUtilities.execute("jsContadores.exists('"+ this.producto.getIkArticulo().toString("propio")+ "', '"+ this.producto.getIkArticulo().toString("nombre")+ "');");
+        this.producto= new Producto();
+        this.contador.setArticulos(new Long(this.contador.getProductos().size()));
+      } // if  
 		} // try
 		catch (Exception e) {			
       Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch		
   }
+
+  public void doRowDblselect(SelectEvent event) {
+		this.producto.setIkArticulo(new UISelectEntity((Entity)event.getObject()));
+    this.doAdd();
+	}	
 
   public void doRemove(Producto producto) {  
     try {
@@ -377,5 +388,54 @@ public class Accion extends IBaseAttribute implements Serializable {
       JsfBase.addMessageError(e);      
     } // catch	
   }  
+
+  public void doUpdateArticulo(Integer index) {
+    this.doAdd();
+	}
+  
+	public void doUpdateDialogArticulos(String codigo) {
+		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
+		boolean buscaPorCodigo    = Boolean.FALSE;
+    try {
+      columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("original", EFormatoDinamicos.MONEDA_CON_DECIMALES));
+			params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
+  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
+  		params.put("idProveedor", new UISelectEntity(new Entity(-1L)));
+			if(!Cadena.isVacio(codigo)) {
+				buscaPorCodigo= codigo.startsWith(".");
+				if(buscaPorCodigo)
+					codigo= codigo.trim().substring(1);
+			} // if	
+			else
+				codigo= "WXYZ";
+			params.put("codigo", codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*"));
+			if(buscaPorCodigo)
+        this.attrs.put("lazyModel", new FormatCustomLazy("VistaOrdenesComprasDto", "porCodigo", params, columns));
+			else
+        this.attrs.put("lazyModel", new FormatCustomLazy("VistaOrdenesComprasDto", "porNombre", params, columns));
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally
+	}
+
+	public void doChangeBuscado() {
+		if(this.attrs.get("encontrado")== null) {
+			FormatCustomLazy list= (FormatCustomLazy)this.attrs.get("lazyModel");
+			if(list!= null) {
+				List<Entity> items= (List<Entity>)list.getWrappedData();
+				if(items.size()> 0) 
+					this.attrs.put("encontrado", new UISelectEntity(items.get(0)));
+			} // if
+		} // if
+	}
   
 }

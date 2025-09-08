@@ -10,24 +10,249 @@
   <ui:param name="titulo" value="#{manticContadoresAccion.attrs.nombreAccion} articulos al conteo dirigido" />
   <ui:define name="librerias">
     <script type="text/javascript">
+//<![CDATA[		      
+      (function(window) {
+        var jsContadores;
+        Janal.Control.Contadores= {};
+        Janal.Control.Contadores.Core= Class.extend({
+      		joker        : 'contenedorGrupos\\:codigos_input',           
+          leavePage    : true,
+          paginator    : false,    
+          current      : '',
+          before       : '',
+          typingTimer  : null,      
+          VK_TAB       : 9,          
+          VK_ENTER     : 13, 
+          VK_FIRST_PAGE: 36, 
+          VK_LAST_PAGE : 35, 
+          VK_PREV_PAGE : 33, 
+          VK_NEXT_PAGE : 34, 
+          VK_ESC       : 27,
+          VK_UP        : 38,
+          VK_DOWN      : 40,
+          VK_REST      : 189,
+          VK_CTRL      : 17,
+          VK_EQUALS    : 48,          
+          VK_MAYOR     : 226,
+          change       : [13, 19, 27, 106, 107, 110, 111, 188, 121, 189, 191, 220, 222, 226],
+          cursor: {
+            top: 1, // el top debera ser elementos que van de 0 a n-1
+            index: 0,
+            tmp: 0
+          },
+          temporal: '',
+          init: function(top, content, paginator) { // Constructor
+            $contadores= this;
+            this.cursor.top= top-1;
+            if(typeof(content)!== 'undefined')
+              this.joker= content;
+            if(typeof(paginator)!== 'undefined')
+              this.paginator= paginator;
+            this.events();
+          }, // init
+          events: function() {
+            $(document).on('focus', '.key-filter-event', function() {
+              janal.console('jsContadores.focus: '+ $(this).attr('id')+ ' value:['+ $(this).val().trim()+ ']');
+              $contadores.current= $(this).val().trim();
+              janal.lastNameFocus= this;
+            });  
+            $(document).on('focus', '.key-event-before', function() {
+              janal.console('jsContadores.focus: '+ $(this).attr('id')+ ' value:['+ $(this).val().trim()+ ']');
+              $contadores.before= $(this).val().trim();
+            });  
+            $(document).on('keyup', '.key-filter-event', function(e) {
+              var key= e.keyCode ? e.keyCode : e.which;
+              janal.console('jsContadores.keyup: '+ $(this).attr('id')+ ' current: ['+ $contadores.current+ '] value: ['+ $(this).val().trim()+ ']');
+              if($contadores.current!== $(this).val().trim()) {
+                $contadores.current= $(this).val().trim();
+              } // if	
+            });  
+            $(window).bind('beforeunload', function() { 
+              if(typeof(jsContadores)=== 'undefined' || jsContadores.leavePage)
+                return ;
+              else
+                return 'Es probable que los cambios no se hayan guardado\n\u00BF Aun asi deseas salir de esta opción ?';
+            });			          
+            $(document).on('keydown', '.key-down-event', function(e) {
+              var key   = e.keyCode ? e.keyCode : e.which;
+              janal.console('jsContadores.keydown [key-down-event]: '+ $(this).attr('id')+ ' key: '+ key);
+              if(($contadores.change.indexOf(key)>= 0)) {
+                $contadores.leavePage= false;
+                setTimeout("$('div[id$=codigos_panel]').hide();$('div[id$=codigos_itemtip]').hide();", 500);
+              } // if	 
+              var calculate= $contadores.get().trim().startsWith('=');
+              switch(key) {
+                case $contadores.VK_ENTER:
+                  return $contadores.find();
+                break;                
+                case $contadores.VK_MAYOR:
+                  return $contadores.show(this);
+                  break;
+                case $contadores.VK_EQUALS:
+                  var value= $contadores.get().trim();
+                  if(calculate && value.length> 2 && e.key=== '=') {
+                    $contadores.set(eval(value.substring(1)));
+                    return false;
+                  } // if	
+                  else
+                    return true;
+                  break;                  
+                default:
+                  break;
+              } // switch
+            });
+            $(document).on('keydown', '.key-buscados-event', function(e) {
+              var key   = e.keyCode ? e.keyCode : e.which;
+              janal.console('jsContadores.keydown [key-buscados-event]: '+ key);
+              switch(key) {
+                case $contadores.VK_UP:	
+                case $contadores.VK_DOWN:	
+                case $contadores.VK_TAB:
+                  if($contadores.temporal!== $('#codigo').val().trim()) {
+                    janal.console('jsContadores.lookup '+ + $(this).val());
+                    lookup($(this).val().replace(janal.cleanString, '').trim());
+                  } // if
+                  return $contadores.jump(true);
+                  break;
+                case $contadores.VK_ESC:
+                  PF('dialogo').hide();
+                  break;
+                case $contadores.VK_ENTER:
+                  janal.console('jsContadores.lookup '+ + $(this).val());
+                  $contadores.temporal= $('#codigo').val().trim();
+                  lookup($(this).val().replace(janal.cleanString, '').trim());
+                  return false;
+                  break;
+                case $contadores.VK_PAGE_NEXT:
+                  $('#buscados_paginator_top > a.ui-paginator-next').click();
+                  return setTimeout($contadores.jump(false), 1000);
+                  break;
+                case $contadores.VK_PAGE_PREV:
+                  $('#buscados_paginator_top > a.ui-paginator-prev').click();
+                  return setTimeout($contadores.jump(false), 1000);
+                  break;
+              } // swtich
+            });  
+          },
+          move: function() {
+            janal.console('jsContadores.move: '+ this.name());
+            var id= this.name();
+            if($(id))
+              $(id).focus();
+            $('div[id$=codigos_panel]').hide();
+            $('div[id$=codigos_itemtip]').hide();
+          },
+          process: function() {
+            janal.console('jsContadores.process: ');
+            janal.refresh();
+            janal.desbloquear(); 
+            $('div[id$=codigos_panel]').hide();
+            $('div[id$=codigos_itemtip]').hide();
+            setTimeout('$contadores.goto();', 1000); 
+          },      
+          name: function() {
+            return '#'+ this.joker;
+          },
+          set: function(value) {
+            janal.console('jsContadores.set: '+ this.name()+ ' ->'+ $(this.name()).val());
+            if($(this.name()))
+              $(this.name()).val(value);	
+          },      
+          get: function() {
+            janal.console('jsContadores.get: '+ this.name()+ ' ->'+ $(this.name()).val());
+            return $(this.name())? $(this.name()).val(): '';
+          },          
+          close: function() {
+            janal.console('jsContadores.close: ');
+            replace(this.cursor.index);
+            return false;
+          },          
+          show: function(name) {
+            janal.lastReference= name;
+            janal.bloquear();
+            PF('dialogo').show();
+            return false;
+          },
+          exists: function(codigo, nombre) {
+            janal.console('jsContadores.exists: ');
+            alert('El articulo ['+ codigo+ ' - '+ nombre+' ]\nya existe en la lista, por favor verifique !');
+            setTimeout('$contadores.cursor.index= $contadores.cursor.tmp; $contadores.goto(); $contadores.erase();', 1000);
+            janal.desbloquear();
+          },
+          goto: function() {
+            janal.console('jsContadores.goto: '+ this.name());
+            if($(this.name())) 
+              $(this.name()).focus();
+          },
+          erase: function() {
+            janal.console('jsContadores.erase: id$='+ this.codes);
+            $("input[id$='"+ this.codes+ "']").val('');
+          },
+          jump: function(focus) {
+            janal.console('jsContadores.jump');
+            if(!PF('widgetBuscados').isEmpty()) {
+              PF('widgetBuscados').clearSelection();
+              PF('widgetBuscados').writeSelections();
+              PF('widgetBuscados').selectRow(0, true);	
+              if(focus)
+                $('#buscados .ui-datatable-data').focus();
+            } // if	
+            return false;
+          },
+          find: function() {
+            janal.console('jsContadores.find: '+ this.get().trim());
+            var value= this.get().trim();
+            if(value.startsWith('='))
+              this.set(eval(value.substring(1)));
+            return false;
+          },   
+          parche: function() {
+            var ok= true;
+            if($('#buscados_selection') && $('#buscados_selection').val().trim().length> 0 && PF('widgetBuscados')) {
+              PF('widgetBuscados').fireRowSelectEvent($('#buscados_selection').val(), 'rowDblselect'); 
+              ok= false;
+            } // if	
+            return ok;
+          },
+          callback: function(code) {
+            janal.console('jsContadores.callback: '+ code);
+            return false;
+          }          
+        });
+        console.info('Iktan.Control.Contadores initialized');
+      })(window);			
+  
       Janal.Control.fields= {
-        'contenedorGrupos\\:idEmpresa' : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
-        'contenedorGrupos\\:idAlmacen' : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
-        'contenedorGrupos\\:idTrabaja' : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
-				'contenedorGrupos\\:nombre'    : {validaciones: 'requerido|texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
-				'contenedorGrupos\\:total'     : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'libre', grupo: 'general'},
-				'contenedorGrupos\\:idArticulo': {validaciones: 'requerido', mascara: 'libre', grupo: 'producto'},
-        'cantidad'                     : {multiple: '$', validaciones: 'requerido|mayor-igual({"cuanto": 0})', mascara: 'libre', grupo: 'general'}
+        'contenedorGrupos\\:idEmpresa': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+        'contenedorGrupos\\:idAlmacen': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+        'contenedorGrupos\\:idTrabaja': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:nombre'   : {validaciones: 'requerido|texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'contenedorGrupos\\:total'    : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:codigos'  : {validaciones: 'requerido', mascara: 'libre', grupo: 'producto'},
+        'cantidad'                    : {multiple: '$', validaciones: 'requerido|mayor-igual({"cuanto": 0})', mascara: 'libre', grupo: 'general'}
       };      
 			
 			$(document).ready(function() {
         janal.readingMode('#{manticContadoresAccion.attrs.nombreAccion}');
+        jsContadores= new Janal.Control.Contadores.Core(1);
         reload();
       });
+//]]>
     </script>
+    <style type="text/css">
+      .ui-autocomplete-panel {width: 500px !important;}
+    </style>    
   </ui:define>
   <ui:define name="contenido">
-     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+		<pe:remoteCommand name="lookup" actionListener="#{manticContadoresAccion.doUpdateDialogArticulos}" onstart="return PF('dialogo').isVisible();" process="@this codigo" update="buscados localizado">
+			<pe:methodSignature parameters="java.lang.String"/>  
+			<pe:methodParam name="codigo"/>  
+		</pe:remoteCommand>
+		<pe:remoteCommand name="replace" process="@this" update="contenedorGrupos:tabla contenedorGrupos:total contenedorGrupos:codigos" actionListener="#{manticContadoresAccion.doUpdateArticulo}" onstart="return janal.bloquear()" oncomplete="jsContadores.process()">  
+			<pe:methodSignature parameters="java.lang.Integer"/>  
+			<pe:methodParam name="index"/>  
+		</pe:remoteCommand>
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
       <div class="ui-grid-row janal-grid-row">
         <div class="ui-grid-col-12">
           <p:tabView id="contenedorGrupos">
@@ -84,9 +309,9 @@
                 </p:panelGrid>
                 <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-90, janal-wid-10 janal-column-right">
                   <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
-                    <p:outputLabel for="idArticulo" value="Articulo:"/>
-                    <p:autoComplete id="idArticulo" placeholder="Ej. MARTILLO" var="custom" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticContadoresAccion.producto.ikArticulo}" completeMethod="#{manticContadoresAccion.doCompleteArticulo}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" disabled="#{manticContadoresAccion.edit}">
-                      <p:ajax event="itemSelect" process="@this" update="tabla total idArticulo" listener="#{manticContadoresAccion.doAddItem}" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+                    <p:outputLabel for="codigos" value="Articulo:"/>
+                    <p:autoComplete id="codigos" placeholder="Ej. MARTILLO" var="custom" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt key-down-event filas" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticContadoresAccion.producto.ikArticulo}" completeMethod="#{manticContadoresAccion.doCompleteArticulo}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" disabled="#{manticContadoresAccion.edit}">
+                      <p:ajax event="itemSelect" process="@this" update="tabla total codigos" listener="#{manticContadoresAccion.doAddItem}" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>                      
                       <f:facet name="itemtip">
                         <h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">
                           <f:facet name="header" class="TexAlCenter">
@@ -106,7 +331,7 @@
                   </p:panelGrid>
                   <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                     <p:selectBooleanCheckbox itemLabel="Automático" value="#{manticContadoresAccion.attrs.automatico}" converter="javax.faces.Boolean"/>
-                    <p:commandButton id="agregar" value="Agregar" icon="fa fa-plus" process="@this idArticulo" update="idArticulo tabla total" actionListener="#{manticContadoresAccion.doAdd()}" onstart="return janal.partial('producto')" oncomplete="janal.desbloquear(); janal.refresh()" title="Agregar" disabled="#{manticContadoresAccion.edit}"/>
+                    <p:commandButton id="agregar" value="Agregar" icon="fa fa-plus" process="@this codigos" update="codigos tabla total" actionListener="#{manticContadoresAccion.doAdd()}" onstart="return janal.partial('producto')" oncomplete="janal.desbloquear(); janal.refresh()" title="Agregar" disabled="#{manticContadoresAccion.edit}"/>
                   </p:panelGrid>
                 </p:panelGrid>
               </p:panelGrid>
@@ -154,12 +379,60 @@
 							</p:dataTable>
               <p:outputLabel for="total" value="Productos:" styleClass="janal-display-none"/>
               <p:inputText id="total" styleClass="janal-wid-100-txt janal-display-none" value="#{manticContadoresAccion.contador.articulos}" converter="javax.faces.Long"/>
-              <pe:remoteCommand name="reload" process="@this" update="idEmpresa idAlmacen nombre idTrabaja idArticulo agregar" oncomplete="janal.refresh()"/>
+              <pe:remoteCommand name="reload" process="@this" update="idEmpresa idAlmacen nombre idTrabaja codigos agregar" oncomplete="janal.refresh()"/>
             </p:tab>						
           </p:tabView>
         </div>
       </div>
     </div>	
+		<p:dialog widgetVar="dialogo" header="Buscar articulo" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="true" onHide="janal.desbloquear(); janal.recover();" onShow="$('#codigo').val('');clean();" width="900px" height="470px" resizable="false" appendTo="@(body)">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12 janal-column-left">
+					<p:outputLabel for="codigo" value="Código o nombre:"/>
+					<span class="janal-help-icon janal-help-8 fa fa-fw fa-question-circle Fright" onclick="countHelp(8);"/>	
+					<pe:tooltip for="@(.janal-help-8)" showEvent="click">
+						<h:outputLabel value="#{kajoolUtilAplicacion.toTextHelp(8)}" styleClass="Fs15" escape="false"/>
+					</pe:tooltip>
+				</div>			
+			</div>	
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12 janal-column-left">
+					<p:inputText id="codigo" value="#{manticContadoresAccion.attrs.codigo}" styleClass="janal-wid-100-txt key-buscados-event" style="text-transform: uppercase"/>
+				</div>			
+			</div>
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12 janal-column-left">
+					<p:outputLabel value="Click sobre la tabla para seleccionar el articulo, por defecto es el primero de la lista"/><br/>
+					<p:dataTable id="buscados" widgetVar="widgetBuscados" lazy="true" styleClass="janal-buscados-articulos janal-wid-100" value="#{manticContadoresAccion.attrs.lazyModel}" selection="#{manticContadoresAccion.attrs.buscado}" var="item" selectionMode="single" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" reflow="true" scrollRows="50" liveScroll="true" liveScrollBuffer="50" scrollable="true" scrollHeight="280" style="margin-bottom:0">
+						<p:ajax event="rowDblselect" process="@this" update="contenedorGrupos:tabla contenedorGrupos:total contenedorGrupos:codigos @(.filas)" listener="#{manticContadoresAccion.doRowDblselect}" oncomplete="PF('dialogo').hide(); jsContadores.close();"/>	
+            <p:ajax event="rowSelect" process="@this" update="contenedorGrupos:tabla contenedorGrupos:total contenedorGrupos:codigos @(.filas)" listener="#{manticContadoresAccion.doRowDblselect}" skipChildren="false"/>
+						<p:column headerText="No" styleClass="janal-wid-col-30">
+							<h:outputText value="#{index+ 1}.-"/>
+						</p:column>   
+						<p:column headerText="Propio" styleClass="janal-wid-15">
+							<h:outputText value="#{item.propio}"/>
+						</p:column>   
+						<p:column headerText="Nombre">
+							<h:outputText value="#{item.nombre}"/>
+						</p:column>   
+						<p:column headerText="Costo" styleClass="janal-column-right janal-wid-13">
+							<h:outputText value="#{item.original}"/>
+						</p:column>   
+						<p:column headerText="Stock" styleClass="janal-column-right janal-wid-10">
+							<h:outputText value="#{manticContadoresAccion.doMiles(item.stock)}"/>
+						</p:column>   
+            <f:facet name="footer">
+              <p:outputLabel value="Total [#{manticContadoresAccion.attrs.lazyModel==null? 0: manticContadoresAccion.attrs.lazyModel.rowCount}] registros"/>
+            </f:facet>
+					</p:dataTable>
+				</div>
+			</div>
+			<hr class="ui-widget-content"/>
+			<div class="janal-line-button">
+				<p:commandButton id="localizado" icon="fa fa-check" process="@this buscados" update="@(.filas)" value="Aceptar" actionListener="#{manticContadoresAccion.doChangeBuscado}" onstart="return jsContadores.parche();" oncomplete="PF('dialogo').hide(); jsContadores.close();" disabled="#{manticContadoresAccion.attrs.lazyModel.rowCount lt 1}"/>
+				<p:commandButton process="@none" icon="fa fa-remove" value="Cancelar" oncomplete="PF('dialogo').hide(); jsContadores.move();"/>
+			</div>
+		</p:dialog>
   </ui:define>    	
   <ui:define name="acciones">
     <div class="lg-pantalla">

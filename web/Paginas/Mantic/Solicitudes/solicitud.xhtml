@@ -47,25 +47,25 @@
 		</script>   
 	</ui:define>
 	<ui:define name="contenido">
-		<pe:remoteCommand name="locate" process="@this @(.filas)" update="@(.filas) @(.recalculo) @(.informacion)" actionListener="#{manticSolicitudesSolicitud.doUpdateArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();">  
+		<pe:remoteCommand name="locate" process="@this @(.filas)" update="@(.filas) @(.recalculo) @(.informacion)" actionListener="#{manticSolicitudesSolicitud.doUpdateArticulo}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()">  
 			<pe:methodSignature parameters="java.lang.String, java.lang.Integer"/>  
 			<pe:methodParam name="codigo"/>  
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>		
-		<pe:remoteCommand name="suppress" process="@this @(.filas)" update="@(.filas) @(.recalculo)" actionListener="#{manticSolicitudesSolicitud.doDeleteArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.move();">  
+		<pe:remoteCommand name="suppress" process="@this @(.filas)" update="@(.filas) @(.recalculo)" actionListener="#{manticSolicitudesSolicitud.doDeleteArticulo}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear(); jsArticulos.move()">  
 			<pe:methodSignature parameters="java.lang.Integer"/>  
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>		
-		<pe:remoteCommand name="refresh" process="@this @(.filas)" update="@(.filas) @(.recalculo)" actionListener="#{manticSolicitudesSolicitud.doCalculate}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();">  
+		<pe:remoteCommand name="refresh" process="@this @(.filas)" update="@(.filas) @(.recalculo)" actionListener="#{manticSolicitudesSolicitud.doCalculate}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()">  
 			<pe:methodSignature parameters="java.lang.Integer"/>  
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>		
-		<pe:remoteCommand name="search" process="@this" update="@(.informacion)" actionListener="#{manticSolicitudesSolicitud.doSearchArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();">  
+		<pe:remoteCommand name="search" process="@this" update="@(.informacion)" actionListener="#{manticSolicitudesSolicitud.doSearchArticulo}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()">  
 			<pe:methodSignature parameters="java.lang.Long, java.lang.Integer"/>  
 			<pe:methodParam name="idArticulo"/>  
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>		
-		<pe:remoteCommand name="replace" process="@this contenedorGrupos:caja @(.filas)" update="contenedorGrupos:tabla @(.filas) @(.recalculo) @(.informacion)" actionListener="#{manticSolicitudesSolicitud.doFindArticulo}" onstart="return janal.bloquear();" oncomplete="jsArticulos.process();">  
+		<pe:remoteCommand name="replace" process="@this contenedorGrupos:caja @(.filas)" update="contenedorGrupos:tabla @(.filas) @(.recalculo) @(.informacion)" actionListener="#{manticSolicitudesSolicitud.doFindArticulo}" onstart="return janal.bloquear()" oncomplete="jsArticulos.process()">  
 			<pe:methodSignature parameters="java.lang.Integer"/>  
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>

@@ -10,13 +10,13 @@
   <ui:param name="titulo" value="#{manticCatalogosProveedoresAccion.attrs.nombreAccion} al catálogo de proveedores" />
   <ui:define name="librerias">
     <script type="text/javascript">
+      <h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryArticulosJs}"/>
       Janal.Control.fields = {
         'contenedorGrupos\\:prefijo': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
         'contenedorGrupos\\:rfc': {validaciones: 'requerido|rfc', mascara: 'fiscal', grupo: 'general', formatos: 'cambiar-mayusculas'},
         'contenedorGrupos\\:razonSocial': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
         'contenedorGrupos\\:idTipoProveedor': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:descuento': {validaciones: 'porcentaje', mascara: 'libre', grupo: 'general'},
-        'contenedorGrupos\\:dias_entrega': {validaciones: 'entero', mascara: 'entero', grupo: 'general'},
         'contenedorGrupos\\:idTipoDia': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:idTipoMoneda': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:comentarios': {validaciones: 'no-aplica', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
@@ -214,7 +214,7 @@
             <p:tab id="tabTipoPago" title="Condiciones de pago">
               <p:panelGrid id="panelTablaTipoPago" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
                 <p:dataTable id="tablaTipoPago" rowIndexVar="index" var="tipoPago" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedoresCondicionPago}" rows="6" paginator="false" reflow="true" rowKey="#{tipoPago.key}" emptyMessage=" " styleClass="paginated">																					
-                  <p:column headerText="Clave" styleClass="janal-wid-30 llave">		
+                  <p:column headerText="Nombre condición" styleClass="janal-wid-30 llave">		
                     <p:inputText id="llave#{tipoPago.key}" styleClass="janal-wid-100-txt" value="#{tipoPago.clave}" disabled="#{!tipoPago.nuevo}" onblur="simpleProcess();"/>                    																																			
                   </p:column>
 									<p:column headerText="Tipo de pago">										
