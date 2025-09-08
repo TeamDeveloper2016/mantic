@@ -428,14 +428,12 @@ public class Accion extends IBaseAttribute implements Serializable {
 	}
 
 	public void doChangeBuscado() {
-		if(this.attrs.get("encontrado")== null) {
-			FormatCustomLazy list= (FormatCustomLazy)this.attrs.get("lazyModel");
-			if(list!= null) {
-				List<Entity> items= (List<Entity>)list.getWrappedData();
-				if(items.size()> 0) 
-					this.attrs.put("encontrado", new UISelectEntity(items.get(0)));
-			} // if
-		} // if
+    FormatCustomLazy list= (FormatCustomLazy)this.attrs.get("lazyModel");
+    if(list!= null) {
+      List<Entity> items= (List<Entity>)list.getWrappedData();
+      if(items.size()> 0) 
+        this.producto.setIkArticulo(new UISelectEntity(items.get(0)));
+    } // if
 	}
   
 }
