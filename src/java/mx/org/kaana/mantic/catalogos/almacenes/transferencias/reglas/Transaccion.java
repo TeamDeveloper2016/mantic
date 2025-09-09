@@ -141,6 +141,9 @@ public class Transaccion extends ComunInventarios implements Serializable {
         case REPROCESAR:
           regresar= this.toProcesar(sesion, this.fuentes);
           break;
+        case NOTIFICAR:
+          regresar= this.notificar(sesion);
+          break;
       } // switch
       if(!regresar) 
         throw new Exception("");
@@ -281,7 +284,8 @@ public class Transaccion extends ComunInventarios implements Serializable {
     return regresar;
   }
 
-  private void notificar(Session sesion) throws Exception {
+  private Boolean notificar(Session sesion) throws Exception {
+    Boolean regresar          = Boolean.TRUE;
     Bonanza bonanza           = null;
     List<Entity> celulares    = null;
     Map<String, Object> params= new HashMap<>();
@@ -301,7 +305,7 @@ public class Transaccion extends ComunInventarios implements Serializable {
       } // if
       params.put("idTransferencia", this.dto.getIdTransferencia());      
       this.personas= (List<Persona>)DaoFactory.getInstance().toEntitySet(Persona.class, "TcManticTransferenciasPersonasDto", "igual", params);
-      if(!Objects.equals(personas, null) && !personas.isEmpty()) {
+      if(!Objects.equals(this.personas, null) && !this.personas.isEmpty()) {
         for (Persona item: this.personas) {
           params.put("idPersona", item.getIdPersona());
           celulares= (List<Entity>)DaoFactory.getInstance().toEntitySet("TrManticPersonaTipoContactoDto", "celular", params);
@@ -321,6 +325,7 @@ public class Transaccion extends ComunInventarios implements Serializable {
     finally {
       Methods.clean(params);
     } // finally
+    return regresar;
   }
 
   private void toLoadPersonas(Long idTransferencia) throws Exception {

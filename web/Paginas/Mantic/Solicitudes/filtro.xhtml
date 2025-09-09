@@ -222,6 +222,7 @@
               </p:menuitem>	
               <p:separator rendered="#{fn:contains('|5|8|9|', manticSolicitudesFiltro.attrs.seleccionado.estatus)}"/>
               <p:menuitem value="Min max" icon="fa fa-balance-scale" onstart="return janal.bloquear()" process="@this tabla" action="#{manticSolicitudesFiltro.doUmbrales}" rendered="#{fn:contains('|5|8|9|', manticSolicitudesFiltro.attrs.seleccionado.estatus)}"/>
+  						<p:menuitem value="Whatsapp" icon="fa fa-whatsapp" process="@this tabla" actionListener="#{manticSolicitudesFiltro.doWhatsapp}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{manticSolicitudesFiltro.attrs.seleccionado.estatus eq '3'}"/>
             </p:contextMenu>
           </div>
           <p:spacer height="5px"/>

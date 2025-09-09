@@ -479,9 +479,9 @@ public class Filtro extends IBaseFilter implements Serializable {
       );
 			transaccion = new Transaccion(conteo, bitacora);
 			if(transaccion.ejecutar(EAccion.JUSTIFICAR))
-				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta.", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus", ETipoMensaje.INFORMACION);
 			else
-				JsfBase.addMessage("Cambio estatus", "Ocurrio un error al realizar el cambio de estatus.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Cambio estatus", "Ocurrio un error en el cambio de estatus", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -511,5 +511,25 @@ public class Filtro extends IBaseFilter implements Serializable {
 			Methods.clean(params);
 		} // finally
 	} 
+ 
+  public void doWhatsapp() {
+    Entity seleccionado      = (Entity) this.attrs.get("seleccionado");
+    Map<String, Object>params= new HashMap<>();
+    Transaccion transaccion  = null;
+    try {
+      params.put(Constantes.SQL_CONDICION, "id_contador= "+ seleccionado.getKey());
+      Contador conteo= (Contador)DaoFactory.getInstance().toEntity(Contador.class, "TcManticContadoresDto", "igual", params);
+      transaccion = new Transaccion(conteo);
+      if(transaccion.ejecutar(EAccion.NOTIFICAR)) 
+				JsfBase.addMessage("Whatsapp", "Se enviaron los mensajes", ETipoMensaje.INFORMACION);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    finally {
+      Methods.clean(params);
+    } // finally
+  }
   
 }

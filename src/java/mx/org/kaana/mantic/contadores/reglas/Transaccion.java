@@ -100,6 +100,9 @@ public class Transaccion extends IBaseTnx implements Serializable {
           DaoFactory.getInstance().deleteAll(sesion, TcManticContadoresDetallesDto.class, params);
           regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticContadoresDto.class, params)>= 1L;
 					break;
+				case NOTIFICAR:
+          regresar= this.notificar(sesion);
+					break;
 			} // switch
 			if(!regresar)
         throw new Exception("Error al procesar el conteo");
@@ -401,7 +404,8 @@ public class Transaccion extends IBaseTnx implements Serializable {
 		return regresar;
 	}  
 
-  private void notificar(Session sesion) throws Exception {
+  private Boolean notificar(Session sesion) throws Exception {
+    Boolean regresar          = Boolean.TRUE;
     Bonanza bonanza           = null;
     List<Entity> celulares    = null;
     Map<String, Object> params= new HashMap<>();
@@ -439,6 +443,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
     finally {
       Methods.clean(params);
     } // finally
+    return regresar;
   }
   
 } 
