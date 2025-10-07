@@ -62,9 +62,9 @@ public class Local implements Serializable {
 //    System.out.println(planetas.cometa(1L, "1", "/Eb1AjylyNNfQBLodn6Jf6Stb8NM7Hw2"));
 
 //    System.out.println(planetas.polaris(1L, "19000101", "/Eb1AjylyNNfQBLodn6Jf6Stb8NM7Hw2")); // descargar un conteo dirigido
-//    System.out.println(planetas.canopus(1L, "JSON", "/Eb1AjylyNNfQBLodn6Jf6Stb8NM7Hw2")); // enviar un conteo dirigido
+   System.out.println(planetas.canopus(1L, "{\"idConteo\":1,\"idUsuario\":1,\"nombre\":\"0MKzaQM50hQOCCr3VKL1Eg==\",\"productos\":[{\"a\":23933,\"b\":\"11\",\"c\":\"\",\"e\":\"20250924161522169\"},{\"a\":1174,\"b\":\"11\",\"c\":\"\",\"e\":\"20250924161522286\"},{\"a\":1175,\"b\":\"0\",\"c\":\"\",\"e\":\"20250924161522401\"}],\"registro\":\"20250924162331006\",\"idEmpresa\":1,\"idAlmacen\":1,\"semilla\":\"\",\"version\":\"0.0.3.5\"}", "/Eb1AjylyNNfQBLodn6Jf6Stb8NM7Hw2")); // enviar un conteo dirigido
 
-      System.out.println(planetas.antares(1L, "19000101", "/Eb1AjylyNNfQBLodn6Jf6Stb8NM7Hw2"));
+//      System.out.println(planetas.antares(1L, "19000101", "/Eb1AjylyNNfQBLodn6Jf6Stb8NM7Hw2"));
 //    System.out.println(planetas.capella(1L, "JSON", "/Eb1AjylyNNfQBLodn6Jf6Stb8NM7Hw2")); // enviar un conteo dirigido
   }
 

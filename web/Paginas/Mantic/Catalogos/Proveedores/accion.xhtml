@@ -9,8 +9,8 @@
                 template="/WEB-INF/plantillas/accion.xhtml">
   <ui:param name="titulo" value="#{manticCatalogosProveedoresAccion.attrs.nombreAccion} al catálogo de proveedores" />
   <ui:define name="librerias">
+    <h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryArticulosJs}"/>
     <script type="text/javascript">
-      <h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryArticulosJs}"/>
       Janal.Control.fields = {
         'contenedorGrupos\\:prefijo': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
         'contenedorGrupos\\:rfc': {validaciones: 'requerido|rfc', mascara: 'fiscal', grupo: 'general', formatos: 'cambiar-mayusculas'},
