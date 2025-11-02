@@ -21,7 +21,7 @@ import net.sf.jasperreports.engine.JRScriptletException;
 public class FacturaDetalle extends BarraProgreso implements Serializable{
 
 	private static final long serialVersionUID= 6191179382089789177L;
-	private final String QR_HACIENDA_TOKEN    = "https://verificacfdi.facturaelectronica.sat.gob.mx/default.aspx?&id={FOLIO_FISCAL}&re={RFC_EMISOR}&rr={RFC_RECEPTOR}&tt={IMPORTE_TOTAL}&fe={SELLO_DIGITAL}";
+	private final String QR_HACIENDA_TOKEN    = "https://verificacfdi.facturaelectronica.sat.gob.mx/default.aspx?id={FOLIO_FISCAL}&re={RFC_EMISOR}&rr={RFC_RECEPTOR}&tt={IMPORTE_TOTAL}&fe={SELLO_DIGITAL}";
 	
 	private Map<String, Object> params;
 
@@ -48,7 +48,7 @@ public class FacturaDetalle extends BarraProgreso implements Serializable{
 			params.put("RFC_RECEPTOR", this.getParameterValue("REPORTE_CLIENTE_RFC"));
 			BigDecimal it=((BigDecimal)this.getFieldValue("TOTAL_FINAL"));
 			params.put("IMPORTE_TOTAL", Numero.redondearSat(it.doubleValue()));
-			String sd=((String)this.getFieldValue("SELLO_SAT"));
+			String sd=((String)this.getFieldValue("SELLO_CFDI"));
 			if(sd== null)
 				sd= "www.ferreteriabonanza.com";
 			params.put("SELLO_DIGITAL", sd.substring(sd.length()- 8, sd.length()));

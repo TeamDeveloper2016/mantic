@@ -237,7 +237,7 @@ public abstract class Factura extends IBaseTicket {
       params= this.toPrepare();	
       seleccionado = ((Entity)this.attrs.get("seleccionado"));
 			//recuperar el sello digital en caso de que la factura ya fue timbrada para que salga de forma correcta el reporte
-			if(seleccionado.toString("idFacturama")!= null && seleccionado.toString("selloSat")== null) {
+			if(seleccionado.toString("idFacturama")!= null && seleccionado.toString("selloCfdi")== null) {
 				Transferir transferir= null;
 				try {
           transferir= new Transferir(seleccionado.toString("idFacturama"));
@@ -282,7 +282,7 @@ public abstract class Factura extends IBaseTicket {
       Error.mensaje(e);
       JsfBase.addMessageError(e);			
     } // catch	
-  } // doReporte
+  } 
 	
 	public boolean doVerificarReporte() {
     boolean regresar = false;
